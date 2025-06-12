@@ -1,3 +1,3 @@
-theme: jekyll-theme-minimal   # ou jekyll-theme-cayman, slate, etc.
-title: "Digitalisation de la voie – RTM"
-description: "POC cartographie T1 / T2 / T3 pour optimiser la maintenance du réseau ferré."
+title: "Alice – Data & GIS"
+theme: jekyll-theme-cayman
+logo: /docs/assets/favicon.png
