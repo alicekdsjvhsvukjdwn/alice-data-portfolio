@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio – Alice Gay</title>
+  <meta name="description" content="Portfolio d'Alice Gay – sciences cognitives, data, culture & création. Projets RTM, data viz, musique, interfaces." />
+  <meta property="og:title" content="Portfolio – Alice Gay" />
+  <meta property="og:description" content="Ponts entre sciences cognitives, culture et création. Projets data, interfaces, musique." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og-image.jpg" />
+  <link rel="icon" href="assets/favicon.png" />
+  <style>
+    :root {
+      --bg: #0f1115;        /* fond */
+      --surface: #151922;   /* cartes */
+      --text: #e7ebf3;      /* texte principal */
+      --muted: #a6b0c2;     /* texte secondaire */
+      --primary: #8ec5ff;   /* accent */
+      --primary-2: #a3ffd6; /* accent bis */
+      --border: #23293a;
+      --maxw: 1080px;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #0c0e13 0%, #0f1115 30%, #0f1115 100%);
+      color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.6;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .container { width: 100%; max-width: var(--maxw); padding: 0 20px; margin: 0 auto; }
+    header.site {
+      position: sticky; top: 0; z-index: 40; backdrop-filter: blur(10px);
+      background: rgba(15,17,21,.7); border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; gap: 16px; padding: 14px 0; }
+    .brand { font-weight: 700; letter-spacing: .2px; }
+    .spacer { flex: 1; }
+    .nav a { color: var(--muted); font-size: 15px; padding: 8px 10px; border-radius: 8px; }
+    .nav a.active, .nav a:focus-visible { color: var(--text); background: #1a1f2b; outline: none; }
+
+    .hero { padding: 56px 0 24px; }
+    .card {
+      background: radial-gradient(1200px 300px at 0% -20%, rgba(142,197,255,.08), transparent 60%),
+                  radial-gradient(800px 200px at 110% -10%, rgba(163,255,214,.06), transparent 60%),
+                  var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 28px; 
+    }
+    .kicker { color: var(--primary-2); font-weight: 600; letter-spacing: .4px; text-transform: uppercase; font-size: 12px; }
+    h1 { margin: 8px 0 6px; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; }
+    p.lead { color: var(--muted); font-size: 18px; margin: 12px 0 20px; }
+
+    .links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); background: #141925; color: var(--text); font-weight: 600; }
+    .btn:hover { background: #192135; text-decoration: none; }
+    .btn.ghost { background: transparent; color: var(--primary); }
+
+    section { padding: 28px 0 8px; }
+    section h2 { font-size: clamp(22px, 2.4vw, 28px); margin: 6px 0 16px; }
+    section .subtitle { color: var(--muted); margin: -6px 0 18px; }
+
+    .grid { display: grid; gap: 16px; }
+    @media (min-width: 800px) {
+      .grid.cols-2 { grid-template-columns: 1fr 1fr; }
+      .grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .project { padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: #121723; }
+    .project h3 { margin: 0 0 6px; font-size: 19px; }
+    .meta { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+    .badge { display: inline-block; background: #1b2030; border: 1px solid var(--border); color: var(--muted); padding: 4px 8px; border-radius: 999px; font-size: 12px; margin-right: 6px; }
+    .figure { width: 100%; aspect-ratio: 16/9; background: #0f1320; border: 1px dashed #2a3349; border-radius: 12px; display: grid; place-items: center; color: #637399; font-size: 14px; }
+    .iframe-wrap { width: 100%; height: 560px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #0f1320; }
+    .iframe-wrap iframe { width: 100%; height: 100%; border: 0; }
+
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: #121723; color: var(--muted); font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+
+    footer { color: var(--muted); padding: 36px 0 56px; text-align: center; }
+    .small { font-size: 13px; color: var(--muted); }
+
+    /* Utilities */
+    .mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-20{margin-top:20px}.mt-24{margin-top:24px}
+    .mb-0{margin-bottom:0}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}
+    .center { display: grid; place-items: center; }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="container nav">
+      <div class="brand">Alice Gay</div>
+      <div class="spacer"></div>
+      <nav class="links" aria-label="Navigation principale">
+        <a href="#intro" class="active">Intro</a>
+        <a href="#projets">Projets</a>
+        <a href="#licence">Licence</a>
+        <a href="#creations">Créations</a>
+        <a href="#competences">Compétences</a>
+        <a href="#valeurs">Valeurs</a>
+        <a href="#docs">Docs</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Intro / Hero -->
+    <section id="intro" class="hero">
+      <div class="container">
+        <div class="card">
+          <div class="kicker">Portfolio – Sciences cognitives × Data × Culture</div>
+          <h1>Je crée des ponts entre <span style="color:var(--primary)">sciences cognitives</span>, <span style="color:var(--primary-2)">culture</span> et <span style="color:var(--primary)">création</span>.</h1>
+          <p class="lead">🎓 <strong>Alice Gay</strong> — Master 2 Sciences Cognitives (Langage, Communication & Cerveau). Basée à Marseille. J’aime concevoir des projets qui rendent le savoir, l’art et la technique accessibles, clairs et sensibles.</p>
+          <div class="links mt-16">
+            <a class="btn" href="#projets">Voir les projets</a>
+            <a class="btn ghost" href="#contact">Me contacter</a>
+            <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV PDF</a>
+            <a class="btn ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="btn ghost" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn ghost" href="https://soundcloud.com/" target="_blank" rel="noopener">SoundCloud</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projets pro & académiques -->
+    <section id="projets">
+      <div class="container">
+        <h2>💼 Projets professionnels & académiques</h2>
+        <p class="subtitle">Projets réalisés en stage, études ou collaboration. Mélange entre technique, analyse et médiation.</p>
+
+        <!-- RTM Project -->
+        <article class="project">
+          <h3>🚋 Projet RTM – Digitalisation du réseau Tram</h3>
+          <div class="meta">Stage – Régie des Transports Métropolitains, Marseille (2025)</div>
+          <p><strong>Contexte.</strong> Numérisation et harmonisation des données tramway (lignes T1 à T3) pour optimiser la maintenance du réseau.</p>
+          <p><strong>Objectifs.</strong> Fusion multi-sources (Excel/GPS), création d’un référentiel PK unique (PK-Source), carte interactive Leaflet et tableau de bord Power BI.</p>
+          <p><strong>Rôle & réalisations.</strong> Scripts Python (pandas, geopandas, openpyxl), nettoyage et contrôle qualité, prototype Leaflet, coordination avec les services techniques (génie civil, maintenance, data).</p>
+          <p><strong>Compétences.</strong> Analyse de données, gestion de projet, communication interservices, ergonomie cognitive.</p>
+
+          <div class="grid cols-2 mt-16">
+            <div class="figure">Illustration / capture (carte Leaflet)</div>
+            <div class="figure">Illustration / capture (Power BI)</div>
+          </div>
+
+          <div class="mt-16 iframe-wrap">
+            <!--
+            Intégration en direct (à activer) :
+            Remplacez src par le chemin de votre projet, par ex. "RTM-map/index.html" ou une URL externe.
+            <iframe src="RTM-map/index.html" title="Carte RTM interactive"></iframe>
+            -->
+            <div class="center small">Aperçu interactif (intégrer via &lt;iframe&gt; quand prêt)</div>
+          </div>
+        </article>
+
+        <!-- Université Cognition & Communication -->
+        <article class="project mt-16">
+          <h3>🧠 Projet universitaire – Cognition & Communication</h3>
+          <div class="meta">Université Aix‑Marseille (2024)</div>
+          <p><strong>Contexte.</strong> Recherche sur la perception et la compréhension de l’information selon le contexte linguistique et visuel.</p>
+          <p><strong>Objectifs.</strong> Étudier comment la forme influence la compréhension et développer un outil de présentation claire de concepts complexes.</p>
+          <p><strong>Compétences.</strong> Rigueur scientifique, vulgarisation, esprit de synthèse, communication claire.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Projets Licence MIASHS -->
+    <section id="licence">
+      <div class="container">
+        <h2>💻 Projets de Licence MIASHS</h2>
+        <p class="subtitle">Projets techniques, analytiques et interdisciplinaires réalisés en Licence.</p>
+
+        <div class="grid cols-2">
+          <article class="project">
+            <h3>📊 Data Viz – Données socio‑économiques régionales</h3>
+            <div class="meta">Licence 3 MIASHS (2022)</div>
+            <p><strong>Objectif.</strong> Analyser les disparités territoriales via revenus, emploi et éducation.</p>
+            <p><strong>Réalisations.</strong> Nettoyage/fusion (INSEE, open data), graphiques interactifs (Python + Plotly/Matplotlib), rapport visuel.</p>
+            <p><strong>Compétences.</strong> Analyse statistique, visualisation de données, synthèse.</p>
+          </article>
+
+          <article class="project">
+            <h3>🧩 Cognition & Interaction – Interface intuitive</h3>
+            <div class="meta">Licence 3 – UE ergonomie cognitive</div>
+            <p><strong>Objectif.</strong> Concevoir une interface adaptée à la charge cognitive des utilisateurs.</p>
+            <p><strong>Réalisations.</strong> Étude des besoins, maquettes Figma, tests utilisateurs et analyse qualitative.</p>
+            <p><strong>Compétences.</strong> Ergonomie cognitive, UCD, communication visuelle.</p>
+          </article>
+
+          <article class="project">
+            <h3>🔢 Statistiques – Attention & apprentissage</h3>
+            <div class="meta">Licence 2 MIASHS (2021)</div>
+            <p><strong>Objectif.</strong> Mettre en évidence le lien entre variabilité attentionnelle et performance d’apprentissage.</p>
+            <p><strong>Réalisations.</strong> Traitement sous R, visualisations, présentation orale vulgarisée.</p>
+            <p><strong>Compétences.</strong> Statistiques, interprétation, communication scientifique.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Créations & projets perso -->
+    <section id="creations">
+      <div class="container">
+        <h2>🎨 Créations & projets personnels</h2>
+        <p class="subtitle">Explorations personnelles – musique, visuel, écriture créative.</p>
+
+        <div class="grid cols-2">
+          <article class="project">
+            <h3>🎵 Beat « Anya Nami »</h3>
+            <div class="meta">Instrumental – Style Josman x Laylow</div>
+            <p><strong>Intention.</strong> Créer un univers sonore introspectif, entre douceur et tension.</p>
+            <p><strong>Outils.</strong> FL Studio, Vital, Flex, Harmonix.</p>
+            <p><a class="btn" href="https://soundcloud.com/" target="_blank" rel="noopener">Écouter sur SoundCloud</a></p>
+          </article>
+
+          <article class="project">
+            <h3>🎮 Jeu 2D – « Neuron Quest » (exemple)</h3>
+            <div class="meta">Prototype HTML 5 (canvas/JS)</div>
+            <p>Mini‑jeu 2D jouable en ligne. Intégration directe :</p>
+            <div class="iframe-wrap">
+              <!-- Remplacez par le chemin du jeu 2D, ex. "neuron-quest/index.html" -->
+              <!-- <iframe src="neuron-quest/index.html" title="Neuron Quest"></iframe> -->
+              <div class="center small">Intégrer ici le jeu 2D via &lt;iframe&gt;</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compétences -->
+    <section id="competences">
+      <div class="container">
+        <h2>🧠 Compétences</h2>
+        <div class="grid cols-2">
+          <div class="project">
+            <table>
+              <thead>
+                <tr><th>Domaine</th><th>Compétences clés</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Gestion de projet</strong></td><td>Coordination interservices, planification, suivi d’actions</td></tr>
+                <tr><td><strong>Analyse / Data</strong></td><td>Python (pandas, geopandas, openpyxl), Power BI, Excel</td></tr>
+                <tr><td><strong>Communication / Médiation</strong></td><td>Vulgarisation, écriture claire, écoute active</td></tr>
+                <tr><td><strong>Création / Culture</strong></td><td>FL Studio, conception d’expériences, écriture</td></tr>
+                <tr><td><strong>Langues</strong></td><td>Français (natif), Anglais (C1)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="project">
+            <h3 class="mt-0">🌱 Valeurs & vision</h3>
+            <p>Je crois à une culture accessible, transversale et profondément humaine. Mon objectif : relier les mondes des données, des émotions et des publics. Créer des expériences où chacun peut se sentir relié et curieux.</p>
+            <blockquote class="small">« Créer, c’est traduire ce qu’on ne peut pas dire autrement. »</blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Documents & liens utiles -->
+    <section id="docs">
+      <div class="container">
+        <h2>📎 Documents & liens utiles</h2>
+        <div class="grid cols-3">
+          <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">📄 CV PDF</a>
+          <a class="btn" href="#" target="_blank" rel="noopener">🧠 Rapport de stage RTM</a>
+          <a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">💼 LinkedIn</a>
+          <a class="btn" href="https://github.com/" target="_blank" rel="noopener">🧪 GitHub</a>
+          <a class="btn" href="https://soundcloud.com/" target="_blank" rel="noopener">🎵 SoundCloud</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container">
+        <h2>💌 Contact</h2>
+        <div class="project">
+          <p class="mb-12">Envie de collaborer, d’échanger ou de voir une démo ? Écris‑moi :</p>
+          <p class="mb-0"><strong>Email</strong> : <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container small">© <span id="y"></span> Alice Gay — Fait avec HTML/CSS/JS. Hébergé sur GitHub Pages.</div>
+  </footer>
+
+  <script>
+    // Active link on scroll
+    const links = Array.from(document.querySelectorAll('header.site nav a'));
+    const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const onScroll = () => {
+      const pos = window.scrollY + 120; // offset for sticky header
+      let active = links[0];
+      sections.forEach((sec, i) => {
+        if (sec.offsetTop <= pos) active = links[i];
+      });
+      links.forEach(a => a.classList.remove('active')); active.classList.add('active');
+    };
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    // Year
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
