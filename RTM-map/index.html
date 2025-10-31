@@ -1,1 +1,1479 @@
 
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Carte RTM — Layout (orienté terrain)</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
+
+  <!-- Lib Excel -->
+  <!-- Parsers (méthode compacte) -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+  :root{
+    --bg:#0b0f19; --panel:#111827; --chip:#1f2937; --chip-active:#6A4C93; /* ton violet equip */
+    --txt:#e5e7eb; --muted:#9ca3af; --border:#374151; --accent:#6A4C93;
+    --v1:#1E40AF; /* V1 */ --v2:#059669; /* V2 */ --v12:#EA580C; /* mix V1/V2 */
+    --voie-undefined:#6B7280; /* Voie non définie - Gris */
+    --anom:#f59e0b; --ok:#10b981; --warn:#f59e0b; --err:#ef4444;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  /* Reset + base */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  .hint{color:var(--muted);font-size:12px}
+
+  /* Layout global */
+  .wrap{display:grid;grid-template-rows:auto 1fr;min-height:100%}
+
+  /* Toolbar (2 lignes compactes) */
+  .toolbar{position:sticky;top:0;z-index:1000;background:linear-gradient(180deg,rgba(17,24,39,.95),rgba(17,24,39,.85));backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+  .toolbar .row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 12px}
+  .title{font-weight:700;letter-spacing:.2px}
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--border);background:var(--panel);color:var(--txt);padding:6px 10px;border-radius:10px;cursor:pointer;font-size:13px}
+  .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:var(--chip-active);border-color:var(--chip-active)}
+  .btn.ghost{background:transparent}
+  .btn.icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px}
+  .select,input[type="number"],input[type="text"],input[type="date"],input[type="search"]{
+    background:var(--panel);border:1px solid var(--border);border-radius:10px;color:var(--txt);padding:6px 8px;min-height:34px
+  }
+
+  /* Zone principale: rail gauche / carte / inspecteur */
+  .main{
+    display:grid;grid-template-columns: 320px 1fr 420px;gap:10px;
+    padding:10px;height:calc(100vh - 110px); /* approx toolbar height */
+  }
+  .rail{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;overflow:auto;box-shadow:var(--shadow)}
+  .mapwrap{position:relative;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)}
+  #map{position:absolute;inset:0}
+  .inspect{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;overflow:auto;box-shadow:var(--shadow);display:flex;flex-direction:column;
+  }
+
+  /* Groupes dans le rail */
+  .group{border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:10px}
+  .glabel{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--border);cursor:pointer;user-select:none;font-size:13px}
+  .chip:hover{border-color:var(--accent)}
+  .chip.active{background:var(--chip-active);border-color:var(--chip-active);color:#fff}
+
+  /* Légende dans l'inspecteur */
+  .inspector-legend { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-top: auto; }
+  .legend-title { font-weight: 600; margin-bottom: 8px; color: var(--txt); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-grid { display: flex; flex-direction: column; gap: 6px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--txt); }
+  .legend-item .sw { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); box-shadow: 0 0 0 1px rgba(0,0,0,.35); flex-shrink: 0; }
+  .sw{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+
+  /* Inspecteur (sections repliables) */
+  .ins-title{font-weight:700;margin-bottom:8px}
+  details.ins-sec{
+    background:#0f172a;border:1px solid var(--border);border-radius:10px;padding:6px 8px;margin-bottom:8px;
+  }
+  details.ins-sec > summary.sec-title{
+    cursor:pointer;color:#cbd5e1;font-weight:600;margin:0;display:flex;align-items:center;gap:8px;list-style: none;
+  }
+  details.ins-sec > summary.sec-title::before{content:"▸";transition:transform .15s ease;opacity:.8;}
+  details.ins-sec[open] > summary.sec-title::before{transform:rotate(90deg);}
+  .rows .rowitem{margin:2px 0}
+  .rowitem{font-size:12px;display:flex;gap:6px;opacity:.95}
+  .k{opacity:.65}
+
+  /* Modales génériques */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2001}
+  .modal.open{display:flex}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;max-width:980px;width:92vw;max-height:82vh;overflow:auto;padding:12px 14px;box-shadow:var(--shadow)}
+  .panel .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .table{width:100%;border-collapse:collapse;font-size:14px}
+  .table th,.table td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
+  .table th{font-weight:600;color:#cbd5e1}
+
+  /* Leaflet skin */
+  .leaflet-container{background:#0c1222}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0f172a;color:var(--txt)}
+  .leaflet-control-zoom a{background:#0f172a;color:var(--txt);border:1px solid var(--border)}
+  .leaflet-bar a:hover{background:#111827}
+
+  /* Responsive */
+  @media (max-width: 1200px){
+    .main{grid-template-columns: 300px 1fr; }
+    .inspect{display:none} /* side sheet masqué par défaut */
+    .btn.inspect-toggle{display:inline-flex}
+  }
+  @media (max-width: 900px){
+    .main{grid-template-columns: 1fr}
+    .rail{position:fixed;left:10px;top:90px;bottom:10px;width:320px;max-width:86vw;transform:translateX(-120%);transition:transform .2s ease;z-index:2000}
+    .rail.open{transform:translateX(0)}
+    .btn.rail-toggle{display:inline-flex}
+  }
+
+  /* Système de notifications */
+  .toast-container { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; flex-direction: column; gap: 8px; max-width: 400px; }
+  .toast { background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 12px 16px; box-shadow: var(--shadow); transform: translateX(120%); transition: transform 0.3s ease; font-size: 14px; }
+  .toast.show { transform: translateX(0); }
+  .toast.error { border-left-color: var(--err); }
+  .toast.warning { border-left-color: var(--warn); }
+  .toast.success { border-left-color: var(--ok); }
+  .toast .close { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; margin-left: 12px; }
+
+  /* toggle buttons hidden by default on wide */
+  .btn.rail-toggle, .btn.inspect-toggle{display:none}
+
+  /* ADV en grille compacte */
+  .chips.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 6px; }
+  .chip.adv { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .group .subhead { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .group .subhead input[type="search"]{ flex:1; min-width:140px; }
+  .group details.grouped { margin:4px 0 8px }
+  .group details.grouped > summary{ display:flex; align-items:center; gap:8px; }
+  .badge{ display:inline-block; padding:2px 6px; font-size:11px; background:var(--chip); border:1px solid var(--border); border-radius:999px; color:var(--muted); }
+
+  /* === Criteria builder === */
+  #criteriaModal .panel{ max-width: 1200px; width: 96vw; max-height: 90vh; overflow: visible; }
+  .criteria-wrap{display:flex;flex-direction:column;gap:10px}
+  .criteria-head{display:flex;gap:8px;align-items:center;justify-content:space-between}
+  .criteria-list{display:flex;flex-direction:column;gap:10px}
+  .crit-row{
+    display:grid; grid-template-columns: 220px 260px 1fr auto; gap:8px; align-items:center;
+  }
+  .crit-row .btn.del{background:#1f2937}
+  .crit-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  .select, .crit-input{min-height:36px}
+
+  /* Multi-sélection */
+  .multibox{position:relative}
+  .multibox > button{width:100%}
+  .multi-panel{
+    position:absolute; left:0; right:auto; background:#0f172a; border:1px solid var(--border); border-radius:10px;
+    min-width:280px; max-width:520px; max-height:clamp(200px, 48vh, 360px);
+    overflow:auto; padding:6px; box-shadow:0 12px 30px rgba(0,0,0,.35); z-index:5;
+  }
+  .multi-item{ display:flex;justify-content:space-between;gap:10px;align-items:center; padding:4px 6px;border-radius:6px;cursor:pointer }
+  .multi-item:hover{background:#101826}
+  .multi-badge{font-size:11px;color:var(--muted)}
+  .badge-small{display:inline-block;font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar" role="navigation" aria-label="Barre d’outils">
+    <div class="row">
+      <div class="bar">
+        <button id="railToggle" class="btn icon rail-toggle" aria-label="Ouvrir le rail gauche" title="Ouvrir le rail (filtres)"> ☰ </button>
+        <div class="title">Cartographie interactive RTM </div>
+      </div>
+      <div class="bar">
+        <label id="importBtn" class="btn" title="Importer un fichier">
+          <input id="file" type="file" accept=".csv,.xlsx,.xls,.tsv,.txt" style="display:none"> Importer…
+        </label>
+        <select id="basemapSel" class="select" title="Fond de carte">
+          <option value="osm" selected>OSM</option>
+          <option value="sat">Satellite</option>
+        </select>
+        <button id="focusBtn" class="btn" title="Mode Focus (F)">Focus</button>
+        <label class="btn ghost" title="Afficher style anomalies (A)">
+          <input id="anomChk" type="checkbox"/> Anomalies
+        </label>
+        <button id="criteriaBtn" class="btn primary" title="Sélection par critères">Critères…</button>
+        <button id="inspectToggle" class="btn icon inspect-toggle" aria-label="Ouvrir l’inspecteur" title="Ouvrir l’inspecteur">⟷</button>
+      </div>
+    </div>
+    <div class="row" style="padding-top:0">
+      <div class="hint">Raccourcis : <b>F</b> Focus · <b>A</b> Anomalies</div>
+      <div class="hint" id="counter">0 point visible</div>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div class="main" role="region" aria-label="Contenu principal">
+    <!-- RAIL GAUCHE -->
+    <aside id="rail" class="rail" role="complementary" aria-label="Filtres essentiels">
+      <div class="group">
+        <div class="glabel">Voie</div>
+        <div class="chips" id="chipsVoie">
+          <div class="chip" data-voie="v1">V1</div>
+          <div class="chip" data-voie="v2">V2</div>
+          <div class="chip" data-voie="v12">V1/V2</div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="glabel">Ligne</div>
+        <div class="chips" id="chipsLigne">
+          <div class="chip">T1</div>
+          <div class="chip">T2</div>
+          <div class="chip">T2T3 (N)</div>
+          <div class="chip">T2T3 (S)</div>
+          <div class="chip">T3T2 (N)</div>
+          <div class="chip">T3T2 (S)</div>
+          <div class="chip">T3</div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="glabel">Stations</div>
+        <button id="stationsBtn" class="btn">Lister</button>
+      </div>
+
+      <div class="group">
+        <div class="glabel">PK</div>
+        <div class="bar">
+          <select id="pkPrefix" class="select" style="min-width:120px">
+            <option value="">Prefixe: Auto</option>
+            <option>N</option><option>S</option>
+          </select>
+          <input id="pkInput" type="number" step="0.5" placeholder="2875.5" style="min-width:110px"/>
+          <button id="pkGo" class="btn">Aller</button>
+          <button id="pkClear" class="btn ghost">Effacer</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="glabel">Familles</div>
+        <div class="group" id="fieldsAuto">
+          <div class="glabel">Champs (auto)</div>
+          <div class="hint">Les contrôles se génèrent automatiquement selon les colonnes détectées dans le fichier importé.</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CARTE -->
+    <section class="mapwrap" aria-label="Carte">
+      <div id="map" aria-label="Leaflet map"></div>
+    </section>
+
+    <!-- INSPECTEUR -->
+    <aside id="inspect" class="inspect" role="complementary" aria-label="Inspecteur">
+      <div class="ins-title">Inspecteur — point sélectionné</div>
+
+      <!-- PK / Source -->
+      <details class="ins-sec">
+        <summary class="sec-title">PK / Source</summary>
+        <div class="rows">
+          <div class="rowitem"><span class="k">PK-Source:</span><span id="ins_pk_source">—</span></div>
+          <div class="rowitem"><span class="k">PK (arrondi):</span><span id="ins_pk_arrondi">—</span></div>
+          <div class="rowitem"><span class="k">GPS:</span><span id="ins_gps">—</span></div>
+        </div>
+      </details>
+
+      <!-- Localisation -->
+      <details class="ins-sec">
+        <summary class="sec-title">Localisation</summary>
+        <div class="rows">
+          <div class="rowitem"><span class="k">Ligne:</span><span id="ins_ligne">—</span></div>
+          <div class="rowitem"><span class="k">Voie:</span><span id="ins_voie">—</span></div>
+          <div class="rowitem"><span class="k">Station:</span><span id="ins_station">—</span></div>
+        </div>
+      </details>
+
+      <!-- Géométrie voie -->
+      <details class="ins-sec">
+        <summary class="sec-title">Géométrie voie</summary>
+        <div class="rows">
+          <div class="rowitem"><span class="k">Rayon de courbure [m]:</span><span id="ins_rayon">—</span></div>
+          <div class="rowitem"><span class="k">Pente [%]:</span><span id="ins_pente">—</span></div>
+          <div class="rowitem"><span class="k">Gauche [mm]:</span><span id="ins_gauche">—</span></div>
+        </div>
+      </details>
+
+      <!-- Infrastructure voie -->
+      <details class="ins-sec">
+        <summary class="sec-title">Infrastructure voie</summary>
+        <div class="rows">
+          <div class="rowitem"><span class="k">Écartement (GL) [mm]:</span><span id="ins_ecart">—</span></div>
+          <div class="rowitem"><span class="k">Dévers [mm]:</span><span id="ins_devers">—</span></div>
+          <div class="rowitem"><span class="k">Type de rail / info:</span><span id="ins_type_rail">—</span></div>
+          <div class="rowitem"><span class="k">Type de pose:</span><span id="ins_pose">—</span></div>
+          <div class="rowitem"><span class="k">Revêtement:</span><span id="ins_revet">—</span></div>
+          <div class="rowitem"><span class="k">Assainissement:</span><span id="ins_assain">—</span></div>
+          <div class="rowitem"><span class="k">Liaison équipotentielle (LEP):</span><span id="ins_lep">—</span></div>
+          <div class="rowitem"><span class="k">BAE:</span><span id="ins_bae">—</span></div>
+        </div>
+      </details>
+
+      <!-- Exploitation / données service -->
+      <details class="ins-sec">
+        <summary class="sec-title">Exploitation / données service</summary>
+        <div class="rows">
+          <div class="rowitem"><span class="k">Vitesse (GL) [km/h]:</span><span id="ins_vitesse">—</span></div>
+          <div class="rowitem"><span class="k">Date de mise en service:</span><span id="ins_mes">—</span></div>
+        </div>
+      </details >
+
+      <!-- Équipements & ouvrages -->
+      <details class="ins-sec">
+        <summary class="sec-title">Équipements & ouvrages</summary>
+        <div class="rows">
+          <div class="rowitem"><span class="k">Stations (rappel):</span><span id="ins_station_bis">—</span></div>
+          <div class="rowitem"><span class="k">Appareils de voie (ADV):</span><span id="ins_adv">—</span></div>
+          <div class="rowitem"><span class="k">Ouvrages d’art (OA):</span><span id="ins_oa">—</span></div>
+          <div class="rowitem"><span class="k">Sous-stations (SST):</span><span id="ins_sst">—</span></div>
+        </div>
+      </details >
+
+      <!-- ✅ Anomalies -->
+      <details class="ins-sec">
+        <summary class="sec-title">Anomalies</summary>
+        <div id="ins_anoms" class="rows"><div class="rowitem hint">—</div></div>
+      </details>
+
+      <!-- Légende (inchangée) -->
+      <div class="inspector-legend">
+        <div class="legend-title">Légende des voies</div>
+        <div class="legend-grid">
+          <div class="legend-item">
+            <span class="sw" style="background:var(--v1)"></span>
+            <span>Voie 1 (V1)</span>
+          </div>
+          <div class="legend-item">
+            <span class="sw" style="background:var(--v2)"></span>
+            <span>Voie 2 (V2)</span>
+          </div>
+          <div class="legend-item">
+            <span class="sw" style="background:var(--v12)"></span>
+            <span>Voie 1 et Voie 2 (V1/V2) — zone mixte</span>
+          </div>
+          <div class="legend-item">
+            <span class="sw" style="background:var(--voie-undefined)"></span>
+            <span>Autre voie / non définie</span>
+          </div>
+          <div class="legend-item">
+            <span class="sw" style="background:none;border:2px solid var(--anom)"></span>
+            <span>Anomalie détectée</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- MODALES -->
+  <!-- Stations -->
+  <div id="stationsModal" class="modal" aria-hidden="true">
+    <div class="panel" role="dialog" aria-labelledby="stationsTitle">
+      <div class="header">
+        <div id="stationsTitle" style="font-weight:700">Stations — PK début / fin</div>
+        <button id="stationsClose" class="btn">Fermer</button>
+      </div>
+      <div class="hint" style="margin-bottom:6px">Maquette : tableau vide (les données viendront ensuite).</div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Station</th>
+            <th>Ligne</th>
+            <th>PK début</th>
+            <th>PK fin</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="5" class="hint">—</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Anomalies / Règles -->
+  <div id="criteriaModal" class="modal" aria-hidden="true">
+    <div class="panel" role="dialog" aria-labelledby="criteriaTitle">
+      <div class="header">
+        <div id="criteriaTitle" style="font-weight:700">Critères (max 10)</div>
+        <button id="criteriaClose" class="btn">Fermer</button>
+      </div>
+
+      <div class="criteria-wrap">
+        <div class="criteria-head">
+          <div class="hint">
+            Choisis un champ puis règle la condition. <span id="criteriaCount" class="badge-small">0 / 10</span>
+          </div>
+          <div class="bar">
+            <select id="critFieldSel" class="select" style="min-width:220px">
+              <option disabled selected>— choisir un champ —</option>
+            </select>
+            <button id="critAdd" class="btn primary" disabled>Ajouter</button>
+          </div>
+        </div>
+
+        <div id="criteriaList" class="criteria-list"><!-- lignes de critères --></div>
+
+        <div class="criteria-head" style="margin-top:6px">
+          <div class="hint">Les critères s’ajoutent aux filtres actuels (AND logique).</div>
+          <div class="crit-foot">
+            <button id="critClear" class="btn ghost">Effacer</button>
+            <button id="critApply" class="btn primary">Appliquer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- /.wrap -->
+
+<script>
+/* ---------- Helpers DOM ---------- */
+const $ = (sel, context = document) => {
+  try { const el = context.querySelector(sel); if (!el) console.warn(`Élément introuvable: ${sel}`); return el; }
+  catch (e) { console.error(`Sélecteur invalide: ${sel}`, e); return null; }
+};
+const $$ = (sel, context = document) => {
+  try { return [...context.querySelectorAll(sel)]; }
+  catch (e) { console.error(`Sélecteur invalide: ${sel}`, e); return []; }
+};
+const safeDOM = {
+  setText: (sel, text) => { const el = $(sel); if (el) el.textContent = text; },
+  setHTML: (sel, html) => { const el = $(sel); if (el) el.innerHTML = html; },
+  addClass: (sel, className) => { const el = $(sel); if (el) el.classList.add(className); },
+  removeClass: (sel, className) => { const el = $(sel); if (el) el.classList.remove(className); },
+  toggle: (sel, className, force) => { const el = $(sel); if (el) el.classList.toggle(className, force); }
+};
+
+/* ---------- Toasts ---------- */
+class ToastManager{
+  constructor(){ this.container = $('#toastContainer') || this.createContainer(); this.toasts = new Set(); }
+  createContainer(){ const c = document.createElement('div'); c.id = 'toastContainer'; c.className='toast-container'; c.setAttribute('aria-live','polite'); document.body.appendChild(c); return c; }
+  show(message, type='info', duration=5000){
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<button class="close" onclick="this.parentElement.remove()">&times;</button> ${message}`;
+    this.container.appendChild(t); this.toasts.add(t);
+    setTimeout(()=> t.classList.add('show'), 10);
+    if (duration>0){
+      setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>{ if(t.parentNode){ t.remove(); this.toasts.delete(t); } },300); }, duration);
+    }
+  }
+  error(m){this.show(m,'error',8000)} warning(m){this.show(m,'warning',6000)}
+  success(m){this.show(m,'success',4000)} info(m){this.show(m,'info',5000)}
+}
+const toast = new ToastManager();
+const norm = s => (s ?? '').toString().trim();
+function toggle(el, on){ el.classList.toggle('active', on); }
+
+/* ---------- Map ---------- */
+const map = L.map('map', { zoomSnap:.25, zoomDelta:.25, wheelPxPerZoomLevel:40, preferCanvas:true });
+const baseLayers = {
+  osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxNativeZoom:19, maxZoom:22, attribution:'© OpenStreetMap' }),
+  sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom:19, maxZoom:22, attribution:'Tiles © Esri' })
+};
+let currentBase = baseLayers.osm.addTo(map);
+map.setView([43.3, 5.4], 11);
+$('#basemapSel').addEventListener('change', (e)=>{
+  map.removeLayer(currentBase);
+  currentBase = baseLayers[e.target.value];
+  currentBase.addTo(map);
+});
+
+/* ---------- Toolbar toggles ---------- */
+let focusMode = false, showAnoms = false;
+$('#focusBtn').addEventListener('click', ()=>{
+  focusMode = !focusMode;
+  safeDOM.toggle('#focusBtn','primary',focusMode);
+  $('.mapwrap').style.boxShadow = focusMode ? '0 0 0 3px var(--chip-active), var(--shadow)' : 'var(--shadow)';
+  map.closePopup();
+});
+$('#anomChk').addEventListener('change', (e)=>{
+  showAnoms = e.target.checked;
+  $('.mapwrap').style.boxShadow = showAnoms ? '0 0 0 2px var(--warn), var(--shadow)' : 'var(--shadow)';
+  if (typeof displayDataOnMap === 'function') displayDataOnMap();
+});
+$('#railToggle')?.addEventListener('click', ()=> $('#rail').classList.toggle('open'));
+$('#inspectToggle')?.addEventListener('click', ()=>{
+  const ins = $('#inspect');
+  ins.style.display = (ins.style.display==='none' || getComputedStyle(ins).display==='none') ? 'block' : 'none';
+});
+
+/* ---------- Chips interactions ---------- */
+const activeVoies = new Set();
+$('#chipsVoie').addEventListener('dblclick', ()=>{
+  activeVoies.clear(); $$('#chipsVoie .chip').forEach(c=>c.classList.remove('active')); applyFilters();
+});
+$$('#chipsVoie .chip').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    const v = c.dataset.voie;
+    if(activeVoies.has(v)) activeVoies.delete(v); else activeVoies.add(v);
+    c.classList.toggle('active'); applyFilters();
+  });
+});
+
+const activeLignes = new Set();
+$('#chipsLigne').addEventListener('dblclick', ()=>{
+  activeLignes.clear(); $$('#chipsLigne .chip').forEach(c=>c.classList.remove('active')); applyFilters();
+});
+$$('#chipsLigne .chip').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    const v = norm(c.textContent);
+    if(activeLignes.has(v)) activeLignes.delete(v); else activeLignes.add(v);
+    c.classList.toggle('active'); applyFilters();
+  });
+});
+
+/* === PK → Aller === */
+$('#pkGo').addEventListener('click', ()=>{
+  const pkInput = $('#pkInput'); const pkPrefix = $('#pkPrefix');
+  if (!pkInput || !pkInput.value || !DATA.length) { toast.info('Saisissez un PK et importez des données d\'abord.'); return; }
+  const target = parseFloat(pkInput.value);
+  if (isNaN(target)) { toast.warning('PK invalide.'); return; }
+  const targetRounded = Number(target.toFixed(1));
+  const chosenPref = (pkPrefix?.value || '').toString().trim().toUpperCase(); // '' | 'N' | 'S'
+  const filteredRows = (window.FILTERED_ROWS && window.FILTERED_ROWS.length) ? window.FILTERED_ROWS : DATA;
+
+  const totalExactAll = DATA.filter(row => {
+    const { prefix, num } = parsePKFromRow(row);
+    if (isNaN(num)) return false;
+    return Number(num.toFixed(1)) === targetRounded && (!chosenPref || prefix === chosenPref);
+  });
+
+  const matches = filteredRows.filter(row => {
+    const { prefix, num } = parsePKFromRow(row);
+    if (isNaN(num)) return false;
+    return Number(num.toFixed(1)) === targetRounded && (!chosenPref || prefix === chosenPref);
+  });
+
+  if (!matches.length) {
+    if (totalExactAll.length) toast.error(`Aucun point pour ${chosenPref || ''}${targetRounded.toFixed(1)} avec les filtres actuels.`);
+    else toast.warning(`Aucun point pour ${chosenPref || ''}${targetRounded.toFixed(1)}.`);
+    if (pkSearchLayer) { map.removeLayer(pkSearchLayer); pkSearchLayer = null; }
+    return;
+  }
+  if (pkSearchLayer) { map.removeLayer(pkSearchLayer); pkSearchLayer = null; }
+
+  const groups = new Map(); // key "lat,lng" -> {lat,lng,rows:[]}
+  for (const row of matches){
+    const lat = row.Latitude || row.lat || row.LAT || row.latitude || row['GPS-lat'];
+    const lng = row.Longitude || row.lon || row.LON || row.longitude || row['GPS-lon'];
+    const latNum = +lat, lngNum = +lng;
+    if (isNaN(latNum) || isNaN(lngNum) || latNum<-90 || latNum>90 || lngNum<-180 || lngNum>180) continue;
+    const key = `${latNum},${lngNum}`;
+    if (!groups.has(key)) groups.set(key, {lat:latNum, lng:lngNum, rows:[]});
+    groups.get(key).rows.push(row);
+  }
+  function nudge(lat, lng, i, total){
+    if (total <= 1) return [lat, lng];
+    const meters = 8;
+    const dLat = meters / 111320;
+    const dLng = meters / (111320 * Math.cos(lat * Math.PI/180));
+    const angle = (2*Math.PI * i) / total;
+    return [lat + dLat * Math.sin(angle), lng + dLng * Math.cos(angle)];
+  }
+
+  const markers = [];
+  for (const {lat, lng, rows} of groups.values()){
+    rows.forEach((row, idx)=>{
+      const [jl, jg] = nudge(lat, lng, idx, rows.length);
+      const { prefix, num, raw } = parsePKFromRow(row);
+      const labelPK = `${prefix || ''}${isNaN(num) ? (raw || '—') : Number(num.toFixed(1)).toFixed(1)}`;
+      const m = L.marker([jl,jg], { title:`PK ${labelPK}` });
+      m.bindPopup(
+        `<div style="min-width:220px">
+          <b>Repère PK</b> ${rows.length>1 ? `(${idx+1}/${rows.length} au même endroit)` : ''}<br>
+          <strong>PK:</strong> ${labelPK}<br>
+          <strong>Ligne:</strong> ${row.Ligne || '—'}<br>
+          <strong>Voie:</strong> ${row.Voie || '—'}<br>
+          <strong>Coord:</strong> ${jl}, ${jg}<br>
+          <span class="hint">Astuce : clic droit sur le repère pour le supprimer.</span>
+        </div>`
+      );
+      m.on('click', ()=>{ updateInspector(row); });
+      m.on('contextmenu', (ev)=>{
+        ev.originalEvent?.preventDefault?.();
+        if (pkSearchLayer){
+          pkSearchLayer.removeLayer(m);
+          const left = pkSearchLayer.getLayers().length;
+          if (!left){ map.removeLayer(pkSearchLayer); pkSearchLayer = null; }
+        }
+      });
+      markers.push(m);
+    });
+  }
+  if (!markers.length){ toast.warning(`Points trouvés pour ${chosenPref || ''}${targetRounded.toFixed(1)} mais sans coordonnées GPS`); return; }
+  pkSearchLayer = L.layerGroup(markers).addTo(map);
+  const fg = L.featureGroup(markers);
+  map.fitBounds(fg.getBounds().pad(0.15));
+  toast.success(`${markers.length} point(s) pour ${chosenPref || ''}${targetRounded.toFixed(1)}`);
+});
+$('#pkClear').addEventListener('click', ()=>{
+  $('#pkInput').value = '';
+  if (pkSearchLayer) { map.removeLayer(pkSearchLayer); pkSearchLayer = null; }
+  markerManager.clearAll();
+});
+
+/* ---------- Modales (Stations / Critères) ---------- */
+const criteriaModal = $('#criteriaModal');
+const stationsModal = $('#stationsModal');
+$('#stationsBtn').addEventListener('click', ()=> openModal(stationsModal));
+$('#stationsClose').addEventListener('click', ()=> closeModal(stationsModal));
+$('#criteriaBtn').addEventListener('click', ()=>{
+  enableCriteriaBuilder();
+  openModal(criteriaModal);
+  const hasOptions = $('#critFieldSel')?.querySelectorAll('option').length > 1;
+  if (!hasOptions) { toast.warning("Aucun champ détecté pour les critères. Vérifie les en-têtes du fichier."); }
+});
+$('#criteriaClose').addEventListener('click', ()=> closeModal(criteriaModal));
+
+const stationsTbody = $('#stationsModal tbody');
+if (stationsTbody){
+  stationsTbody.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.pill-line'); if(!btn) return;
+    const station = btn.dataset.station; const ligne = btn.dataset.ligne;
+    flyToStation(station, ligne); if (stationsModal) closeModal(stationsModal);
+  });
+}
+
+function openModal(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); }
+function closeModal(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
+[stationsModal, criteriaModal].filter(Boolean).forEach(m=>{
+  m.addEventListener('click', (e)=>{ if(e.target===m) closeModal(m); });
+});
+
+/* ---------- Raccourcis ---------- */
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Escape'){ [stationsModal, criteriaModal].forEach(m=> m?.classList.contains('open') && closeModal(m)); }
+  if(e.key.toLowerCase()==='f'){ $('#focusBtn').click(); e.preventDefault(); }
+  if(e.key.toLowerCase()==='a'){ $('#anomChk').click(); e.preventDefault(); }
+});
+
+/* ---------- Normalisation en-têtes ---------- */
+const COL_ALIASES = {
+  'Pente %' : 'Pente [pourcentage]',
+  'Pente [%]' : 'Pente [pourcentage]',
+  'Rayon de courbure_m' : 'Rayon de courbure [m]',
+  'Rayon de courbure [m]' : 'Rayon de courbure [m]',
+  'Ecartement_mm' : 'Ecartement (GL) [mm]',
+  'Écartement_mm' : 'Ecartement (GL) [mm]',
+  'Devers_mm' : 'Dévers [mm]',
+  'Dévers_mm' : 'Dévers [mm]',
+  'Vitesse-GL_km/h' : 'Vitesse (GL) [km/h]',
+  'Type de rail/info' : 'Type de rail / info',
+  'Type de rail /info' : 'Type de rail / info',
+  'Type de rail / info' : 'Type de rail / info',
+  'Date MES' : 'Date_MES'
+};
+function mapHeader(h){ const trim = (h||'').toString().trim(); return COL_ALIASES[trim] || trim; }
+
+/* ---------- Schéma de champs (filtres auto) ---------- */
+const FIELD_SCHEMA = [
+  { label:'Revêtement', key:'Revêtement', type:'text' },
+  { label:'Pose', key:'Pose', type:'text' },
+  { label:'Type', key:'Type', type:'text' },
+  { label:'Type de rail / info', key:'Type de rail / info', type:'text' },
+  { label:'Station', key:'Station', type:'text' },
+  { label:'ADV', key:'ADV', type:'text' },
+  { label:'BAE', key:'BAE', type:'text' },
+  { label:'OA', key:'OA', type:'text' },
+  { label:'SST', key:'SST', type:'text' },
+  { label:'LEP', key:'LEP', type:'text' },
+  { label:'Date_MES', key:'Date_MES', type:'text' },
+  { label:'Rayon de courbure [m]', key:'Rayon de courbure [m]', type:'number' },
+  { label:'Pente [%]', key:'Pente [pourcentage]', type:'number' },
+  { label:'Ecartement (GL) [mm]', key:'Ecartement (GL) [mm]', type:'number' },
+  { label:'Dévers [mm]', key:'Dévers [mm]', type:'number' },
+  { label:'Gauche_mm', key:'Gauche_mm', type:'number' },
+  { label:'Vitesse (GL) [km/h]', key:'Vitesse (GL) [km/h]', type:'number' },
+];
+
+/* ---------- État ---------- */
+let DATA = [];
+let ACTIVE = { voie:new Set(), ligne:new Set(), text:{}, num:{}, bucket:{} };
+let ANOM_LAST = { total:0, byType:{hard:0, z:0, combo:0} };
+
+/* ---------- Utils ---------- */
+function uniq(arr){ return [...new Set(arr.filter(v=>v!==null && v!==undefined && v!==''))]; }
+function isNumeric(x){ return x!==null && x!=='' && !isNaN(+x); }
+
+/* ---------- Anomalies ---------- */
+function computeScopeZScores(rows, fields){
+  const stats = {};
+  fields.forEach(f=>{
+    const vals = rows.map(r => r?.[f]).filter(isNumeric).map(Number);
+    const s = basicStats(vals);
+    if (s && s.sd > 0) stats[f] = s;
+  });
+  return stats;
+}
+const ANOM_CONF = {
+  hard: {
+    'Dévers [mm]': v => isNumeric(v) && (+v > 10) ? `Dévers > 10 mm (${v})` : null,
+    'Ecartement (GL) [mm]': v => isNumeric(v) && Math.abs(+v - 1435) > 10 ? `Écartement hors ±10 mm (${v})` : null,
+    'Pente [pourcentage]': v => isNumeric(v) && (+v > 7) ? `Pente > 7% (${v}%)` : null,
+  },
+  combos: [
+    (r) => (isNumeric(r['Rayon de courbure [m]']) && +r['Rayon de courbure [m]'] < 100 && isNumeric(r['Dévers [mm]']) && +r['Dévers [mm]'] > 10) ? `Rayon < 100 m ET Dévers > 10 mm` : null,
+    (r) => (isNumeric(r['Vitesse (GL) [km/h]']) && +r['Vitesse (GL) [km/h]'] > 20 && String(r['Pose']||'').toLowerCase().includes('encastr')) ? `Pose encastrée & Vitesse > 20 km/h` : null,
+  ],
+  zscore: {
+    fields: [ 'Dévers [mm]','Ecartement (GL) [mm]','Pente [pourcentage]','Vitesse (GL) [km/h]','Rayon de courbure [m]','Gauche_mm' ],
+    sensitivity: 'Standard'
+  }
+};
+function zCutoff(){ return ANOM_CONF.zscore.sensitivity === 'Très strict' ? 2 : ANOM_CONF.zscore.sensitivity === 'Strict' ? 2.5 : 3; }
+function basicStats(nums){
+  const arr = nums.filter(v => isNumeric(v)).map(Number);
+  const n = arr.length; if (!n) return null;
+  const mean = arr.reduce((a,b)=>a+b,0)/n;
+  const variance = arr.reduce((a,b)=>a+(b-mean)*(b-mean),0)/n;
+  const sd = Math.sqrt(variance);
+  return { mean, sd, n };
+}
+function setAnomalySensitivity(level){
+  if (['Standard','Strict','Très strict'].includes(level)) {
+    ANOM_CONF.zscore.sensitivity = level; recomputeAnomalies();
+  }
+}
+function inRange(v, r){
+  if (v==null || isNaN(+v)) return false;
+  const x = +v; const geMin = r.includeMin ? x >= r.min : x > r.min; const leMax = r.includeMax ? x <= r.max : x < r.max;
+  return geMin && leMax;
+}
+function yearFromDateText(s){
+  if(!s) return null;
+  const d = new Date(s); if(!isNaN(d.getTime())) return d.getFullYear();
+  const m = String(s).match(/\b(19|20)\d{2}\b/); return m ? +m[0] : null;
+}
+function toOuiNon(v){
+  const s = String(v ?? '').trim().toLowerCase();
+  if (!s) return 'Non';
+  if (['1','true','vrai','oui','o','y','yes','x'].includes(s)) return 'Oui';
+  if (['0','false','faux','non','n','no'].includes(s)) return 'Non';
+  return 'Oui';
+}
+function parsePKFromRow(row) {
+  const raw = (row['PK-arrondi'] ?? row.PK ?? '').toString().trim();
+  const m = raw.match(/^([A-Za-z])?\s*([0-9]+(?:[.,][0-9]+)?)/);
+  let prefix = ''; let num = NaN;
+  if (m) { prefix = (m[1] || '').toUpperCase(); num = parseFloat(m[2].replace(',', '.')); }
+  if (!prefix) {
+    const pf = (row.Prefixe ?? row['Préfixe'] ?? row.Sens ?? '').toString().trim();
+    if (pf) prefix = pf.charAt(0).toUpperCase();
+  }
+  return { prefix, num, raw };
+}
+
+/* ---------- Buckets numériques ---------- */
+const BUCKET_RULES = {
+  'Rayon de courbure [m]': [
+    {label:'<100', min:-Infinity, max:100, includeMax:true},
+    {label:'100–250', min:100, max:250, includeMin:true, includeMax:true},
+    {label:'250–500', min:250, max:500, includeMin:true, includeMax:true},
+    {label:'>500', min:500, max:Infinity, includeMin:true}
+  ],
+  'Pente [pourcentage]': [
+    {label:'<1%', min:-Infinity, max:1, includeMax:false},
+    {label:'1–3%', min:1, max:3, includeMin:true, includeMax:true},
+    {label:'>3%', min:3, max:Infinity, includeMin:false}
+  ],
+  'Ecartement (GL) [mm]': [
+    {label:'<1435', min:-Infinity, max:1435, includeMax:false},
+    {label:'=1435', min:1435, max:1435, includeMin:true, includeMax:true},
+    {label:'>1435', min:1435, max:Infinity, includeMin:false}
+  ],
+  'Dévers [mm]': [
+    {label:'0–5', min:0, max:5, includeMin:true, includeMax:true},
+    {label:'5–10', min:5, max:10, includeMin:false, includeMax:true},
+    {label:'>10', min:10, max:Infinity, includeMin:false}
+  ],
+  'Vitesse (GL) [km/h]': [
+    {label:'<5', min:-Infinity, max:5, includeMax:false},
+    {label:'5–10', min:5, max:10, includeMin:true, includeMax:true},
+    {label:'10–20', min:10, max:20, includeMin:false, includeMax:true},
+    {label:'>20', min:20, max:Infinity, includeMin:false}
+  ],
+  'Gauche_mm': [
+    {label:'<-5', min:-Infinity, max:-5, includeMax:true},
+    {label:'-5–0', min:-5, max:0, includeMin:false, includeMax:true},
+    {label:'0–5', min:0, max:5, includeMin:true, includeMax:true},
+    {label:'>5', min:5, max:Infinity, includeMin:false}
+  ]
+};
+
+/* ---------- Chips dynamiques + Stations ---------- */
+function initializeChipsFromData(){
+  if (!DATA.length) return;
+
+  // Lignes
+  const lignesUniques = uniq(DATA.map(r => r.Ligne));
+  const chipsLigneContainer = $('#chipsLigne');
+  if (chipsLigneContainer && lignesUniques.length){
+    chipsLigneContainer.innerHTML = '';
+    lignesUniques.sort().forEach(ligne=>{
+      if(ligne){
+        const chip = document.createElement('div');
+        chip.className='chip'; chip.textContent=ligne;
+        chip.addEventListener('click', ()=>{
+          const v = norm(ligne);
+          if (activeLignes.has(v)) activeLignes.delete(v); else activeLignes.add(v);
+          chip.classList.toggle('active'); applyFilters();
+        });
+        chipsLigneContainer.appendChild(chip);
+      }
+    });
+  }
+
+  // Voies
+  const voiesUniquesBrutes = uniq(DATA.map(r => (r.Voie ?? '').toString().trim()));
+  const hasV1 = voiesUniquesBrutes.includes('V1');
+  const hasV2 = voiesUniquesBrutes.includes('V2');
+  const hasV12 = voiesUniquesBrutes.includes('V1/V2') || voiesUniquesBrutes.includes('V1V2');
+  const chipsVoie = $$('#chipsVoie .chip');
+  chipsVoie.forEach(chip=>{
+    const chipVoie = chip.dataset.voie; let visible = false;
+    if (chipVoie==='v1') visible = hasV1;
+    if (chipVoie==='v2') visible = hasV2;
+    if (chipVoie==='v12') visible = hasV12;
+    chip.style.display = visible ? 'flex' : 'none';
+    if (visible) chip.title = chipVoie === 'v12' ? 'Filtrer par voie mixte (V1/V2 ou V1V2)' : `Filtrer par voie ${chip.textContent}`;
+  });
+
+  // Stations modale
+  const stationsUniques = uniq(DATA.map(r => r.Station)).filter(Boolean);
+  updateStationsModal(stationsUniques);
+
+  // PK input range
+  const pks = DATA.map(r => {
+    const pk = r['PK-arrondi'] || r.PK;
+    return isNumeric(pk) ? +pk : null;
+  }).filter(v => v !== null);
+  if (pks.length){
+    const pkMin = Math.min(...pks), pkMax = Math.max(...pks);
+    const pkInput = $('#pkInput'); if (pkInput){ pkInput.placeholder = `${pkMin} - ${pkMax}`; pkInput.min=pkMin; pkInput.max=pkMax; }
+  }
+}
+
+/* ---------- Stations modal helpers ---------- */
+function updateStationsModal(stations){
+  const tbody = $('#stationsModal tbody'); if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!stations || !stations.length){
+    const tr = document.createElement('tr'); tr.innerHTML = `<td colspan="5" class="hint">—</td>`;
+    tbody.appendChild(tr);
+    const hint = $('#stationsModal .hint'); if (hint) hint.textContent = '(aucune station détectée)';
+    return;
+  }
+  const parsePK = (row) => {
+    const raw = (row['PK-arrondi'] ?? row.PK ?? '').toString().trim();
+    const m = raw.match(/^([A-Za-z])?\s*([0-9]+(?:[.,][0-9]+)?)/);
+    let prefix = ''; let num = NaN;
+    if (m) { prefix = (m[1] || '').toUpperCase(); num = parseFloat(m[2].replace(',', '.')); }
+    if (!prefix) {
+      const pf = (row.Prefixe ?? row['Préfixe'] ?? row.Sens ?? '').toString().trim();
+      if (pf) prefix = pf.charAt(0).toUpperCase();
+    }
+    return { prefix, num, raw };
+  };
+
+  stations.slice().sort((a,b)=> String(a).localeCompare(String(b),'fr')).forEach(station=>{
+    const stationData = DATA.filter(r => r.Station === station);
+    const entries = stationData.map(parsePK).filter(e => !isNaN(e.num));
+    let pkMinDisp='—', pkMaxDisp='—';
+    if (entries.length){
+      const minEntry = entries.reduce((a,b)=> (b.num < a.num ? b : a));
+      const maxEntry = entries.reduce((a,b)=> (b.num > a.num ? b : a));
+      pkMinDisp = `${minEntry.prefix || ''}${minEntry.num.toFixed(1)}`;
+      pkMaxDisp = `${maxEntry.prefix || ''}${maxEntry.num.toFixed(1)}`;
+    }
+    const lignesArr = [...new Set(stationData.map(r => r.Ligne))].filter(Boolean).sort();
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${station}</td>
+      <td>
+        ${lignesArr.map(l=> `<button class="btn ghost pill-line" data-station="${station}" data-ligne="${l}" style="padding:2px 8px;font-size:12px;line-height:1.2;margin:2px 4px 2px 0">${l}</button>`).join('')}
+      </td>
+      <td>${pkMinDisp}</td>
+      <td>${pkMaxDisp}</td>
+      <td>${stationData.length}</td>`;
+    tbody.appendChild(row);
+  });
+  const hint = $('#stationsModal .hint');
+  if (hint) hint.textContent = `${stations.length} station(s) détectée(s) dans les données.`;
+}
+
+let stationHighlightLayer = null;
+function flyToStation(stationName, ligne=null){
+  const rows = DATA.filter(r=>{
+    const okStation = (r.Station || '').toString().trim() === (stationName || '').toString().trim();
+    const okLigne = !ligne || (r.Ligne || '').toString().trim() === (ligne || '').toString().trim();
+    return okStation && okLigne;
+  });
+  const pts = rows.map(r=>{
+    const lat = r.Latitude || r.lat || r.LAT || r.latitude || r['GPS-lat'];
+    const lng = r.Longitude || r.lon || r.LON || r.longitude || r['GPS-lon'];
+    const latNum=+lat, lngNum=+lng;
+    if (!isNaN(latNum) && !isNaN(lngNum) && latNum>=-90 && latNum<=90 && lngNum>=-180 && lngNum<=180) return [latNum,lngNum,r];
+    return null;
+  }).filter(Boolean);
+  if (!pts.length){ toast.warning(`Pas de coordonnées pour "${stationName}"${ligne ? ` — ${ligne}` : ''}`); return; }
+
+  if (stationHighlightLayer){ map.removeLayer(stationHighlightLayer); stationHighlightLayer=null; }
+  const hlMarkers = pts.map(([lat,lng,row])=>{
+    const m = L.circleMarker([lat,lng], { radius:8, fillColor:'#6A4C93', color:'#fff', weight:2, opacity:1, fillOpacity:0.5 });
+    m.bindPopup(`<b>${stationName}</b>${ligne ? ` — ${ligne}` : ''}<br>PK: ${row['PK-arrondi'] ?? row.PK ?? '—'}`);
+    return m;
+  });
+  stationHighlightLayer = L.layerGroup(hlMarkers).addTo(map);
+  const fg = L.featureGroup(hlMarkers);
+  map.fitBounds(fg.getBounds().pad(0.2));
+  toast.success(`Station: ${stationName}${ligne ? ` — ${ligne}` : ''}`);
+}
+
+/* ---------- Filtres + anomalies + carte ---------- */
+const BUCKET_RULES_KEYS = BUCKET_RULES; // alias lisible
+
+function buildFieldControls(){
+  const wrap = document.getElementById('fieldsAuto'); if(!wrap){ console.warn('#fieldsAuto manquant'); return; }
+  wrap.parentElement.querySelectorAll('.field-block')?.forEach(n=>n.remove());
+
+  FIELD_SCHEMA.forEach(f=>{
+    if (f.label === 'Station') return;
+    const block = document.createElement('div'); block.className='group field-block';
+    const title = document.createElement('div'); title.className='glabel'; title.textContent=f.label; block.appendChild(title);
+
+    if (f.type === 'text'){
+      if (f.label === 'ADV'){
+        const allVals = uniq(DATA.map(r => r[f.key])).filter(Boolean);
+        const groupOf = v => { const m = String(v).match(/^(APVT\d+)/i); return m ? m[1].toUpperCase() : 'Autres'; };
+        const groups = new Map();
+        for (const v of allVals){ const g = groupOf(v); if(!groups.has(g)) groups.set(g, []); groups.get(g).push(v); }
+        const groupNames = [...groups.keys()].sort((a,b)=>{ const na = a.match(/\d+/)?.[0] ?? '99'; const nb = b.match(/\d+/)?.[0] ?? '99'; return +na - +nb || a.localeCompare(b); });
+        const sel = (ACTIVE.text[f.label] ||= new Set());
+        groupNames.forEach(gname=>{
+          const vals = groups.get(gname).slice().sort((a,b)=>a.localeCompare(b,'fr'));
+          const det = document.createElement('details'); det.className='grouped'; det.open = false;
+          const countSel = vals.filter(v => sel.has(v)).length;
+          det.innerHTML = `<summary><span>${gname}</span><span class="badge">${vals.length}</span>${countSel ? `<span class="badge" title="Sélectionnés">${countSel} sél.</span>` : ''}</summary>`;
+          const grid = document.createElement('div'); grid.className='chips grid';
+          vals.forEach(v=>{
+            const chip = document.createElement('div'); chip.className='chip adv' + (sel.has(v) ? ' active' : '');
+            chip.title = v; chip.textContent = v;
+            chip.addEventListener('click', ()=>{ sel.has(v) ? sel.delete(v) : sel.add(v); chip.classList.toggle('active'); applyFilters(); });
+            grid.appendChild(chip);
+          });
+          det.appendChild(grid); block.appendChild(det);
+        });
+      } else if (f.label==='LEP' || f.label==='BAE'){
+        const chips = document.createElement('div'); chips.className='chips';
+        ['Oui','Non'].forEach(val=>{
+          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=val;
+          chip.addEventListener('click', ()=>{
+            const set = (ACTIVE.text[f.label] ||= new Set());
+            set.has(val) ? set.delete(val) : set.add(val);
+            chip.classList.toggle('active'); applyFilters();
+          });
+          chips.appendChild(chip);
+        });
+        block.appendChild(chips);
+      } else {
+        const vals = uniq(DATA.map(r => r[f.key]));
+        const chips = document.createElement('div'); chips.className='chips';
+        vals.slice(0,50).forEach(v=>{
+          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=String(v);
+          chip.addEventListener('click', ()=>{
+            const set = (ACTIVE.text[f.label] ||= new Set());
+            set.has(v) ? set.delete(v) : set.add(v);
+            chip.classList.toggle('active'); applyFilters();
+          });
+          chips.appendChild(chip);
+        });
+        block.appendChild(chips);
+        if (vals.length>50){
+          const hint = document.createElement('div'); hint.className='hint'; hint.textContent = `${vals.length} modalités, 50 premières affichées`;
+          block.appendChild(hint);
+        }
+      }
+    } else if (f.label==='Date_MES'){
+      const years = uniq(DATA.map(r => yearFromDateText(r[f.key]))).filter(v=>v!=null).sort((a,b)=>a-b);
+      if (years.length){
+        const chips = document.createElement('div'); chips.className='chips';
+        years.forEach(y=>{
+          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=String(y);
+          chip.addEventListener('click', ()=>{
+            const set = (ACTIVE.text['__YEAR_'+f.label] ||= new Set());
+            set.has(y) ? set.delete(y) : set.add(y);
+            chip.classList.toggle('active'); applyFilters();
+          });
+          chips.appendChild(chip);
+        });
+        block.appendChild(chips);
+        const hint = document.createElement('div'); hint.className='hint'; hint.textContent = `Années détectées : ${years[0]} → ${years[years.length-1]}`;
+        block.appendChild(hint);
+      } else {
+        const hint = document.createElement('div'); hint.className='hint'; hint.textContent='(aucune année détectée)';
+        block.appendChild(hint);
+      }
+    } else if (f.type==='number'){
+      const rules = BUCKET_RULES_KEYS[f.key];
+      if (rules && rules.length){
+        const chips = document.createElement('div'); chips.className='chips';
+        rules.forEach(rule=>{
+          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=rule.label;
+          chip.addEventListener('click', ()=>{
+            const set = (ACTIVE.bucket[f.key] ||= new Set());
+            set.has(rule.label) ? set.delete(rule.label) : set.add(rule.label);
+            chip.classList.toggle('active'); applyFilters();
+          });
+          chips.appendChild(chip);
+        });
+        block.appendChild(chips);
+        const hint = document.createElement('div'); hint.className='hint'; block.appendChild(hint);
+      } else {
+        const hint = document.createElement('div'); hint.className='hint'; hint.textContent='(pas de classes préconfigurées)';
+        block.appendChild(hint);
+      }
+    }
+
+    wrap.insertAdjacentElement('afterend', block);
+  });
+}
+
+/* ---------- Criteria Builder ---------- */
+const CRIT_MAX = 10;
+let CUSTOM_CRITERIA = []; // {id, fieldKey, type, op, values|value}
+
+function enableCriteriaBuilder(){
+  const sel = $('#critFieldSel'); if(!sel) return;
+  sel.innerHTML = '<option disabled selected>— choisir un champ —</option>';
+  $('#critAdd').disabled = true;
+  if (!DATA.length) { console.warn('Critères: DATA vide.'); return; }
+  let added = 0;
+  FIELD_SCHEMA.forEach(f=>{
+    const present = DATA.some(r => Object.prototype.hasOwnProperty.call(r, f.key));
+    if (present){ const opt = document.createElement('option'); opt.value=f.key; opt.textContent = `${f.label}`; opt.dataset.type=f.type; sel.appendChild(opt); added++; }
+  });
+  sel.onchange = ()=>{ $('#critAdd').disabled = (sel.value==='' || sel.selectedIndex<=0); };
+  $('#critAdd').onclick = ()=>{
+    if (CUSTOM_CRITERIA.length >= CRIT_MAX){ toast.warning('Limite de 10 critères atteinte.'); return; }
+    const key = sel.value; const type = sel.options[sel.selectedIndex]?.dataset?.type || 'text';
+    addCriterionRow({ fieldKey:key, type });
+  };
+  $('#critClear').onclick = ()=>{ CUSTOM_CRITERIA = []; renderCriteriaList(); applyFilters(); };
+  $('#critApply').onclick = ()=>{ applyFilters(); toast.success('Critères appliqués'); };
+  renderCriteriaList();
+}
+
+function renderCriteriaList(){
+  const list = $('#criteriaList'); list.innerHTML='';
+  $('#criteriaCount').textContent = `${CUSTOM_CRITERIA.length} / ${CRIT_MAX}`;
+  CUSTOM_CRITERIA.forEach(c => list.appendChild(buildCritRowDOM(c)));
+  if (!CUSTOM_CRITERIA.length){
+    const hint = document.createElement('div'); hint.className='hint'; hint.textContent='Aucun critère. Ajoute-en avec le menu ci-dessus.';
+    list.appendChild(hint);
+  }
+}
+
+function addCriterionRow({fieldKey, type}){
+  const id = crypto.randomUUID?.() || String(Date.now() + Math.random());
+  const crit = { id, fieldKey, type };
+  if (type==='text'){ crit.values = new Set(); }
+  if (type==='number'){ crit.op = '='; crit.value = null; }
+  CUSTOM_CRITERIA.push(crit);
+  renderCriteriaList();
+}
+
+function buildCritRowDOM(crit){
+  const row = document.createElement('div'); row.className='crit-row'; row.dataset.id = crit.id;
+  const fld = FIELD_SCHEMA.find(f => f.key === crit.fieldKey);
+  const fieldLabel = fld?.label || crit.fieldKey;
+  const read = document.createElement('div'); read.className='badge-small'; read.textContent = fieldLabel;
+  row.appendChild(read);
+
+  if (crit.type === 'text'){
+    const box = document.createElement('div'); box.className='multibox';
+    const trigger = document.createElement('button'); trigger.className='btn';
+    const refreshTriggerText = ()=>{ const n = crit.values?.size || 0; trigger.textContent = n ? `${n} sélectionné(s)` : 'Choisir…'; };
+    refreshTriggerText();
+
+    const panel = document.createElement('div'); panel.className='multi-panel'; panel.style.display='none';
+    const counts = new Map();
+    DATA.forEach(r=>{ const v = r[crit.fieldKey]; if (v===null || v===undefined || v==='') return; counts.set(v, (counts.get(v)||0)+1); });
+    const options = [...counts.keys()].sort((a,b)=> String(a).localeCompare(String(b),'fr'));
+    options.forEach(v=>{
+      const line = document.createElement('div'); line.className='multi-item';
+      const chk = document.createElement('input'); chk.type='checkbox'; chk.checked = crit.values?.has(v);
+      const label = document.createElement('div'); label.textContent = String(v);
+      const badge = document.createElement('span'); badge.className='multi-badge'; badge.textContent = `(${counts.get(v)})`;
+      line.append(chk, label, badge);
+      line.onclick = (ev)=>{ if(ev.target.tagName!=='INPUT') chk.checked = !chk.checked; if (chk.checked) crit.values.add(v); else crit.values.delete(v); refreshTriggerText(); };
+      panel.appendChild(line);
+    });
+
+    trigger.onclick = ()=>{
+      const showing = panel.style.display === 'block'; panel.style.display = showing ? 'none' : 'block';
+      if (showing) return;
+      panel.style.top='auto'; panel.style.bottom='auto';
+      const rect = trigger.getBoundingClientRect(); const margin = 12; const desired = 360;
+      const spaceBelow = window.innerHeight - rect.bottom - margin; const spaceAbove = rect.top - margin;
+      const openUp = (spaceBelow < Math.min(desired, 220)) && (spaceAbove > spaceBelow);
+      const avail = Math.max(180, Math.min(desired, openUp ? spaceAbove : spaceBelow));
+      panel.style.maxHeight = `${avail}px`;
+      if (openUp) { panel.style.bottom='calc(100% + 6px)'; } else { panel.style.top='calc(100% + 6px)'; }
+    };
+    document.addEventListener('click', (e)=>{ if (!box.contains(e.target)) panel.style.display = 'none'; });
+
+    box.append(trigger, panel); row.appendChild(box);
+    row.appendChild(document.createElement('div')); // placeholder
+  } else {
+    const opSel = document.createElement('select'); opSel.className='select';
+    ['=','>','>=','<','<='].forEach(op=>{ const o=document.createElement('option'); o.value=op; o.textContent=op; if(op===crit.op) o.selected=true; opSel.appendChild(o); });
+    opSel.onchange = ()=> crit.op = opSel.value; row.appendChild(opSel);
+
+    const val = document.createElement('input'); val.type='number'; val.className='crit-input select';
+    if (crit.value != null) val.value = crit.value;
+    val.onchange = ()=>{
+      let target = parseFloat(val.value);
+      if (isNaN(target)) { crit.value = null; return; }
+      const nearest = nearestNumericValue(crit.fieldKey, target);
+      if (nearest == null){ toast.warning('Aucune valeur numérique trouvée dans les données pour ce champ.'); crit.value=null; val.value=''; return; }
+      if (nearest !== target){ toast.info(`Valeur ajustée → ${nearest} (plus proche existant)`); }
+      crit.value = nearest; val.value = nearest;
+    };
+    row.appendChild(val);
+  }
+
+  const del = document.createElement('button'); del.className='btn del'; del.textContent='Supprimer';
+  del.onclick = ()=>{ CUSTOM_CRITERIA = CUSTOM_CRITERIA.filter(x=>x.id!==crit.id); renderCriteriaList(); applyFilters(); };
+  row.appendChild(del);
+
+  return row;
+}
+
+function nearestNumericValue(fieldKey, target){
+  const vals = DATA.map(r => r?.[fieldKey]).filter(v => v!=='' && v!=null && !isNaN(+v)).map(Number);
+  if (!vals.length) return null;
+  let best = vals[0], bd = Math.abs(vals[0]-target);
+  for (let i=1;i<vals.length;i++){ const d = Math.abs(vals[i]-target); if (d<bd){ bd=d; best=vals[i]; } }
+  return best;
+}
+
+/* ---------- Recompute anomalies ---------- */
+function recomputeAnomalies(){
+  const rows = getWorkingRows();
+  rows.forEach(r => { r.__anoms = []; });
+  const zstats = computeScopeZScores(rows, ANOM_CONF.zscore.fields);
+  const zLim = zCutoff();
+
+  let cHard=0, cZ=0, cCombo=0;
+  for (const r of rows){
+    const found = [];
+    for (const [k, fn] of Object.entries(ANOM_CONF.hard)){
+      const m = fn(r[k]); if (m){ found.push({kind:'hard', msg:m}); cHard++; }
+    }
+    for (const rule of ANOM_CONF.combos){
+      const m = rule(r); if (m){ found.push({kind:'combo', msg:m}); cCombo++; }
+    }
+    for (const f of Object.keys(zstats)){
+      const v = r[f]; if (!isNumeric(v)) continue;
+      const { mean, sd } = zstats[f]; const z = (Number(v) - mean) / sd;
+      const cutoff = (f === 'Gauche_mm') ? 2.0 : zLim;
+      if (Math.abs(z) > cutoff){ found.push({kind:'z', msg:`${f} atypique (z=${z.toFixed(2)})`}); cZ++; }
+    }
+    r.__anoms = found;
+  }
+  ANOM_LAST = {
+    total: rows.reduce((a,r)=> a + (r.__anoms?.length ? 1 : 0), 0),
+    byType: { hard:cHard, z:cZ, combo:cCombo }
+  };
+  const lab = document.querySelector('label[for="anomChk"]') || $('#anomChk')?.closest('label');
+  if (lab){
+    const id='anomBadge'; let b=document.getElementById(id);
+    if (!b){ b=document.createElement('span'); b.id=id; b.style.cssText='margin-left:6px; font-size:12px; color:var(--warn);'; lab.appendChild(b); }
+    b.textContent = `(${ANOM_LAST.total})`;
+    toast.info(`Anomalies: ${ANOM_LAST.total} (règles: ${ANOM_LAST.byType.hard}, outliers: ${ANOM_LAST.byType.z}, combinées: ${ANOM_LAST.byType.combo})`);
+  }
+}
+
+function getWorkingRows(){ return (window.FILTERED_ROWS && window.FILTERED_ROWS.length) ? window.FILTERED_ROWS : DATA; }
+
+/* ---------- Import fichiers ---------- */
+(function enableFileImport(){
+  const inp = document.getElementById('file'); if(!inp) return;
+  inp.disabled = false;
+  inp.addEventListener('change', async (ev)=>{
+    const file = ev.target.files?.[0]; if(!file) return;
+    const name = file.name.toLowerCase();
+    try{
+      if (name.endsWith('.xlsx') || name.endsWith('.xls')){
+        if (!window.XLSX) throw new Error('Lib XLSX non chargée.');
+        const buf = await file.arrayBuffer();
+        const wb = XLSX.read(buf, { type:'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        let rows = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false });
+        rows = rows.map(row=>{
+          const obj = {}; for(const [k,v] of Object.entries(row)){ obj[mapHeader(k)] = (v==null ? '' : v); } return obj;
+        });
+        const NUM_KEYS = [ 'Rayon de courbure [m]','Pente [pourcentage]','Ecartement (GL) [mm]','Dévers [mm]','Gauche_mm','Vitesse (GL) [km/h]' ];
+        DATA = rows.map(r=>{
+          NUM_KEYS.forEach(k=>{
+            if(r.hasOwnProperty(k)){ const v = String(r[k] ?? '').replace(',', '.'); const n = parseFloat(v); if(!isNaN(n)) r[k] = n; }
+          });
+          if ('LEP' in r) r.LEP = toOuiNon(r.LEP);
+          if ('BAE' in r) r.BAE = toOuiNon(r.BAE);
+          if ('SST' in r) r.SST = toOuiNon(r.SST);
+          return r;
+        });
+      } else {
+        const text = await file.text();
+        const isTSV = name.endsWith('.tsv');
+        const res = Papa.parse(text, { header: true, dynamicTyping: false, skipEmptyLines: true, delimiter: isTSV ? '\t' : undefined });
+        if (!res.data || !res.data.length){
+          DATA = []; buildFieldControls(); initializeChipsFromData(); applyFilters(); enableCriteriaBuilder(); return;
+        }
+        const rows = res.data.map(row=>{
+          const obj = {}; for(const [k,v] of Object.entries(row)){ obj[mapHeader(k)] = (v==null ? '' : v); } return obj;
+        });
+        const NUM_KEYS = [ 'Rayon de courbure [m]','Pente [pourcentage]','Ecartement (GL) [mm]','Dévers [mm]','Gauche_mm','Vitesse (GL) [km/h]' ];
+        DATA = rows.map(r=>{
+          NUM_KEYS.forEach(k=>{
+            if(r.hasOwnProperty(k)){ const v = String(r[k] ?? '').replace(',', '.'); const n = parseFloat(v); if(!isNaN(n)) r[k] = n; }
+          });
+          return r;
+        });
+      }
+      console.log('Données chargées:', { rows: DATA.length, cols: Object.keys(DATA[0]||{}) });
+      buildFieldControls(); initializeChipsFromData(); applyFilters(); enableCriteriaBuilder();
+    }catch(err){
+      console.error('Erreur import:', err);
+      toast.error(`Import impossible : ${err?.message || err}`);
+    }finally{
+      inp.value = '';
+    }
+  });
+})();
+
+/* ---------- Marker manager ---------- */
+class MarkerManager{
+  constructor(map){ this.map=map; this.temporaryMarkers=[]; this.maxMarkers=5; }
+  addTemporaryMarker(latlng, popupContent){
+    if (this.temporaryMarkers.length >= this.maxMarkers){
+      const old = this.temporaryMarkers.shift(); this.map.removeLayer(old);
+    }
+    const marker = L.marker(latlng).addTo(this.map);
+    marker.bindPopup(popupContent).openPopup();
+    this.temporaryMarkers.push(marker);
+    return marker;
+  }
+  clearAll(){ this.temporaryMarkers.forEach(m => this.map.removeLayer(m)); this.temporaryMarkers = []; }
+}
+const markerManager = new MarkerManager(map);
+function placeRepereAt(latlng, rowData){
+  const popupContent = `<div style="min-width:220px">
+    <b>Repère</b> (sur point existant)<br>
+    <strong>Ligne:</strong> ${rowData?.Ligne || '—'}<br>
+    <strong>Voie:</strong> ${rowData?.Voie || '—'}<br>
+    <strong>Station:</strong> ${rowData?.Station || '—'}<br>
+    <strong>PK:</strong> ${rowData?.['PK-arrondi'] ?? rowData?.PK ?? '—'}<br>
+    <strong>Coord:</strong> ${latlng.lat}, ${latlng.lng}<br>
+    <button onclick="markerManager.clearAll()">Nettoyer tous</button>
+  </div>`;
+  markerManager.addTemporaryMarker(latlng, popupContent);
+}
+window.markerManager = markerManager;
+map.on('contextmenu', (e)=>{ e.originalEvent?.preventDefault?.(); });
+
+/* ---------- Carte: affichage des points ---------- */
+let dataLayer = null;
+let pkSearchLayer = null;
+
+function buildDataPopupContent(row, latNum, lngNum){
+  const pkSource = row['PK-Source'] ?? row['PK-source'] ?? '—';
+  const pk = row['PK'] ?? row['PK-arrondi'] ?? '—';
+  if (focusMode){
+    return `<div style="min-width:200px"><strong>PK-Source:</strong> ${pkSource}<br><strong>Coord:</strong> ${latNum}, ${lngNum}</div>`;
+  }
+  return `<div style="min-width:200px">
+    <strong>Point RTM</strong><br>
+    <strong>PK-Source:</strong> ${pkSource}<br>
+    <strong>Ligne:</strong> ${row.Ligne || '—'}<br>
+    <strong>Voie:</strong> ${row.Voie || '—'}<br>
+    <strong>PK:</strong> ${pk}<br>
+    <strong>Coordonnées:</strong> ${latNum}, ${lngNum}
+  </div>`;
+}
+
+function displayDataOnMap(){
+  if (dataLayer) { map.removeLayer(dataLayer); }
+  const filteredData = window.FILTERED_ROWS || DATA;
+  if (!filteredData.length){ console.log('Aucune donnée à afficher'); return; }
+  const hasCoords = filteredData.some(row => (row.Latitude || row.lat || row.LAT || row['GPS-lat']) && (row.Longitude || row.lon || row.LON || row['GPS-lon']));
+  if (!hasCoords){ toast.warning('Données importées mais aucune coordonnée (Latitude/Longitude) détectée dans le fichier'); return; }
+
+  const markers = [];
+  filteredData.forEach(row=>{
+    const lat = row.Latitude || row.lat || row.LAT || row.latitude || row['GPS-lat'];
+    const lng = row.Longitude || row.lon || row.LON || row.longitude || row['GPS-lon'];
+    if (lat && lng && !isNaN(+lat) && !isNaN(+lng)){
+      const latNum=+lat, lngNum=+lng;
+      if (latNum>=-90 && latNum<=90 && lngNum>=-180 && lngNum<=180){
+        let color = '#6B7280';
+        const voie = (row.Voie || '').toString().trim();
+        if (voie==='V1') color = '#1E40AF';
+        else if (voie==='V2') color = '#059669';
+        else if (voie==='V1/V2' || voie==='V1V2') color = '#EA580C';
+        const hasAnom = Array.isArray(row.__anoms) && row.__anoms.length > 0;
+        const outlineOn = showAnoms && hasAnom;
+        const marker = L.circleMarker([latNum, lngNum], {
+          radius: outlineOn ? 5 : 4,
+          fillColor: color,
+          color: outlineOn ? '#f59e0b' : '#fff',
+          weight: outlineOn ? 2 : 1, opacity:1, fillOpacity: outlineOn ? 0.7 : 0.6
+        });
+        const reasons = (row.__anoms||[]).map(a => `• ${a.msg}`).join('<br>');
+        const popupContent = `<div style="min-width:220px">
+          <strong>Point</strong>${hasAnom ? ' — <span style="color:#f59e0b">Anomalie</span>' : ''}<br>
+          <strong>Ligne:</strong> ${row.Ligne || '—'}<br>
+          <strong>Voie:</strong> ${row.Voie || '—'}<br>
+          <strong>PK:</strong> ${row['PK-arrondi'] || '—'}<br>
+          <strong>Coord:</strong> ${latNum}, ${lngNum}
+          ${hasAnom ? `<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1)">
+            <div style="font-weight:600;margin-bottom:4px">Pourquoi ?</div>
+            <div style="font-size:12px;line-height:1.35">${reasons}</div>
+          </div>` : ''}
+        </div>`;
+        marker.bindPopup(popupContent);
+        marker.on('click', ()=>{
+          updateInspector(row);
+          const html = buildDataPopupContent(row, latNum, lngNum);
+          marker.bindPopup(html).openPopup();
+        });
+        marker.on('contextmenu', (ev)=>{ ev.originalEvent?.preventDefault?.(); placeRepereAt(ev.latlng, row); });
+        markers.push(marker);
+      }
+    }
+  });
+  if (!markers.length){ toast.warning('Aucun point valide trouvé dans les données (coordonnées invalides)'); return; }
+  dataLayer = L.layerGroup(markers).addTo(map);
+  const group = new L.featureGroup(markers);
+  map.fitBounds(group.getBounds().pad(0.1));
+  toast.success(`${markers.length} points affichés sur la carte`);
+}
+
+function updateInspector(row){
+  const get = (o,k,alt='—')=>{ const v=o?.[k]; return (v===null||v===undefined||v==='') ? alt : v; };
+  const set = (id,val)=>{ const el=document.getElementById(id); if(el) el.textContent = (val===undefined||val===null||val==='') ? '—' : val; };
+  const coord = (()=>{
+    const lat = row.Latitude || row.lat || row.LAT || row.latitude || row['GPS-lat'];
+    const lng = row.Longitude || row.lon || row.LON || row.longitude || row['GPS-lon'];
+    if (isNaN(+lat) || isNaN(+lng)) return '—';
+    return `${(+lat)}, ${(+lng)}`;
+  })();
+
+  set('ins_pk_source', get(row,'PK-Source') || get(row,'PK-source'));
+  set('ins_pk_arrondi', get(row,'PK-arrondi') || get(row,'PK'));
+  set('ins_gps', coord);
+
+  set('ins_ligne', get(row,'Ligne'));
+  set('ins_voie', get(row,'Voie'));
+  set('ins_station', get(row,'Station'));
+
+  set('ins_rayon', get(row,'Rayon de courbure [m]'));
+  set('ins_pente', get(row,'Pente [pourcentage]'));
+  set('ins_gauche', get(row,'Gauche_mm'));
+
+  set('ins_ecart', get(row,'Ecartement (GL) [mm]'));
+  set('ins_devers', get(row,'Dévers [mm]'));
+  set('ins_type_rail', get(row,'Type de rail / info'));
+  set('ins_pose', get(row,'Pose'));
+  set('ins_revet', get(row,'Revêtement'));
+  set('ins_assain', get(row,'Assainissement'));
+  set('ins_lep', get(row,'LEP'));
+  set('ins_bae', get(row,'BAE'));
+
+  set('ins_vitesse', get(row,'Vitesse (GL) [km/h]'));
+  set('ins_mes', get(row,'Date_MES'));
+
+  set('ins_station_bis', get(row,'Station'));
+  set('ins_adv', get(row,'ADV'));
+  set('ins_oa', get(row,'OA'));
+  set('ins_sst', get(row,'SST'));
+
+  const box = document.getElementById('ins_anoms');
+  if (box){
+    if (Array.isArray(row.__anoms) && row.__anoms.length){
+      box.innerHTML = row.__anoms.map(a=>`<div class="rowitem" style="color:var(--warn)">• ${a.msg}</div>`).join('');
+    } else {
+      box.innerHTML = `<div class="rowitem hint">Aucune anomalie</div>`;
+    }
+  }
+}
+
+/* ---------- Apply Filters ---------- */
+function applyFilters(){
+  const norm = s => (s ?? '').toString().trim();
+  let rows = DATA;
+
+  if (activeLignes.size){
+    const lignes = [...activeLignes].map(norm);
+    rows = rows.filter(r => lignes.includes(norm(r['Ligne'])));
+  }
+  if (activeVoies.size){
+    const voieMap = { v1:['V1'], v2:['V2'], v12:['V1/V2','V1V2'] };
+    const ciblesVoies = [...activeVoies].flatMap(k => voieMap[k] || []);
+    rows = rows.filter(r => ciblesVoies.includes(norm(r['Voie'])));
+  }
+
+  for (const [label, set] of Object.entries(ACTIVE.text)){
+    if (!set || !set.size) continue;
+    if (label.startsWith('__YEAR_')){
+      const origLabel = label.replace('__YEAR_', '');
+      const key = FIELD_SCHEMA.find(x=>x.label===origLabel)?.key; if (!key) continue;
+      rows = rows.filter(r => set.has(yearFromDateText(r[key])));
+    } else if (label === 'LEP' || label === 'BAE'){
+      rows = rows.filter(r => set.has(toOuiNon(r[label])));
+    } else {
+      const key = FIELD_SCHEMA.find(x => x.label === label)?.key; if (!key) continue;
+      rows = rows.filter(r => set.has(String(r[key])));
+    }
+  }
+
+  for (const [fieldKey, set] of Object.entries(ACTIVE.bucket)){
+    if (!set || !set.size) continue;
+    const rules = BUCKET_RULES[fieldKey] || [];
+    const key = fieldKey;
+    rows = rows.filter(r=>{
+      const v = r[key]; if (!isNumeric(v)) return false;
+      return rules.some(rule => set.has(rule.label) && inRange(v, rule));
+    });
+  }
+
+  if (CUSTOM_CRITERIA.length){
+    rows = rows.filter(r=>{
+      for (const c of CUSTOM_CRITERIA){
+        if (c.type === 'text'){
+          if (c.values && c.values.size){
+            if (!c.values.has(String(r[c.fieldKey]))) return false;
+          }
+        } else if (c.type === 'number'){
+          const v = r[c.fieldKey]; if (v==null || v==='' || isNaN(+v)) return false;
+          const x = +v, t = +c.value; if (c.value==null || isNaN(t)) return false;
+          if (c.op==='=' && !(x===t)) return false;
+          if (c.op==='>' && !(x>t)) return false;
+          if (c.op==='>=' && !(x>=t)) return false;
+          if (c.op==='<' && !(x<t)) return false;
+          if (c.op==='<=' && !(x<=t)) return false;
+        }
+      }
+      return true;
+    });
+  }
+
+  const counter = document.getElementById('counter');
+  if (counter) counter.textContent = `${rows.length} point(s) visible(s)`;
+
+  window.FILTERED_ROWS = rows;
+  recomputeAnomalies();
+  if (typeof displayDataOnMap === 'function') displayDataOnMap();
+}
+
+/* ---------- Init ---------- */
+function updateCounter(){ safeDOM.setText('#counter', '0 point visible (maquette)'); }
+updateCounter();
+</script>
+</body>
+</html>
