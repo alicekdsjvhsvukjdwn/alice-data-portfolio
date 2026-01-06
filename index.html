@@ -26,7 +26,7 @@
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    html, body { overflow-x: hidden; }
+    body { overflow-x: hidden; }
     body {
       margin: 0; background: linear-gradient(180deg, #0c0e13 0%, #0f1115 30%, #0f1115 100%);
       color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -69,7 +69,7 @@
     section .subtitle { color: var(--muted); margin: -6px 0 18px; }
 
     .grid { display: grid; gap: 16px; }
-    @media (min-width: 800px{
+    @media (min-width: 800px) {
       .grid.cols-2 { grid-template-columns: 1fr 1fr; }
       .grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
     }
