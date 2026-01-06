@@ -10,6 +10,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
+
   <style>
     :root {
       --bg: #0f1115;        /* fond */
@@ -25,6 +26,7 @@
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    html, body { overflow-x: hidden; }
     body {
       margin: 0; background: linear-gradient(180deg, #0c0e13 0%, #0f1115 30%, #0f1115 100%);
       color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -67,7 +69,7 @@
     section .subtitle { color: var(--muted); margin: -6px 0 18px; }
 
     .grid { display: grid; gap: 16px; }
-    @media (min-width: 800px) {
+    @media (min-width: 800px{
       .grid.cols-2 { grid-template-columns: 1fr 1fr; }
       .grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
     }
@@ -92,7 +94,29 @@
     .mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-20{margin-top:20px}.mt-24{margin-top:24px}
     .mb-0{margin-bottom:0}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}
     .center { display: grid; place-items: center; }
+
+    /* Case study helpers */
+    .project img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0f1320;
+    }
+
+    .case-title { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; }
+    .case-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+
+    hr.sep {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+      opacity: 0.8;
+    }
+
   </style>
+
 </head>
 <body>
   <header class="site">
@@ -191,24 +215,65 @@
         <h2>💼 Projets sélectionnés</h2>
         <p class="subtitle">3 études de cas : comment je transforme des données en KPI, dashboards et décisions.</p>
 
-        <!-- RTM Project -->
         <article class="project">
-          <h3>🚋 Projet RTM – Digitalisation du réseau Tram</h3>
-          <div class="meta">Stage – Régie des Transports Métropolitains, Marseille (2025)</div>
-          <p><strong>Contexte.</strong> Numérisation et harmonisation des données tramway (lignes T1 à T3) pour optimiser la maintenance du réseau.</p>
-          <p><strong>Objectifs.</strong> Fusion multi-sources (Excel/GPS), création d’un référentiel PK unique (PK-Source), carte interactive Leaflet et tableau de bord Power BI.</p>
-          <p><strong>Rôle & réalisations.</strong> Scripts Python (pandas, geopandas, openpyxl), nettoyage et contrôle qualité, prototype Leaflet, coordination avec les services techniques (génie civil, maintenance, data).</p>
-          <p><strong>Compétences.</strong> Analyse de données, gestion de projet, communication interservices, ergonomie cognitive.</p>
+        <div class="case-title">
+          <h3 class="mb-0">🚋 Projet RTM – Digitalisation du réseau Tram</h3>
+          <span class="badge">Python</span>
+          <span class="badge">Power BI</span>
+          <span class="badge">Geo / PK</span>
+        </div>
+        <div class="meta">Stage – RTM, Marseille (2025)</div>
 
-          <div class="grid cols-2 mt-16">
-            <div class="figure">Illustration / capture (carte Leaflet)</div>
-            <div class="figure">Illustration / capture (Power BI)</div>
+        <div class="grid cols-2 mt-12">
+          <div>
+            <p class="mb-8"><strong>Problème.</strong> Données tram multi-sources (Excel/GPS) hétérogènes → difficile à exploiter pour piloter la maintenance.</p>
+
+            <p class="mb-8"><strong>Approche.</strong></p>
+            <ul class="small mt-0">
+              <li>Consolider les sources + normaliser un référentiel (PK / voie / ligne)</li>
+              <li>Mettre des contrôles qualité (dédoublonnage, cohérence PK, complétude)</li>
+              <li>Rendre visible via carte (Leaflet) + dashboard (Power BI)</li>
+            </ul>
+
+            <p class="mb-0"><strong>Livrables.</strong> Pipeline Python + référentiel propre + carte interactive + dashboard.</p>
           </div>
 
-          <div class="mt-16 iframe-wrap">
-            <iframe src="RTM-map/index.html" title="Carte RTM interactive"></iframe>
+          <div>
+            <p class="mb-8"><strong>Impact.</strong> Données plus fiables + lecture plus simple pour les équipes (tech + pilotage).</p>
+
+            <p class="mb-8"><strong>Décisions facilitées.</strong></p>
+            <ul class="small mt-0">
+              <li>Identifier rapidement zones / points incohérents</li>
+              <li>Prioriser les vérifications et interventions terrain</li>
+              <li>Suivre l’état d’avancement (qualité, complétude)</li>
+            </ul>
+
+            <p class="mb-0"><strong>Stack.</strong> pandas / geopandas / openpyxl · Power BI · Leaflet · GitHub</p>
+
+            <div class="case-actions">
+              <a class="btn" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">📄 Rapport (PDF)</a>
+              <a class="btn ghost" href="#contact">Me contacter</a>
+            </div>
           </div>
-        </article>
+        </div>
+
+        <hr class="sep" />
+
+        <p class="mb-8"><strong>Décisions facilitées.</strong></p>
+        <ul class="small mt-0">
+          <li>Quel canal pousser selon la période (early vs late)</li>
+          <li>Quels tarifs / offres déclenchent le plus de conversion</li>
+          <li>Où concentrer la com (zones / segments)</li>
+        </ul>
+
+        <p class="small mb-8"><strong>Preuves.</strong> (à ajouter)</p>
+        <div class="grid cols-2 mt-12">
+          <img src="assets/billetterie_dashboard.png" alt="Capture dashboard billetterie">
+          <img src="assets/billetterie_insights.png" alt="Capture insights billetterie">
+        </div>
+
+      </article>
+
 
         <!-- Mini-projet Culture / Billetterie -->
         <article class="project mt-16">
