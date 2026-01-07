@@ -106,10 +106,23 @@
 
   /* Responsive */
   @media (max-width: 1200px){
-    .main{grid-template-columns: 300px 1fr; }
-    .inspect{display:none} /* side sheet masqué par défaut */
-    .btn.inspect-toggle{display:inline-flex}
+  .main{grid-template-columns: 300px 1fr;}
+
+  /* Inspecteur en side-sheet overlay */
+  .inspect{
+    display:none;
+    position:fixed;
+    top:90px;          /* ajuste selon ta toolbar */
+    right:10px;
+    bottom:10px;
+    width:min(420px, 92vw);
+    z-index:2500;
   }
+
+  body.inspect-open .inspect{display:flex;}
+  .btn.inspect-toggle{display:inline-flex}
+  }
+
   @media (max-width: 900px){
     .main{grid-template-columns: 1fr}
     .rail{position:fixed;left:10px;top:90px;bottom:10px;width:320px;max-width:86vw;transform:translateX(-120%);transition:transform .2s ease;z-index:2000}
@@ -481,15 +494,27 @@ $('#focusBtn').addEventListener('click', ()=>{
   $('.mapwrap').style.boxShadow = focusMode ? '0 0 0 3px var(--chip-active), var(--shadow)' : 'var(--shadow)';
   map.closePopup();
 });
+
 $('#anomChk').addEventListener('change', (e)=>{
   showAnoms = e.target.checked;
   $('.mapwrap').style.boxShadow = showAnoms ? '0 0 0 2px var(--warn), var(--shadow)' : 'var(--shadow)';
-  if (typeof displayDataOnMap === 'function') displayDataOnMap();
+  if (typeof displayDataOnMap === 'function') displayDataOnMap({ silent:true, fit:false });
 });
+
 $('#railToggle')?.addEventListener('click', ()=> $('#rail').classList.toggle('open'));
 $('#inspectToggle')?.addEventListener('click', ()=>{
-  const ins = $('#inspect');
-  ins.style.display = (ins.style.display==='none' || getComputedStyle(ins).display==='none') ? 'block' : 'none';
+  document.body.classList.toggle('inspect-open');
+  setTimeout(()=> map.invalidateSize(), 250);
+});
+
+
+window.addEventListener('load', ()=> setTimeout(()=> map.invalidateSize(), 200));
+window.addEventListener('resize', ()=>{
+  if (window.innerWidth > 1200) {
+    const ins = $('#inspect');
+    if (ins) ins.style.display = ''; // IMPORTANT : on enlève l’inline style
+  }
+  map.invalidateSize();
 });
 
 /* ---------- Chips interactions ---------- */
@@ -838,14 +863,19 @@ function initializeChipsFromData(){
   updateStationsModal(stationsUniques);
 
   // PK input range
-  const pks = DATA.map(r => {
-    const pk = r['PK-arrondi'] || r.PK;
-    return isNumeric(pk) ? +pk : null;
-  }).filter(v => v !== null);
+  const pks = DATA
+  .map(r => parsePKFromRow(r).num)
+  .filter(n => !isNaN(n));
+
   if (pks.length){
     const pkMin = Math.min(...pks), pkMax = Math.max(...pks);
-    const pkInput = $('#pkInput'); if (pkInput){ pkInput.placeholder = `${pkMin} - ${pkMax}`; pkInput.min=pkMin; pkInput.max=pkMax; }
-  }
+    const pkInput = $('#pkInput');
+    if (pkInput){
+      pkInput.placeholder = `${pkMin.toFixed(1)} - ${pkMax.toFixed(1)}`;
+      pkInput.min = pkMin;
+      pkInput.max = pkMax;
+    }
+  } 
 }
 
 /* ---------- Stations modal helpers ---------- */
@@ -928,108 +958,202 @@ function flyToStation(stationName, ligne=null){
 const BUCKET_RULES_KEYS = BUCKET_RULES; // alias lisible
 
 function buildFieldControls(){
-  const wrap = document.getElementById('fieldsAuto'); if(!wrap){ console.warn('#fieldsAuto manquant'); return; }
-  wrap.parentElement.querySelectorAll('.field-block')?.forEach(n=>n.remove());
+  const wrap = document.getElementById('fieldsAuto');
+  if(!wrap){ console.warn('#fieldsAuto manquant'); return; }
+
+  // Supprime les anciens blocs
+  wrap.parentElement.querySelectorAll('.field-block').forEach(n => n.remove());
 
   FIELD_SCHEMA.forEach(f=>{
     if (f.label === 'Station') return;
-    const block = document.createElement('div'); block.className='group field-block';
-    const title = document.createElement('div'); title.className='glabel'; title.textContent=f.label; block.appendChild(title);
 
-    if (f.type === 'text'){
-      if (f.label === 'ADV'){
-        const allVals = uniq(DATA.map(r => r[f.key])).filter(Boolean);
-        const groupOf = v => { const m = String(v).match(/^(APVT\d+)/i); return m ? m[1].toUpperCase() : 'Autres'; };
-        const groups = new Map();
-        for (const v of allVals){ const g = groupOf(v); if(!groups.has(g)) groups.set(g, []); groups.get(g).push(v); }
-        const groupNames = [...groups.keys()].sort((a,b)=>{ const na = a.match(/\d+/)?.[0] ?? '99'; const nb = b.match(/\d+/)?.[0] ?? '99'; return +na - +nb || a.localeCompare(b); });
-        const sel = (ACTIVE.text[f.label] ||= new Set());
-        groupNames.forEach(gname=>{
-          const vals = groups.get(gname).slice().sort((a,b)=>a.localeCompare(b,'fr'));
-          const det = document.createElement('details'); det.className='grouped'; det.open = false;
-          const countSel = vals.filter(v => sel.has(v)).length;
-          det.innerHTML = `<summary><span>${gname}</span><span class="badge">${vals.length}</span>${countSel ? `<span class="badge" title="Sélectionnés">${countSel} sél.</span>` : ''}</summary>`;
-          const grid = document.createElement('div'); grid.className='chips grid';
-          vals.forEach(v=>{
-            const chip = document.createElement('div'); chip.className='chip adv' + (sel.has(v) ? ' active' : '');
-            chip.title = v; chip.textContent = v;
-            chip.addEventListener('click', ()=>{ sel.has(v) ? sel.delete(v) : sel.add(v); chip.classList.toggle('active'); applyFilters(); });
-            grid.appendChild(chip);
-          });
-          det.appendChild(grid); block.appendChild(det);
-        });
-      } else if (f.label==='LEP' || f.label==='BAE'){
-        const chips = document.createElement('div'); chips.className='chips';
-        ['Oui','Non'].forEach(val=>{
-          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=val;
-          chip.addEventListener('click', ()=>{
-            const set = (ACTIVE.text[f.label] ||= new Set());
-            set.has(val) ? set.delete(val) : set.add(val);
-            chip.classList.toggle('active'); applyFilters();
-          });
-          chips.appendChild(chip);
-        });
-        block.appendChild(chips);
-      } else {
-        const vals = uniq(DATA.map(r => r[f.key]));
-        const chips = document.createElement('div'); chips.className='chips';
-        vals.slice(0,50).forEach(v=>{
-          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=String(v);
-          chip.addEventListener('click', ()=>{
-            const set = (ACTIVE.text[f.label] ||= new Set());
-            set.has(v) ? set.delete(v) : set.add(v);
-            chip.classList.toggle('active'); applyFilters();
-          });
-          chips.appendChild(chip);
-        });
-        block.appendChild(chips);
-        if (vals.length>50){
-          const hint = document.createElement('div'); hint.className='hint'; hint.textContent = `${vals.length} modalités, 50 premières affichées`;
-          block.appendChild(hint);
-        }
-      }
-    } else if (f.label==='Date_MES'){
-      const years = uniq(DATA.map(r => yearFromDateText(r[f.key]))).filter(v=>v!=null).sort((a,b)=>a-b);
+    const block = document.createElement('div');
+    block.className = 'group field-block';
+
+    const title = document.createElement('div');
+    title.className = 'glabel';
+    title.textContent = f.label;
+    block.appendChild(title);
+
+    // ✅ Date_MES (années)
+    if (f.label === 'Date_MES'){
+      const years = uniq(DATA.map(r => yearFromDateText(r[f.key])))
+        .filter(v => v != null)
+        .sort((a,b)=>a-b);
+
       if (years.length){
-        const chips = document.createElement('div'); chips.className='chips';
+        const chips = document.createElement('div');
+        chips.className = 'chips';
+
         years.forEach(y=>{
-          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=String(y);
+          const chip = document.createElement('div');
+          chip.className='chip';
+          chip.textContent=String(y);
           chip.addEventListener('click', ()=>{
             const set = (ACTIVE.text['__YEAR_'+f.label] ||= new Set());
             set.has(y) ? set.delete(y) : set.add(y);
-            chip.classList.toggle('active'); applyFilters();
+            chip.classList.toggle('active');
+            applyFilters();
           });
           chips.appendChild(chip);
         });
+
         block.appendChild(chips);
-        const hint = document.createElement('div'); hint.className='hint'; hint.textContent = `Années détectées : ${years[0]} → ${years[years.length-1]}`;
+
+        const hint = document.createElement('div');
+        hint.className='hint';
+        hint.textContent = `Années détectées : ${years[0]} → ${years[years.length-1]}`;
         block.appendChild(hint);
       } else {
-        const hint = document.createElement('div'); hint.className='hint'; hint.textContent='(aucune année détectée)';
+        const hint = document.createElement('div');
+        hint.className='hint';
+        hint.textContent='(aucune année détectée)';
         block.appendChild(hint);
       }
-    } else if (f.type==='number'){
+
+      wrap.parentElement.appendChild(block);
+      return;
+    }
+
+    // ✅ Text fields
+    if (f.type === 'text'){
+      if (f.label === 'ADV'){
+        const allVals = uniq(DATA.map(r => r[f.key])).filter(Boolean);
+        const groupOf = v => {
+          const m = String(v).match(/^(APVT\d+)/i);
+          return m ? m[1].toUpperCase() : 'Autres';
+        };
+
+        const groups = new Map();
+        for (const v of allVals){
+          const g = groupOf(v);
+          if(!groups.has(g)) groups.set(g, []);
+          groups.get(g).push(v);
+        }
+
+        const groupNames = [...groups.keys()].sort((a,b)=>{
+          const na = a.match(/\d+/)?.[0] ?? '99';
+          const nb = b.match(/\d+/)?.[0] ?? '99';
+          return +na - +nb || a.localeCompare(b);
+        });
+
+        const sel = (ACTIVE.text[f.label] ||= new Set());
+
+        groupNames.forEach(gname=>{
+          const vals = groups.get(gname).slice().sort((a,b)=>String(a).localeCompare(String(b),'fr'));
+
+          const det = document.createElement('details');
+          det.className='grouped';
+          det.open = false;
+
+          const countSel = vals.filter(v => sel.has(v)).length;
+          det.innerHTML = `<summary><span>${gname}</span><span class="badge">${vals.length}</span>${countSel ? `<span class="badge" title="Sélectionnés">${countSel} sél.</span>` : ''}</summary>`;
+
+          const grid = document.createElement('div');
+          grid.className='chips grid';
+
+          vals.forEach(v=>{
+            const chip = document.createElement('div');
+            chip.className='chip adv' + (sel.has(v) ? ' active' : '');
+            chip.title = v;
+            chip.textContent = v;
+            chip.addEventListener('click', ()=>{
+              sel.has(v) ? sel.delete(v) : sel.add(v);
+              chip.classList.toggle('active');
+              applyFilters();
+            });
+            grid.appendChild(chip);
+          });
+
+          det.appendChild(grid);
+          block.appendChild(det);
+        });
+
+      } else if (f.label==='LEP' || f.label==='BAE'){
+        const chips = document.createElement('div');
+        chips.className='chips';
+
+        ['Oui','Non'].forEach(val=>{
+          const chip = document.createElement('div');
+          chip.className='chip';
+          chip.textContent=val;
+          chip.addEventListener('click', ()=>{
+            const set = (ACTIVE.text[f.label] ||= new Set());
+            set.has(val) ? set.delete(val) : set.add(val);
+            chip.classList.toggle('active');
+            applyFilters();
+          });
+          chips.appendChild(chip);
+        });
+
+        block.appendChild(chips);
+
+      } else {
+        const vals = uniq(DATA.map(r => r[f.key])).filter(v=>v!==null && v!==undefined && v!=='');
+        const chips = document.createElement('div');
+        chips.className='chips';
+
+        vals.slice(0,50).forEach(v=>{
+          const chip = document.createElement('div');
+          chip.className='chip';
+          chip.textContent=String(v);
+          chip.addEventListener('click', ()=>{
+            const set = (ACTIVE.text[f.label] ||= new Set());
+            set.has(v) ? set.delete(v) : set.add(v);
+            chip.classList.toggle('active');
+            applyFilters();
+          });
+          chips.appendChild(chip);
+        });
+
+        block.appendChild(chips);
+
+        if (vals.length>50){
+          const hint = document.createElement('div');
+          hint.className='hint';
+          hint.textContent = `${vals.length} modalités, 50 premières affichées`;
+          block.appendChild(hint);
+        }
+      }
+
+      wrap.parentElement.appendChild(block);
+      return;
+    }
+
+    // ✅ Number fields → buckets
+    if (f.type === 'number'){
       const rules = BUCKET_RULES_KEYS[f.key];
       if (rules && rules.length){
-        const chips = document.createElement('div'); chips.className='chips';
+        const chips = document.createElement('div');
+        chips.className='chips';
+
         rules.forEach(rule=>{
-          const chip = document.createElement('div'); chip.className='chip'; chip.textContent=rule.label;
+          const chip = document.createElement('div');
+          chip.className='chip';
+          chip.textContent=rule.label;
           chip.addEventListener('click', ()=>{
             const set = (ACTIVE.bucket[f.key] ||= new Set());
             set.has(rule.label) ? set.delete(rule.label) : set.add(rule.label);
-            chip.classList.toggle('active'); applyFilters();
+            chip.classList.toggle('active');
+            applyFilters();
           });
           chips.appendChild(chip);
         });
+
         block.appendChild(chips);
-        const hint = document.createElement('div'); hint.className='hint'; block.appendChild(hint);
+        block.appendChild(document.createElement('div')).className='hint';
       } else {
-        const hint = document.createElement('div'); hint.className='hint'; hint.textContent='(pas de classes préconfigurées)';
+        const hint = document.createElement('div');
+        hint.className='hint';
+        hint.textContent='(pas de classes préconfigurées)';
         block.appendChild(hint);
       }
+
+      wrap.parentElement.appendChild(block);
+      return;
     }
 
-    wrap.insertAdjacentElement('afterend', block);
+    wrap.parentElement.appendChild(block);
   });
 }
 
@@ -1185,7 +1309,6 @@ function recomputeAnomalies(){
     const id='anomBadge'; let b=document.getElementById(id);
     if (!b){ b=document.createElement('span'); b.id=id; b.style.cssText='margin-left:6px; font-size:12px; color:var(--warn);'; lab.appendChild(b); }
     b.textContent = `(${ANOM_LAST.total})`;
-    toast.info(`Anomalies: ${ANOM_LAST.total} (règles: ${ANOM_LAST.byType.hard}, outliers: ${ANOM_LAST.byType.z}, combinées: ${ANOM_LAST.byType.combo})`);
   }
 }
 
@@ -1281,6 +1404,9 @@ map.on('contextmenu', (e)=>{ e.originalEvent?.preventDefault?.(); });
 let dataLayer = null;
 let pkSearchLayer = null;
 
+// empêche le recadrage à chaque filtre
+let HAS_FIT_ONCE = false;
+
 function buildDataPopupContent(row, latNum, lngNum){
   const pkSource = row['PK-Source'] ?? row['PK-source'] ?? '—';
   const pk = row['PK'] ?? row['PK-arrondi'] ?? '—';
@@ -1297,7 +1423,7 @@ function buildDataPopupContent(row, latNum, lngNum){
   </div>`;
 }
 
-function displayDataOnMap(){
+function displayDataOnMap({ silent=false, fit=!HAS_FIT_ONCE } = {}){
   if (dataLayer) { map.removeLayer(dataLayer); }
   const filteredData = window.FILTERED_ROWS || DATA;
   if (!filteredData.length){ console.log('Aucune donnée à afficher'); return; }
@@ -1347,11 +1473,19 @@ function displayDataOnMap(){
       }
     }
   });
+
   if (!markers.length){ toast.warning('Aucun point valide trouvé dans les données (coordonnées invalides)'); return; }
   dataLayer = L.layerGroup(markers).addTo(map);
-  const group = new L.featureGroup(markers);
-  map.fitBounds(group.getBounds().pad(0.1));
-  toast.success(`${markers.length} points affichés sur la carte`);
+
+ // recadre seulement si demandé (par défaut: une seule fois)
+  if (fit){
+    const group = new L.featureGroup(markers);
+    map.fitBounds(group.getBounds().pad(0.1));
+    HAS_FIT_ONCE = true;
+  }
+
+  // toast seulement si demandé
+  if (!silent) toast.success(`${markers.length} points affichés sur la carte`);
 }
 
 function updateInspector(row){
@@ -1467,9 +1601,16 @@ function applyFilters(){
   if (counter) counter.textContent = `${rows.length} point(s) visible(s)`;
 
   window.FILTERED_ROWS = rows;
+
+  // recalcul OK, mais évite les toasts dedans (voir étape 5)
   recomputeAnomalies();
-  if (typeof displayDataOnMap === 'function') displayDataOnMap();
+
+  // réaffiche sans recadrer + sans toast quand on filtre
+  if (typeof displayDataOnMap === 'function') {
+    displayDataOnMap({ silent:true, fit:false });
+  }
 }
+
 
 /* ---------- Init ---------- */
 function updateCounter(){ safeDOM.setText('#counter', '0 point visible (maquette)'); }
