@@ -2,516 +2,891 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portfolio : Alice Gay</title>
-  <meta name="description" content="Portfolio d'Alice Gay – sciences cognitives, data, culture & création. Projets RTM, data viz, musique, interfaces." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfolio – Alice Gay</title>
+  <meta name="description" content="Portfolio d'Alice Gay – data/BI pour la culture : KPI, dashboards, automatisation, cas d'usage billetterie & publics." />
   <meta property="og:title" content="Portfolio – Alice Gay" />
-  <meta property="og:description" content="Ponts entre sciences cognitives, culture et création. Projets data, interfaces, musique." />
+  <meta property="og:description" content="Data/BI pour la culture : KPI, dashboards, automatisation, billetterie & publics." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
 
   <style>
-    :root {
-      --bg: #0f1115;        /* fond */
-      --surface: #151922;   /* cartes */
-      --text: #e7ebf3;      /* texte principal */
-      --muted: #a6b0c2;     /* texte secondaire */
-      --primary: #8ec5ff;   /* accent */
-      --primary-2: #a3ffd6; /* accent bis */
-      --border: #23293a;
-      --maxw: 1080px;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      overflow-x: clip; /* ou hidden */
-      background: linear-gradient(180deg, #0c0e13 0%, #0f1115 30%, #0f1115 100%);
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      line-height: 1.6;
-    }
-    a { color: var(--primary); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    :root{
+      /* Palette “BI dashboard” (pro, lisible, pas cosplay gamer) */
+      --bg0:#070A12;
+      --bg1:#0A1020;
+      --panel:#0F1830;
+      --panel2:#0D152A;
+      --stroke:rgba(255,255,255,.08);
+      --stroke2:rgba(255,255,255,.12);
 
-    /* Layout */
-    .container { width: 100%; max-width: var(--maxw); padding: 0 20px; margin: 0 auto; overflow: clip; }
-    header.site {
-      position: sticky; top: 0; z-index: 40; backdrop-filter: blur(10px);
-      background: rgba(15,17,21,.7); border-bottom: 1px solid var(--border);
-    }
-    .nav { display: flex; align-items: center; gap: 16px; padding: 14px 0; }
-    .brand { font-weight: 700; letter-spacing: .2px; }
-    .spacer { flex: 1; }
-    .nav a { color: var(--muted); font-size: 15px; padding: 8px 10px; border-radius: 8px; }
-    .nav a.active, .nav a:focus-visible { color: var(--text); background: #1a1f2b; outline: none; }
+      --text:#EAF0FF;
+      --muted:#A9B4D6;
 
-    .hero { padding: 56px 0 24px; }
-    .card {
-      background: radial-gradient(1200px 300px at 0% -20%, rgba(142,197,255,.08), transparent 60%),
-                  radial-gradient(800px 200px at 110% -10%, rgba(163,255,214,.06), transparent 60%),
-                  var(--surface);
-      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: 28px; 
-    }
-    .kicker { color: var(--primary-2); font-weight: 600; letter-spacing: .4px; text-transform: uppercase; font-size: 12px; }
-    h1 { margin: 8px 0 6px; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; }
-    p.lead { color: var(--muted); font-size: 18px; margin: 12px 0 20px; }
+      /* Accents */
+      --cyan:#3EE6D6;     /* KPI / highlights */
+      --blue:#6AA8FF;     /* liens / titres */
+      --violet:#B18CFF;   /* second accent */
+      --amber:#FFC766;    /* accent “action” */
 
-    .links { display: flex; flex-wrap: wrap; gap: 10px; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); background: #141925; color: var(--text); font-weight: 600; }
-    .btn:hover { background: #192135; text-decoration: none; }
-    .btn.ghost { background: transparent; color: var(--primary); }
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 1160px;
 
-    section { padding: 28px 0 8px; }
-    section h2 { font-size: clamp(22px, 2.4vw, 28px); margin: 6px 0 16px; }
-    section .subtitle { color: var(--muted); margin: -6px 0 18px; }
-
-    .grid { display: grid; gap: 16px; }
-    @media (min-width: 800px) {
-      .grid.cols-2 { grid-template-columns: 1fr 1fr; }
-      .grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+      --gridGap: 14px;
     }
 
-    .project { padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: #121723; }
-    .project h3 { margin: 0 0 6px; font-size: 19px; }
-    .meta { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
-    .badge { display: inline-block; background: #1b2030; border: 1px solid var(--border); color: var(--muted); padding: 4px 8px; border-radius: 999px; font-size: 12px; margin-right: 6px; }
-    .figure { width: 100%; aspect-ratio: 16/9; background: #0f1320; border: 1px dashed #2a3349; border-radius: 12px; display: grid; place-items: center; color: #637399; font-size: 14px; }
-    .iframe-wrap { width: 100%; height: 560px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #0f1320; }
-    .iframe-wrap iframe { width: 100%; height: 100%; border: 0; }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(106,168,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 95% 10%, rgba(62,230,214,.14), transparent 55%),
+        radial-gradient(900px 600px at 60% 110%, rgba(177,140,255,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      line-height:1.45;
+      overflow-x:hidden;
+    }
 
-    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    th, td { padding: 12px 14px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: #121723; color: var(--muted); font-weight: 600; }
-    tr:last-child td { border-bottom: none; }
+    a{color:var(--blue);text-decoration:none}
+    a:hover{text-decoration:underline}
 
-    footer { color: var(--muted); padding: 36px 0 56px; text-align: center; }
-    .small { font-size: 13px; color: var(--muted); }
+    .container{
+      max-width:var(--max);
+      margin:0 auto;
+      padding: 0 18px;
+    }
 
-    /* Utilities */
-    .mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-20{margin-top:20px}.mt-24{margin-top:24px}
-    .mb-0{margin-bottom:0}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}
-    .center { display: grid; place-items: center; }
+    /* Top bar */
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(7,10,18,.65);
+      border-bottom: 1px solid var(--stroke);
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding: 12px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      box-shadow: 0 0 0 4px rgba(62,230,214,.12);
+    }
+    .spacer{flex:1}
+    nav{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end}
+    nav a{
+      color:var(--muted);
+      font-size:14px;
+      padding:8px 10px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+    }
+    nav a.active{
+      color:var(--text);
+      background: rgba(255,255,255,.05);
+      border-color: var(--stroke);
+    }
 
-    /* Case study helpers */
-    .project img {
-      width: 100%;
-      height: auto;
-      display: block;
+    /* Dashboard layout */
+    main{padding: 18px 0 60px}
+
+    .panel{
+      background:
+        radial-gradient(900px 220px at 0% -30%, rgba(62,230,214,.12), transparent 60%),
+        radial-gradient(700px 200px at 105% -10%, rgba(106,168,255,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* HERO */
+    .hero{
+      padding: 18px;
+    }
+    .heroGrid{
+      display:grid;
+      gap: var(--gridGap);
+      grid-template-columns: 1fr;
+    }
+    @media(min-width: 980px){
+      .heroGrid{ grid-template-columns: 1.25fr .75fr; }
+    }
+
+    .heroCard{
+      padding: 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: rgba(15,24,48,.55);
+    }
+
+    .kicker{
+      display:flex; align-items:center; gap:10px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing:.45px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .kicker span{
+      color: var(--muted);
+      font-weight:600;
+      text-transform:none;
+      letter-spacing:0;
+    }
+
+    h1{
+      margin: 10px 0 8px;
+      font-size: clamp(26px, 3.2vw, 40px);
+      line-height:1.05;
+    }
+    .grad{
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .lead{
+      color: var(--muted);
+      margin: 10px 0 14px;
+      font-size: 16px;
+    }
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+    .chip{
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
+    .chip strong{color:var(--text);font-weight:700}
+
+    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top: 14px}
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px;
       border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #0f1320;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .btn:hover{background: rgba(255,255,255,.07); text-decoration:none}
+    .btn.primary{
+      border-color: rgba(62,230,214,.35);
+      background: linear-gradient(180deg, rgba(62,230,214,.18), rgba(255,255,255,.04));
+    }
+    .btn.ghost{
+      background: transparent;
+      color: var(--blue);
     }
 
-    .case-title { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; }
-    .case-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
-
-    hr.sep {
-      border: 0;
-      border-top: 1px solid var(--border);
-      margin: 16px 0;
-      opacity: 0.8;
+    /* KPI Row */
+    .kpiRow{
+      display:grid;
+      gap: var(--gridGap);
+      grid-template-columns: 1fr;
+      margin-top: var(--gridGap);
+    }
+    @media(min-width: 760px){
+      .kpiRow{ grid-template-columns: repeat(4, 1fr); }
     }
 
+    .kpi{
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(15,24,48,.55);
+      position:relative;
+      overflow:hidden;
+      min-height: 92px;
+    }
+    .kpi:before{
+      content:"";
+      position:absolute; inset:-2px -2px auto -2px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet), var(--blue));
+      opacity:.75;
+    }
+    .kpiLabel{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .kpiValue{
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      display:flex; align-items:baseline; gap:8px;
+    }
+    .kpiValue small{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .kpiHint{
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Sections */
+    section{margin-top: 18px}
+    .sectionHeader{
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap: 12px;
+      padding: 10px 2px;
+    }
+    .sectionHeader h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .sectionHeader p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Grid panels */
+    .grid{
+      display:grid;
+      gap: var(--gridGap);
+      grid-template-columns: 1fr;
+    }
+    @media(min-width: 980px){
+      .grid.cols2{ grid-template-columns: 1fr 1fr; }
+      .grid.cols3{ grid-template-columns: 1fr 1fr 1fr; }
+      .grid.asym{ grid-template-columns: 1.15fr .85fr; }
+    }
+
+    .card{
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: rgba(15,24,48,.55);
+      padding: 16px;
+    }
+    .cardTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom: 6px;
+    }
+    .cardTitle h3{
+      margin:0;
+      font-size: 16px;
+      letter-spacing:.2px;
+    }
+    .meta{
+      color: var(--muted);
+      font-size: 12px;
+      margin: 6px 0 10px;
+    }
+    .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top: 8px}
+    .tag{
+      font-size: 12px;
+      color: var(--muted);
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+    }
+    .tag.hot{
+      border-color: rgba(62,230,214,.35);
+      color: rgba(62,230,214,.95);
+      background: rgba(62,230,214,.08);
+      font-weight: 800;
+    }
+
+    /* “Charts” placeholders (visuels pro, sans fake data) */
+    .chartBox{
+      border: 1px dashed rgba(255,255,255,.18);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(13,21,42,.55);
+      min-height: 230px;
+      position: relative;
+      overflow: hidden;
+    }
+    .chartTop{
+      display:flex; justify-content:space-between; gap:10px; align-items:baseline;
+      margin-bottom: 10px;
+    }
+    .chartTop strong{font-size: 13px}
+    .chartTop span{color: var(--muted); font-size: 12px}
+
+    .spark{
+      height: 150px;
+      width: 100%;
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(106,168,255,.14), transparent 55%),
+        radial-gradient(400px 160px at 70% 20%, rgba(62,230,214,.18), transparent 70%),
+        rgba(255,255,255,.02);
+      border: 1px solid var(--stroke);
+      position: relative;
+      overflow:hidden;
+    }
+    .spark svg{width:100%; height:100%; display:block; opacity:.95}
+    .chartHint{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Table-like list */
+    .list{
+      display:grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+    }
+    .row b{font-size: 13px}
+    .row span{color: var(--muted); font-size: 12px}
+    .pill{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .pill.good{border-color: rgba(62,230,214,.35); color: rgba(62,230,214,.95); background: rgba(62,230,214,.08)}
+    .pill.warn{border-color: rgba(255,199,102,.35); color: rgba(255,199,102,.95); background: rgba(255,199,102,.08)}
+
+    /* Footer */
+    footer{
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+      opacity:.9;
+    }
+
+    /* Small helpers */
+    .muted{color:var(--muted)}
+    .split{
+      display:flex; gap:12px; align-items:baseline; justify-content:space-between; flex-wrap:wrap;
+    }
+    .hr{
+      height:1px; background: var(--stroke);
+      margin: 12px 0;
+    }
+    .small{font-size: 12px; color: var(--muted)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
   </style>
-
 </head>
+
 <body>
-  <header class="site">
-    <div class="container nav">
-      <div class="brand">Alice Gay</div>
+  <header>
+    <div class="container topbar">
+      <div class="brand"><span class="dot"></span> Alice Gay</div>
       <div class="spacer"></div>
-      <nav class="links" aria-label="Navigation principale">
-        <a href="#intro" class="active">Intro</a>
-        <a href="#services">Ce que je fais</a>
+      <nav aria-label="Navigation">
+        <a href="#dashboard" class="active">Dashboard</a>
         <a href="#projets">Projets</a>
         <a href="#competences">Compétences</a>
         <a href="#apropos">À propos</a>
         <a href="#contact">Contact</a>
-        <a href="#bonus">Bonus</a>
       </nav>
-
     </div>
   </header>
 
-  <main>
-    <!-- Intro / Hero -->
-    <section id="intro" class="hero">
-      <div class="container">
+  <main class="container" id="dashboard">
+    <!-- HERO + SUMMARY -->
+    <div class="panel hero">
+      <div class="heroGrid">
+        <!-- Left: positioning -->
+        <div class="heroCard">
+          <div class="kicker">Portfolio — Data / BI pour la culture <span>• version “dashboard”</span></div>
+          <h1>
+            Data Analyst / BI — <span class="grad">Publics & Billetterie</span>
+          </h1>
+          <p class="lead">
+            Je transforme des données (billetterie / publics / usage) en <b>KPI</b>, <b>dashboards</b> et <b>recommandations actionnables</b> — lisibles par des non-tech, utiles pour décider.
+          </p>
+
+          <div class="chips">
+            <div class="chip"><strong>Focus</strong> : culture / événementiel</div>
+            <div class="chip"><strong>Livrables</strong> : Excel / dashboards / synthèse</div>
+            <div class="chip"><strong>Méthode</strong> : qualité data → insight → action</div>
+            <div class="chip"><strong>Base</strong> : Sciences cognitives (communication)</div>
+          </div>
+
+          <div class="actions">
+            <a class="btn primary" href="#projets">Voir les projets</a>
+            <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+            <a class="btn ghost" href="#contact">Me contacter</a>
+          </div>
+
+          <div class="actions" style="margin-top:10px">
+            <!-- Remplace les URLs -->
+            <a class="btn ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="btn ghost" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn ghost" href="https://soundcloud.com/" target="_blank" rel="noopener">SoundCloud</a>
+          </div>
+        </div>
+
+        <!-- Right: “status” box -->
+        <div class="heroCard">
+          <div class="split">
+            <div>
+              <div class="kicker">Résumé</div>
+              <div class="small">Ce bloc sert à donner un “scan rapide” comme un dashboard direction.</div>
+            </div>
+            <div class="pill good">Disponible</div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="list">
+            <div class="row">
+              <div>
+                <b>Positionnement</b><br/>
+                <span>Data/BI orientée pilotage : billetterie, publics, performance.</span>
+              </div>
+              <div class="pill">BI</div>
+            </div>
+
+            <div class="row">
+              <div>
+                <b>Ce que je livre</b><br/>
+                <span>Un dashboard + une note de synthèse + des actions “prêtes à tester”.</span>
+              </div>
+              <div class="pill">Ops</div>
+            </div>
+
+            <div class="row">
+              <div>
+                <b>Priorité</b><br/>
+                <span>Clarté, reproductibilité, qualité data (pas de KPI fantômes).</span>
+              </div>
+              <div class="pill warn">Qualité</div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="small">
+            <span class="mono">Dernière mise à jour :</span> <span id="lastUpdate"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <div class="kpiRow">
+        <!-- ⚠️ Mets tes chiffres quand tu veux. Là = placeholders. -->
+        <div class="kpi">
+          <div class="kpiLabel">Projets phares</div>
+          <div class="kpiValue">2 <small>(RTM + billetterie)</small></div>
+          <div class="kpiHint">Études de cas détaillées, orientées décision.</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpiLabel">Stack</div>
+          <div class="kpiValue">Excel <small>+ Python</small></div>
+          <div class="kpiHint">Dashboards + contrôles qualité + exports propres.</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpiLabel">Domaines</div>
+          <div class="kpiValue">Culture <small>& événementiel</small></div>
+          <div class="kpiHint">Billetterie, publics, reporting, insights.</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpiLabel">Style de travail</div>
+          <div class="kpiValue">Actionnable <small>(pas “joli mais vide”)</small></div>
+          <div class="kpiHint">Lecture direction + plan ops (quoi faire demain).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- “Dashboard visuals” (sans inventer de data) -->
+    <section>
+      <div class="sectionHeader">
+        <h2>Vue dashboard</h2>
+        <p>Une mise en scène “BI” pour présenter tes projets comme des produits.</p>
+      </div>
+
+      <div class="grid cols2">
+        <div class="card">
+          <div class="chartBox">
+            <div class="chartTop">
+              <strong>Performance (exemple visuel)</strong>
+              <span>placeholder (tu mettras une capture plus tard)</span>
+            </div>
+
+            <div class="spark" aria-hidden="true">
+              <!-- simple SVG sparkline décorative -->
+              <svg viewBox="0 0 800 220" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="rgba(106,168,255,0.95)"/>
+                    <stop offset="1" stop-color="rgba(62,230,214,0.95)"/>
+                  </linearGradient>
+                  <linearGradient id="fill1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="rgba(106,168,255,0.25)"/>
+                    <stop offset="1" stop-color="rgba(7,10,18,0)"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,190 L60,180 L120,165 L180,170 L240,145 L300,150 L360,120 L420,128 L480,98 L540,104 L600,70 L660,92 L720,60 L800,78 L800,220 L0,220 Z"
+                      fill="url(#fill1)"/>
+                <path d="M0,190 L60,180 L120,165 L180,170 L240,145 L300,150 L360,120 L420,128 L480,98 L540,104 L600,70 L660,92 L720,60 L800,78"
+                      fill="none" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" />
+              </svg>
+            </div>
+
+            <div class="chartHint">
+              Ici tu mettras plus tard une <b>capture</b> (Excel dashboard billetterie / RTM) ou une petite démo.
+            </div>
+          </div>
+        </div>
 
         <div class="card">
-        <div class="kicker">Portfolio – Data / BI pour la culture</div>
+          <div class="chartBox">
+            <div class="chartTop">
+              <strong>Lecture “direction” (exemple)</strong>
+              <span>3 points clairs</span>
+            </div>
 
-        <h1>
-          Data Analyst / BI — <span style="color:var(--primary)">Publics</span> & 
-          <span style="color:var(--primary-2)">Billetterie</span>
-        </h1>
+            <div class="list">
+              <div class="row">
+                <div>
+                  <b>1) Ce qui marche</b><br/>
+                  <span>un signal net + pourquoi (canal, timing, offre, segment).</span>
+                </div>
+                <div class="pill good">+ Insight</div>
+              </div>
 
-        <p class="lead">
-          🎓 <strong>Alice Gay</strong> — Master 2 Sciences Cognitives (Langage, Communication &amp; Cerveau). Basée à Marseille.
-          Je transforme des données (billetterie/publics/usage) en <strong>KPI</strong>, <strong>dashboards</strong> et <strong>recommandations</strong> actionnables pour lieux culturels et événements.
-        </p>
+              <div class="row">
+                <div>
+                  <b>2) Ce qui coince</b><br/>
+                  <span>une anomalie + un diagnostic (qualité data / process / offre).</span>
+                </div>
+                <div class="pill warn">⚠️ Alerte</div>
+              </div>
 
-        <p class="small mt-12">
-          <strong>Je cherche :</strong> CDD / missions (Marseille + hybride/remote) — Data publics / billetterie / CRM / reporting.
-        </p>
+              <div class="row">
+                <div>
+                  <b>3) Action proposée</b><br/>
+                  <span>un test concret à lancer (com, pricing, canal, timing).</span>
+                </div>
+                <div class="pill">→ Next</div>
+              </div>
+            </div>
 
-        <div class="links mt-16">
-          <a class="btn" href="#projets">Voir les projets</a>
-          <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV PDF</a>
-          <a class="btn ghost" href="#contact">Me contacter</a>
-        </div>
-
-        <div class="links mt-12">
-          <!-- Remplace ces URLs par les tiennes -->
-          <a class="btn ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="btn ghost" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-          <!-- SoundCloud en bonus : garde-le si tu veux, mais il n'est pas prioritaire ici -->
-          <a class="btn ghost" href="https://soundcloud.com/" target="_blank" rel="noopener">SoundCloud</a>
-        </div>
-      </div>
-
-      </div>
-    </section>
-
-    <!-- Ce que je fais -->
-    <section id="services">
-      <div class="container">
-        <h2>✅ Ce que je peux faire pour vous</h2>
-        <p class="subtitle">Pilotage, reporting, décisions — orienté culture & événementiel.</p>
-
-        <div class="grid cols-3">
-          <div class="project">
-            <h3>📈 Publics & billetterie</h3>
-            <div class="meta">KPI • segmentation • insights</div>
-            <p>Je mets en place des indicateurs utiles (ventes, remplissage, canaux, profils) et j’en tire des recommandations concrètes.</p>
-          </div>
-
-          <div class="project">
-            <h3>📊 Dashboards & reporting</h3>
-            <div class="meta">Power BI • Excel • synthèse</div>
-            <p>Je construis des dashboards clairs (lisibles par des non-tech) et j’accompagne la lecture métier : ce qui marche, ce qui coince, quoi tester.</p>
-          </div>
-
-          <div class="project">
-            <h3>🧼 Qualité data & automatisation</h3>
-            <div class="meta">Python • contrôles • process</div>
-            <p>Nettoyage, dédoublonnage, contrôles qualité, pipelines reproductibles et documentation pour éviter les erreurs et gagner du temps.</p>
+            <div class="chartHint">
+              C’est le rendu “pro” : <b>moins de blabla</b>, plus de décisions.
+            </div>
           </div>
         </div>
-
-        <p class="small mt-16">
-          <strong>Bonus :</strong> gestion de projet (cadrage, planning, coordination, suivi) quand il faut livrer vite et propre.
-        </p>
       </div>
     </section>
 
-
-    <!-- Projets pro & académiques -->
+    <!-- PROJECTS -->
     <section id="projets">
-      <div class="container">
-        <h2>💼 Projets sélectionnés</h2>
-        <p class="subtitle">3 études de cas : comment je transforme des données en KPI, dashboards et décisions.</p>
+      <div class="sectionHeader">
+        <h2>Projets</h2>
+        <p>2 cas principaux (tu en ajouteras quand tu veux).</p>
+      </div>
 
-        <article class="project">
-        <div class="case-title">
-          <h3 class="mb-0">🚋 Projet RTM – Digitalisation du réseau Tram</h3>
-          <span class="badge">Python</span>
-          <span class="badge">Power BI</span>
-          <span class="badge">Geo / PK</span>
-        </div>
-        <div class="meta">Stage – RTM, Marseille (2025)</div>
+      <div class="grid asym">
+        <!-- RTM -->
+        <article class="card">
+          <div class="cardTitle">
+            <h3>🚋 RTM — Digitalisation réseau Tram</h3>
+            <span class="pill good">Case study</span>
+          </div>
+          <div class="meta">Stage (2025) • Marseille • data géo / PK / maintenance</div>
 
-        <div class="grid cols-2 mt-12">
-          <div>
-            <p class="mb-8"><strong>Problème.</strong> Données tram multi-sources (Excel/GPS) hétérogènes → difficile à exploiter pour piloter la maintenance.</p>
-
-            <p class="mb-8"><strong>Approche.</strong></p>
-            <ul class="small mt-0">
-              <li>Consolider les sources + normaliser un référentiel (PK / voie / ligne)</li>
-              <li>Mettre des contrôles qualité (dédoublonnage, cohérence PK, complétude)</li>
-              <li>Rendre visible via carte (Leaflet) + dashboard (Power BI)</li>
-            </ul>
-
-            <p class="mb-0"><strong>Livrables.</strong> Pipeline Python + référentiel propre + carte interactive + dashboard.</p>
+          <div class="tags">
+            <span class="tag hot">Python</span>
+            <span class="tag">pandas / openpyxl</span>
+            <span class="tag">Leaflet</span>
+            <span class="tag">BI</span>
+            <span class="tag">Qualité data</span>
           </div>
 
-          <div>
-            <p class="mb-8"><strong>Impact.</strong> Données plus fiables + lecture plus simple pour les équipes (tech + pilotage).</p>
+          <div class="hr"></div>
 
-            <p class="mb-8"><strong>Décisions facilitées.</strong></p>
-            <ul class="small mt-0">
-              <li>Identifier rapidement zones / points incohérents</li>
-              <li>Prioriser les vérifications et interventions terrain</li>
-              <li>Suivre l’état d’avancement (qualité, complétude)</li>
-            </ul>
+          <p class="small">
+            <b>Problème :</b> sources hétérogènes (Excel/GPS) → difficile à exploiter.<br/>
+            <b>Solution :</b> pipeline de nettoyage + contrôles + restitution lisible (carte + indicateurs).
+          </p>
 
-            <p class="mb-0"><strong>Stack.</strong> pandas / geopandas / openpyxl · Power BI · Leaflet · GitHub</p>
-
-            <div class="case-actions">
-              <a class="btn" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">📄 Rapport (PDF)</a>
-              <a class="btn ghost" href="#contact">Me contacter</a>
-            </div>
+          <div class="actions">
+            <a class="btn" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">Rapport (PDF)</a>
+            <!-- Si tu as une démo : remplace -->
+            <a class="btn ghost" href="RTM-map/index.html" target="_blank" rel="noopener">Démo carte</a>
           </div>
-        </div>
-
-        <hr class="sep" />
-
-        <p class="mb-8"><strong>Décisions facilitées.</strong></p>
-        <ul class="small mt-0">
-          <li>Quel canal pousser selon la période (early vs late)</li>
-          <li>Quels tarifs / offres déclenchent le plus de conversion</li>
-          <li>Où concentrer la com (zones / segments)</li>
-        </ul>
-
-        <p class="small mb-8"><strong>Preuves.</strong> (à ajouter)</p>
-        <div class="grid cols-2 mt-12">
-          <img src="assets/billetterie_dashboard.png" alt="Capture dashboard billetterie">
-          <img src="assets/billetterie_insights.png" alt="Capture insights billetterie">
-        </div>
-
-        <p class="small mt-16 mb-8"><strong>Démo carte interactive.</strong></p>
-        <div class="iframe-wrap">
-          <iframe src="RTM-map/index.html" title="Carte RTM interactive (démo)"></iframe>
-        </div>
-
-      </article>
-
-
-        <!-- Mini-projet Culture / Billetterie -->
-        <article class="project mt-16">
-        <h3>🎟️ Mini-projet – Pilotage billetterie (cas “festival / salle”)</h3>
-        <div class="meta">Projet personnel (2026) — KPI • segmentation • recommandations</div>
-
-        <p><strong>Objectif.</strong> Proposer un tableau de bord simple pour suivre la performance billetterie et comprendre les publics (sans jargon, utilisable en prod).</p>
-
-        <div class="grid cols-2 mt-12">
-            <div>
-            <p class="mb-8"><strong>Indicateurs suivis.</strong></p>
-            <p class="small mb-12">
-                <span class="badge">Ventes / jour</span>
-                <span class="badge">Taux de remplissage</span>
-                <span class="badge">Panier moyen</span>
-                <span class="badge">Canaux (web/partenaires)</span>
-                <span class="badge">Tarifs</span>
-                <span class="badge">No-show (si applicable)</span>
-            </p>
-
-            <p class="mb-8"><strong>Segmentation.</strong></p>
-            <p class="small mb-0">
-                Par type de public (local/touriste), prix, timing d’achat (early/late), et/ou zones géographiques.
-                But : savoir <em>quoi pousser</em> et <em>où</em>.
-            </p>
-            </div>
-
-            <div>
-            <p class="mb-8"><strong>Livrables.</strong></p>
-            <ul class="small mt-0">
-                <li>1 dashboard (Power BI / Excel) : vue direction + vue opérationnelle</li>
-                <li>1 note de synthèse : 5 insights + 5 actions recommandées</li>
-                <li>1 check qualité data : doublons, valeurs manquantes, cohérence dates/tarifs</li>
-            </ul>
-            </div>
-        </div>
-
-        <p class="mt-12 mb-0 small">
-            <strong>Statut :</strong> en cours — j’ajoute bientôt une capture + un exemple de dashboard (même sur données fictives).
-        </p>
         </article>
 
-      </div>
-    </section>
-
-    <!-- Compétences -->
-    <section id="competences">
-      <div class="container">
-        <h2>🧠 Compétences</h2>
-        <div class="grid cols-2">
-          <div class="project">
-            <table>
-              <thead>
-                <tr><th>Domaine</th><th>Compétences clés</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><strong>Gestion de projet</strong></td><td>Coordination interservices, planification, suivi d’actions</td></tr>
-                <tr><td><strong>Analyse / Data</strong></td><td>Python (pandas, geopandas, openpyxl), Power BI, Excel</td></tr>
-                <tr><td><strong>Communication / Médiation</strong></td><td>Vulgarisation, écriture claire, écoute active</td></tr>
-                <tr><td><strong>Création / Culture</strong></td><td>FL Studio, conception d’expériences, écriture</td></tr>
-                <tr><td><strong>Langues</strong></td><td>Français (natif), Anglais (C1)</td></tr>
-              </tbody>
-            </table>
+        <!-- Right column: quick “artifacts” -->
+        <aside class="card">
+          <div class="cardTitle">
+            <h3>📌 Ce que ça prouve</h3>
           </div>
-          <div class="project">
-            <h3 class="mt-0">🧰 Stack & façon de travailler</h3>
+          <div class="meta">Ce bloc sert aux recruteurs pressés.</div>
 
-            <p class="small mb-8"><strong>Outils.</strong></p>
-            <p class="mb-12">
-                <span class="badge">Python (pandas)</span>
-                <span class="badge">Power BI</span>
-                <span class="badge">Excel</span>
-                <span class="badge">GitHub</span>
-                <span class="badge">Leaflet</span>
-                <!-- Ajoute SQL si tu le pratiques vraiment -->
-            </p>
-
-            <p class="small mb-8"><strong>Ce que je livre facilement.</strong></p>
-            <ul class="small mt-0">
-                <li>Dashboards + KPI (pilotage lisible non-tech)</li>
-                <li>Nettoyage / dédoublonnage / contrôles qualité</li>
-                <li>Synthèse métier : recommandations actionnables</li>
-            </ul>
-
-            <p class="small mt-12 mb-0">
-                <strong>Bonus :</strong> cadrage & gestion de projet (planning, suivi, documentation) quand il faut livrer vite et propre.
-            </p>
+          <div class="list">
+            <div class="row">
+              <div>
+                <b>Data Quality</b><br/>
+                <span>dédoublonnage, cohérence, complétude, traçabilité.</span>
+              </div>
+              <div class="pill">DQ</div>
             </div>
+            <div class="row">
+              <div>
+                <b>Restitution claire</b><br/>
+                <span>cartes + KPI + lecture métier (pas juste du code).</span>
+              </div>
+              <div class="pill">BI</div>
+            </div>
+            <div class="row">
+              <div>
+                <b>Livraison</b><br/>
+                <span>process reproductible + doc (ça tourne demain aussi).</span>
+              </div>
+              <div class="pill good">OK</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="grid cols2" style="margin-top: var(--gridGap)">
+        <!-- Billetterie -->
+        <article class="card">
+          <div class="cardTitle">
+            <h3>🎟️ Pilotage billetterie — “festival / salle”</h3>
+            <span class="pill">Projet perso</span>
+          </div>
+          <div class="meta">2026 • KPI direction + vue ops • Excel-first</div>
+
+          <div class="tags">
+            <span class="tag hot">Excel</span>
+            <span class="tag">KPI</span>
+            <span class="tag">Segmentation</span>
+            <span class="tag">Recommandations</span>
+            <span class="tag">Python (génération & exports)</span>
+          </div>
+
+          <div class="hr"></div>
+
+          <p class="small">
+            <b>But :</b> un dashboard lisible en 10 secondes + une vue opérationnelle pour agir (alertes, diagnostics, actions).<br/>
+            <b>Livrables :</b> dashboard Excel, exports propres, note de synthèse (à enrichir).
+          </p>
+
+          <div class="actions">
+            <!-- Remplace par un lien vers le repo du projet si tu veux -->
+            <a class="btn ghost" href="https://github.com/" target="_blank" rel="noopener">Code / repo</a>
+          </div>
+        </article>
+
+        <!-- Placeholders captures -->
+        <article class="card">
+          <div class="cardTitle">
+            <h3>🖼️ Captures (à ajouter)</h3>
+            <span class="pill warn">WIP</span>
+          </div>
+          <div class="meta">Quand tu as 2 screenshots propres, ça devient “wow” instant.</div>
+
+          <div class="chartBox">
+            <div class="chartTop">
+              <strong>Emplacements</strong>
+              <span>images dans /assets</span>
+            </div>
+            <div class="small">
+              Ajoute par exemple :
+              <ul>
+                <li><span class="mono">assets/billetterie_dashboard.png</span></li>
+                <li><span class="mono">assets/rtm_dashboard.png</span></li>
+              </ul>
+              Puis remplace ce bloc par deux balises <span class="mono">&lt;img&gt;</span>.
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="competences">
+      <div class="sectionHeader">
+        <h2>Compétences</h2>
+        <p>Le kit “je peux livrer ça en entreprise”.</p>
+      </div>
+
+      <div class="grid cols3">
+        <div class="card">
+          <div class="cardTitle"><h3>📊 BI / Reporting</h3></div>
+          <div class="small">
+            KPI direction • dashboards • storytelling • export “Excel-ready” • lisibilité non-tech.
+          </div>
+          <div class="tags" style="margin-top:10px">
+            <span class="tag hot">Excel</span>
+            <span class="tag">Dataviz</span>
+            <span class="tag">KPI</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle"><h3>🧼 Data Quality</h3></div>
+          <div class="small">
+            contrôles • doublons • cohérence • valeurs manquantes • règles métier • logs.
+          </div>
+          <div class="tags" style="margin-top:10px">
+            <span class="tag hot">Python</span>
+            <span class="tag">pandas</span>
+            <span class="tag">QA</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle"><h3>🧠 Culture & Publics</h3></div>
+          <div class="small">
+            segmentation • canaux • timing d’achat • recommandations actionnables • vulgarisation.
+          </div>
+          <div class="tags" style="margin-top:10px">
+            <span class="tag hot">Culture</span>
+            <span class="tag">Billetterie</span>
+            <span class="tag">Publics</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- À propos -->
+    <!-- ABOUT -->
     <section id="apropos">
-    <div class="container">
-        <h2>🙋‍♀️ À propos</h2>
-        <p class="subtitle">Un profil data orienté publics & culture, avec une base sciences cognitives.</p>
-
-        <div class="project">
-        <p class="mt-0">
-            Je suis <strong>Alice Gay</strong>, diplômée d’un <strong>Master 2 en Sciences Cognitives</strong> (langage & communication) et formée à la <strong>data appliquée</strong> (Python, Power BI, Excel).
-            Mon stage à la <strong>RTM</strong> m’a appris à rendre des données hétérogènes <strong>fiables</strong> et <strong>exploitables</strong> pour piloter des décisions concrètes.
-        </p>
-
-        <p>
-            Aujourd’hui, je veux appliquer ce mix à la <strong>culture / événementiel</strong> : comprendre les publics, suivre la performance (billetterie, canaux, segmentation) et aider les équipes à décider avec des <strong>KPI clairs</strong> et des <strong>dashboards</strong>.
-        </p>
-
-        <p class="mb-0 small">
-            <strong>Je cherche :</strong> CDD / missions (Marseille + hybride/remote) — data publics / billetterie / CRM / reporting.
-        </p>
-        </div>
-    </div>
-    </section>
-
-
-    <!-- Documents & liens utiles -->
-    <section id="docs">
-      <div class="container">
-        <h2>📎 Documents & liens utiles</h2>
-        <div class="grid cols-3">
-          <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">📄 CV PDF</a>
-          <a class="btn" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">🧠 Rapport de stage RTM</a>
-          <a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">💼 LinkedIn</a>
-          <a class="btn" href="https://github.com/" target="_blank" rel="noopener">🧪 GitHub</a>
-          <a class="btn" href="https://soundcloud.com/" target="_blank" rel="noopener">🎵 SoundCloud</a>
-        </div>
+      <div class="sectionHeader">
+        <h2>À propos</h2>
+        <p>Une phrase claire + ce que tu veux faire ensuite.</p>
       </div>
-    </section>
 
-    <!-- Contact -->
-    <section id="contact">
-      <div class="container">
-        <h2>💌 Contact</h2>
-        <div class="project">
-          <p class="mb-12">Envie de collaborer, d’échanger ou de voir une démo ? Écris-moi :</p>
-          <p class="mb-0"><strong>Email</strong> : <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a></p>
+      <div class="grid cols2">
+        <div class="card">
+          <div class="cardTitle"><h3>Profil</h3></div>
+          <p class="small">
+            Diplômée d’un Master 2 en Sciences Cognitives (langage & communication), j’applique une approche pragmatique :
+            <b>des données propres</b> → <b>des KPI lisibles</b> → <b>des décisions testables</b>.
+          </p>
+          <div class="hr"></div>
+          <p class="small">
+            Objectif : contribuer à des équipes culture/événementiel (billetterie, CRM, publics, reporting) avec une BI simple,
+            utile et bien documentée.
+          </p>
         </div>
-      </div>
-    </section>
 
-    <!-- Bonus -->
-    <section id="bonus">
-      <div class="container">
-        <h2>➕ Bonus</h2>
-        <p class="subtitle">Projets universitaires, créations et documents complémentaires.</p>
-
-        <div class="grid cols-2">
-            <!-- LICENCE -->
-            <article class="project">
-                <h3 class="mt-0">💻 Projets de Licence MIASHS</h3>
-                <p class="meta">Sélection de projets techniques / analyse / cognition</p>
-                <p class="small mb-12">Extraits de travaux universitaires (data viz, stats, ergonomie cognitive).</p>
-
-                <!-- Colle ici tes 3 cards de licence (tu peux les garder telles quelles) -->
-                <div class="mt-12">
-                <div class="project mb-12">
-                    <h3>📊 Data Viz – Données socio-économiques régionales</h3>
-                    <div class="meta">Licence 3 MIASHS (2022)</div>
-                    <p><strong>Objectif.</strong> Analyser les disparités territoriales via revenus, emploi et éducation.</p>
-                    <p><strong>Réalisations.</strong> Nettoyage/fusion (INSEE, open data), graphiques (Python), rapport visuel.</p>
-                </div>
-
-                <div class="project mb-12">
-                    <h3>🧩 Cognition & Interaction – Interface intuitive</h3>
-                    <div class="meta">Licence 3 – ergonomie cognitive</div>
-                    <p><strong>Objectif.</strong> Concevoir une interface adaptée à la charge cognitive.</p>
-                    <p><strong>Réalisations.</strong> Maquettes, tests utilisateurs, analyse qualitative.</p>
-                </div>
-
-                <div class="project">
-                    <h3>🔢 Statistiques – Attention & apprentissage</h3>
-                    <div class="meta">Licence 2 MIASHS (2021)</div>
-                    <p><strong>Objectif.</strong> Lien entre variabilité attentionnelle et performance.</p>
-                    <p><strong>Réalisations.</strong> Traitement sous R, visualisations, présentation.</p>
-                </div>
-                </div>
-            </article>
-
-            <!-- CREATIONS -->
-            <article class="project">
-                <h3 class="mt-0">🎨 Créations & projets personnels</h3>
-                <p class="meta">Musique • prototypes • écriture</p>
-                <p class="small mb-12">Ce qui nourrit ma créativité (en bonus par rapport à ma candidature data).</p>
-
-                <!-- Colle ici tes 2 cards créations -->
-                <div class="project mb-12">
-                <h3>🎵 Beat « Anya Nami »</h3>
-                <div class="meta">Instrumental – Style Josman x Laylow</div>
-                <p><strong>Intention.</strong> Univers introspectif, entre douceur et tension.</p>
-                <p><strong>Outils.</strong> FL Studio, Vital, Flex, Harmonix.</p>
-                <p class="mb-0"><a class="btn" href="https://soundcloud.com/" target="_blank" rel="noopener">Écouter sur SoundCloud</a></p>
-                </div>
-
-                <div class="project">
-                <h3>🎮 Jeu 2D – « Neuron Quest » (exemple)</h3>
-                <div class="meta">Prototype HTML5 (canvas/JS)</div>
-                <p>Mini-jeu jouable en ligne (à intégrer quand prêt) :</p>
-                <div class="iframe-wrap">
-                    <div class="center small">Intégrer ici le jeu 2D via &lt;iframe&gt;</div>
-                </div>
-                </div>
-            </article>
+        <div class="card">
+          <div class="cardTitle"><h3>Ce que je cherche</h3></div>
+          <div class="list">
+            <div class="row">
+              <div>
+                <b>CDD / missions</b><br/>
+                <span>Marseille + hybride/remote</span>
+              </div>
+              <div class="pill good">OK</div>
             </div>
-
+            <div class="row">
+              <div>
+                <b>Postes</b><br/>
+                <span>data publics • billetterie • CRM • reporting</span>
+              </div>
+              <div class="pill">Focus</div>
+            </div>
+            <div class="row">
+              <div>
+                <b>Format</b><br/>
+                <span>dashboard + note de synthèse + actions</span>
+              </div>
+              <div class="pill warn">Pro</div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="sectionHeader">
+        <h2>Contact</h2>
+        <p>Simple. Direct. Efficace.</p>
+      </div>
+
+      <div class="card">
+        <div class="split">
+          <div>
+            <div class="small">Email</div>
+            <div style="font-weight:900; font-size:16px">
+              <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a>
+            </div>
+            <div class="small" style="margin-top:6px">
+              Tu peux aussi remplacer par ton vrai mail + ajouter ton LinkedIn.
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn primary" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">Télécharger CV</a>
+            <a class="btn ghost" href="#dashboard">Retour haut</a>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        © <span id="y"></span> Alice Gay — Portfolio “dashboard style” • GitHub Pages
+      </footer>
+    </section>
   </main>
 
-  <footer>
-    <div class="container small">© <span id="y"></span> Alice Gay — Fait avec HTML/CSS/JS. Hébergé sur GitHub Pages.</div>
-  </footer>
-
   <script>
-    // Active link on scroll
-    const links = Array.from(document.querySelectorAll('header.site nav a'));
-    const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    // Dates
+    document.getElementById('y').textContent = new Date().getFullYear();
+    document.getElementById('lastUpdate').textContent =
+      new Date().toLocaleDateString('fr-FR', { year:'numeric', month:'long', day:'numeric' });
+
+    // Nav active on scroll
+    const links = Array.from(document.querySelectorAll('header nav a'));
+    const sections = links
+      .map(a => document.querySelector(a.getAttribute('href')))
+      .filter(Boolean);
+
     const onScroll = () => {
-      const pos = window.scrollY + 120; // offset for sticky header
+      const pos = window.scrollY + 140;
       let active = links[0];
-      sections.forEach((sec, i) => {
-        if (sec.offsetTop <= pos) active = links[i];
-      });
-      links.forEach(a => a.classList.remove('active')); active.classList.add('active');
+      sections.forEach((sec, i) => { if (sec.offsetTop <= pos) active = links[i]; });
+      links.forEach(a => a.classList.remove('active'));
+      active.classList.add('active');
     };
     document.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    // Year
-    document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
- 
