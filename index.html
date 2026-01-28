@@ -117,6 +117,98 @@
       opacity: 0.8;
     }
 
+    /* === Responsive + viewport-fit patch (ajoute en bas de ton <style>) === */
+
+    /* 1) Variables responsives */
+    :root{
+      --maxw: min(1120px, calc(100vw - 40px)); /* s’adapte à la fenêtre */
+      --header-h: 56px; /* valeur par défaut, ajustée ensuite en JS optionnel */
+      --pad-x: clamp(16px, 2.2vw, 24px);
+      --pad-y: clamp(20px, 4vw, 56px);
+      --gap: clamp(12px, 2vw, 16px);
+    }
+
+    /* 2) Container: padding responsive + pas de clipping agressif */
+    .container{
+      padding-left: var(--pad-x);
+      padding-right: var(--pad-x);
+      max-width: var(--maxw);
+      overflow: visible; /* évite des coupures bizarres sur mobile */
+    }
+
+    /* 3) Header: meilleure tenue + nav utilisable sur mobile */
+    header.site{
+      /* Support iOS notch */
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .nav{
+      min-height: var(--header-h);
+      gap: var(--gap);
+      flex-wrap: wrap; /* autorise retour à la ligne si besoin */
+    }
+
+    /* Nav: sur mobile, plutôt scroll horizontal que tout casser */
+    header.site nav.links{
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;        /* on évite 3 lignes de nav */
+      overflow-x: auto;         /* scroll horizontal */
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;    /* Firefox */
+    }
+    header.site nav.links::-webkit-scrollbar{ display:none; }
+
+    /* Les liens restent lisibles */
+    header.site nav.links a{
+      white-space: nowrap;
+    }
+
+    /* Brand + nav: évite la compression */
+    .brand{ flex: 0 0 auto; }
+    .spacer{ display:none; } /* sur mobile on évite l’espace “vide” qui casse */
+    @media (min-width: 900px){
+      .spacer{ display:block; }
+      header.site nav.links{ overflow: visible; }
+    }
+
+    /* 4) Hero: s’adapte à la hauteur de la fenêtre */
+    .hero{
+      padding: var(--pad-y) 0 24px;
+      min-height: calc(100vh - var(--header-h)); /* “fit screen” */
+      display: flex;
+      align-items: center; /* centre vertical si peu de contenu */
+    }
+
+    /* 5) Card padding responsive */
+    .card{
+      padding: clamp(18px, 3vw, 28px);
+    }
+
+    /* 6) Grilles: plus robuste */
+    .grid{ gap: var(--gap); }
+    @media (max-width: 799px){
+      .grid.cols-2, .grid.cols-3{ grid-template-columns: 1fr; }
+    }
+
+    /* 7) Iframe: hauteur responsive (au lieu de 560px fixe) */
+    .iframe-wrap{
+      height: clamp(320px, 60vh, 720px);
+    }
+
+    /* 8) Table: scroll horizontal si écran étroit */
+    .project table{
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 9) Images: évite les débordements */
+    img{
+      max-width: 100%;
+      height: auto;
+    }
+
   </style>
 
 </head>
@@ -511,6 +603,16 @@
     onScroll();
     // Year
     document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Mesure la hauteur réelle du header pour ajuster le hero
+    const headerEl = document.querySelector('header.site');
+    const setHeaderH = () => {
+      const h = headerEl.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('--header-h', `${Math.ceil(h)}px`);
+    };
+    window.addEventListener('resize', setHeaderH, { passive: true });
+    setHeaderH();
+
   </script>
 </body>
 </html>
