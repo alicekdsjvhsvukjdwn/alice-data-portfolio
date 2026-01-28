@@ -1,0 +1,11 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python env (au cas où)
+.venv/
+venv/
+__pycache__/
+*.pyc
