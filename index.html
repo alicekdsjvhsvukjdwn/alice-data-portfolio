@@ -2,39 +2,34 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Portfolio – Alice Gay</title>
-  <meta name="description" content="Portfolio d'Alice Gay – data/BI pour la culture : KPI, dashboards, automatisation, cas d'usage billetterie & publics." />
+  <meta name="description" content="Portfolio d'Alice Gay – Data Analyst / BI orientée publics & billetterie. KPI, dashboards, recommandations actionnables (culture & événementiel)." />
   <meta property="og:title" content="Portfolio – Alice Gay" />
-  <meta property="og:description" content="Data/BI pour la culture : KPI, dashboards, automatisation, billetterie & publics." />
+  <meta property="og:description" content="Data / BI pour la culture : KPI, dashboards, insights & actions. RTM + billetterie." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
 
   <style>
     :root{
-      /* Palette “BI dashboard” (pro, lisible, pas cosplay gamer) */
-      --bg0:#070A12;
-      --bg1:#0A1020;
-      --panel:#0F1830;
-      --panel2:#0D152A;
-      --stroke:rgba(255,255,255,.08);
-      --stroke2:rgba(255,255,255,.12);
+      /* Variante A – Corporate Direction (ajustée pour un rendu plus “design”) */
+      --bg:#0F1419;             /* bleu nuit profond */
+      --surface:#1A1F2E;        /* cartes */
+      --surface-2:#141A26;      /* fond secondaire */
+      --border:#2A3142;
+      --text:#E8EAED;
+      --muted:#8A92A8;
+      --cyan:#00D9FF;
+      --blue:#4A6FFF;
+      --danger:#FF6B6B;
 
-      --text:#EAF0FF;
-      --muted:#A9B4D6;
-
-      /* Accents */
-      --cyan:#3EE6D6;     /* KPI / highlights */
-      --blue:#6AA8FF;     /* liens / titres */
-      --violet:#B18CFF;   /* second accent */
-      --amber:#FFC766;    /* accent “action” */
-
-      --shadow: 0 18px 50px rgba(0,0,0,.45);
-      --radius: 18px;
-      --max: 1160px;
-
-      --gridGap: 14px;
+      --maxw:1180px;
+      --r6:6px;
+      --r8:8px;
+      --r12:12px;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --gap:24px;
     }
 
     *{box-sizing:border-box}
@@ -43,850 +38,876 @@
       margin:0;
       color:var(--text);
       background:
-        radial-gradient(1200px 700px at 10% -10%, rgba(106,168,255,.18), transparent 55%),
-        radial-gradient(900px 600px at 95% 10%, rgba(62,230,214,.14), transparent 55%),
-        radial-gradient(900px 600px at 60% 110%, rgba(177,140,255,.12), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
-      line-height:1.45;
+        radial-gradient(900px 420px at 15% -10%, rgba(0,217,255,.10), transparent 55%),
+        radial-gradient(700px 360px at 80% 0%, rgba(74,111,255,.10), transparent 50%),
+        linear-gradient(180deg, #0B0F14 0%, var(--bg) 35%, var(--bg) 100%);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
+      line-height:1.55;
       overflow-x:hidden;
     }
 
-    a{color:var(--blue);text-decoration:none}
-    a:hover{text-decoration:underline}
+    a{color:inherit; text-decoration:none}
+    a:hover{opacity:.9}
 
-    .container{
-      max-width:var(--max);
-      margin:0 auto;
-      padding: 0 18px;
-    }
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 20px}
 
-    /* Top bar */
+    /* Header */
     header{
-      position:sticky;
-      top:0;
-      z-index:50;
+      position:sticky; top:0; z-index:50;
       backdrop-filter: blur(10px);
-      background: rgba(7,10,18,.65);
-      border-bottom: 1px solid var(--stroke);
+      background: rgba(15,20,25,.72);
+      border-bottom:1px solid rgba(42,49,66,.75);
     }
-    .topbar{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      padding: 12px 0;
+    .nav{
+      display:flex; align-items:center; gap:16px;
+      padding:14px 0;
     }
     .brand{
-      display:flex; align-items:center; gap:10px;
-      font-weight:800;
-      letter-spacing:.2px;
+      display:flex; align-items:baseline; gap:10px;
+      font-weight:800; letter-spacing:.2px;
       white-space:nowrap;
     }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: linear-gradient(135deg, var(--cyan), var(--violet));
-      box-shadow: 0 0 0 4px rgba(62,230,214,.12);
+    .brand .dot{
+      width:10px; height:10px; border-radius:2px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow: 0 0 18px rgba(0,217,255,.25);
     }
     .spacer{flex:1}
-    nav{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end}
-    nav a{
+    nav.links{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+    nav.links a{
       color:var(--muted);
       font-size:14px;
       padding:8px 10px;
-      border-radius: 10px;
-      border: 1px solid transparent;
+      border-radius:10px;
+      border:1px solid transparent;
     }
-    nav a.active{
+    nav.links a:hover{
       color:var(--text);
-      background: rgba(255,255,255,.05);
-      border-color: var(--stroke);
+      background: rgba(26,31,46,.55);
+      border-color: rgba(42,49,66,.7);
     }
 
-    /* Dashboard layout */
-    main{padding: 18px 0 60px}
-
-    .panel{
-      background:
-        radial-gradient(900px 220px at 0% -30%, rgba(62,230,214,.12), transparent 60%),
-        radial-gradient(700px 200px at 105% -10%, rgba(106,168,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px;
+      font-weight:800;
+      font-size:14px;
+      padding:12px 16px;
+      border-radius: var(--r6);
+      border: 1px solid var(--border);
+      background: rgba(26,31,46,.65);
+      color: var(--text);
+      cursor:pointer;
+      user-select:none;
     }
-
-    /* HERO */
-    .hero{
-      padding: 18px;
+    .btn.primary{
+      background: var(--cyan);
+      color: #0F1419;
+      border-color: rgba(0,217,255,.35);
+      box-shadow: 0 0 0 rgba(0,217,255,0);
     }
-    .heroGrid{
-      display:grid;
-      gap: var(--gridGap);
-      grid-template-columns: 1fr;
-    }
-    @media(min-width: 980px){
-      .heroGrid{ grid-template-columns: 1.25fr .75fr; }
-    }
-
-    .heroCard{
-      padding: 18px;
-      border-radius: var(--radius);
-      border: 1px solid var(--stroke);
-      background: rgba(15,24,48,.55);
-    }
-
-    .kicker{
-      display:flex; align-items:center; gap:10px;
+    .btn.primary:hover{opacity:.92}
+    .btn.ghost{
+      background: transparent;
       color: var(--cyan);
-      text-transform: uppercase;
-      letter-spacing:.45px;
-      font-size: 12px;
-      font-weight: 700;
+      border-color: rgba(0,217,255,.55);
     }
-    .kicker span{
-      color: var(--muted);
-      font-weight:600;
-      text-transform:none;
-      letter-spacing:0;
+    .btn.small{padding:9px 12px; font-size:13px; border-radius:10px}
+
+    /* Hero */
+    .hero{
+      padding:38px 0 10px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:32px;
+      align-items:stretch;
+    }
+    @media (max-width: 920px){
+      .hero-grid{grid-template-columns:1fr}
     }
 
-    h1{
-      margin: 10px 0 8px;
-      font-size: clamp(26px, 3.2vw, 40px);
-      line-height:1.05;
+    .h1{
+      font-size: clamp(34px, 4.2vw, 54px);
+      line-height: 1.02;
+      letter-spacing: -0.6px;
+      margin: 8px 0 12px;
     }
-    .grad{
-      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    .h1 .accent{
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
       -webkit-background-clip:text;
       background-clip:text;
       color:transparent;
     }
     .lead{
       color: var(--muted);
-      margin: 10px 0 14px;
       font-size: 16px;
+      margin: 0 0 18px;
+      max-width: 66ch;
     }
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+    .chip-row{display:flex; flex-wrap:wrap; gap:10px; margin: 16px 0 22px}
     .chip{
-      padding: 6px 10px;
-      font-size: 12px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
       border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(42,49,66,.85);
+      background: rgba(20,26,38,.55);
       color: var(--muted);
+      font-size: 13px;
+      white-space:nowrap;
     }
-    .chip strong{color:var(--text);font-weight:700}
-
-    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top: 14px}
-    .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      font-weight: 700;
-      font-size: 14px;
-    }
-    .btn:hover{background: rgba(255,255,255,.07); text-decoration:none}
-    .btn.primary{
-      border-color: rgba(62,230,214,.35);
-      background: linear-gradient(180deg, rgba(62,230,214,.18), rgba(255,255,255,.04));
-    }
-    .btn.ghost{
-      background: transparent;
-      color: var(--blue);
+    .chip .pill{
+      width:8px; height:8px; border-radius:999px;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(0,217,255,.35);
     }
 
-    /* KPI Row */
-    .kpiRow{
-      display:grid;
-      gap: var(--gridGap);
-      grid-template-columns: 1fr;
-      margin-top: var(--gridGap);
-    }
-    @media(min-width: 760px){
-      .kpiRow{ grid-template-columns: repeat(4, 1fr); }
-    }
-
-    .kpi{
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid var(--stroke);
-      background: rgba(15,24,48,.55);
+    .panel{
+      background: linear-gradient(180deg, rgba(26,31,46,.92), rgba(26,31,46,.78));
+      border: 1px solid rgba(42,49,66,.9);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 22px;
       position:relative;
       overflow:hidden;
-      min-height: 92px;
     }
-    .kpi:before{
+    .panel:before{
       content:"";
-      position:absolute; inset:-2px -2px auto -2px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--cyan), var(--violet), var(--blue));
-      opacity:.75;
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(500px 200px at 10% 0%, rgba(0,217,255,.14), transparent 60%),
+        radial-gradient(420px 220px at 90% 10%, rgba(74,111,255,.10), transparent 60%);
+      pointer-events:none;
+      opacity:.8;
     }
-    .kpiLabel{
+    .panel > *{position:relative}
+
+    .hero-cta{display:flex; flex-wrap:wrap; gap:12px; margin-top: 10px}
+
+    /* Résumé direction (droite) */
+    .kpi-mini-title{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .kpi-mini-title .t{
       color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing:.2px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+      font-weight:800;
     }
-    .kpiValue{
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: .2px;
-      display:flex; align-items:baseline; gap:8px;
+    .kpi-mini-title .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px;
+      color: var(--cyan);
+      border:1px solid rgba(0,217,255,.35);
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(0,217,255,.06);
+      white-space:nowrap;
     }
-    .kpiValue small{
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-    .kpiHint{
+    .mini-grid{
+      display:grid;
+      gap:10px;
       margin-top: 8px;
-      color: var(--muted);
+    }
+    .mini-kpi{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      padding:12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(42,49,66,.85);
+      background: rgba(20,26,38,.6);
+    }
+    .mini-kpi .label{color: var(--muted); font-size: 12px}
+    .mini-kpi .value{font-weight:900; font-size: 16px; color: var(--text)}
+    .mini-kpi .trend{
+      font-weight:900; font-size: 12px;
+      display:flex; align-items:center; gap:6px; justify-content:flex-end;
+    }
+    .up{color: var(--cyan)}
+    .down{color: var(--danger)}
+    .spark{
+      height:46px;
+      border-radius:12px;
+      border:1px dashed rgba(42,49,66,.9);
+      background:
+        linear-gradient(180deg, rgba(20,26,38,.7), rgba(20,26,38,.5));
+      display:flex; align-items:center; justify-content:center;
+      color: rgba(138,146,168,.75);
       font-size: 12px;
+      margin-top: 12px;
     }
 
-    /* Sections */
-    section{margin-top: 18px}
-    .sectionHeader{
-      display:flex; align-items:baseline; justify-content:space-between;
-      gap: 12px;
-      padding: 10px 2px;
+    /* KPI row */
+    .kpi-row{
+      margin: 22px 0 6px;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--gap);
     }
-    .sectionHeader h2{
-      margin:0;
-      font-size: 18px;
-      letter-spacing:.2px;
+    @media (max-width: 1000px){ .kpi-row{grid-template-columns: repeat(2, 1fr);} }
+    @media (max-width: 560px){ .kpi-row{grid-template-columns: 1fr;} }
+
+    .kpi-card{
+      border:1px solid rgba(42,49,66,.95);
+      background: rgba(26,31,46,.65);
+      border-radius: 14px;
+      padding: 18px;
+      min-height: 132px;
+      position:relative;
     }
-    .sectionHeader p{
+    .kpi-card:hover{border-color: rgba(0,217,255,.35)}
+    .kpi-card .label{
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing:.55px;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .kpi-card .value{
+      margin-top: 8px;
+      font-size: 30px;
+      font-weight: 950;
+      letter-spacing:-.3px;
+      color: var(--cyan);
+    }
+    .kpi-card .desc{
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 32ch;
+    }
+
+    /* Section titles */
+    section{padding: 32px 0}
+    .section-head{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .section-head h2{
       margin:0;
+      font-size: clamp(20px, 2.2vw, 28px);
+      letter-spacing:-.2px;
+    }
+    .section-head p{
+      margin:0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 60ch;
+    }
+
+    /* Dashboard preview (2 colonnes) */
+    .dash-grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: var(--gap);
+      align-items:stretch;
+    }
+    @media (max-width: 920px){ .dash-grid{grid-template-columns:1fr;} }
+
+    .mock{
+      border-radius: 12px;
+      border:1px solid rgba(42,49,66,.95);
+      background:
+        repeating-linear-gradient(90deg, rgba(42,49,66,.14) 0, rgba(42,49,66,.14) 1px, transparent 1px, transparent 16px),
+        repeating-linear-gradient(0deg, rgba(42,49,66,.10) 0, rgba(42,49,66,.10) 1px, transparent 1px, transparent 16px),
+        linear-gradient(180deg, rgba(20,26,38,.75), rgba(20,26,38,.55));
+      height: 280px;
+      display:flex; align-items:center; justify-content:center;
+      color: rgba(138,146,168,.8);
+      font-size: 13px;
+      overflow:hidden;
+      position:relative;
+    }
+    .mock:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 20% 30%, rgba(0,217,255,.08), transparent 35%),
+                  radial-gradient(circle at 80% 60%, rgba(74,111,255,.07), transparent 38%);
+      transform: rotate(-8deg);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .mock span{position:relative; z-index:1; padding: 10px 14px; border-radius: 999px; border:1px solid rgba(42,49,66,.8); background: rgba(15,20,25,.35)}
+
+    .insights{
+      display:grid; gap: 10px;
+      margin-top: 12px;
+    }
+    .insight{
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(42,49,66,.9);
+      background: rgba(20,26,38,.55);
       color: var(--muted);
       font-size: 13px;
     }
+    .insight strong{color: var(--text)}
+    .mini-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top: 12px}
 
-    /* Grid panels */
-    .grid{
-      display:grid;
-      gap: var(--gridGap);
-      grid-template-columns: 1fr;
-    }
-    @media(min-width: 980px){
-      .grid.cols2{ grid-template-columns: 1fr 1fr; }
-      .grid.cols3{ grid-template-columns: 1fr 1fr 1fr; }
-      .grid.asym{ grid-template-columns: 1.15fr .85fr; }
-    }
-
-    .card{
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius);
-      background: rgba(15,24,48,.55);
-      padding: 16px;
-    }
-    .cardTitle{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin-bottom: 6px;
-    }
-    .cardTitle h3{
-      margin:0;
-      font-size: 16px;
-      letter-spacing:.2px;
-    }
-    .meta{
-      color: var(--muted);
-      font-size: 12px;
-      margin: 6px 0 10px;
-    }
-    .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top: 8px}
-    .tag{
-      font-size: 12px;
-      color: var(--muted);
-      padding: 5px 9px;
-      border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-    }
-    .tag.hot{
-      border-color: rgba(62,230,214,.35);
-      color: rgba(62,230,214,.95);
-      background: rgba(62,230,214,.08);
-      font-weight: 800;
-    }
-
-    /* “Charts” placeholders (visuels pro, sans fake data) */
-    .chartBox{
-      border: 1px dashed rgba(255,255,255,.18);
+    /* Case studies */
+    .case{
+      border: 1px solid rgba(42,49,66,.95);
+      background: rgba(26,31,46,.55);
       border-radius: 16px;
-      padding: 14px;
-      background: rgba(13,21,42,.55);
-      min-height: 230px;
-      position: relative;
-      overflow: hidden;
-    }
-    .chartTop{
-      display:flex; justify-content:space-between; gap:10px; align-items:baseline;
-      margin-bottom: 10px;
-    }
-    .chartTop strong{font-size: 13px}
-    .chartTop span{color: var(--muted); font-size: 12px}
-
-    .spark{
-      height: 150px;
-      width: 100%;
-      border-radius: 12px;
-      background:
-        linear-gradient(180deg, rgba(106,168,255,.14), transparent 55%),
-        radial-gradient(400px 160px at 70% 20%, rgba(62,230,214,.18), transparent 70%),
-        rgba(255,255,255,.02);
-      border: 1px solid var(--stroke);
-      position: relative;
       overflow:hidden;
     }
-    .spark svg{width:100%; height:100%; display:block; opacity:.95}
-    .chartHint{
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
+    .case-top{
+      padding: 18px 18px 0;
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 16px;
+      flex-wrap:wrap;
     }
-
-    /* Table-like list */
-    .list{
-      display:grid;
-      gap: 10px;
-      margin-top: 10px;
+    .case-top h3{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:-.2px;
     }
-    .row{
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-    }
-    .row b{font-size: 13px}
-    .row span{color: var(--muted); font-size: 12px}
-    .pill{
+    .tags{display:flex; flex-wrap:wrap; gap:8px}
+    .tag{
       padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(74,111,255,.55);
+      background: rgba(42,49,66,.45);
       color: var(--muted);
       font-size: 12px;
       font-weight: 800;
-      white-space: nowrap;
     }
-    .pill.good{border-color: rgba(62,230,214,.35); color: rgba(62,230,214,.95); background: rgba(62,230,214,.08)}
-    .pill.warn{border-color: rgba(255,199,102,.35); color: rgba(255,199,102,.95); background: rgba(255,199,102,.08)}
+    .case-body{
+      padding: 18px;
+      display:grid;
+      grid-template-columns: 480px 1fr;
+      gap: 18px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){ .case-body{grid-template-columns:1fr;} }
+
+    .case-img{
+      border-radius: 12px;
+      border: 1px solid rgba(42,49,66,.95);
+      background: rgba(20,26,38,.6);
+      min-height: 260px;
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      color: rgba(138,146,168,.85);
+      font-size: 13px;
+      position:relative;
+    }
+    .case-img img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .cols3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 980px){ .cols3{grid-template-columns:1fr;} }
+    .col{
+      border: 1px solid rgba(42,49,66,.85);
+      background: rgba(20,26,38,.45);
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 130px;
+    }
+    .col .t{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing:.6px;
+      margin-bottom: 8px;
+    }
+    .col ul{margin:0; padding-left: 16px; color: var(--muted); font-size: 13px}
+    .col p{margin:0; color: var(--muted); font-size: 13px}
+    .case-foot{
+      padding: 0 18px 18px;
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+    }
+
+    /* Skills */
+    .skills{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--gap);
+    }
+    @media (max-width: 1000px){ .skills{grid-template-columns:1fr;} }
+    .skill{
+      border: 1px solid rgba(42,49,66,.95);
+      background: rgba(26,31,46,.55);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .skill h4{margin:0 0 8px; font-size:16px}
+    .skill ul{margin:0; padding-left: 18px; color: var(--muted); font-size: 14px}
+
+    /* Marquee (inspi “Contact me” répété) */
+    .marquee{
+      border-top: 1px solid rgba(42,49,66,.85);
+      border-bottom: 1px solid rgba(42,49,66,.85);
+      background: rgba(10,14,18,.45);
+      overflow:hidden;
+    }
+    .marquee .track{
+      display:flex;
+      gap: 28px;
+      padding: 12px 0;
+      white-space:nowrap;
+      will-change: transform;
+      animation: scroll 18s linear infinite;
+      font-weight: 950;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: rgba(232,234,237,.82);
+    }
+    .marquee .track span{
+      color: rgba(138,146,168,.95);
+    }
+    .marquee .track b{
+      color: var(--cyan);
+      font-weight: 950;
+    }
+    @keyframes scroll{
+      from{ transform: translateX(0); }
+      to{ transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .marquee .track{animation:none}
+    }
 
     /* Footer */
     footer{
-      margin-top: 24px;
+      padding: 34px 0 54px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
       text-align:center;
-      opacity:.9;
     }
 
-    /* Small helpers */
+    /* Helper */
     .muted{color:var(--muted)}
-    .split{
-      display:flex; gap:12px; align-items:baseline; justify-content:space-between; flex-wrap:wrap;
-    }
-    .hr{
-      height:1px; background: var(--stroke);
-      margin: 12px 0;
-    }
-    .small{font-size: 12px; color: var(--muted)}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+    .right{display:flex; gap:10px; align-items:center; justify-content:flex-end; flex-wrap:wrap}
   </style>
 </head>
 
 <body>
   <header>
-    <div class="container topbar">
-      <div class="brand"><span class="dot"></span> Alice Gay</div>
+    <div class="container nav">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Alice Gay</span>
+      </div>
+
       <div class="spacer"></div>
-      <nav aria-label="Navigation">
-        <a href="#dashboard" class="active">Dashboard</a>
+
+      <nav class="links" aria-label="Navigation principale">
         <a href="#projets">Projets</a>
         <a href="#competences">Compétences</a>
         <a href="#apropos">À propos</a>
         <a href="#contact">Contact</a>
+        <a class="btn small ghost" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV PDF</a>
       </nav>
     </div>
   </header>
 
-  <main class="container" id="dashboard">
-    <!-- HERO + SUMMARY -->
-    <div class="panel hero">
-      <div class="heroGrid">
-        <!-- Left: positioning -->
-        <div class="heroCard">
-          <div class="kicker">Portfolio — Data / BI pour la culture <span>• version “dashboard”</span></div>
-          <h1>
-            Data Analyst / BI — <span class="grad">Publics & Billetterie</span>
-          </h1>
-          <p class="lead">
-            Je transforme des données (billetterie / publics / usage) en <b>KPI</b>, <b>dashboards</b> et <b>recommandations actionnables</b> — lisibles par des non-tech, utiles pour décider.
-          </p>
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="intro">
+      <div class="container">
+        <div class="hero-grid">
 
-          <div class="chips">
-            <div class="chip"><strong>Focus</strong> : culture / événementiel</div>
-            <div class="chip"><strong>Livrables</strong> : Excel / dashboards / synthèse</div>
-            <div class="chip"><strong>Méthode</strong> : qualité data → insight → action</div>
-            <div class="chip"><strong>Base</strong> : Sciences cognitives (communication)</div>
+          <!-- Left -->
+          <div class="panel">
+            <div class="chip-row">
+              <span class="chip"><span class="pill"></span>Disponible pour missions / CDD</span>
+              <span class="chip">Marseille • hybride / remote</span>
+              <span class="chip">Data publics • billetterie • reporting</span>
+            </div>
+
+            <div class="muted" style="font-weight:900; letter-spacing:.55px; text-transform:uppercase; font-size:12px;">
+              Portfolio — Data / BI pour la culture
+            </div>
+
+            <h1 class="h1">
+              Je transforme des données <span class="accent">billetterie & publics</span><br/>
+              en KPI, dashboards & décisions.
+            </h1>
+
+            <p class="lead">
+              Master 2 Sciences Cognitives. Je construis des dashboards lisibles (direction + ops),
+              je sécurise la qualité data, et je traduis les chiffres en actions concrètes pour lieux culturels & événementiels.
+            </p>
+
+            <div class="hero-cta">
+              <a class="btn primary" href="#projets">Voir les projets</a>
+              <a class="btn ghost" href="#contact">Me contacter</a>
+              <a class="btn" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
           </div>
 
-          <div class="actions">
-            <a class="btn primary" href="#projets">Voir les projets</a>
-            <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
-            <a class="btn ghost" href="#contact">Me contacter</a>
-          </div>
+          <!-- Right: Résumé direction -->
+          <aside class="panel">
+            <div class="kpi-mini-title">
+              <div class="t">Résumé direction</div>
+              <div class="tag">2026 • “Bilan” (exemple)</div>
+            </div>
 
-          <div class="actions" style="margin-top:10px">
-            <!-- Remplace les URLs -->
-            <a class="btn ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-            <a class="btn ghost" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-            <a class="btn ghost" href="https://soundcloud.com/" target="_blank" rel="noopener">SoundCloud</a>
+            <div class="mini-grid" role="list">
+              <div class="mini-kpi" role="listitem">
+                <div>
+                  <div class="label">CA billetterie</div>
+                  <div class="value">298 911 €</div>
+                </div>
+                <div class="trend up">▲ +12%</div>
+              </div>
+
+              <div class="mini-kpi" role="listitem">
+                <div>
+                  <div class="label">Tickets vendus</div>
+                  <div class="value">15 496</div>
+                </div>
+                <div class="trend up">▲ +6%</div>
+              </div>
+
+              <div class="mini-kpi" role="listitem">
+                <div>
+                  <div class="label">Panier moyen</div>
+                  <div class="value">33,3 €</div>
+                </div>
+                <div class="trend down">▼ -2%</div>
+              </div>
+
+              <div class="mini-kpi" role="listitem">
+                <div>
+                  <div class="label">Fill rate moyen</div>
+                  <div class="value">69%</div>
+                </div>
+                <div class="trend up">▲ +4%</div>
+              </div>
+
+              <div class="spark">Mini-sparkline (placeholder)</div>
+            </div>
+          </aside>
+
+        </div>
+
+        <!-- KPI Cards Row -->
+        <div class="kpi-row" aria-label="Points forts">
+          <div class="kpi-card">
+            <div class="label">2 projets phares</div>
+            <div class="value">RTM + Billetterie</div>
+            <div class="desc">Cas concrets : data quality + dashboard + recommandations.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">Stack</div>
+            <div class="value">Python • Excel • BI</div>
+            <div class="desc">Pipelines reproductibles + restitution claire non-tech.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">Focus KPI</div>
+            <div class="value">Ops + Direction</div>
+            <div class="desc">Pilotage quotidien + synthèse décisionnelle.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">Secteur</div>
+            <div class="value">Culture & Events</div>
+            <div class="desc">Billetterie, publics, segmentation, CRM/reporting.</div>
           </div>
         </div>
 
-        <!-- Right: “status” box -->
-        <div class="heroCard">
-          <div class="split">
-            <div>
-              <div class="kicker">Résumé</div>
-              <div class="small">Ce bloc sert à donner un “scan rapide” comme un dashboard direction.</div>
-            </div>
-            <div class="pill good">Disponible</div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="list">
-            <div class="row">
-              <div>
-                <b>Positionnement</b><br/>
-                <span>Data/BI orientée pilotage : billetterie, publics, performance.</span>
-              </div>
-              <div class="pill">BI</div>
-            </div>
-
-            <div class="row">
-              <div>
-                <b>Ce que je livre</b><br/>
-                <span>Un dashboard + une note de synthèse + des actions “prêtes à tester”.</span>
-              </div>
-              <div class="pill">Ops</div>
-            </div>
-
-            <div class="row">
-              <div>
-                <b>Priorité</b><br/>
-                <span>Clarté, reproductibilité, qualité data (pas de KPI fantômes).</span>
-              </div>
-              <div class="pill warn">Qualité</div>
-            </div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="small">
-            <span class="mono">Dernière mise à jour :</span> <span id="lastUpdate"></span>
-          </div>
-        </div>
       </div>
+    </section>
 
-      <!-- KPI -->
-      <div class="kpiRow">
-        <!-- ⚠️ Mets tes chiffres quand tu veux. Là = placeholders. -->
-        <div class="kpi">
-          <div class="kpiLabel">Projets phares</div>
-          <div class="kpiValue">2 <small>(RTM + billetterie)</small></div>
-          <div class="kpiHint">Études de cas détaillées, orientées décision.</div>
-        </div>
-
-        <div class="kpi">
-          <div class="kpiLabel">Stack</div>
-          <div class="kpiValue">Excel <small>+ Python</small></div>
-          <div class="kpiHint">Dashboards + contrôles qualité + exports propres.</div>
-        </div>
-
-        <div class="kpi">
-          <div class="kpiLabel">Domaines</div>
-          <div class="kpiValue">Culture <small>& événementiel</small></div>
-          <div class="kpiHint">Billetterie, publics, reporting, insights.</div>
-        </div>
-
-        <div class="kpi">
-          <div class="kpiLabel">Style de travail</div>
-          <div class="kpiValue">Actionnable <small>(pas “joli mais vide”)</small></div>
-          <div class="kpiHint">Lecture direction + plan ops (quoi faire demain).</div>
-        </div>
+    <!-- Marquee (inspi brutalist) -->
+    <div class="marquee" aria-hidden="true">
+      <div class="track">
+        <b>Contact</b> me <span>•</span> Data <span>•</span> Publics <span>•</span> Billetterie <span>•</span> KPI <span>•</span> Dashboards <span>•</span> Insights <span>•</span> Actions <span>•</span>
+        <b>Contact</b> me <span>•</span> Data <span>•</span> Publics <span>•</span> Billetterie <span>•</span> KPI <span>•</span> Dashboards <span>•</span> Insights <span>•</span> Actions <span>•</span>
       </div>
     </div>
 
-    <!-- “Dashboard visuals” (sans inventer de data) -->
-    <section>
-      <div class="sectionHeader">
-        <h2>Vue dashboard</h2>
-        <p>Une mise en scène “BI” pour présenter tes projets comme des produits.</p>
-      </div>
-
-      <div class="grid cols2">
-        <div class="card">
-          <div class="chartBox">
-            <div class="chartTop">
-              <strong>Performance (exemple visuel)</strong>
-              <span>placeholder (tu mettras une capture plus tard)</span>
-            </div>
-
-            <div class="spark" aria-hidden="true">
-              <!-- simple SVG sparkline décorative -->
-              <svg viewBox="0 0 800 220" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0" stop-color="rgba(106,168,255,0.95)"/>
-                    <stop offset="1" stop-color="rgba(62,230,214,0.95)"/>
-                  </linearGradient>
-                  <linearGradient id="fill1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="rgba(106,168,255,0.25)"/>
-                    <stop offset="1" stop-color="rgba(7,10,18,0)"/>
-                  </linearGradient>
-                </defs>
-                <path d="M0,190 L60,180 L120,165 L180,170 L240,145 L300,150 L360,120 L420,128 L480,98 L540,104 L600,70 L660,92 L720,60 L800,78 L800,220 L0,220 Z"
-                      fill="url(#fill1)"/>
-                <path d="M0,190 L60,180 L120,165 L180,170 L240,145 L300,150 L360,120 L420,128 L480,98 L540,104 L600,70 L660,92 L720,60 L800,78"
-                      fill="none" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" />
-              </svg>
-            </div>
-
-            <div class="chartHint">
-              Ici tu mettras plus tard une <b>capture</b> (Excel dashboard billetterie / RTM) ou une petite démo.
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="chartBox">
-            <div class="chartTop">
-              <strong>Lecture “direction” (exemple)</strong>
-              <span>3 points clairs</span>
-            </div>
-
-            <div class="list">
-              <div class="row">
-                <div>
-                  <b>1) Ce qui marche</b><br/>
-                  <span>un signal net + pourquoi (canal, timing, offre, segment).</span>
-                </div>
-                <div class="pill good">+ Insight</div>
-              </div>
-
-              <div class="row">
-                <div>
-                  <b>2) Ce qui coince</b><br/>
-                  <span>une anomalie + un diagnostic (qualité data / process / offre).</span>
-                </div>
-                <div class="pill warn">⚠️ Alerte</div>
-              </div>
-
-              <div class="row">
-                <div>
-                  <b>3) Action proposée</b><br/>
-                  <span>un test concret à lancer (com, pricing, canal, timing).</span>
-                </div>
-                <div class="pill">→ Next</div>
-              </div>
-            </div>
-
-            <div class="chartHint">
-              C’est le rendu “pro” : <b>moins de blabla</b>, plus de décisions.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projets">
-      <div class="sectionHeader">
-        <h2>Projets</h2>
-        <p>2 cas principaux (tu en ajouteras quand tu veux).</p>
-      </div>
-
-      <div class="grid asym">
-        <!-- RTM -->
-        <article class="card">
-          <div class="cardTitle">
-            <h3>🚋 RTM — Digitalisation réseau Tram</h3>
-            <span class="pill good">Case study</span>
-          </div>
-          <div class="meta">Stage (2025) • Marseille • data géo / PK / maintenance</div>
-
-          <div class="tags">
-            <span class="tag hot">Python</span>
-            <span class="tag">pandas / openpyxl</span>
-            <span class="tag">Leaflet</span>
-            <span class="tag">BI</span>
-            <span class="tag">Qualité data</span>
-          </div>
-
-          <div class="hr"></div>
-
-          <p class="small">
-            <b>Problème :</b> sources hétérogènes (Excel/GPS) → difficile à exploiter.<br/>
-            <b>Solution :</b> pipeline de nettoyage + contrôles + restitution lisible (carte + indicateurs).
-          </p>
-
-          <div class="actions">
-            <a class="btn" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">Rapport (PDF)</a>
-            <!-- Si tu as une démo : remplace -->
-            <a class="btn ghost" href="RTM-map/index.html" target="_blank" rel="noopener">Démo carte</a>
-          </div>
-        </article>
-
-        <!-- Right column: quick “artifacts” -->
-        <aside class="card">
-          <div class="cardTitle">
-            <h3>📌 Ce que ça prouve</h3>
-          </div>
-          <div class="meta">Ce bloc sert aux recruteurs pressés.</div>
-
-          <div class="list">
-            <div class="row">
-              <div>
-                <b>Data Quality</b><br/>
-                <span>dédoublonnage, cohérence, complétude, traçabilité.</span>
-              </div>
-              <div class="pill">DQ</div>
-            </div>
-            <div class="row">
-              <div>
-                <b>Restitution claire</b><br/>
-                <span>cartes + KPI + lecture métier (pas juste du code).</span>
-              </div>
-              <div class="pill">BI</div>
-            </div>
-            <div class="row">
-              <div>
-                <b>Livraison</b><br/>
-                <span>process reproductible + doc (ça tourne demain aussi).</span>
-              </div>
-              <div class="pill good">OK</div>
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      <div class="grid cols2" style="margin-top: var(--gridGap)">
-        <!-- Billetterie -->
-        <article class="card">
-          <div class="cardTitle">
-            <h3>🎟️ Pilotage billetterie — “festival / salle”</h3>
-            <span class="pill">Projet perso</span>
-          </div>
-          <div class="meta">2026 • KPI direction + vue ops • Excel-first</div>
-
-          <div class="tags">
-            <span class="tag hot">Excel</span>
-            <span class="tag">KPI</span>
-            <span class="tag">Segmentation</span>
-            <span class="tag">Recommandations</span>
-            <span class="tag">Python (génération & exports)</span>
-          </div>
-
-          <div class="hr"></div>
-
-          <p class="small">
-            <b>But :</b> un dashboard lisible en 10 secondes + une vue opérationnelle pour agir (alertes, diagnostics, actions).<br/>
-            <b>Livrables :</b> dashboard Excel, exports propres, note de synthèse (à enrichir).
-          </p>
-
-          <div class="actions">
-            <!-- Remplace par un lien vers le repo du projet si tu veux -->
-            <a class="btn ghost" href="https://github.com/" target="_blank" rel="noopener">Code / repo</a>
-          </div>
-        </article>
-
-        <!-- Placeholders captures -->
-        <article class="card">
-          <div class="cardTitle">
-            <h3>🖼️ Captures (à ajouter)</h3>
-            <span class="pill warn">WIP</span>
-          </div>
-          <div class="meta">Quand tu as 2 screenshots propres, ça devient “wow” instant.</div>
-
-          <div class="chartBox">
-            <div class="chartTop">
-              <strong>Emplacements</strong>
-              <span>images dans /assets</span>
-            </div>
-            <div class="small">
-              Ajoute par exemple :
-              <ul>
-                <li><span class="mono">assets/billetterie_dashboard.png</span></li>
-                <li><span class="mono">assets/rtm_dashboard.png</span></li>
-              </ul>
-              Puis remplace ce bloc par deux balises <span class="mono">&lt;img&gt;</span>.
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- SKILLS -->
-    <section id="competences">
-      <div class="sectionHeader">
-        <h2>Compétences</h2>
-        <p>Le kit “je peux livrer ça en entreprise”.</p>
-      </div>
-
-      <div class="grid cols3">
-        <div class="card">
-          <div class="cardTitle"><h3>📊 BI / Reporting</h3></div>
-          <div class="small">
-            KPI direction • dashboards • storytelling • export “Excel-ready” • lisibilité non-tech.
-          </div>
-          <div class="tags" style="margin-top:10px">
-            <span class="tag hot">Excel</span>
-            <span class="tag">Dataviz</span>
-            <span class="tag">KPI</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="cardTitle"><h3>🧼 Data Quality</h3></div>
-          <div class="small">
-            contrôles • doublons • cohérence • valeurs manquantes • règles métier • logs.
-          </div>
-          <div class="tags" style="margin-top:10px">
-            <span class="tag hot">Python</span>
-            <span class="tag">pandas</span>
-            <span class="tag">QA</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="cardTitle"><h3>🧠 Culture & Publics</h3></div>
-          <div class="small">
-            segmentation • canaux • timing d’achat • recommandations actionnables • vulgarisation.
-          </div>
-          <div class="tags" style="margin-top:10px">
-            <span class="tag hot">Culture</span>
-            <span class="tag">Billetterie</span>
-            <span class="tag">Publics</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="apropos">
-      <div class="sectionHeader">
-        <h2>À propos</h2>
-        <p>Une phrase claire + ce que tu veux faire ensuite.</p>
-      </div>
-
-      <div class="grid cols2">
-        <div class="card">
-          <div class="cardTitle"><h3>Profil</h3></div>
-          <p class="small">
-            Diplômée d’un Master 2 en Sciences Cognitives (langage & communication), j’applique une approche pragmatique :
-            <b>des données propres</b> → <b>des KPI lisibles</b> → <b>des décisions testables</b>.
-          </p>
-          <div class="hr"></div>
-          <p class="small">
-            Objectif : contribuer à des équipes culture/événementiel (billetterie, CRM, publics, reporting) avec une BI simple,
-            utile et bien documentée.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="cardTitle"><h3>Ce que je cherche</h3></div>
-          <div class="list">
-            <div class="row">
-              <div>
-                <b>CDD / missions</b><br/>
-                <span>Marseille + hybride/remote</span>
-              </div>
-              <div class="pill good">OK</div>
-            </div>
-            <div class="row">
-              <div>
-                <b>Postes</b><br/>
-                <span>data publics • billetterie • CRM • reporting</span>
-              </div>
-              <div class="pill">Focus</div>
-            </div>
-            <div class="row">
-              <div>
-                <b>Format</b><br/>
-                <span>dashboard + note de synthèse + actions</span>
-              </div>
-              <div class="pill warn">Pro</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact">
-      <div class="sectionHeader">
-        <h2>Contact</h2>
-        <p>Simple. Direct. Efficace.</p>
-      </div>
-
-      <div class="card">
-        <div class="split">
+    <!-- Dashboard Preview -->
+    <section id="dashboard">
+      <div class="container">
+        <div class="section-head">
           <div>
-            <div class="small">Email</div>
-            <div style="font-weight:900; font-size:16px">
-              <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a>
+            <h2>Dashboard preview</h2>
+            <p>Un rendu “slide direction” : une vue claire, puis des actions.</p>
+          </div>
+          <div class="right">
+            <a class="btn small" href="#projets">Voir les case studies</a>
+            <a class="btn small ghost" href="#contact">Discuter d’un besoin</a>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="panel">
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+              <div>
+                <div class="muted" style="font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.6px;">RTM</div>
+                <div style="font-weight:950; font-size:16px; margin-top:4px;">Dashboard Réseau Tram</div>
+              </div>
+              <div class="tags">
+                <span class="tag">Power BI</span>
+                <span class="tag">Géoloc</span>
+                <span class="tag">Qualité data</span>
+              </div>
             </div>
-            <div class="small" style="margin-top:6px">
-              Tu peux aussi remplacer par ton vrai mail + ajouter ton LinkedIn.
+            <div class="mock" style="margin-top:12px;">
+              <!-- Remplace par une vraie capture :
+                   <img src="assets/rtm_dashboard.png" alt="Dashboard RTM"> -->
+              <span>Placeholder image (480×280)</span>
+            </div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">
+              Légende : 15 KPI • carte interactive • suivi qualité & complétude.
             </div>
           </div>
-          <div class="actions">
-            <a class="btn primary" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">Télécharger CV</a>
-            <a class="btn ghost" href="#dashboard">Retour haut</a>
+
+          <div class="panel">
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+              <div>
+                <div class="muted" style="font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.6px;">Insights & actions</div>
+                <div style="font-weight:950; font-size:16px; margin-top:4px;">Ce que je sors des chiffres</div>
+              </div>
+              <span class="tag">lisible non-tech</span>
+            </div>
+
+            <div class="insights">
+              <div class="insight"><strong>Insight #1</strong> — Exemple : un canal explose sur une période → ajuster le push com.</div>
+              <div class="insight"><strong>Insight #2</strong> — Exemple : hausse des incohérences data sur une zone → plan d’audit ciblé.</div>
+              <div class="insight"><strong>Insight #3</strong> — Exemple : panier moyen chute sur un tarif → tester une offre alternative.</div>
+            </div>
+
+            <div class="mini-actions">
+              <a class="btn small primary" href="#contact">Voir détail</a>
+              <a class="btn small ghost" href="#projets">Cas complet</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Projets -->
+    <section id="projets">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Projets sélectionnés</h2>
+            <p>2 case studies, structurées comme un reporting direction : problème → approche → résultats.</p>
+          </div>
+        </div>
+
+        <!-- Case 1 -->
+        <article class="case">
+          <div class="case-top">
+            <div>
+              <h3>🚋 RTM — Digitalisation réseau Tram</h3>
+              <div class="muted" style="font-size:13px; margin-top:6px;">Stage (2025) — Marseille • data multi-sources • géolocalisation</div>
+            </div>
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">Power BI</span>
+              <span class="tag">Leaflet</span>
+            </div>
+          </div>
+
+          <div class="case-body">
+            <div class="case-img">
+              <!-- Remplace par une capture réelle -->
+              <!-- <img src="assets/rtm_case.png" alt="Capture projet RTM"> -->
+              Capture / mockup (480×280)
+            </div>
+
+            <div class="cols3">
+              <div class="col">
+                <div class="t">Problème</div>
+                <p>Données hétérogènes (Excel/GPS) → difficile de piloter la maintenance.</p>
+              </div>
+              <div class="col">
+                <div class="t">Approche</div>
+                <ul>
+                  <li>Consolidation + normalisation référentiel</li>
+                  <li>Contrôles qualité (doublons, cohérence, complétude)</li>
+                  <li>Restitution carte + dashboard</li>
+                </ul>
+              </div>
+              <div class="col">
+                <div class="t">Résultats</div>
+                <ul>
+                  <li>Données plus fiables, lecture simplifiée</li>
+                  <li>Priorisation des vérifications terrain</li>
+                  <li>Suivi clair des écarts & actions</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="case-foot">
+            <div class="muted" style="font-size:12px;">Livrables : pipeline Python + dashboard + carte interactive</div>
+            <div class="right">
+              <a class="btn small" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">Rapport (PDF)</a>
+              <a class="btn small ghost" href="#contact">Me contacter</a>
+            </div>
+          </div>
+        </article>
+
+        <div style="height:16px"></div>
+
+        <!-- Case 2 -->
+        <article class="case">
+          <div class="case-top">
+            <div>
+              <h3>🎟️ Billetterie — Pilotage & performance (projet perso)</h3>
+              <div class="muted" style="font-size:13px; margin-top:6px;">Projet (2026) — KPI ventes, fill rate, panier, top events, rythme des achats</div>
+            </div>
+            <div class="tags">
+              <span class="tag">Excel</span>
+              <span class="tag">Power BI</span>
+              <span class="tag">Python</span>
+            </div>
+          </div>
+
+          <div class="case-body">
+            <div class="case-img">
+              <!-- Remplace par une capture réelle -->
+              <!-- <img src="assets/billetterie_case.png" alt="Capture dashboard billetterie"> -->
+              Capture / mockup (480×280)
+            </div>
+
+            <div class="cols3">
+              <div class="col">
+                <div class="t">Problème</div>
+                <p>Suivre rapidement la perf et détecter les signaux faibles (chutes, pics, no-show).</p>
+              </div>
+              <div class="col">
+                <div class="t">Approche</div>
+                <ul>
+                  <li>Tables KPI (CA, tickets, panier, fill rate)</li>
+                  <li>TCD + Top 10 événements + trend CA</li>
+                  <li>Vue Ops : alertes & diagnostics</li>
+                </ul>
+              </div>
+              <div class="col">
+                <div class="t">Actions</div>
+                <ul>
+                  <li>Optimiser canaux / timing (early vs late)</li>
+                  <li>Identifier events à booster</li>
+                  <li>Contrôler qualité data + anomalies</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="case-foot">
+            <div class="muted" style="font-size:12px;">Livrables : dashboard + note “insights & actions” (à finaliser)</div>
+            <div class="right">
+              <a class="btn small ghost" href="#contact">Demander une démo</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Compétences -->
+    <section id="competences">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Compétences</h2>
+            <p>Un mix data + restitution + métier (culture & événementiel).</p>
+          </div>
+        </div>
+
+        <div class="skills">
+          <div class="skill">
+            <h4>Analyse & data</h4>
+            <ul>
+              <li>Nettoyage, contrôles qualité, dédoublonnage</li>
+              <li>Structuration KPI & modèles simples</li>
+              <li>Lecture business → recommandations</li>
+            </ul>
+          </div>
+          <div class="skill">
+            <h4>BI & outils</h4>
+            <ul>
+              <li>Excel (TCD, formules, dashboards)</li>
+              <li>Power BI (modèle + visuels + storytelling)</li>
+              <li>Python (pandas, automatisations)</li>
+            </ul>
+          </div>
+          <div class="skill">
+            <h4>Culture / événementiel</h4>
+            <ul>
+              <li>Billetterie : CA, fill rate, panier, timing d’achat</li>
+              <li>Publics : segmentation, canaux, zones</li>
+              <li>Reporting direction + vue ops</li>
+            </ul>
           </div>
         </div>
       </div>
+    </section>
 
-      <footer>
-        © <span id="y"></span> Alice Gay — Portfolio “dashboard style” • GitHub Pages
-      </footer>
+    <!-- À propos -->
+    <section id="apropos">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>À propos</h2>
+            <p>Mon angle : rendre la donnée utile, lisible, actionnable — sans “bullshit dashboard”.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <p style="margin:0; color:var(--muted); font-size:15px; max-width: 85ch;">
+            Je suis <strong style="color:var(--text)">Alice Gay</strong>, diplômée d’un Master 2 en Sciences Cognitives.
+            Mon stage à la RTM m’a appris à fiabiliser des données compliquées et à livrer des outils de pilotage concrets.
+            Aujourd’hui, j’applique ça à la <strong style="color:var(--text)">culture & l’événementiel</strong> :
+            comprendre les publics, suivre la performance billetterie et aider les équipes à décider vite et bien.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Contact</h2>
+            <p>Tu veux une version “direction” de tes chiffres ? On s’appelle, et je te le rends lisible.</p>
+          </div>
+        </div>
+
+        <div class="panel" style="display:grid; gap:14px;">
+          <div class="right" style="justify-content:flex-start">
+            <a class="btn primary" href="mailto:alice.gay@email.fr">alice.gay@email.fr</a>
+            <a class="btn ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="btn" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+          </div>
+          <div class="muted" style="font-size:12px;">
+            (Remplace l’email et les liens par les tiens. Oui, je te vois procrastiner.)
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
+  <footer>
+    <div class="container">
+      © <span id="y"></span> Alice Gay — HTML/CSS, GitHub Pages.
+    </div>
+  </footer>
+
   <script>
-    // Dates
     document.getElementById('y').textContent = new Date().getFullYear();
-    document.getElementById('lastUpdate').textContent =
-      new Date().toLocaleDateString('fr-FR', { year:'numeric', month:'long', day:'numeric' });
-
-    // Nav active on scroll
-    const links = Array.from(document.querySelectorAll('header nav a'));
-    const sections = links
-      .map(a => document.querySelector(a.getAttribute('href')))
-      .filter(Boolean);
-
-    const onScroll = () => {
-      const pos = window.scrollY + 140;
-      let active = links[0];
-      sections.forEach((sec, i) => { if (sec.offsetTop <= pos) active = links[i]; });
-      links.forEach(a => a.classList.remove('active'));
-      active.classList.add('active');
-    };
-    document.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
   </script>
 </body>
 </html>
