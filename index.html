@@ -11,7 +11,7 @@
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
 
-  <!-- (Optionnel) Typographies éditoriales -->
+  <!-- Typos éditoriales (optionnel mais recommandé) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,27 +19,29 @@
   <style>
     :root{
       /* Editorial culture */
-      --bg: #FAFAF7;         /* ivoire */
-      --ink: #111111;        /* noir doux */
-      --muted: #6B7280;      /* gris */
+      --bg: #FAFAF7;
+      --ink: #111111;
+      --muted: #6B7280;
       --line: rgba(17,17,17,.12);
-      --surface: rgba(255,255,255,.8);
-      --shadow: 0 16px 40px rgba(0,0,0,.08);
+      --surface: rgba(255,255,255,.78);
+      --shadow: 0 18px 50px rgba(0,0,0,.08);
       --radius: 18px;
 
-      /* Accent unique */
-      --accent: #C2410C;     /* rouge brique */
-      /* --accent: #1D4ED8;  /* bleu profond (alternative) */
+      /* Accent unique (change ici si tu veux bleu) */
+      --accent: #C2410C; /* rouge brique */
+      /* --accent: #1D4ED8; */
 
-      --maxw: 1120px;
+      --maxw: 1140px;
       --header-h: 68px;
 
       --pad-x: clamp(16px, 2.4vw, 28px);
-      --pad-y: clamp(20px, 5vw, 64px);
+      --pad-y: clamp(18px, 5vw, 64px);
       --gap: clamp(12px, 2vw, 18px);
 
-      --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", Times, serif;
-      --sans:  Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
+      --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
+      --sans:  Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+
+      --grain-opacity: .06;
     }
 
     *{ box-sizing:border-box; }
@@ -49,7 +51,7 @@
       font-family: var(--sans);
       color: var(--ink);
       background: var(--bg);
-      overflow: hidden; /* IMPORTANT : on scroll dans .viewport */
+      overflow: hidden; /* scroll dans .viewport */
       line-height: 1.55;
       text-rendering: geometricPrecision;
     }
@@ -64,24 +66,22 @@
       padding: 0 var(--pad-x);
     }
 
-    /* Header */
+    /* ======= Header ======= */
     header.site{
       position: fixed;
       top: 0; left: 0; right: 0;
       height: var(--header-h);
-      z-index: 50;
-      background: rgba(250,250,247,.78);
+      z-index: 60;
+      background: rgba(250,250,247,.82);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
     }
-
     .nav{
       height: var(--header-h);
-      display: flex;
-      align-items: center;
+      display:flex;
+      align-items:center;
       gap: 14px;
     }
-
     .brand{
       font-family: var(--serif);
       font-weight: 700;
@@ -89,20 +89,17 @@
       font-size: 18px;
       white-space: nowrap;
     }
-
     nav.links{
-      display: flex;
+      display:flex;
       gap: 6px;
-      align-items: center;
-      overflow-x: auto;
+      align-items:center;
+      overflow-x:auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       margin-left: 6px;
     }
     nav.links::-webkit-scrollbar{ display:none; }
-
-    .nav .spacer{ flex: 1; }
-
+    .nav .spacer{ flex:1; }
     .nav a{
       font-size: 14px;
       color: rgba(17,17,17,.72);
@@ -118,8 +115,8 @@
     }
     .nav a.active{
       color: var(--ink);
-      background: rgba(194,65,12,.08);
-      border-color: rgba(194,65,12,.22);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      border-color: color-mix(in srgb, var(--accent) 25%, transparent);
     }
 
     .btn{
@@ -129,55 +126,70 @@
       padding: 10px 14px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.75);
+      background: rgba(255,255,255,.78);
       box-shadow: 0 1px 0 rgba(0,0,0,.02);
       font-weight: 600;
       font-size: 14px;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      transition: transform .12s ease, background .12s ease;
       white-space: nowrap;
     }
-    .btn:hover{
-      transform: translateY(-1px);
-      background: rgba(255,255,255,.95);
-      text-decoration: none;
-    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.96); text-decoration:none; }
     .btn.primary{
       background: var(--accent);
       border-color: rgba(0,0,0,.06);
       color: #fff;
-      box-shadow: 0 12px 24px rgba(194,65,12,.20);
+      box-shadow: 0 14px 26px color-mix(in srgb, var(--accent) 25%, transparent);
     }
-    .btn.primary:hover{ background: #b53a0a; }
-    .btn.ghost{
-      background: transparent;
-      border-color: var(--line);
-      color: var(--ink);
-    }
+    .btn.primary:hover{ background: color-mix(in srgb, var(--accent) 92%, #000 8%); }
+    .btn.ghost{ background: transparent; }
 
-    /* Viewport snapping */
+    /* ======= Viewport snapping ======= */
     .viewport{
       height: 100svh;
       overflow-y: auto;
       scroll-snap-type: y mandatory;
       scroll-behavior: smooth;
+      position: relative;
+      background:
+        radial-gradient(900px 500px at 10% 10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+        radial-gradient(900px 500px at 85% 20%, rgba(0,0,0,.04), transparent 60%),
+        var(--bg);
     }
-
     @media (prefers-reduced-motion: reduce){
-      .viewport{ scroll-behavior: auto; scroll-snap-type: none; }
-      .btn{ transition: none; }
+      .viewport{ scroll-behavior:auto; scroll-snap-type:none; }
+      .btn{ transition:none; }
+    }
+    @media (max-width: 720px){
+      .viewport{ scroll-snap-type: y proximity; }
+      .nav .spacer{ display:none; }
     }
 
     section.panel{
       min-height: 100svh;
       scroll-snap-align: start;
       scroll-snap-stop: always;
-      display: flex;
-      align-items: center;
-      padding-top: calc(var(--header-h) + 8px);
-      padding-bottom: 24px;
+      display:flex;
+      align-items:center;
+      padding-top: calc(var(--header-h) + 10px);
+      padding-bottom: 26px;
+      position: relative;
+      isolation: isolate; /* pour couches */
+    }
+    section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
+
+    /* ======= Grain overlay (donne de la matière) ======= */
+    .grain{
+      pointer-events:none;
+      position:absolute;
+      inset:0;
+      opacity: var(--grain-opacity);
+      mix-blend-mode: multiply;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      background-size: 240px 240px;
     }
 
-    /* Editorial blocks */
+    /* ======= Typo / blocs ======= */
     .kicker{
       color: rgba(17,17,17,.62);
       text-transform: uppercase;
@@ -185,47 +197,41 @@
       font-weight: 700;
       font-size: 12px;
     }
-
     h1{
       font-family: var(--serif);
       font-weight: 700;
       letter-spacing: -.02em;
-      line-height: 1.06;
+      line-height: 1.04;
       margin: 12px 0 12px;
-      font-size: clamp(32px, 4.2vw, 56px);
+      font-size: clamp(34px, 4.5vw, 62px);
     }
-
     h2{
       font-family: var(--serif);
       font-weight: 700;
       letter-spacing: -.01em;
       margin: 0 0 12px;
-      font-size: clamp(24px, 3vw, 36px);
+      font-size: clamp(24px, 3vw, 38px);
       line-height: 1.12;
     }
-
     .lead{
       font-size: clamp(16px, 1.35vw, 18px);
       color: rgba(17,17,17,.78);
       margin: 0 0 18px;
-      max-width: 70ch;
+      max-width: 72ch;
     }
-
     .sublead{
       font-size: 14px;
       color: var(--muted);
       margin: 0 0 18px;
       max-width: 72ch;
     }
-
     .section-title{
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
       gap: 12px;
       margin-bottom: 14px;
     }
-
     .section-title .note{
       color: var(--muted);
       font-size: 13px;
@@ -238,85 +244,106 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: clamp(18px, 2.8vw, 28px);
+      position: relative;
+      overflow: hidden;
     }
 
-    .grid{
-      display: grid;
-      gap: var(--gap);
-    }
-    @media (min-width: 900px){
-      .grid.cols-2{ grid-template-columns: 1.1fr .9fr; }
+    .grid{ display:grid; gap: var(--gap); }
+    @media (min-width: 980px){
+      .grid.cols-2{ grid-template-columns: 1.12fr .88fr; }
       .grid.cols-3{ grid-template-columns: 1fr 1fr 1fr; }
     }
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.7);
+    /* ======= Bubble layer ======= */
+    .bubble-layer{
+      position:absolute;
+      inset: 0;
+      pointer-events:none;
+      z-index: 0;
+      opacity: .95;
+    }
+    .bubble{
+      position:absolute;
+      pointer-events:auto; /* pour hover */
       border-radius: 999px;
-      padding: 8px 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
+      background: color-mix(in srgb, #fff 78%, var(--accent) 10%);
+      box-shadow: 0 10px 25px rgba(0,0,0,.06);
+      padding: 10px 14px;
       font-size: 13px;
-      color: rgba(17,17,17,.8);
+      color: rgba(17,17,17,.86);
+      user-select:none;
+      will-change: transform;
+      transform: translate3d(0,0,0);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
     }
+    .bubble:hover{
+      transform: translate3d(0,-3px,0) scale(1.03);
+      background: color-mix(in srgb, #fff 70%, var(--accent) 16%);
+      border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+    }
+    .bubble small{ display:block; color: rgba(17,17,17,.56); font-size: 11px; margin-top: 2px; }
 
-    .mini-cards{
-      display: grid;
-      gap: 10px;
+    /* ======= Hero name interactive (Daniel Sun vibe) ======= */
+    .name-wrap{
+      margin: 14px 0 10px;
+      display:inline-block;
+      position: relative;
+      cursor: default;
+      user-select: none;
     }
-    @media (min-width: 900px){
-      .mini-cards{ grid-template-columns: 1fr 1fr; }
+    .name{
+      font-family: var(--serif);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      font-size: clamp(40px, 6vw, 84px);
+      line-height: 0.95;
     }
-
-    .mini{
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 14px;
-      background: rgba(255,255,255,.62);
+    .name .accent{
+      color: var(--accent);
+      position: relative;
     }
-    .mini strong{
-      display:block;
-      font-size: 14px;
-      margin-bottom: 6px;
-      letter-spacing: -.01em;
+    /* reveal layer */
+    .name-reveal{
+      position:absolute;
+      inset: 0;
+      clip-path: inset(0 100% 0 0); /* hidden */
+      transition: clip-path .22s ease;
+      color: var(--accent);
+      filter: drop-shadow(0 16px 20px rgba(0,0,0,.08));
+      pointer-events:none;
     }
-    .mini span{
-      display:block;
+    .name-wrap:hover .name-reveal{
+      clip-path: inset(0 0 0 0); /* show */
+    }
+    .name-sub{
       font-size: 13px;
-      color: var(--muted);
+      color: rgba(17,17,17,.62);
+      margin-top: 6px;
     }
+    .name-sub strong{ color: rgba(17,17,17,.86); }
 
-    /* Preview figure */
-    .figure{
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 16px;
-      border: 1px dashed rgba(17,17,17,.22);
-      background:
-        radial-gradient(900px 240px at 10% 20%, rgba(194,65,12,.08), transparent 55%),
-        radial-gradient(900px 260px at 80% 30%, rgba(194,65,12,.06), transparent 55%),
-        rgba(255,255,255,.5);
-      display: grid;
-      place-items: center;
-      color: rgba(17,17,17,.55);
-      font-size: 14px;
-      text-align: center;
-      padding: 18px;
-    }
-    .caption{
+    /* little underline that follows mouse (subtle) */
+    .ink-underline{
+      height: 2px;
+      width: 160px;
+      background: color-mix(in srgb, var(--accent) 70%, transparent);
+      border-radius: 99px;
       margin-top: 10px;
-      font-size: 12px;
-      color: rgba(17,17,17,.58);
-      letter-spacing: .02em;
+      transform-origin: left center;
+      opacity: .0;
+      transition: opacity .18s ease;
     }
+    .name-wrap:hover .ink-underline{ opacity: 1; }
 
-    /* Project cards */
+    /* ======= Project cards ======= */
     .project{
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 18px;
       background: rgba(255,255,255,.64);
+      position: relative;
+      overflow: hidden;
     }
     .project h3{
       margin: 0 0 8px;
@@ -329,15 +356,7 @@
       font-size: 14px;
       margin: 0 0 14px;
     }
-    .dl{
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .dl .row{
-      display: grid;
-      gap: 8px;
-    }
+    .dl{ display:grid; gap: 10px; margin-top: 12px; }
     .dl .label{
       font-size: 12px;
       letter-spacing: .12em;
@@ -345,11 +364,7 @@
       color: rgba(17,17,17,.58);
       font-weight: 800;
     }
-    .dl .value{
-      color: rgba(17,17,17,.82);
-      font-size: 14px;
-    }
-
+    .dl .value{ color: rgba(17,17,17,.82); font-size: 14px; }
     .project-actions{
       display:flex;
       flex-wrap:wrap;
@@ -357,14 +372,181 @@
       margin-top: 14px;
     }
 
-    /* Steps */
-    .steps{
+    /* ======= Turntable module (Blunár-inspired) ======= */
+    .turntable{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.70);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .turntable-top{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .tracks{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .track{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform .14s ease, background .14s ease, border-color .14s ease;
+      user-select:none;
+    }
+    .track:hover{ transform: translateY(-1px); background: rgba(255,255,255,.95); }
+    .track[aria-selected="true"]{
+      background: color-mix(in srgb, var(--accent) 10%, #fff);
+      border-color: color-mix(in srgb, var(--accent) 32%, var(--line));
+      font-weight: 700;
+    }
+
+    .deck{
       display:grid;
-      gap: var(--gap);
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items:center;
     }
-    @media (min-width: 900px){
-      .steps{ grid-template-columns: 1fr 1fr 1fr; }
+    @media (min-width: 980px){
+      .deck{ grid-template-columns: .95fr 1.05fr; }
     }
+
+    .platter{
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.9), rgba(255,255,255,.55) 45%, rgba(0,0,0,.02) 70%),
+        linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.00));
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+    }
+
+    .vinyl{
+      width: 78%;
+      aspect-ratio: 1/1;
+      border-radius: 999px;
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.85) 0 7%, rgba(0,0,0,.02) 8% 10%, transparent 11%),
+        radial-gradient(circle at 50% 50%, rgba(17,17,17,.92) 0 46%, rgba(17,17,17,.88) 47% 55%, rgba(17,17,17,.92) 56% 100%);
+      box-shadow: 0 20px 45px rgba(0,0,0,.14);
+      will-change: transform;
+      transform: rotate(0deg);
+      transition: transform .25s ease;
+    }
+
+    .vinyl::after{
+      content:"";
+      position:absolute;
+      inset: 12%;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 85%, #fff) 0 22%, rgba(0,0,0,.04) 23% 26%, transparent 27%),
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.20), transparent 50%);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .grooves{
+      position:absolute;
+      inset: 0;
+      border-radius: 999px;
+      background:
+        repeating-radial-gradient(circle at 50% 50%,
+          rgba(255,255,255,.02) 0 2px,
+          rgba(0,0,0,.03) 2px 4px);
+      opacity: .22;
+      mix-blend-mode: overlay;
+      pointer-events:none;
+    }
+
+    .arm{
+      position:absolute;
+      right: 10%;
+      top: 10%;
+      width: 46%;
+      height: 46%;
+      transform-origin: 88% 16%;
+      transform: rotate(20deg);
+      transition: transform .25s ease;
+      pointer-events:none;
+    }
+    .arm::before{
+      content:"";
+      position:absolute;
+      right: 0;
+      top: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(17,17,17,.55);
+      box-shadow: 0 10px 20px rgba(0,0,0,.10);
+    }
+    .arm::after{
+      content:"";
+      position:absolute;
+      right: 6px;
+      top: 6px;
+      width: 85%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(17,17,17,.38);
+    }
+    .needle{
+      position:absolute;
+      right: 68%;
+      top: 46%;
+      width: 22px;
+      height: 10px;
+      border-radius: 99px;
+      background: rgba(17,17,17,.52);
+      filter: drop-shadow(0 10px 10px rgba(0,0,0,.10));
+    }
+
+    .turntable.is-playing .vinyl{
+      animation: spin 2.2s linear infinite;
+    }
+    .turntable.is-playing .arm{
+      transform: rotate(8deg);
+    }
+    @keyframes spin{
+      to { transform: rotate(360deg); }
+    }
+
+    .tt-copy{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,.68);
+    }
+    .tt-copy h3{
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-size: 20px;
+    }
+    .tt-copy p{
+      margin: 0;
+      color: rgba(17,17,17,.78);
+      font-size: 14px;
+    }
+
+    /* ======= Steps ======= */
+    .steps{ display:grid; gap: var(--gap); }
+    @media (min-width: 980px){ .steps{ grid-template-columns: 1fr 1fr 1fr; } }
     .step{
       border: 1px solid var(--line);
       background: rgba(255,255,255,.64);
@@ -380,7 +562,7 @@
       font-weight: 800;
       color: #fff;
       background: var(--accent);
-      box-shadow: 0 10px 18px rgba(194,65,12,.18);
+      box-shadow: 0 12px 18px color-mix(in srgb, var(--accent) 22%, transparent);
       margin-bottom: 10px;
     }
     .step h4{
@@ -388,38 +570,33 @@
       font-family: var(--serif);
       font-size: 18px;
     }
-    .step p{
-      margin: 0;
-      color: rgba(17,17,17,.78);
-      font-size: 14px;
-    }
+    .step p{ margin:0; color: rgba(17,17,17,.78); font-size: 14px; }
 
-    /* About layout */
-    .about{
+    /* Footer note */
+    .foot{ margin-top: 14px; font-size: 12px; color: rgba(17,17,17,.56); }
+
+    /* Figures */
+    .figure{
+      width:100%;
+      aspect-ratio: 16/9;
+      border-radius: 16px;
+      border: 1px dashed rgba(17,17,17,.22);
+      background:
+        radial-gradient(900px 240px at 10% 20%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%),
+        radial-gradient(900px 260px at 80% 30%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 55%),
+        rgba(255,255,255,.55);
       display:grid;
-      gap: var(--gap);
-      align-items: start;
+      place-items:center;
+      color: rgba(17,17,17,.55);
+      font-size: 14px;
+      text-align:center;
+      padding: 18px;
     }
-    @media (min-width: 900px){
-      .about{ grid-template-columns: 1.05fr .95fr; }
-    }
-    .about p{ margin: 0 0 10px; color: rgba(17,17,17,.78); }
+    .caption{ margin-top: 10px; font-size: 12px; color: rgba(17,17,17,.58); letter-spacing: .02em; }
 
-    /* Footer inside last panel */
-    .foot{
-      margin-top: 16px;
-      font-size: 12px;
-      color: rgba(17,17,17,.56);
-    }
-
-    /* Make anchors land nicely with fixed header */
-    section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
-
-    /* Mobile tweak: snapping can feel harsh, so soften */
-    @media (max-width: 720px){
-      .viewport{ scroll-snap-type: y proximity; }
-      section.panel{ align-items: flex-start; padding-top: calc(var(--header-h) + 16px); }
-      .nav .spacer{ display:none; }
+    /* make it feel less empty */
+    .dense{
+      max-width: 92ch;
     }
   </style>
 </head>
@@ -446,64 +623,85 @@
     </div>
   </header>
 
-  <main class="viewport" id="top">
+  <main class="viewport" id="viewport">
+    <div class="grain"></div>
+
     <!-- PANEL 1 : HOME -->
-    <section id="home" class="panel">
+    <section id="home" class="panel" data-bubbles="publics|comprendre les comportements; coulisses|projets vivants; structuration|info claire; outils|simples et utiles; marseille|sur le terrain; culture|musique & lieux">
+      <div class="bubble-layer" aria-hidden="true"></div>
+
       <div class="container">
         <div class="grid cols-2">
-          <div class="card">
+          <div class="card" style="z-index:1;">
             <div class="kicker">Portfolio — projets culturels & publics</div>
-            <h1>Je structure des projets culturels en comprenant les publics et les dynamiques humaines.</h1>
-            <p class="lead">
+
+            <div class="name-wrap" id="nameWrap" aria-label="Nom interactif">
+              <div class="name">
+                <span class="accent">Alice</span> Gay
+              </div>
+              <div class="name name-reveal" aria-hidden="true" id="nameReveal">
+                <span class="accent">Coulisses</span> & Publics
+              </div>
+              <div class="ink-underline" id="inkUnderline"></div>
+              <div class="name-sub">
+                <strong>Survole</strong> le titre — juste un clin d’œil, pas un feu d’artifice.
+              </div>
+            </div>
+
+            <h1 class="dense" style="margin-top: 10px;">
+              Je structure des projets culturels en comprenant les publics et les dynamiques humaines.
+            </h1>
+
+            <p class="lead dense">
               Sciences cognitives + culture/musique. Basée à Marseille.
               Je cherche un premier poste en coulisses (coordination / publics / production junior / pilotage).
             </p>
 
-            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top: 6px;">
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top: 8px;">
               <a class="btn primary" href="#projets">Voir les projets</a>
               <a class="btn ghost" href="#contact">Me contacter</a>
               <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">Télécharger CV</a>
             </div>
 
-            <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;">
-              <span class="pill">Profil hybride : cognition × culture × structuration</span>
-              <span class="pill">Outils lisibles pour équipes non-tech</span>
-            </div>
+            <div class="foot">Astuce : tu peux cliquer sur les bulles 😉</div>
           </div>
 
-          <div class="card">
+          <div class="card" style="z-index:1;">
             <div class="section-title">
               <h2 style="margin:0;">Résumé coulisses</h2>
               <div class="note">4 repères simples</div>
             </div>
 
-            <div class="mini-cards">
-              <div class="mini">
-                <strong>Comprendre les publics</strong>
-                <span>Analyser les comportements pour décider</span>
+            <div style="display:grid; gap: 10px;">
+              <div class="project" style="padding:14px;">
+                <div class="kicker">01</div>
+                <div style="font-family: var(--serif); font-weight:700; font-size:18px; margin-top:6px;">Comprendre les publics</div>
+                <div class="sublead" style="margin:6px 0 0;">Observer, segmenter, tirer des décisions lisibles.</div>
               </div>
-              <div class="mini">
-                <strong>Structurer l'information</strong>
-                <span>Rendre lisible ce qui est dispersé</span>
+
+              <div class="project" style="padding:14px;">
+                <div class="kicker">02</div>
+                <div style="font-family: var(--serif); font-weight:700; font-size:18px; margin-top:6px;">Structurer l’information</div>
+                <div class="sublead" style="margin:6px 0 0;">Rendre clair ce qui est dispersé (outils, équipes, données).</div>
               </div>
-              <div class="mini">
-                <strong>Créer des outils simples</strong>
-                <span>Supports actionnables au quotidien</span>
-              </div>
-              <div class="mini">
-                <strong>Lien terrain ↔ réflexion</strong>
-                <span>Observer et piloter ensemble</span>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="project" style="padding:14px;">
+                  <div class="kicker">03</div>
+                  <div style="font-family: var(--serif); font-weight:700; font-size:16px; margin-top:6px;">Outils simples</div>
+                  <div class="sublead" style="margin:6px 0 0;">Support décisionnel au quotidien.</div>
+                </div>
+                <div class="project" style="padding:14px;">
+                  <div class="kicker">04</div>
+                  <div style="font-family: var(--serif); font-weight:700; font-size:16px; margin-top:6px;">Terrain ↔ réflexion</div>
+                  <div class="sublead" style="margin:6px 0 0;">Projets vivants, pas abstraction.</div>
+                </div>
               </div>
             </div>
 
             <div style="margin-top:14px;">
-              <div class="figure">
-                Image “revue” (à remplacer)<br>
-                <span style="font-size:12px; color: rgba(17,17,17,.5); display:block; margin-top:8px;">
-                  Exemple : photo de lieu culturel, coulisses, carnet de notes, scène vide, etc.
-                </span>
-              </div>
-              <div class="caption">Visuel d’ambiance — donne le ton “culture”, pas “tech”.</div>
+              <div class="figure">Visuel d’ambiance (lieu / coulisses / carnet) — 16:9</div>
+              <div class="caption">Un seul visuel fort ici = tu remplis l’espace sans bavarder.</div>
             </div>
           </div>
         </div>
@@ -511,264 +709,264 @@
     </section>
 
     <!-- PANEL 2 : PREVIEW -->
-    <section id="preview" class="panel">
+    <section id="preview" class="panel" data-bubbles="insights|clairs; actions|concrètes; lisibilité|non-tech; rythme|revue; preuves|captures; pilotage|direction">
+      <div class="bubble-layer" aria-hidden="true"></div>
+
       <div class="container">
         <div class="section-title">
           <h2>Aperçu livrable : dashboard / synthèse décisionnelle</h2>
-          <div class="note">extrait type “revue”</div>
+          <div class="note">preuve rapide</div>
         </div>
 
         <div class="grid cols-2">
-          <div class="card">
+          <div class="card" style="z-index:1;">
             <div class="figure">Capture dashboard / synthèse (16:9)</div>
-            <div class="caption">Placeholder — remplace par ta meilleure capture (billetterie idéalement).</div>
+            <div class="caption">Mets ici ta meilleure capture billetterie (même sur données fictives).</div>
           </div>
 
-          <div class="card">
-            <div class="kicker" style="color: rgba(17,17,17,.62);">Insights → Actions</div>
-            <h2 style="margin-top:10px;">Exemple d’une synthèse mensuelle</h2>
+          <div class="card" style="z-index:1;">
+            <div class="kicker">Insights → Actions</div>
+            <h2 style="margin-top:10px;">Une équipe comprend quoi faire ensuite</h2>
 
             <div style="margin-top: 14px;">
-              <div class="kicker" style="color: rgba(17,17,17,.58);">INSIGHTS</div>
-              <ul style="margin:10px 0 14px; padding-left: 18px; color: rgba(17,17,17,.78);">
-                <li>Les achats “dernière minute” pèsent lourd : signal d’hésitation / stress d’achat.</li>
-                <li>Une partie des publics revient (2+ événements) : levier de fidélisation clair.</li>
-                <li>Certains formats convertissent mieux, mais le panier moyen varie beaucoup.</li>
+              <div class="kicker" style="opacity:.85;">INSIGHTS</div>
+              <ul style="margin:10px 0 14px; padding-left: 18px; color: rgba(17,17,17,.80);">
+                <li>Les ventes “late” dominent : fenêtre de relance à anticiper.</li>
+                <li>Une part de publics revient : opportunité fidélisation.</li>
+                <li>Le panier varie selon formats : optimisation tarifs/offres.</li>
               </ul>
 
-              <hr style="border:0; border-top: 1px solid var(--line); margin: 10px 0 14px;">
+              <div style="height:1px; background: var(--line); margin: 12px 0;"></div>
 
-              <div class="kicker" style="color: rgba(17,17,17,.58);">ACTIONS</div>
-              <ul style="margin:10px 0 0; padding-left: 18px; color: rgba(17,17,17,.78);">
-                <li>Segmenter les relances (publics réguliers vs occasionnels).</li>
-                <li>Proposer une prévente 72h pour réduire les achats “stress”.</li>
-                <li>Tester des offres/pack selon formats pour lisser remplissage & panier.</li>
+              <div class="kicker" style="opacity:.85;">ACTIONS</div>
+              <ul style="margin:10px 0 0; padding-left: 18px; color: rgba(17,17,17,.80);">
+                <li>Segmenter les relances (réguliers vs occasionnels).</li>
+                <li>Tester préventes / packs pour lisser remplissage.</li>
+                <li>Optimiser calendrier com selon timing d’achat.</li>
               </ul>
             </div>
 
-            <div class="foot">But : une équipe comprend en 30 secondes quoi faire ensuite.</div>
+            <div class="foot">Ça, c’est ton vrai “produit”.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 3 : CE QUE J'APPORTE -->
-    <section id="apporte" class="panel">
+    <!-- PANEL 3 : CE QUE J'APPORTE + TURNTABLE -->
+    <section id="apporte" class="panel" data-bubbles="clarté|dans le flou; publics|qui revient; outils|utilisés; passation|clean; doc|simple; tempo|projet">
+      <div class="bubble-layer" aria-hidden="true"></div>
+
       <div class="container">
         <div class="section-title">
           <h2>Ce que j’apporte</h2>
-          <div class="note">sans jargon</div>
+          <div class="note">et ça se joue</div>
         </div>
 
-        <div class="grid cols-3">
-          <div class="card">
-            <h2 style="font-size:26px; margin-top:0;">Clarté dans le flou</h2>
-            <p class="lead" style="margin:0;">
-              Je récupère des infos dispersées (fichiers, outils, équipes) et je les rends lisibles.
-              Chaque étape reste traçable, pour éviter l’effet “tableau magique incompréhensible”.
-            </p>
+        <div class="deck">
+          <!-- module tourne-disque -->
+          <div class="turntable" id="turntable" style="z-index:1;">
+            <div class="turntable-top">
+              <div>
+                <div class="kicker">Module interactif</div>
+                <div style="font-family: var(--serif); font-weight:700; font-size:20px; margin-top:6px;">Trois “pistes”</div>
+                <div class="sublead" style="margin-top:6px;">Clique une piste. Survole le disque pour “play”.</div>
+              </div>
+              <button class="btn ghost" type="button" id="ttToggle" aria-pressed="false">Play / Pause</button>
+            </div>
+
+            <div class="tracks" role="tablist" aria-label="Pistes">
+              <div class="track" role="tab" tabindex="0" data-track="0" aria-selected="true">Clarté</div>
+              <div class="track" role="tab" tabindex="0" data-track="1" aria-selected="false">Publics</div>
+              <div class="track" role="tab" tabindex="0" data-track="2" aria-selected="false">Outils</div>
+            </div>
+
+            <div style="height:12px;"></div>
+
+            <div class="platter" id="platter" aria-label="Tourne-disque">
+              <div class="vinyl" id="vinyl">
+                <div class="grooves"></div>
+              </div>
+              <div class="arm" id="arm"><div class="needle"></div></div>
+            </div>
+
+            <div class="caption">Interaction légère = personnalité, sans nuire à la lisibilité.</div>
           </div>
 
-          <div class="card">
-            <h2 style="font-size:26px; margin-top:0;">Compréhension des publics</h2>
-            <p class="lead" style="margin:0;">
-              Votre programmation attire-t-elle le bon public ? Qui revient, qui décroche ?
-              Je transforme des signaux en décisions — pas en tableaux vides de sens.
-            </p>
-          </div>
+          <!-- copy liée -->
+          <div class="card" style="z-index:1;">
+            <div class="kicker">Ce que ça veut dire, concrètement</div>
+            <div class="tt-copy" id="ttCopy" style="margin-top:12px;">
+              <h3 id="ttTitle">Clarté dans le flou</h3>
+              <p id="ttText">
+                Je récupère des infos dispersées (fichiers, outils, équipes) et je les rends lisibles. Une structure simple, une passation claire, et on évite les “tableaux magiques”.
+              </p>
+            </div>
 
-          <div class="card">
-            <h2 style="font-size:26px; margin-top:0;">Outils utiles</h2>
-            <p class="lead" style="margin:0;">
-              Dashboards direction, exports terrain, procédures de passation : je crée des supports simples
-              que l’équipe utilise vraiment, au quotidien.
-            </p>
+            <div style="margin-top:12px;" class="project">
+              <div class="kicker">En 1 phrase</div>
+              <div style="margin-top:8px; color: rgba(17,17,17,.82);">
+                Je ne “fais pas de la data” : j’aide une équipe à piloter un projet culturel avec une lecture claire.
+              </div>
+            </div>
+
+            <div class="foot">Oui, c’est un tourne-disque. Non, tu n’es pas DJ (sauf si tu veux).</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- PANEL 4 : PROJETS -->
-    <section id="projets" class="panel">
+    <section id="projets" class="panel" data-bubbles="billetterie|priorité; rtm|réel; musique|lien; preuve|visuelle; impact|équipe; décision|rapide">
+      <div class="bubble-layer" aria-hidden="true"></div>
+
       <div class="container">
         <div class="section-title">
           <h2>Projets</h2>
-          <div class="note">3 exemples de structuration & pilotage</div>
+          <div class="note">3 preuves — pas plus</div>
         </div>
 
         <div class="grid cols-3">
-          <!-- Projet 1 -->
-          <article class="project">
+          <article class="project" style="z-index:1;">
             <h3>Pilotage billetterie & publics</h3>
             <p class="tagline">Interaction publics/événements pour piloter la stratégie</p>
-
             <div class="dl">
-              <div class="row">
+              <div>
                 <div class="label">Problème</div>
-                <div class="value">Données fragmentées, systèmes isolés, lecture difficile entre équipes.</div>
+                <div class="value">Lecture difficile entre équipes : données fragmentées, décisions tardives.</div>
               </div>
-              <div class="row">
+              <div>
                 <div class="label">Livrables</div>
-                <div class="value">Chaîne de traitement • contrôles qualité • exports terrain • dashboard direction.</div>
+                <div class="value">Pipeline • contrôles qualité • exports • dashboard direction.</div>
               </div>
-              <div class="row">
+              <div>
                 <div class="label">Ce que ça prouve</div>
-                <div class="value">Du brut au décisionnel, avec une restitution réellement utilisable.</div>
+                <div class="value">Du brut au pilotage lisible (non-tech friendly).</div>
               </div>
             </div>
-
-            <div style="margin-top:12px;">
-              <div class="figure">Image projet (dashboard / synthèse)</div>
-              <div class="caption">Remplace par ta capture “wow”.</div>
-            </div>
-
             <div class="project-actions">
               <a class="btn primary" href="projects/billetterie.html">Voir le cas complet</a>
               <a class="btn ghost" href="#contact">Me contacter</a>
             </div>
           </article>
 
-          <!-- Projet 2 -->
-          <article class="project">
+          <article class="project" style="z-index:1;">
             <h3>RTM (stage 6 mois)</h3>
             <p class="tagline">Structuration de données réelles complexes</p>
-
             <div class="dl">
-              <div class="row">
+              <div>
                 <div class="label">Problème</div>
-                <div class="value">Données hétérogènes multi-sources, besoin de cohérence et de lisibilité.</div>
+                <div class="value">Sources hétérogènes : cohérence, qualité, restitution opérationnelle.</div>
               </div>
-              <div class="row">
+              <div>
                 <div class="label">Livrables</div>
-                <div class="value">Base structurée • règles qualité • carte / restitution • documentation passation.</div>
+                <div class="value">Base structurée • règles qualité • carte / restitution • doc.</div>
               </div>
-              <div class="row">
+              <div>
                 <div class="label">Ce que ça prouve</div>
-                <div class="value">Autonomie, rigueur, capacité à livrer du concret réutilisable.</div>
+                <div class="value">Autonomie + sérieux sur un gros sujet concret.</div>
               </div>
             </div>
-
-            <div style="margin-top:12px;">
-              <div class="figure">Image projet (carte / tableau)</div>
-              <div class="caption">Remplace par carte RTM / capture avant-après.</div>
-            </div>
-
             <div class="project-actions">
-              <a class="btn" href="projects/rtm.html">Explorer les résultats</a>
+              <a class="btn" href="projects/rtm.html">Explorer</a>
               <a class="btn ghost" href="#contact">Me contacter</a>
             </div>
           </article>
 
-          <!-- Projet 3 -->
-          <article class="project">
+          <article class="project" style="z-index:1;">
             <h3>Musique & créatif</h3>
-            <p class="tagline">Connexion à la création et analyse du secteur</p>
-
+            <p class="tagline">Connexion à la création + analyse utile</p>
             <div class="dl">
-              <div class="row">
+              <div>
                 <div class="label">Problème</div>
-                <div class="value">Besoin de veille, lecture de programmation, signaux publics, inspirations locales.</div>
+                <div class="value">Comprendre une dynamique artistique / public / programmation.</div>
               </div>
-              <div class="row">
+              <div>
                 <div class="label">Livrables</div>
-                <div class="value">Mini outil de veille • note de synthèse • recommandations analytiques.</div>
+                <div class="value">Mini outil / note / restitution courte.</div>
               </div>
-              <div class="row">
+              <div>
                 <div class="label">Ce que ça prouve</div>
-                <div class="value">Du sens : pas “juste de la data”, un lien réel au terrain musical.</div>
+                <div class="value">Tu es connectée au terrain culturel (pas “tech random”).</div>
               </div>
             </div>
-
-            <div style="margin-top:12px;">
-              <div class="figure">Image projet (report / veille)</div>
-              <div class="caption">Remplace par 1 page PDF / capture outil.</div>
-            </div>
-
             <div class="project-actions">
-              <a class="btn" href="projects/musique.html">Télécharger / voir</a>
+              <a class="btn" href="projects/musique.html">Voir</a>
               <a class="btn ghost" href="#contact">Me contacter</a>
             </div>
           </article>
         </div>
 
-        <div class="foot">
-          Règle : 3 projets max. Le reste = bonus (ailleurs, ou jamais).
-        </div>
+        <div class="foot">Si tu ajoutes un 4e projet, je viens te retirer GitHub Pages moi-même. (Non.)</div>
       </div>
     </section>
 
     <!-- PANEL 5 : PROCESS -->
-    <section id="process" class="panel">
+    <section id="process" class="panel" data-bubbles="cadrage|clair; structurer|vite; restituer|simple; doc|passation; feedback|itérations; terrain|réalité">
+      <div class="bubble-layer" aria-hidden="true"></div>
+
       <div class="container">
         <div class="section-title">
           <h2>Comment je bosse</h2>
-          <div class="note">3 étapes pour structurer & piloter</div>
+          <div class="note">3 étapes</div>
         </div>
 
         <div class="steps">
-          <div class="step">
+          <div class="step" style="z-index:1;">
             <div class="n">1</div>
             <h4>Clarifier le besoin</h4>
-            <p>Comprendre le contexte réel, les décisions à prendre, les équipes impliquées, les contraintes.</p>
+            <p>Décisions à prendre, contraintes, équipes, et attentes réalistes.</p>
           </div>
-          <div class="step">
+          <div class="step" style="z-index:1;">
             <div class="n">2</div>
             <h4>Structurer l’information</h4>
-            <p>Organiser, documenter, créer des contrôles qualité, préparer des exports simples à utiliser.</p>
+            <p>Organisation, contrôles qualité, exports simples, documentation utile.</p>
           </div>
-          <div class="step">
+          <div class="step" style="z-index:1;">
             <div class="n">3</div>
             <h4>Restituer</h4>
-            <p>Livrer des insights actionnables : dashboards, synthèses, procédures, et passation claire.</p>
+            <p>Insights actionnables : dashboard, synthèse courte, recommandations.</p>
           </div>
         </div>
-
-        <div class="foot">Objectif : que l’équipe puisse continuer sans toi (et te rappeler quand ça grossit).</div>
       </div>
     </section>
 
     <!-- PANEL 6 : A PROPOS -->
-    <section id="apropos" class="panel">
+    <section id="apropos" class="panel" data-bubbles="sciences cog|base; culture|vraie; projets|humains; méthode|simple; Marseille|terrain; envie|coulisses">
+      <div class="bubble-layer" aria-hidden="true"></div>
+
       <div class="container">
         <div class="section-title">
           <h2>À propos</h2>
-          <div class="note">coulisses • publics • projets</div>
+          <div class="note">court, crédible</div>
         </div>
 
-        <div class="about">
-          <div class="card">
-            <p>
-              Formée en sciences cognitives, j’ai développé une sensibilité à l’interaction des publics avec les lieux
-              musicaux et aux dynamiques humaines sur le terrain.
+        <div class="grid cols-2">
+          <div class="card" style="z-index:1;">
+            <p class="lead">
+              Formée en sciences cognitives, je m’intéresse aux projets culturels parce qu’ils sont humains, vivants et complexes.
             </p>
-            <p>
-              J’aime les projets réels, vivants, où il faut comprendre, organiser, et rendre les choses pilotables —
-              sans perdre le sens.
+            <p class="sublead">
+              Ce que j’aime : comprendre les publics, organiser les infos, faire le lien terrain ↔ décision, et livrer des supports simples que l’équipe utilise vraiment.
             </p>
-            <p style="margin-bottom:0;">
-              Je cherche à intégrer une structure culturelle (salle, festival, lieu hybride) pour contribuer en coordination,
-              production junior ou pilotage publics.
+            <p class="sublead" style="margin-bottom:0;">
+              Je cherche un premier poste dans une structure culturelle/musicale (coordination, production junior, publics, pilotage).
             </p>
 
-            <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:10px;">
-              <span class="pill">Basée à Marseille</span>
-              <span class="pill">Première expérience : stage 6 mois</span>
-              <span class="pill">Disponible : à remplir</span>
-            </div>
+            <div class="foot">Basée à Marseille — disponibilité : à remplir.</div>
           </div>
 
-          <div class="card">
-            <div class="figure">Photo / visuel “ambiance”</div>
-            <div class="caption">
-              Place ici une image sobre : bureau/carnet, salle vide, scène, lieu culturel, etc.
-            </div>
+          <div class="card" style="z-index:1;">
+            <div class="figure">Photo / visuel “ambiance” (16:9)</div>
+            <div class="caption">Une image sobre suffit. Le reste = preuves (projets).</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- PANEL 7 : CONTACT -->
-    <section id="contact" class="panel">
+    <section id="contact" class="panel" data-bubbles="email|direct; linkedin|pro; github|preuves; cv|pdf; dispo|simple; parlons|15min">
+      <div class="bubble-layer" aria-hidden="true"></div>
+
       <div class="container">
         <div class="section-title">
           <h2>Parlons.</h2>
@@ -776,30 +974,27 @@
         </div>
 
         <div class="grid cols-2">
-          <div class="card">
-            <p class="lead" style="margin-bottom:14px;">
-              Si tu as un projet culturel à structurer et des publics à comprendre : parlons.
-            </p>
-            <div style="display:grid; gap:10px; margin-top: 10px;">
-              <div class="project" style="padding:14px;">
-                <div class="label">Email</div>
-                <div class="value">
-                  <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a>
-                </div>
-              </div>
+          <div class="card" style="z-index:1;">
+            <p class="lead">Si tu as un projet culturel à structurer et des publics à comprendre : parlons.</p>
 
-              <div class="project" style="padding:14px;">
-                <div class="label">LinkedIn</div>
-                <div class="value">
-                  <a href="https://www.linkedin.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
-                </div>
+            <div class="project" style="padding:14px; margin-top:10px;">
+              <div class="kicker">Email</div>
+              <div style="margin-top:6px; font-weight:600;">
+                <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a>
               </div>
+            </div>
 
-              <div class="project" style="padding:14px;">
-                <div class="label">GitHub</div>
-                <div class="value">
-                  <a href="https://github.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
-                </div>
+            <div class="project" style="padding:14px; margin-top:10px;">
+              <div class="kicker">LinkedIn</div>
+              <div style="margin-top:6px;">
+                <a href="https://www.linkedin.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
+              </div>
+            </div>
+
+            <div class="project" style="padding:14px; margin-top:10px;">
+              <div class="kicker">GitHub</div>
+              <div style="margin-top:6px;">
+                <a href="https://github.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
               </div>
             </div>
 
@@ -811,11 +1006,9 @@
             <div class="foot">© <span id="y"></span> Alice Gay — HTML/CSS/JS — GitHub Pages</div>
           </div>
 
-          <div class="card">
-            <div class="figure">Optionnel : mini-plan / disponibilité / note</div>
-            <div class="caption">
-              Tu peux remplacer ce bloc par : “Ce que je cherche”, “Type de structures”, “Disponibilité”, etc.
-            </div>
+          <div class="card" style="z-index:1;">
+            <div class="figure">Option : mini “ce que je cherche”</div>
+            <div class="caption">CDD / missions — lieux culturels, festivals, salles — Marseille + hybride.</div>
           </div>
         </div>
       </div>
@@ -826,30 +1019,25 @@
     // Year
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Active nav link with IntersectionObserver (works with snapping)
+    // Active nav link with IntersectionObserver (snap-friendly)
     const navLinks = Array.from(document.querySelectorAll('header.site nav a'));
-    const sections = navLinks
-      .map(a => document.querySelector(a.getAttribute('href')))
-      .filter(Boolean);
+    const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const viewport = document.getElementById('viewport');
 
     const setActive = (id) => {
       navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
     };
 
     const io = new IntersectionObserver((entries) => {
-      // choose the most visible panel
       const visible = entries
         .filter(e => e.isIntersecting)
         .sort((a,b) => (b.intersectionRatio - a.intersectionRatio))[0];
       if (visible && visible.target && visible.target.id) setActive(visible.target.id);
-    }, {
-      root: document.querySelector('.viewport'),
-      threshold: [0.35, 0.55, 0.75]
-    });
+    }, { root: viewport, threshold: [0.35, 0.55, 0.75] });
 
     sections.forEach(sec => io.observe(sec));
 
-    // Fix header height variable if fonts / wrapping changes
+    // Sync header height (in case it wraps)
     const headerEl = document.querySelector('header.site');
     const syncHeaderH = () => {
       const h = Math.ceil(headerEl.getBoundingClientRect().height);
@@ -857,6 +1045,212 @@
     };
     window.addEventListener('resize', syncHeaderH, { passive:true });
     syncHeaderH();
+
+    // ======= Bubble auto-layout + parallax =======
+    function parseBubbles(str){
+      // format: "title|subtitle; title2|subtitle2; ..."
+      return (str || "")
+        .split(";")
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(pair => {
+          const [t, sub] = pair.split("|").map(x => (x || "").trim());
+          return { t, sub };
+        });
+    }
+
+    function layoutBubbles(panel){
+      const layer = panel.querySelector(".bubble-layer");
+      if(!layer) return;
+
+      // reset
+      layer.innerHTML = "";
+
+      const data = parseBubbles(panel.getAttribute("data-bubbles"));
+      if(!data.length) return;
+
+      // bounds: keep inside a safe area (avoid header + container edges)
+      const rect = panel.getBoundingClientRect();
+      const safeTop = 90;     // below header
+      const safeBottom = 40;
+      const safeSide = 18;
+
+      const maxW = rect.width - safeSide*2;
+      const maxH = rect.height - safeTop - safeBottom;
+
+      // create bubbles
+      const bubbles = data.map((b, i) => {
+        const el = document.createElement("div");
+        el.className = "bubble";
+        el.setAttribute("role","button");
+        el.tabIndex = 0;
+        el.innerHTML = `${b.t}${b.sub ? `<small>${b.sub}</small>` : ""}`;
+        el.dataset.i = i;
+        layer.appendChild(el);
+        return el;
+      });
+
+      // simple collision-avoid-ish placement (best effort, fast)
+      const placed = [];
+      const triesPerBubble = 60;
+
+      bubbles.forEach((el) => {
+        const w = el.offsetWidth;
+        const h = el.offsetHeight;
+
+        let best = null;
+
+        for(let t=0; t<triesPerBubble; t++){
+          const x = safeSide + Math.random()*(maxW - w);
+          const y = safeTop + Math.random()*(maxH - h);
+
+          // score based on overlap
+          let overlap = 0;
+          for(const p of placed){
+            const ox = Math.max(0, Math.min(x+w, p.x+p.w) - Math.max(x, p.x));
+            const oy = Math.max(0, Math.min(y+h, p.y+p.h) - Math.max(y, p.y));
+            overlap += ox*oy;
+          }
+
+          // also try to keep away from center a bit (so content stays readable)
+          const cx = rect.width/2, cy = rect.height/2;
+          const dist = Math.hypot((x+w/2)-cx, (y+h/2)-cy);
+
+          const score = overlap - dist*0.3; // lower is better
+          if(best === null || score < best.score){
+            best = { x, y, w, h, score };
+          }
+        }
+
+        const pos = best || { x: safeSide, y: safeTop, w, h };
+        placed.push(pos);
+
+        el.style.left = pos.x + "px";
+        el.style.top  = pos.y + "px";
+
+        // random micro-rotation + depth factor for parallax
+        const rot = (Math.random()*2 - 1) * 1.2;
+        const depth = 0.6 + Math.random()*0.9; // 0.6..1.5
+        el.style.transform = `translate3d(0,0,0) rotate(${rot}deg)`;
+        el.dataset.depth = depth.toFixed(2);
+      });
+
+      // bubble click: scroll to a relevant section (small “aha”)
+      // mapping by index (best effort)
+      const anchorMap = ["#preview","#apporte","#projets","#process","#apropos","#contact"];
+      bubbles.forEach((b,i) => {
+        b.addEventListener("click", () => {
+          const a = anchorMap[i % anchorMap.length];
+          const target = document.querySelector(a);
+          if(target) target.scrollIntoView({ behavior:"smooth", block:"start" });
+        });
+        b.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault(); b.click();
+          }
+        });
+      });
+    }
+
+    // initial layout + on resize
+    const panels = Array.from(document.querySelectorAll("section.panel"));
+    function relayoutAll(){ panels.forEach(layoutBubbles); }
+    window.addEventListener("resize", () => { relayoutAll(); }, { passive:true });
+    // do once after first paint
+    requestAnimationFrame(() => { relayoutAll(); });
+
+    // parallax on mouse
+    viewport.addEventListener("mousemove", (e) => {
+      const vx = e.clientX / window.innerWidth - 0.5;
+      const vy = e.clientY / window.innerHeight - 0.5;
+      const current = panels.find(p => {
+        const r = p.getBoundingClientRect();
+        return r.top <= window.innerHeight*0.35 && r.bottom >= window.innerHeight*0.65;
+      });
+      if(!current) return;
+      const layer = current.querySelector(".bubble-layer");
+      if(!layer) return;
+      const bs = layer.querySelectorAll(".bubble");
+      bs.forEach((b) => {
+        const d = parseFloat(b.dataset.depth || "1");
+        const tx = vx * 14 * d;
+        const ty = vy * 10 * d;
+        b.style.translate = `${tx}px ${ty}px`;
+      });
+    });
+
+    // ======= Hero “Daniel Sun-ish” underline follows mouse =======
+    const nameWrap = document.getElementById("nameWrap");
+    const underline = document.getElementById("inkUnderline");
+    if(nameWrap && underline){
+      nameWrap.addEventListener("mousemove", (e) => {
+        const r = nameWrap.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width; // 0..1
+        const scale = 0.6 + x * 0.6;
+        underline.style.transform = `scaleX(${scale})`;
+      });
+      nameWrap.addEventListener("mouseleave", () => {
+        underline.style.transform = "scaleX(1)";
+      });
+    }
+
+    // ======= Turntable interactions =======
+    const turntable = document.getElementById("turntable");
+    const ttToggle = document.getElementById("ttToggle");
+    const tracks = Array.from(document.querySelectorAll(".track"));
+    const ttTitle = document.getElementById("ttTitle");
+    const ttText = document.getElementById("ttText");
+    const platter = document.getElementById("platter");
+
+    const trackData = [
+      {
+        title: "Clarté dans le flou",
+        text: "Je récupère des infos dispersées (fichiers, outils, équipes) et je les rends lisibles. Une structure simple, une passation claire, et on évite les “tableaux magiques”."
+      },
+      {
+        title: "Compréhension des publics",
+        text: "Je transforme des signaux (ventes, retours, comportements, timing) en lecture humaine et actionnable : qui vient, qui revient, qui décroche — et quoi tester."
+      },
+      {
+        title: "Outils simples et utilisés",
+        text: "Dashboards direction, exports terrain, mini-synthèses : je privilégie des supports que l’équipe peut lire et utiliser, sans dépendre d’un spécialiste."
+      }
+    ];
+
+    function setTrack(i){
+      tracks.forEach((t, idx) => t.setAttribute("aria-selected", String(idx === i)));
+      ttTitle.textContent = trackData[i].title;
+      ttText.textContent  = trackData[i].text;
+
+      // little “needle move” illusion by toggling play quickly
+      if(turntable.classList.contains("is-playing")){
+        turntable.classList.remove("is-playing");
+        void turntable.offsetWidth;
+        turntable.classList.add("is-playing");
+      }
+    }
+
+    tracks.forEach((t) => {
+      t.addEventListener("click", () => setTrack(parseInt(t.dataset.track,10)));
+      t.addEventListener("keydown", (e) => {
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          t.click();
+        }
+      });
+    });
+
+    let playing = false;
+    function setPlaying(on){
+      playing = on;
+      turntable.classList.toggle("is-playing", on);
+      ttToggle.setAttribute("aria-pressed", String(on));
+    }
+
+    ttToggle?.addEventListener("click", () => setPlaying(!playing));
+    platter?.addEventListener("mouseenter", () => setPlaying(true));
+    platter?.addEventListener("mouseleave", () => setPlaying(false));
+
   </script>
 </body>
 </html>
