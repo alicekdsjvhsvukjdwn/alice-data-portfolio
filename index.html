@@ -4,615 +4,859 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Portfolio – Alice Gay</title>
-  <meta name="description" content="Portfolio d'Alice Gay – sciences cognitives, data, culture & création. Projets RTM, data viz, musique, interfaces." />
+  <meta name="description" content="Portfolio d'Alice Gay – sciences cognitives × projets culturels × publics. Billetterie, structuration, outils lisibles." />
   <meta property="og:title" content="Portfolio – Alice Gay" />
-  <meta property="og:description" content="Ponts entre sciences cognitives, culture et création. Projets data, interfaces, musique." />
+  <meta property="og:description" content="Je structure des projets culturels en comprenant les publics et les dynamiques humaines." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
 
+  <!-- (Optionnel) Typographies éditoriales -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
-    :root {
-      --bg: #0f1115;        /* fond */
-      --surface: #151922;   /* cartes */
-      --text: #e7ebf3;      /* texte principal */
-      --muted: #a6b0c2;     /* texte secondaire */
-      --primary: #8ec5ff;   /* accent */
-      --primary-2: #a3ffd6; /* accent bis */
-      --border: #23293a;
-      --maxw: 1080px;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      overflow-x: clip; /* ou hidden */
-      background: linear-gradient(180deg, #0c0e13 0%, #0f1115 30%, #0f1115 100%);
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      line-height: 1.6;
-    }
-    a { color: var(--primary); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* Layout */
-    .container { width: 100%; max-width: var(--maxw); padding: 0 20px; margin: 0 auto; overflow: clip; }
-    header.site {
-      position: sticky; top: 0; z-index: 40; backdrop-filter: blur(10px);
-      background: rgba(15,17,21,.7); border-bottom: 1px solid var(--border);
-    }
-    .nav { display: flex; align-items: center; gap: 16px; padding: 14px 0; }
-    .brand { font-weight: 700; letter-spacing: .2px; }
-    .spacer { flex: 1; }
-    .nav a { color: var(--muted); font-size: 15px; padding: 8px 10px; border-radius: 8px; }
-    .nav a.active, .nav a:focus-visible { color: var(--text); background: #1a1f2b; outline: none; }
-
-    .hero { padding: 56px 0 24px; }
-    .card {
-      background: radial-gradient(1200px 300px at 0% -20%, rgba(142,197,255,.08), transparent 60%),
-                  radial-gradient(800px 200px at 110% -10%, rgba(163,255,214,.06), transparent 60%),
-                  var(--surface);
-      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: 28px; 
-    }
-    .kicker { color: var(--primary-2); font-weight: 600; letter-spacing: .4px; text-transform: uppercase; font-size: 12px; }
-    h1 { margin: 8px 0 6px; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; }
-    p.lead { color: var(--muted); font-size: 18px; margin: 12px 0 20px; }
-
-    .links { display: flex; flex-wrap: wrap; gap: 10px; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); background: #141925; color: var(--text); font-weight: 600; }
-    .btn:hover { background: #192135; text-decoration: none; }
-    .btn.ghost { background: transparent; color: var(--primary); }
-
-    section { padding: 28px 0 8px; }
-    section h2 { font-size: clamp(22px, 2.4vw, 28px); margin: 6px 0 16px; }
-    section .subtitle { color: var(--muted); margin: -6px 0 18px; }
-
-    .grid { display: grid; gap: 16px; }
-    @media (min-width: 800px) {
-      .grid.cols-2 { grid-template-columns: 1fr 1fr; }
-      .grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-    }
-
-    .project { padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: #121723; }
-    .project h3 { margin: 0 0 6px; font-size: 19px; }
-    .meta { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
-    .badge { display: inline-block; background: #1b2030; border: 1px solid var(--border); color: var(--muted); padding: 4px 8px; border-radius: 999px; font-size: 12px; margin-right: 6px; }
-    .figure { width: 100%; aspect-ratio: 16/9; background: #0f1320; border: 1px dashed #2a3349; border-radius: 12px; display: grid; place-items: center; color: #637399; font-size: 14px; }
-    .iframe-wrap { width: 100%; height: 560px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #0f1320; }
-    .iframe-wrap iframe { width: 100%; height: 100%; border: 0; }
-
-    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    th, td { padding: 12px 14px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: #121723; color: var(--muted); font-weight: 600; }
-    tr:last-child td { border-bottom: none; }
-
-    footer { color: var(--muted); padding: 36px 0 56px; text-align: center; }
-    .small { font-size: 13px; color: var(--muted); }
-
-    /* Utilities */
-    .mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-20{margin-top:20px}.mt-24{margin-top:24px}
-    .mb-0{margin-bottom:0}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}
-    .center { display: grid; place-items: center; }
-
-    /* Case study helpers */
-    .project img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #0f1320;
-    }
-
-    .case-title { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; }
-    .case-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
-
-    hr.sep {
-      border: 0;
-      border-top: 1px solid var(--border);
-      margin: 16px 0;
-      opacity: 0.8;
-    }
-
-    /* === Responsive + viewport-fit patch (ajoute en bas de ton <style>) === */
-
-    /* 1) Variables responsives */
     :root{
-      --maxw: min(1120px, calc(100vw - 40px)); /* s’adapte à la fenêtre */
-      --header-h: 56px; /* valeur par défaut, ajustée ensuite en JS optionnel */
-      --pad-x: clamp(16px, 2.2vw, 24px);
-      --pad-y: clamp(20px, 4vw, 56px);
-      --gap: clamp(12px, 2vw, 16px);
+      /* Editorial culture */
+      --bg: #FAFAF7;         /* ivoire */
+      --ink: #111111;        /* noir doux */
+      --muted: #6B7280;      /* gris */
+      --line: rgba(17,17,17,.12);
+      --surface: rgba(255,255,255,.8);
+      --shadow: 0 16px 40px rgba(0,0,0,.08);
+      --radius: 18px;
+
+      /* Accent unique */
+      --accent: #C2410C;     /* rouge brique */
+      /* --accent: #1D4ED8;  /* bleu profond (alternative) */
+
+      --maxw: 1120px;
+      --header-h: 68px;
+
+      --pad-x: clamp(16px, 2.4vw, 28px);
+      --pad-y: clamp(20px, 5vw, 64px);
+      --gap: clamp(12px, 2vw, 18px);
+
+      --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", Times, serif;
+      --sans:  Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
     }
 
-    /* 2) Container: padding responsive + pas de clipping agressif */
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--bg);
+      overflow: hidden; /* IMPORTANT : on scroll dans .viewport */
+      line-height: 1.55;
+      text-rendering: geometricPrecision;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
     .container{
-      padding-left: var(--pad-x);
-      padding-right: var(--pad-x);
+      width: 100%;
       max-width: var(--maxw);
-      overflow: visible; /* évite des coupures bizarres sur mobile */
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
     }
 
-    /* 3) Header: meilleure tenue + nav utilisable sur mobile */
+    /* Header */
     header.site{
-      /* Support iOS notch */
-      padding-top: env(safe-area-inset-top);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      z-index: 50;
+      background: rgba(250,250,247,.78);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
     }
 
     .nav{
-      min-height: var(--header-h);
-      gap: var(--gap);
-      flex-wrap: wrap; /* autorise retour à la ligne si besoin */
-    }
-
-    /* Nav: sur mobile, plutôt scroll horizontal que tout casser */
-    header.site nav.links{
+      height: var(--header-h);
       display: flex;
-      gap: 6px;
-      flex-wrap: nowrap;        /* on évite 3 lignes de nav */
-      overflow-x: auto;         /* scroll horizontal */
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;    /* Firefox */
+      align-items: center;
+      gap: 14px;
     }
-    header.site nav.links::-webkit-scrollbar{ display:none; }
 
-    /* Les liens restent lisibles */
-    header.site nav.links a{
+    .brand{
+      font-family: var(--serif);
+      font-weight: 700;
+      letter-spacing: .2px;
+      font-size: 18px;
       white-space: nowrap;
     }
 
-    /* Brand + nav: évite la compression */
-    .brand{ flex: 0 0 auto; }
-    .spacer{ display:none; } /* sur mobile on évite l’espace “vide” qui casse */
-    @media (min-width: 900px){
-      .spacer{ display:block; }
-      header.site nav.links{ overflow: visible; }
-    }
-
-    /* 4) Hero: s’adapte à la hauteur de la fenêtre */
-    .hero{
-      padding: var(--pad-y) 0 24px;
-      min-height: calc(100vh - var(--header-h)); /* “fit screen” */
+    nav.links{
       display: flex;
-      align-items: center; /* centre vertical si peu de contenu */
-    }
-
-    /* 5) Card padding responsive */
-    .card{
-      padding: clamp(18px, 3vw, 28px);
-    }
-
-    /* 6) Grilles: plus robuste */
-    .grid{ gap: var(--gap); }
-    @media (max-width: 799px){
-      .grid.cols-2, .grid.cols-3{ grid-template-columns: 1fr; }
-    }
-
-    /* 7) Iframe: hauteur responsive (au lieu de 560px fixe) */
-    .iframe-wrap{
-      height: clamp(320px, 60vh, 720px);
-    }
-
-    /* 8) Table: scroll horizontal si écran étroit */
-    .project table{
-      display: block;
+      gap: 6px;
+      align-items: center;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-left: 6px;
+    }
+    nav.links::-webkit-scrollbar{ display:none; }
+
+    .nav .spacer{ flex: 1; }
+
+    .nav a{
+      font-size: 14px;
+      color: rgba(17,17,17,.72);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .nav a:hover{
+      background: rgba(17,17,17,.04);
+      text-decoration: none;
+    }
+    .nav a.active{
+      color: var(--ink);
+      background: rgba(194,65,12,.08);
+      border-color: rgba(194,65,12,.22);
     }
 
-    /* 9) Images: évite les débordements */
-    img{
-      max-width: 100%;
-      height: auto;
+    .btn{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      white-space: nowrap;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.95);
+      text-decoration: none;
+    }
+    .btn.primary{
+      background: var(--accent);
+      border-color: rgba(0,0,0,.06);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(194,65,12,.20);
+    }
+    .btn.primary:hover{ background: #b53a0a; }
+    .btn.ghost{
+      background: transparent;
+      border-color: var(--line);
+      color: var(--ink);
     }
 
+    /* Viewport snapping */
+    .viewport{
+      height: 100svh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .viewport{ scroll-behavior: auto; scroll-snap-type: none; }
+      .btn{ transition: none; }
+    }
+
+    section.panel{
+      min-height: 100svh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      align-items: center;
+      padding-top: calc(var(--header-h) + 8px);
+      padding-bottom: 24px;
+    }
+
+    /* Editorial blocks */
+    .kicker{
+      color: rgba(17,17,17,.62);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    h1{
+      font-family: var(--serif);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1.06;
+      margin: 12px 0 12px;
+      font-size: clamp(32px, 4.2vw, 56px);
+    }
+
+    h2{
+      font-family: var(--serif);
+      font-weight: 700;
+      letter-spacing: -.01em;
+      margin: 0 0 12px;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.12;
+    }
+
+    .lead{
+      font-size: clamp(16px, 1.35vw, 18px);
+      color: rgba(17,17,17,.78);
+      margin: 0 0 18px;
+      max-width: 70ch;
+    }
+
+    .sublead{
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 18px;
+      max-width: 72ch;
+    }
+
+    .section-title{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title .note{
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .card{
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 2.8vw, 28px);
+    }
+
+    .grid{
+      display: grid;
+      gap: var(--gap);
+    }
+    @media (min-width: 900px){
+      .grid.cols-2{ grid-template-columns: 1.1fr .9fr; }
+      .grid.cols-3{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: rgba(17,17,17,.8);
+    }
+
+    .mini-cards{
+      display: grid;
+      gap: 10px;
+    }
+    @media (min-width: 900px){
+      .mini-cards{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .mini{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 14px;
+      background: rgba(255,255,255,.62);
+    }
+    .mini strong{
+      display:block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      letter-spacing: -.01em;
+    }
+    .mini span{
+      display:block;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Preview figure */
+    .figure{
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      border: 1px dashed rgba(17,17,17,.22);
+      background:
+        radial-gradient(900px 240px at 10% 20%, rgba(194,65,12,.08), transparent 55%),
+        radial-gradient(900px 260px at 80% 30%, rgba(194,65,12,.06), transparent 55%),
+        rgba(255,255,255,.5);
+      display: grid;
+      place-items: center;
+      color: rgba(17,17,17,.55);
+      font-size: 14px;
+      text-align: center;
+      padding: 18px;
+    }
+    .caption{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(17,17,17,.58);
+      letter-spacing: .02em;
+    }
+
+    /* Project cards */
+    .project{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(255,255,255,.64);
+    }
+    .project h3{
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-size: 20px;
+      line-height: 1.15;
+    }
+    .project .tagline{
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 14px;
+    }
+    .dl{
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .dl .row{
+      display: grid;
+      gap: 8px;
+    }
+    .dl .label{
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,.58);
+      font-weight: 800;
+    }
+    .dl .value{
+      color: rgba(17,17,17,.82);
+      font-size: 14px;
+    }
+
+    .project-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 14px;
+    }
+
+    /* Steps */
+    .steps{
+      display:grid;
+      gap: var(--gap);
+    }
+    @media (min-width: 900px){
+      .steps{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .step{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.64);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .step .n{
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display:grid;
+      place-items:center;
+      font-weight: 800;
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 10px 18px rgba(194,65,12,.18);
+      margin-bottom: 10px;
+    }
+    .step h4{
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-size: 18px;
+    }
+    .step p{
+      margin: 0;
+      color: rgba(17,17,17,.78);
+      font-size: 14px;
+    }
+
+    /* About layout */
+    .about{
+      display:grid;
+      gap: var(--gap);
+      align-items: start;
+    }
+    @media (min-width: 900px){
+      .about{ grid-template-columns: 1.05fr .95fr; }
+    }
+    .about p{ margin: 0 0 10px; color: rgba(17,17,17,.78); }
+
+    /* Footer inside last panel */
+    .foot{
+      margin-top: 16px;
+      font-size: 12px;
+      color: rgba(17,17,17,.56);
+    }
+
+    /* Make anchors land nicely with fixed header */
+    section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
+
+    /* Mobile tweak: snapping can feel harsh, so soften */
+    @media (max-width: 720px){
+      .viewport{ scroll-snap-type: y proximity; }
+      section.panel{ align-items: flex-start; padding-top: calc(var(--header-h) + 16px); }
+      .nav .spacer{ display:none; }
+    }
   </style>
-
 </head>
+
 <body>
   <header class="site">
     <div class="container nav">
-      <div class="brand">Alice Gay</div>
-      <div class="spacer"></div>
+      <div class="brand">Alice Gay</div>
+
       <nav class="links" aria-label="Navigation principale">
-        <a href="#intro" class="active">Intro</a>
-        <a href="#services">Ce que je fais</a>
+        <a href="#home" class="active">Accueil</a>
+        <a href="#preview">Aperçu</a>
+        <a href="#apporte">Apport</a>
         <a href="#projets">Projets</a>
-        <a href="#competences">Compétences</a>
+        <a href="#process">Méthode</a>
         <a href="#apropos">À propos</a>
         <a href="#contact">Contact</a>
-        <a href="#bonus">Bonus</a>
       </nav>
 
+      <div class="spacer"></div>
+
+      <a class="btn ghost" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+      <a class="btn primary" href="#contact">Me contacter</a>
     </div>
   </header>
 
-  <main>
-    <!-- Intro / Hero -->
-    <section id="intro" class="hero">
+  <main class="viewport" id="top">
+    <!-- PANEL 1 : HOME -->
+    <section id="home" class="panel">
       <div class="container">
+        <div class="grid cols-2">
+          <div class="card">
+            <div class="kicker">Portfolio — projets culturels & publics</div>
+            <h1>Je structure des projets culturels en comprenant les publics et les dynamiques humaines.</h1>
+            <p class="lead">
+              Sciences cognitives + culture/musique. Basée à Marseille.
+              Je cherche un premier poste en coulisses (coordination / publics / production junior / pilotage).
+            </p>
 
-        <div class="card">
-        <div class="kicker">Portfolio – Data / BI pour la culture</div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top: 6px;">
+              <a class="btn primary" href="#projets">Voir les projets</a>
+              <a class="btn ghost" href="#contact">Me contacter</a>
+              <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">Télécharger CV</a>
+            </div>
 
-        <h1>
-          Data Analyst / BI — <span style="color:var(--primary)">Publics</span> & 
-          <span style="color:var(--primary-2)">Billetterie</span>
-        </h1>
+            <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;">
+              <span class="pill">Profil hybride : cognition × culture × structuration</span>
+              <span class="pill">Outils lisibles pour équipes non-tech</span>
+            </div>
+          </div>
 
-        <p class="lead">
-          🎓 <strong>Alice Gay</strong> — Master 2 Sciences Cognitives (Langage, Communication &amp; Cerveau). Basée à Marseille.
-          Je transforme des données (billetterie/publics/usage) en <strong>KPI</strong>, <strong>dashboards</strong> et <strong>recommandations</strong> actionnables pour lieux culturels et événements.
-        </p>
+          <div class="card">
+            <div class="section-title">
+              <h2 style="margin:0;">Résumé coulisses</h2>
+              <div class="note">4 repères simples</div>
+            </div>
 
-        <p class="small mt-12">
-          <strong>Je cherche :</strong> CDD / missions (Marseille + hybride/remote) — Data publics / billetterie / CRM / reporting.
-        </p>
+            <div class="mini-cards">
+              <div class="mini">
+                <strong>Comprendre les publics</strong>
+                <span>Analyser les comportements pour décider</span>
+              </div>
+              <div class="mini">
+                <strong>Structurer l'information</strong>
+                <span>Rendre lisible ce qui est dispersé</span>
+              </div>
+              <div class="mini">
+                <strong>Créer des outils simples</strong>
+                <span>Supports actionnables au quotidien</span>
+              </div>
+              <div class="mini">
+                <strong>Lien terrain ↔ réflexion</strong>
+                <span>Observer et piloter ensemble</span>
+              </div>
+            </div>
 
-        <div class="links mt-16">
-          <a class="btn" href="#projets">Voir les projets</a>
-          <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV PDF</a>
-          <a class="btn ghost" href="#contact">Me contacter</a>
+            <div style="margin-top:14px;">
+              <div class="figure">
+                Image “revue” (à remplacer)<br>
+                <span style="font-size:12px; color: rgba(17,17,17,.5); display:block; margin-top:8px;">
+                  Exemple : photo de lieu culturel, coulisses, carnet de notes, scène vide, etc.
+                </span>
+              </div>
+              <div class="caption">Visuel d’ambiance — donne le ton “culture”, pas “tech”.</div>
+            </div>
+          </div>
         </div>
-
-        <div class="links mt-12">
-          <!-- Remplace ces URLs par les tiennes -->
-          <a class="btn ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="btn ghost" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-          <!-- SoundCloud en bonus : garde-le si tu veux, mais il n'est pas prioritaire ici -->
-          <a class="btn ghost" href="https://soundcloud.com/" target="_blank" rel="noopener">SoundCloud</a>
-        </div>
-      </div>
-
       </div>
     </section>
 
-    <!-- Ce que je fais -->
-    <section id="services">
+    <!-- PANEL 2 : PREVIEW -->
+    <section id="preview" class="panel">
       <div class="container">
-        <h2>✅ Ce que je peux faire pour vous</h2>
-        <p class="subtitle">Pilotage, reporting, décisions — orienté culture & événementiel.</p>
+        <div class="section-title">
+          <h2>Aperçu livrable : dashboard / synthèse décisionnelle</h2>
+          <div class="note">extrait type “revue”</div>
+        </div>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <div class="figure">Capture dashboard / synthèse (16:9)</div>
+            <div class="caption">Placeholder — remplace par ta meilleure capture (billetterie idéalement).</div>
+          </div>
+
+          <div class="card">
+            <div class="kicker" style="color: rgba(17,17,17,.62);">Insights → Actions</div>
+            <h2 style="margin-top:10px;">Exemple d’une synthèse mensuelle</h2>
+
+            <div style="margin-top: 14px;">
+              <div class="kicker" style="color: rgba(17,17,17,.58);">INSIGHTS</div>
+              <ul style="margin:10px 0 14px; padding-left: 18px; color: rgba(17,17,17,.78);">
+                <li>Les achats “dernière minute” pèsent lourd : signal d’hésitation / stress d’achat.</li>
+                <li>Une partie des publics revient (2+ événements) : levier de fidélisation clair.</li>
+                <li>Certains formats convertissent mieux, mais le panier moyen varie beaucoup.</li>
+              </ul>
+
+              <hr style="border:0; border-top: 1px solid var(--line); margin: 10px 0 14px;">
+
+              <div class="kicker" style="color: rgba(17,17,17,.58);">ACTIONS</div>
+              <ul style="margin:10px 0 0; padding-left: 18px; color: rgba(17,17,17,.78);">
+                <li>Segmenter les relances (publics réguliers vs occasionnels).</li>
+                <li>Proposer une prévente 72h pour réduire les achats “stress”.</li>
+                <li>Tester des offres/pack selon formats pour lisser remplissage & panier.</li>
+              </ul>
+            </div>
+
+            <div class="foot">But : une équipe comprend en 30 secondes quoi faire ensuite.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 3 : CE QUE J'APPORTE -->
+    <section id="apporte" class="panel">
+      <div class="container">
+        <div class="section-title">
+          <h2>Ce que j’apporte</h2>
+          <div class="note">sans jargon</div>
+        </div>
 
         <div class="grid cols-3">
-          <div class="project">
-            <h3>📈 Publics & billetterie</h3>
-            <div class="meta">KPI • segmentation • insights</div>
-            <p>Je mets en place des indicateurs utiles (ventes, remplissage, canaux, profils) et j’en tire des recommandations concrètes.</p>
+          <div class="card">
+            <h2 style="font-size:26px; margin-top:0;">Clarté dans le flou</h2>
+            <p class="lead" style="margin:0;">
+              Je récupère des infos dispersées (fichiers, outils, équipes) et je les rends lisibles.
+              Chaque étape reste traçable, pour éviter l’effet “tableau magique incompréhensible”.
+            </p>
           </div>
 
-          <div class="project">
-            <h3>📊 Dashboards & reporting</h3>
-            <div class="meta">Power BI • Excel • synthèse</div>
-            <p>Je construis des dashboards clairs (lisibles par des non-tech) et j’accompagne la lecture métier : ce qui marche, ce qui coince, quoi tester.</p>
+          <div class="card">
+            <h2 style="font-size:26px; margin-top:0;">Compréhension des publics</h2>
+            <p class="lead" style="margin:0;">
+              Votre programmation attire-t-elle le bon public ? Qui revient, qui décroche ?
+              Je transforme des signaux en décisions — pas en tableaux vides de sens.
+            </p>
           </div>
 
-          <div class="project">
-            <h3>🧼 Qualité data & automatisation</h3>
-            <div class="meta">Python • contrôles • process</div>
-            <p>Nettoyage, dédoublonnage, contrôles qualité, pipelines reproductibles et documentation pour éviter les erreurs et gagner du temps.</p>
+          <div class="card">
+            <h2 style="font-size:26px; margin-top:0;">Outils utiles</h2>
+            <p class="lead" style="margin:0;">
+              Dashboards direction, exports terrain, procédures de passation : je crée des supports simples
+              que l’équipe utilise vraiment, au quotidien.
+            </p>
           </div>
         </div>
-
-        <p class="small mt-16">
-          <strong>Bonus :</strong> gestion de projet (cadrage, planning, coordination, suivi) quand il faut livrer vite et propre.
-        </p>
       </div>
     </section>
 
-
-    <!-- Projets pro & académiques -->
-    <section id="projets">
+    <!-- PANEL 4 : PROJETS -->
+    <section id="projets" class="panel">
       <div class="container">
-        <h2>💼 Projets sélectionnés</h2>
-        <p class="subtitle">3 études de cas : comment je transforme des données en KPI, dashboards et décisions.</p>
-
-        <article class="project">
-        <div class="case-title">
-          <h3 class="mb-0">🚋 Projet RTM – Digitalisation du réseau Tram</h3>
-          <span class="badge">Python</span>
-          <span class="badge">Power BI</span>
-          <span class="badge">Geo / PK</span>
+        <div class="section-title">
+          <h2>Projets</h2>
+          <div class="note">3 exemples de structuration & pilotage</div>
         </div>
-        <div class="meta">Stage – RTM, Marseille (2025)</div>
 
-        <div class="grid cols-2 mt-12">
-          <div>
-            <p class="mb-8"><strong>Problème.</strong> Données tram multi-sources (Excel/GPS) hétérogènes → difficile à exploiter pour piloter la maintenance.</p>
+        <div class="grid cols-3">
+          <!-- Projet 1 -->
+          <article class="project">
+            <h3>Pilotage billetterie & publics</h3>
+            <p class="tagline">Interaction publics/événements pour piloter la stratégie</p>
 
-            <p class="mb-8"><strong>Approche.</strong></p>
-            <ul class="small mt-0">
-              <li>Consolider les sources + normaliser un référentiel (PK / voie / ligne)</li>
-              <li>Mettre des contrôles qualité (dédoublonnage, cohérence PK, complétude)</li>
-              <li>Rendre visible via carte (Leaflet) + dashboard (Power BI)</li>
-            </ul>
+            <div class="dl">
+              <div class="row">
+                <div class="label">Problème</div>
+                <div class="value">Données fragmentées, systèmes isolés, lecture difficile entre équipes.</div>
+              </div>
+              <div class="row">
+                <div class="label">Livrables</div>
+                <div class="value">Chaîne de traitement • contrôles qualité • exports terrain • dashboard direction.</div>
+              </div>
+              <div class="row">
+                <div class="label">Ce que ça prouve</div>
+                <div class="value">Du brut au décisionnel, avec une restitution réellement utilisable.</div>
+              </div>
+            </div>
 
-            <p class="mb-0"><strong>Livrables.</strong> Pipeline Python + référentiel propre + carte interactive + dashboard.</p>
-          </div>
+            <div style="margin-top:12px;">
+              <div class="figure">Image projet (dashboard / synthèse)</div>
+              <div class="caption">Remplace par ta capture “wow”.</div>
+            </div>
 
-          <div>
-            <p class="mb-8"><strong>Impact.</strong> Données plus fiables + lecture plus simple pour les équipes (tech + pilotage).</p>
-
-            <p class="mb-8"><strong>Décisions facilitées.</strong></p>
-            <ul class="small mt-0">
-              <li>Identifier rapidement zones / points incohérents</li>
-              <li>Prioriser les vérifications et interventions terrain</li>
-              <li>Suivre l’état d’avancement (qualité, complétude)</li>
-            </ul>
-
-            <p class="mb-0"><strong>Stack.</strong> pandas / geopandas / openpyxl · Power BI · Leaflet · GitHub</p>
-
-            <div class="case-actions">
-              <a class="btn" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">📄 Rapport (PDF)</a>
+            <div class="project-actions">
+              <a class="btn primary" href="projects/billetterie.html">Voir le cas complet</a>
               <a class="btn ghost" href="#contact">Me contacter</a>
             </div>
+          </article>
+
+          <!-- Projet 2 -->
+          <article class="project">
+            <h3>RTM (stage 6 mois)</h3>
+            <p class="tagline">Structuration de données réelles complexes</p>
+
+            <div class="dl">
+              <div class="row">
+                <div class="label">Problème</div>
+                <div class="value">Données hétérogènes multi-sources, besoin de cohérence et de lisibilité.</div>
+              </div>
+              <div class="row">
+                <div class="label">Livrables</div>
+                <div class="value">Base structurée • règles qualité • carte / restitution • documentation passation.</div>
+              </div>
+              <div class="row">
+                <div class="label">Ce que ça prouve</div>
+                <div class="value">Autonomie, rigueur, capacité à livrer du concret réutilisable.</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <div class="figure">Image projet (carte / tableau)</div>
+              <div class="caption">Remplace par carte RTM / capture avant-après.</div>
+            </div>
+
+            <div class="project-actions">
+              <a class="btn" href="projects/rtm.html">Explorer les résultats</a>
+              <a class="btn ghost" href="#contact">Me contacter</a>
+            </div>
+          </article>
+
+          <!-- Projet 3 -->
+          <article class="project">
+            <h3>Musique & créatif</h3>
+            <p class="tagline">Connexion à la création et analyse du secteur</p>
+
+            <div class="dl">
+              <div class="row">
+                <div class="label">Problème</div>
+                <div class="value">Besoin de veille, lecture de programmation, signaux publics, inspirations locales.</div>
+              </div>
+              <div class="row">
+                <div class="label">Livrables</div>
+                <div class="value">Mini outil de veille • note de synthèse • recommandations analytiques.</div>
+              </div>
+              <div class="row">
+                <div class="label">Ce que ça prouve</div>
+                <div class="value">Du sens : pas “juste de la data”, un lien réel au terrain musical.</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <div class="figure">Image projet (report / veille)</div>
+              <div class="caption">Remplace par 1 page PDF / capture outil.</div>
+            </div>
+
+            <div class="project-actions">
+              <a class="btn" href="projects/musique.html">Télécharger / voir</a>
+              <a class="btn ghost" href="#contact">Me contacter</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="foot">
+          Règle : 3 projets max. Le reste = bonus (ailleurs, ou jamais).
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 5 : PROCESS -->
+    <section id="process" class="panel">
+      <div class="container">
+        <div class="section-title">
+          <h2>Comment je bosse</h2>
+          <div class="note">3 étapes pour structurer & piloter</div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="n">1</div>
+            <h4>Clarifier le besoin</h4>
+            <p>Comprendre le contexte réel, les décisions à prendre, les équipes impliquées, les contraintes.</p>
+          </div>
+          <div class="step">
+            <div class="n">2</div>
+            <h4>Structurer l’information</h4>
+            <p>Organiser, documenter, créer des contrôles qualité, préparer des exports simples à utiliser.</p>
+          </div>
+          <div class="step">
+            <div class="n">3</div>
+            <h4>Restituer</h4>
+            <p>Livrer des insights actionnables : dashboards, synthèses, procédures, et passation claire.</p>
           </div>
         </div>
 
-        <hr class="sep" />
-
-        <p class="mb-8"><strong>Décisions facilitées.</strong></p>
-        <ul class="small mt-0">
-          <li>Quel canal pousser selon la période (early vs late)</li>
-          <li>Quels tarifs / offres déclenchent le plus de conversion</li>
-          <li>Où concentrer la com (zones / segments)</li>
-        </ul>
-
-        <p class="small mb-8"><strong>Preuves.</strong> (à ajouter)</p>
-        <div class="grid cols-2 mt-12">
-          <img src="assets/billetterie_dashboard.png" alt="Capture dashboard billetterie">
-          <img src="assets/billetterie_insights.png" alt="Capture insights billetterie">
-        </div>
-
-        <p class="small mt-16 mb-8"><strong>Démo carte interactive.</strong></p>
-        <div class="iframe-wrap">
-          <iframe src="RTM-map/index.html" title="Carte RTM interactive (démo)"></iframe>
-        </div>
-
-      </article>
-
-
-        <!-- Mini-projet Culture / Billetterie -->
-        <article class="project mt-16">
-        <h3>🎟️ Mini-projet – Pilotage billetterie (cas “festival / salle”)</h3>
-        <div class="meta">Projet personnel (2026) — KPI • segmentation • recommandations</div>
-
-        <p><strong>Objectif.</strong> Proposer un tableau de bord simple pour suivre la performance billetterie et comprendre les publics (sans jargon, utilisable en prod).</p>
-
-        <div class="grid cols-2 mt-12">
-            <div>
-            <p class="mb-8"><strong>Indicateurs suivis.</strong></p>
-            <p class="small mb-12">
-                <span class="badge">Ventes / jour</span>
-                <span class="badge">Taux de remplissage</span>
-                <span class="badge">Panier moyen</span>
-                <span class="badge">Canaux (web/partenaires)</span>
-                <span class="badge">Tarifs</span>
-                <span class="badge">No-show (si applicable)</span>
-            </p>
-
-            <p class="mb-8"><strong>Segmentation.</strong></p>
-            <p class="small mb-0">
-                Par type de public (local/touriste), prix, timing d’achat (early/late), et/ou zones géographiques.
-                But : savoir <em>quoi pousser</em> et <em>où</em>.
-            </p>
-            </div>
-
-            <div>
-            <p class="mb-8"><strong>Livrables.</strong></p>
-            <ul class="small mt-0">
-                <li>1 dashboard (Power BI / Excel) : vue direction + vue opérationnelle</li>
-                <li>1 note de synthèse : 5 insights + 5 actions recommandées</li>
-                <li>1 check qualité data : doublons, valeurs manquantes, cohérence dates/tarifs</li>
-            </ul>
-            </div>
-        </div>
-
-        <p class="mt-12 mb-0 small">
-            <strong>Statut :</strong> en cours — j’ajoute bientôt une capture + un exemple de dashboard (même sur données fictives).
-        </p>
-        </article>
-
+        <div class="foot">Objectif : que l’équipe puisse continuer sans toi (et te rappeler quand ça grossit).</div>
       </div>
     </section>
 
-    <!-- Compétences -->
-    <section id="competences">
+    <!-- PANEL 6 : A PROPOS -->
+    <section id="apropos" class="panel">
       <div class="container">
-        <h2>🧠 Compétences</h2>
-        <div class="grid cols-2">
-          <div class="project">
-            <table>
-              <thead>
-                <tr><th>Domaine</th><th>Compétences clés</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><strong>Gestion de projet</strong></td><td>Coordination interservices, planification, suivi d’actions</td></tr>
-                <tr><td><strong>Analyse / Data</strong></td><td>Python (pandas, geopandas, openpyxl), Power BI, Excel</td></tr>
-                <tr><td><strong>Communication / Médiation</strong></td><td>Vulgarisation, écriture claire, écoute active</td></tr>
-                <tr><td><strong>Création / Culture</strong></td><td>FL Studio, conception d’expériences, écriture</td></tr>
-                <tr><td><strong>Langues</strong></td><td>Français (natif), Anglais (C1)</td></tr>
-              </tbody>
-            </table>
+        <div class="section-title">
+          <h2>À propos</h2>
+          <div class="note">coulisses • publics • projets</div>
+        </div>
+
+        <div class="about">
+          <div class="card">
+            <p>
+              Formée en sciences cognitives, j’ai développé une sensibilité à l’interaction des publics avec les lieux
+              musicaux et aux dynamiques humaines sur le terrain.
+            </p>
+            <p>
+              J’aime les projets réels, vivants, où il faut comprendre, organiser, et rendre les choses pilotables —
+              sans perdre le sens.
+            </p>
+            <p style="margin-bottom:0;">
+              Je cherche à intégrer une structure culturelle (salle, festival, lieu hybride) pour contribuer en coordination,
+              production junior ou pilotage publics.
+            </p>
+
+            <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:10px;">
+              <span class="pill">Basée à Marseille</span>
+              <span class="pill">Première expérience : stage 6 mois</span>
+              <span class="pill">Disponible : à remplir</span>
+            </div>
           </div>
-          <div class="project">
-            <h3 class="mt-0">🧰 Stack & façon de travailler</h3>
 
-            <p class="small mb-8"><strong>Outils.</strong></p>
-            <p class="mb-12">
-                <span class="badge">Python (pandas)</span>
-                <span class="badge">Power BI</span>
-                <span class="badge">Excel</span>
-                <span class="badge">GitHub</span>
-                <span class="badge">Leaflet</span>
-                <!-- Ajoute SQL si tu le pratiques vraiment -->
-            </p>
-
-            <p class="small mb-8"><strong>Ce que je livre facilement.</strong></p>
-            <ul class="small mt-0">
-                <li>Dashboards + KPI (pilotage lisible non-tech)</li>
-                <li>Nettoyage / dédoublonnage / contrôles qualité</li>
-                <li>Synthèse métier : recommandations actionnables</li>
-            </ul>
-
-            <p class="small mt-12 mb-0">
-                <strong>Bonus :</strong> cadrage & gestion de projet (planning, suivi, documentation) quand il faut livrer vite et propre.
-            </p>
+          <div class="card">
+            <div class="figure">Photo / visuel “ambiance”</div>
+            <div class="caption">
+              Place ici une image sobre : bureau/carnet, salle vide, scène, lieu culturel, etc.
             </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- À propos -->
-    <section id="apropos">
-    <div class="container">
-        <h2>🙋‍♀️ À propos</h2>
-        <p class="subtitle">Un profil data orienté publics & culture, avec une base sciences cognitives.</p>
-
-        <div class="project">
-        <p class="mt-0">
-            Je suis <strong>Alice Gay</strong>, diplômée d’un <strong>Master 2 en Sciences Cognitives</strong> (langage & communication) et formée à la <strong>data appliquée</strong> (Python, Power BI, Excel).
-            Mon stage à la <strong>RTM</strong> m’a appris à rendre des données hétérogènes <strong>fiables</strong> et <strong>exploitables</strong> pour piloter des décisions concrètes.
-        </p>
-
-        <p>
-            Aujourd’hui, je veux appliquer ce mix à la <strong>culture / événementiel</strong> : comprendre les publics, suivre la performance (billetterie, canaux, segmentation) et aider les équipes à décider avec des <strong>KPI clairs</strong> et des <strong>dashboards</strong>.
-        </p>
-
-        <p class="mb-0 small">
-            <strong>Je cherche :</strong> CDD / missions (Marseille + hybride/remote) — data publics / billetterie / CRM / reporting.
-        </p>
-        </div>
-    </div>
-    </section>
-
-
-    <!-- Documents & liens utiles -->
-    <section id="docs">
+    <!-- PANEL 7 : CONTACT -->
+    <section id="contact" class="panel">
       <div class="container">
-        <h2>📎 Documents & liens utiles</h2>
-        <div class="grid cols-3">
-          <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">📄 CV PDF</a>
-          <a class="btn" href="assets/Rapport_RTM.pdf" target="_blank" rel="noopener">🧠 Rapport de stage RTM</a>
-          <a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">💼 LinkedIn</a>
-          <a class="btn" href="https://github.com/" target="_blank" rel="noopener">🧪 GitHub</a>
-          <a class="btn" href="https://soundcloud.com/" target="_blank" rel="noopener">🎵 SoundCloud</a>
+        <div class="section-title">
+          <h2>Parlons.</h2>
+          <div class="note">simple & direct</div>
         </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact">
-      <div class="container">
-        <h2>💌 Contact</h2>
-        <div class="project">
-          <p class="mb-12">Envie de collaborer, d’échanger ou de voir une démo ? Écris-moi :</p>
-          <p class="mb-0"><strong>Email</strong> : <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bonus -->
-    <section id="bonus">
-      <div class="container">
-        <h2>➕ Bonus</h2>
-        <p class="subtitle">Projets universitaires, créations et documents complémentaires.</p>
 
         <div class="grid cols-2">
-            <!-- LICENCE -->
-            <article class="project">
-                <h3 class="mt-0">💻 Projets de Licence MIASHS</h3>
-                <p class="meta">Sélection de projets techniques / analyse / cognition</p>
-                <p class="small mb-12">Extraits de travaux universitaires (data viz, stats, ergonomie cognitive).</p>
+          <div class="card">
+            <p class="lead" style="margin-bottom:14px;">
+              Si tu as un projet culturel à structurer et des publics à comprendre : parlons.
+            </p>
+            <div style="display:grid; gap:10px; margin-top: 10px;">
+              <div class="project" style="padding:14px;">
+                <div class="label">Email</div>
+                <div class="value">
+                  <a href="mailto:alice.gay@email.fr">alice.gay@email.fr</a>
+                </div>
+              </div>
 
-                <!-- Colle ici tes 3 cards de licence (tu peux les garder telles quelles) -->
-                <div class="mt-12">
-                <div class="project mb-12">
-                    <h3>📊 Data Viz – Données socio-économiques régionales</h3>
-                    <div class="meta">Licence 3 MIASHS (2022)</div>
-                    <p><strong>Objectif.</strong> Analyser les disparités territoriales via revenus, emploi et éducation.</p>
-                    <p><strong>Réalisations.</strong> Nettoyage/fusion (INSEE, open data), graphiques (Python), rapport visuel.</p>
+              <div class="project" style="padding:14px;">
+                <div class="label">LinkedIn</div>
+                <div class="value">
+                  <a href="https://www.linkedin.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
                 </div>
+              </div>
 
-                <div class="project mb-12">
-                    <h3>🧩 Cognition & Interaction – Interface intuitive</h3>
-                    <div class="meta">Licence 3 – ergonomie cognitive</div>
-                    <p><strong>Objectif.</strong> Concevoir une interface adaptée à la charge cognitive.</p>
-                    <p><strong>Réalisations.</strong> Maquettes, tests utilisateurs, analyse qualitative.</p>
+              <div class="project" style="padding:14px;">
+                <div class="label">GitHub</div>
+                <div class="value">
+                  <a href="https://github.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
                 </div>
-
-                <div class="project">
-                    <h3>🔢 Statistiques – Attention & apprentissage</h3>
-                    <div class="meta">Licence 2 MIASHS (2021)</div>
-                    <p><strong>Objectif.</strong> Lien entre variabilité attentionnelle et performance.</p>
-                    <p><strong>Réalisations.</strong> Traitement sous R, visualisations, présentation.</p>
-                </div>
-                </div>
-            </article>
-
-            <!-- CREATIONS -->
-            <article class="project">
-                <h3 class="mt-0">🎨 Créations & projets personnels</h3>
-                <p class="meta">Musique • prototypes • écriture</p>
-                <p class="small mb-12">Ce qui nourrit ma créativité (en bonus par rapport à ma candidature data).</p>
-
-                <!-- Colle ici tes 2 cards créations -->
-                <div class="project mb-12">
-                <h3>🎵 Beat « Anya Nami »</h3>
-                <div class="meta">Instrumental – Style Josman x Laylow</div>
-                <p><strong>Intention.</strong> Univers introspectif, entre douceur et tension.</p>
-                <p><strong>Outils.</strong> FL Studio, Vital, Flex, Harmonix.</p>
-                <p class="mb-0"><a class="btn" href="https://soundcloud.com/" target="_blank" rel="noopener">Écouter sur SoundCloud</a></p>
-                </div>
-
-                <div class="project">
-                <h3>🎮 Jeu 2D – « Neuron Quest » (exemple)</h3>
-                <div class="meta">Prototype HTML5 (canvas/JS)</div>
-                <p>Mini-jeu jouable en ligne (à intégrer quand prêt) :</p>
-                <div class="iframe-wrap">
-                    <div class="center small">Intégrer ici le jeu 2D via &lt;iframe&gt;</div>
-                </div>
-                </div>
-            </article>
+              </div>
             </div>
 
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+              <a class="btn primary" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+              <a class="btn ghost" href="#home">Retour en haut</a>
+            </div>
+
+            <div class="foot">© <span id="y"></span> Alice Gay — HTML/CSS/JS — GitHub Pages</div>
+          </div>
+
+          <div class="card">
+            <div class="figure">Optionnel : mini-plan / disponibilité / note</div>
+            <div class="caption">
+              Tu peux remplacer ce bloc par : “Ce que je cherche”, “Type de structures”, “Disponibilité”, etc.
+            </div>
+          </div>
+        </div>
       </div>
     </section>
-
   </main>
 
-  <footer>
-    <div class="container small">© <span id="y"></span> Alice Gay — Fait avec HTML/CSS/JS. Hébergé sur GitHub Pages.</div>
-  </footer>
-
   <script>
-    // Active link on scroll
-    const links = Array.from(document.querySelectorAll('header.site nav a'));
-    const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-    const onScroll = () => {
-      const pos = window.scrollY + 120; // offset for sticky header
-      let active = links[0];
-      sections.forEach((sec, i) => {
-        if (sec.offsetTop <= pos) active = links[i];
-      });
-      links.forEach(a => a.classList.remove('active')); active.classList.add('active');
-    };
-    document.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
     // Year
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Mesure la hauteur réelle du header pour ajuster le hero
-    const headerEl = document.querySelector('header.site');
-    const setHeaderH = () => {
-      const h = headerEl.getBoundingClientRect().height;
-      document.documentElement.style.setProperty('--header-h', `${Math.ceil(h)}px`);
-    };
-    window.addEventListener('resize', setHeaderH, { passive: true });
-    setHeaderH();
+    // Active nav link with IntersectionObserver (works with snapping)
+    const navLinks = Array.from(document.querySelectorAll('header.site nav a'));
+    const sections = navLinks
+      .map(a => document.querySelector(a.getAttribute('href')))
+      .filter(Boolean);
 
+    const setActive = (id) => {
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      // choose the most visible panel
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a,b) => (b.intersectionRatio - a.intersectionRatio))[0];
+      if (visible && visible.target && visible.target.id) setActive(visible.target.id);
+    }, {
+      root: document.querySelector('.viewport'),
+      threshold: [0.35, 0.55, 0.75]
+    });
+
+    sections.forEach(sec => io.observe(sec));
+
+    // Fix header height variable if fonts / wrapping changes
+    const headerEl = document.querySelector('header.site');
+    const syncHeaderH = () => {
+      const h = Math.ceil(headerEl.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--header-h', h + 'px');
+    };
+    window.addEventListener('resize', syncHeaderH, { passive:true });
+    syncHeaderH();
   </script>
 </body>
 </html>
