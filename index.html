@@ -11,14 +11,13 @@
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
 
-  <!-- Typos éditoriales -->
+  <!-- Typos -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Editorial culture */
       --bg: #FAFAF7;
       --ink: #111111;
       --muted: #6B7280;
@@ -27,16 +26,14 @@
       --shadow: 0 18px 50px rgba(0,0,0,.08);
       --radius: 18px;
 
-      /* Accent */
-      --accent: #C2410C; /* rouge brique */
-      /* --accent: #1D4ED8; */
+      /* accents */
+      --accent: #C2410C; /* rouge brique (site) */
+      --cta: #9BBFD6;    /* bleu clair (photo) */
 
-      /* ✅ grand écran friendly */
       --maxw: clamp(1040px, 82vw, 1480px);
       --header-h: 68px;
 
       --pad-x: clamp(16px, 2.4vw, 28px);
-      --pad-y: clamp(18px, 5vw, 64px);
       --gap: clamp(12px, 2vw, 18px);
 
       --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
@@ -53,7 +50,7 @@
       font-family: var(--sans);
       color: var(--ink);
       background: var(--bg);
-      overflow: hidden; /* scroll dans .viewport */
+      overflow: hidden;
       line-height: 1.55;
       text-rendering: geometricPrecision;
     }
@@ -68,63 +65,48 @@
       padding: 0 var(--pad-x);
     }
 
-    /* ======= Header ======= */
+    /* ===== Header ===== */
     header.site{
       position: fixed;
       top: 0; left: 0; right: 0;
       height: var(--header-h);
       z-index: 60;
-      background: rgba(250,250,247,.82);
+      background: rgba(250,250,247,.88);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
     }
+
     .nav{
       height: var(--header-h);
       display:flex;
       align-items:center;
       gap: 14px;
     }
+
     .brand{
-      font-family: var(--serif);
+      display:flex;
+      align-items:center;
+      gap: 10px;
       font-weight: 700;
-      letter-spacing: .2px;
-      font-size: 18px;
+      letter-spacing: .4px;
+      font-size: 14px;
+      text-transform: uppercase;
       white-space: nowrap;
     }
-    nav.links{
-      display:flex;
-      gap: 6px;
-      align-items:center;
-      overflow-x:auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      margin-left: 6px;
+
+    .brand svg{
+      width: 18px;
+      height: 18px;
+      display:block;
+      opacity: .92;
     }
-    nav.links::-webkit-scrollbar{ display:none; }
+
     .nav .spacer{ flex:1; }
 
-    .nav a{
-      font-size: 14px;
-      color: rgba(17,17,17,.72);
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      white-space: nowrap;
-      transition: background .15s ease, border-color .15s ease;
-    }
-    .nav a:hover{
-      background: rgba(17,17,17,.04);
-      text-decoration: none;
-    }
-    .nav a.active{
-      color: var(--ink);
-      background: color-mix(in srgb, var(--accent) 10%, transparent);
-      border-color: color-mix(in srgb, var(--accent) 25%, transparent);
-    }
-
     .btn{
-      display: inline-flex;
-      align-items: center;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       gap: 10px;
       padding: 10px 14px;
       border-radius: 999px;
@@ -133,39 +115,44 @@
       box-shadow: 0 1px 0 rgba(0,0,0,.02);
       font-weight: 600;
       font-size: 14px;
-      transition: transform .12s ease, background .12s ease;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
       white-space: nowrap;
+      cursor:pointer;
     }
     .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.96); text-decoration:none; }
-    .btn.primary{
-      background: var(--accent);
-      border-color: rgba(0,0,0,.06);
-      color: #fff;
-      box-shadow: 0 14px 26px color-mix(in srgb, var(--accent) 25%, transparent);
-    }
-    .btn.primary:hover{ background: color-mix(in srgb, var(--accent) 92%, #000 8%); }
-    .btn.ghost{ background: transparent; }
 
-    @media (max-width: 720px){
-      .nav .spacer{ display:none; }
+    .btn.ghost{
+      background: transparent;
+      border-color: transparent;
+      padding: 10px 10px;
+      color: rgba(17,17,17,.72);
+    }
+    .btn.ghost:hover{
+      background: rgba(17,17,17,.04);
+      border-color: rgba(17,17,17,.06);
     }
 
-    /* ======= Viewport snapping ======= */
+    .btn.dark{
+      background: #111111;
+      border-color: #111111;
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(0,0,0,.14);
+    }
+    .btn.dark:hover{ background: #0b0b0b; }
+
+    /* ===== Viewport ===== */
     .viewport{
       height: 100svh;
       overflow-y: auto;
       scroll-snap-type: y mandatory;
       scroll-behavior: smooth;
       position: relative;
-      background:
-        radial-gradient(900px 500px at 10% 10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
-        radial-gradient(900px 500px at 85% 20%, rgba(0,0,0,.04), transparent 60%),
-        var(--bg);
+      background: var(--bg);
     }
+
     @media (prefers-reduced-motion: reduce){
       .viewport{ scroll-behavior:auto; scroll-snap-type:none; }
       .btn{ transition:none; }
-      .bubble{ transition:none; }
     }
     @media (max-width: 720px){
       .viewport{ scroll-snap-type: y proximity; }
@@ -184,7 +171,7 @@
     }
     section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 
-    /* ======= Grain overlay ======= */
+    /* grain */
     .grain{
       pointer-events:none;
       position:absolute;
@@ -196,22 +183,166 @@
       background-size: 240px 240px;
     }
 
-    /* ======= Typo ======= */
-    .kicker{
-      color: rgba(17,17,17,.62);
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      font-weight: 700;
-      font-size: 12px;
+    /* ===== HOME (photo) ===== */
+    #home.panel{
+      align-items: stretch;
+      padding-bottom: 0;
     }
+
+    /* pas de bulles sur home */
+    #home .bubble-layer{ display:none !important; }
+
+    .home-wrap{
+      min-height: calc(100svh - var(--header-h) - 12px);
+      display:flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .home-top{
+      flex: 1 1 auto;
+      display:grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: clamp(18px, 3vw, 42px);
+      padding-top: clamp(10px, 2vh, 22px);
+    }
+
     h1{
-      font-family: var(--serif);
-      font-weight: 700;
+      font-family: var(--sans);
+      font-weight: 800;
       letter-spacing: -.02em;
-      line-height: 1.04;
-      margin: 12px 0 12px;
-      font-size: clamp(34px, 4.5vw, 62px);
+      line-height: 1.02;
+      margin: 0 0 18px;
+      font-size: clamp(34px, 4.2vw, 68px);
+      max-width: 16ch;
     }
+
+    .lead{
+      font-size: 15px;
+      color: rgba(17,17,17,.62);
+      margin: 0 0 18px;
+      max-width: 56ch;
+    }
+
+    .cta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn.cta{
+      background: var(--cta);
+      border-color: rgba(0,0,0,.06);
+      color: #0c2a3a;
+      box-shadow: 0 16px 30px rgba(10,35,50,.14);
+    }
+    .btn.cta:hover{
+      background: color-mix(in srgb, var(--cta) 92%, #fff 8%);
+    }
+
+    .btn.soft{
+      background: rgba(255,255,255,.78);
+      border-color: rgba(17,17,17,.14);
+      color: rgba(17,17,17,.86);
+    }
+
+    .pill-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      border: 1px solid rgba(17,17,17,.16);
+      background: rgba(255,255,255,.72);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: rgba(17,17,17,.78);
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+
+    /* cerveau */
+    .brain{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position: relative;
+      width: 100%;
+      min-height: 280px;
+      padding-right: clamp(0px, 1.2vw, 12px);
+      overflow: visible;
+    }
+
+    .brain img{
+      width: clamp(260px, 34vw, 520px);
+      height: auto;
+      display:block;
+      opacity: .95;
+      transform: translateY(10px) translateX(10px); /* alignement */
+      filter: contrast(1.03) saturate(.96);
+      mix-blend-mode: multiply; /* donne un rendu “papier” */
+      will-change: transform;
+    }
+
+    /* overlay pour fondre dans le blanc */
+    .brain::before{
+      content:"";
+      position:absolute;
+      inset:-12% -8%;
+      background: radial-gradient(closest-side at 48% 46%,
+        rgba(250,250,247,0) 0%,
+        rgba(250,250,247,.20) 55%,
+        rgba(250,250,247,.70) 74%,
+        rgba(250,250,247,1) 90%);
+      pointer-events:none;
+    }
+
+    /* masque (supporté sur la majorité des navigateurs modernes) */
+    @supports (mask-image: radial-gradient(circle, #000, transparent)){
+      .brain img{
+        -webkit-mask-image: radial-gradient(circle at 48% 46%,
+          rgba(0,0,0,1) 0%,
+          rgba(0,0,0,1) 56%,
+          rgba(0,0,0,.75) 68%,
+          rgba(0,0,0,.0) 88%);
+        mask-image: radial-gradient(circle at 48% 46%,
+          rgba(0,0,0,1) 0%,
+          rgba(0,0,0,1) 56%,
+          rgba(0,0,0,.75) 68%,
+          rgba(0,0,0,.0) 88%);
+      }
+    }
+
+    /* bloc dégradé bas */
+    .home-bottom{
+      flex: 0 0 auto;
+      height: clamp(220px, 36vh, 360px);
+      border-top: 1px solid rgba(17,17,17,.30);
+      background:
+        radial-gradient(1000px 520px at 55% 12%, rgba(182,214,230,.95), rgba(182,214,230,.0) 60%),
+        radial-gradient(900px 500px at 15% 55%, rgba(112,132,170,.75), rgba(112,132,170,.0) 58%),
+        radial-gradient(900px 520px at 90% 70%, rgba(86,118,160,.55), rgba(86,118,160,.0) 62%),
+        linear-gradient(180deg, rgba(250,250,247,1) 0%, rgba(210,228,238,.82) 30%, rgba(120,145,178,.62) 100%);
+    }
+
+    @media (max-width: 980px){
+      .home-top{
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding-top: 6px;
+      }
+      .brain{ order: -1; min-height: 220px; }
+      h1{ max-width: 24ch; }
+      .home-bottom{ height: 220px; }
+      .btn.ghost{ display:none; }
+    }
+
+    /* ===== le reste (sections suivantes) ===== */
     h2{
       font-family: var(--serif);
       font-weight: 700;
@@ -220,18 +351,7 @@
       font-size: clamp(24px, 3vw, 38px);
       line-height: 1.12;
     }
-    .lead{
-      font-size: clamp(16px, 1.35vw, 18px);
-      color: rgba(17,17,17,.78);
-      margin: 0 0 18px;
-      max-width: 72ch;
-    }
-    .sublead{
-      font-size: 14px;
-      color: var(--muted);
-      margin: 0 0 18px;
-      max-width: 72ch;
-    }
+
     .section-title{
       display:flex;
       align-items:baseline;
@@ -255,133 +375,27 @@
       overflow: hidden;
     }
 
-    /* ======= Layout grids ======= */
     .grid{ display:grid; gap: var(--gap); }
     @media (min-width: 980px){
       .grid.cols-2{ grid-template-columns: 1.12fr .88fr; }
       .grid.cols-3{ grid-template-columns: 1fr 1fr 1fr; }
     }
 
-    /* ✅ HOME : occupe mieux les grands écrans */
-    #home .grid.cols-2{
-      width: min(var(--maxw), 92vw);
-      margin-inline: auto;
-    }
-    @media (min-width: 980px){
-      #home .grid.cols-2{
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: clamp(18px, 2.2vw, 28px);
-      }
-    }
-
-    /* ✅ HOME : donner un socle vertical (anti vide) */
-    @media (min-height: 860px){
-      #home .card{
-        min-height: min(680px, calc(100svh - var(--header-h) - 110px));
-      }
-    }
-    @media (min-width: 1200px){
-      #home .card{
-        padding: clamp(22px, 2.2vw, 34px);
-      }
-      #home h1{
-        font-size: clamp(42px, 3.6vw, 68px);
-      }
-      #home .lead{
-        font-size: clamp(16px, 1.2vw, 20px);
-      }
-    }
-
-    /* ======= Bubble layer ======= */
-    .bubble-layer{
-      position:absolute;
-      inset: 0;
-      pointer-events:none;
-      z-index: 0;
-      opacity: .95;
-    }
-    .bubble{
-      position:absolute;
-      pointer-events:auto;
-      border-radius: 999px;
-      border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
-      background: color-mix(in srgb, #fff 78%, var(--accent) 10%);
-      box-shadow: 0 10px 25px rgba(0,0,0,.06);
-      padding: 10px 14px;
-      font-size: 13px;
-      color: rgba(17,17,17,.86);
-      user-select:none;
-      will-change: transform, translate;
-      transform: translate3d(0,0,0);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-    }
-    .bubble:hover{
-      transform: translate3d(0,-3px,0) scale(1.03);
-      background: color-mix(in srgb, #fff 70%, var(--accent) 16%);
-      border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
-    }
-    .bubble small{ display:block; color: rgba(17,17,17,.56); font-size: 11px; margin-top: 2px; }
-
-    /* ======= Hero name interactive ======= */
-    .name-wrap{
-      margin: 14px 0 10px;
-      display:inline-block;
-      position: relative;
-      cursor: default;
-      user-select: none;
-    }
-    .name{
-      font-family: var(--serif);
-      font-weight: 700;
-      letter-spacing: -.02em;
-      font-size: clamp(40px, 6vw, 84px);
-      line-height: 0.95;
-    }
-    .name .accent{ color: var(--accent); position: relative; }
-
-    .name-reveal{
-      position:absolute;
-      inset: 0;
-      clip-path: inset(0 100% 0 0);
-      transition: clip-path .22s ease;
-      color: var(--accent);
-      filter: drop-shadow(0 16px 20px rgba(0,0,0,.08));
-      pointer-events:none;
-    }
-    .name-wrap:hover .name-reveal{ clip-path: inset(0 0 0 0); }
-
-    .name-sub{
-      font-size: 13px;
+    .kicker{
       color: rgba(17,17,17,.62);
-      margin-top: 6px;
-    }
-    .name-sub strong{ color: rgba(17,17,17,.86); }
-
-    .ink-underline{
-      height: 2px;
-      width: 160px;
-      background: color-mix(in srgb, var(--accent) 70%, transparent);
-      border-radius: 99px;
-      margin-top: 10px;
-      transform-origin: left center;
-      opacity: 0;
-      transition: opacity .18s ease;
-    }
-    .name-wrap:hover .ink-underline{ opacity: 1; }
-
-    /* Pills */
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.72);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 13px;
-      color: rgba(17,17,17,.82);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 700;
+      font-size: 12px;
     }
 
-    /* ======= Project cards ======= */
+    .sublead{
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 18px;
+      max-width: 72ch;
+    }
+
     .project{
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -401,6 +415,7 @@
       font-size: 14px;
       margin: 0 0 14px;
     }
+
     .dl{ display:grid; gap: 10px; margin-top: 12px; }
     .dl .label{
       font-size: 12px;
@@ -410,6 +425,7 @@
       font-weight: 800;
     }
     .dl .value{ color: rgba(17,17,17,.82); font-size: 14px; }
+
     .project-actions{
       display:flex;
       flex-wrap:wrap;
@@ -417,204 +433,12 @@
       margin-top: 14px;
     }
 
-    /* ======= Turntable ======= */
-    .turntable{
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.70);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      position: relative;
-      overflow: hidden;
-    }
-    .turntable-top{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .tracks{
-      display:flex;
-      flex-wrap:wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .track{
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.75);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: transform .14s ease, background .14s ease, border-color .14s ease;
-      user-select:none;
-    }
-    .track:hover{ transform: translateY(-1px); background: rgba(255,255,255,.95); }
-    .track[aria-selected="true"]{
-      background: color-mix(in srgb, var(--accent) 10%, #fff);
-      border-color: color-mix(in srgb, var(--accent) 32%, var(--line));
-      font-weight: 700;
-    }
-
-    .deck{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-      align-items:center;
-    }
-    @media (min-width: 980px){
-      .deck{ grid-template-columns: .95fr 1.05fr; }
-    }
-
-    .platter{
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 24px;
-      border: 1px solid var(--line);
-      background:
-        radial-gradient(circle at 30% 25%, rgba(255,255,255,.9), rgba(255,255,255,.55) 45%, rgba(0,0,0,.02) 70%),
-        linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.00));
-      overflow:hidden;
-      display:grid;
-      place-items:center;
-    }
-    .vinyl{
-      width: 78%;
-      aspect-ratio: 1/1;
-      border-radius: 999px;
-      position: relative;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.85) 0 7%, rgba(0,0,0,.02) 8% 10%, transparent 11%),
-        radial-gradient(circle at 50% 50%, rgba(17,17,17,.92) 0 46%, rgba(17,17,17,.88) 47% 55%, rgba(17,17,17,.92) 56% 100%);
-      box-shadow: 0 20px 45px rgba(0,0,0,.14);
-      will-change: transform;
-      transform: rotate(0deg);
-    }
-    .vinyl::after{
-      content:"";
-      position:absolute;
-      inset: 12%;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 85%, #fff) 0 22%, rgba(0,0,0,.04) 23% 26%, transparent 27%),
-        radial-gradient(circle at 30% 25%, rgba(255,255,255,.20), transparent 50%);
-      border: 1px solid rgba(255,255,255,.10);
-    }
-    .grooves{
-      position:absolute;
-      inset: 0;
-      border-radius: 999px;
-      background:
-        repeating-radial-gradient(circle at 50% 50%,
-          rgba(255,255,255,.02) 0 2px,
-          rgba(0,0,0,.03) 2px 4px);
-      opacity: .22;
-      mix-blend-mode: overlay;
-      pointer-events:none;
-    }
-    .arm{
-      position:absolute;
-      right: 10%;
-      top: 10%;
-      width: 46%;
-      height: 46%;
-      transform-origin: 88% 16%;
-      transform: rotate(20deg);
-      transition: transform .25s ease;
-      pointer-events:none;
-    }
-    .arm::before{
-      content:"";
-      position:absolute;
-      right: 0;
-      top: 0;
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(17,17,17,.55);
-      box-shadow: 0 10px 20px rgba(0,0,0,.10);
-    }
-    .arm::after{
-      content:"";
-      position:absolute;
-      right: 6px;
-      top: 6px;
-      width: 85%;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(17,17,17,.38);
-    }
-    .needle{
-      position:absolute;
-      right: 68%;
-      top: 46%;
-      width: 22px;
-      height: 10px;
-      border-radius: 99px;
-      background: rgba(17,17,17,.52);
-      filter: drop-shadow(0 10px 10px rgba(0,0,0,.10));
-    }
-    .turntable.is-playing .vinyl{ animation: spin 2.2s linear infinite; }
-    .turntable.is-playing .arm{ transform: rotate(8deg); }
-    @keyframes spin{ to { transform: rotate(360deg); } }
-
-    .tt-copy{
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px;
-      background: rgba(255,255,255,.68);
-    }
-    .tt-copy h3{
-      margin: 0 0 8px;
-      font-family: var(--serif);
-      font-size: 20px;
-    }
-    .tt-copy p{
-      margin: 0;
-      color: rgba(17,17,17,.78);
-      font-size: 14px;
-    }
-
-    /* ======= Steps ======= */
-    .steps{ display:grid; gap: var(--gap); }
-    @media (min-width: 980px){ .steps{ grid-template-columns: 1fr 1fr 1fr; } }
-    .step{
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.64);
-      border-radius: var(--radius);
-      padding: 18px;
-    }
-    .step .n{
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      display:grid;
-      place-items:center;
-      font-weight: 800;
-      color: #fff;
-      background: var(--accent);
-      box-shadow: 0 12px 18px color-mix(in srgb, var(--accent) 22%, transparent);
-      margin-bottom: 10px;
-    }
-    .step h4{
-      margin: 0 0 8px;
-      font-family: var(--serif);
-      font-size: 18px;
-    }
-    .step p{ margin:0; color: rgba(17,17,17,.78); font-size: 14px; }
-
-    /* Figures */
     .figure{
       width:100%;
       aspect-ratio: 16/9;
       border-radius: 16px;
       border: 1px dashed rgba(17,17,17,.22);
-      background:
-        radial-gradient(900px 240px at 10% 20%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%),
-        radial-gradient(900px 260px at 80% 30%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 55%),
-        rgba(255,255,255,.55);
+      background: rgba(255,255,255,.55);
       display:grid;
       place-items:center;
       color: rgba(17,17,17,.55);
@@ -622,125 +446,77 @@
       text-align:center;
       padding: 18px;
     }
+
     .caption{ margin-top: 10px; font-size: 12px; color: rgba(17,17,17,.58); letter-spacing: .02em; }
     .foot{ margin-top: 14px; font-size: 12px; color: rgba(17,17,17,.56); }
-    .dense{ max-width: 92ch; }
+
+    /* bubble layer gardé pour compat si tu réactives ailleurs, mais on ne le rendra pas en JS */
+    .bubble-layer{ position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.95; display:none; }
   </style>
 </head>
 
 <body>
   <header class="site">
     <div class="container nav">
-      <div class="brand">Alice Gay</div>
-
-      <nav class="links" aria-label="Navigation principale">
-        <a href="#home" class="active">Accueil</a>
-        <a href="#preview">Aperçu</a>
-        <a href="#apporte">Apport</a>
-        <a href="#projets">Projets</a>
-        <a href="#process">Méthode</a>
-        <a href="#apropos">À propos</a>
-        <a href="#contact">Contact</a>
-      </nav>
+      <div class="brand" aria-label="Accueil">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3c1.2 2.6.8 4.6-1 6 2.2-.3 4.1.6 5 2.3.2-2.5 1.4-4.1 3.7-4.9-2.6-1.2-4-2.5-4.7-5C13.8 3.3 12.9 3 12 3Z" fill="#111"/>
+          <path d="M21 12c-2.6 1.2-4.6.8-6-1 .3 2.2-.6 4.1-2.3 5 2.5.2 4.1 1.4 4.9 3.7 1.2-2.6 2.5-4 5-4.7C20.7 13.8 21 12.9 21 12Z" fill="#111"/>
+          <path d="M12 21c-1.2-2.6-.8-4.6 1-6-2.2.3-4.1-.6-5-2.3-.2 2.5-1.4 4.1-3.7 4.9 2.6 1.2 4 2.5 4.7 5 1.2-2.6 2.1-2.9 3-2.6Z" fill="#111"/>
+          <path d="M3 12c2.6-1.2 4.6-.8 6 1-.3-2.2.6-4.1 2.3-5-2.5-.2-4.1-1.4-4.9-3.7-1.2 2.6-2.5 4-5 4.7C3.3 10.2 3 11.1 3 12Z" fill="#111"/>
+          <circle cx="12" cy="12" r="2.1" fill="#111"/>
+        </svg>
+        Alice GAY
+      </div>
 
       <div class="spacer"></div>
 
-      <a class="btn ghost" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
-      <a class="btn primary" href="#contact">Me contacter</a>
+      <a class="btn ghost" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
+      <a class="btn dark" href="#contact">Me contacter</a>
     </div>
   </header>
 
   <main class="viewport" id="viewport" aria-label="Portfolio">
     <div class="grain" aria-hidden="true"></div>
 
-    <!-- PANEL 1 : HOME -->
-    <section id="home" class="panel"
-      data-bubbles="publics|comprendre les comportements; coulisses|projets vivants; structuration|info claire; outils|simples et utiles; marseille|sur le terrain; culture|musique & lieux">
-      <div class="bubble-layer" aria-hidden="true"></div>
-
+    <!-- HOME -->
+    <section id="home" class="panel">
       <div class="container">
-        <div class="grid cols-2">
-          <div class="card" style="z-index:1;">
-            <div class="kicker">Portfolio — projets culturels & publics</div>
+        <div class="home-wrap">
+          <div class="home-top">
+            <div class="home-left">
+              <h1>Je structure des projets culturels en comprenant les publics et les dynamiques humaines</h1>
 
-            <div class="name-wrap" id="nameWrap" aria-label="Nom interactif">
-              <div class="name"><span class="accent">Alice</span> Gay</div>
-              <div class="name name-reveal" aria-hidden="true"><span class="accent">Coulisses</span> & Publics</div>
-              <div class="ink-underline" id="inkUnderline" aria-hidden="true"></div>
-              <div class="name-sub"><strong>Survole</strong> le titre — juste un clin d’œil, pas un feu d’artifice.</div>
+              <p class="lead">
+                Sciences cognitives + culture/musique. Basée à Marseille.
+                Je cherche un premier poste en coulisses (coordination / publics / production junior / pilotage)
+              </p>
+
+              <div class="cta-row">
+                <a class="btn cta" href="#projets">Voir les projets</a>
+                <a class="btn soft" href="#contact">Me contacter</a>
+                <a class="btn soft" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">Visualiser CV</a>
+              </div>
+
+              <div class="pill-row">
+                <span class="pill">Stage 6 mois (données réelles)</span>
+                <span class="pill">Billetterie (pilotage + insights)</span>
+                <span class="pill">Outils non-tech</span>
+              </div>
             </div>
 
-            <h1 class="dense" style="margin-top: 10px;">
-              Je structure des projets culturels en comprenant les publics et les dynamiques humaines.
-            </h1>
-
-            <p class="lead dense">
-              Sciences cognitives + culture/musique. Basée à Marseille.
-              Je cherche un premier poste en coulisses (coordination / publics / production junior / pilotage).
-            </p>
-
-            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top: 8px;">
-              <a class="btn primary" href="#projets">Voir les projets</a>
-              <a class="btn ghost" href="#contact">Me contacter</a>
-              <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">Télécharger CV</a>
+            <div class="brain" aria-label="Illustration cerveau">
+              <img src="assets/brain.png" alt="Cerveau pixelisé">
             </div>
-
-            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;">
-              <span class="pill">Stage 6 mois (données réelles)</span>
-              <span class="pill">Billetterie (pilotage + insights)</span>
-              <span class="pill">Outils lisibles non-tech</span>
-            </div>
-
-            <div class="foot">Astuce : tu peux cliquer sur les bulles 😉</div>
           </div>
 
-          <div class="card" style="z-index:1;">
-            <div class="section-title">
-              <h2 style="margin:0;">Résumé coulisses</h2>
-              <div class="note">4 repères simples</div>
-            </div>
-
-            <div style="display:grid; gap: 10px;">
-              <div class="project" style="padding:14px;">
-                <div class="kicker">01</div>
-                <div style="font-family: var(--serif); font-weight:700; font-size:18px; margin-top:6px;">Comprendre les publics</div>
-                <div class="sublead" style="margin:6px 0 0;">Observer, segmenter, tirer des décisions lisibles.</div>
-              </div>
-
-              <div class="project" style="padding:14px;">
-                <div class="kicker">02</div>
-                <div style="font-family: var(--serif); font-weight:700; font-size:18px; margin-top:6px;">Structurer l’information</div>
-                <div class="sublead" style="margin:6px 0 0;">Rendre clair ce qui est dispersé (outils, équipes, données).</div>
-              </div>
-
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div class="project" style="padding:14px;">
-                  <div class="kicker">03</div>
-                  <div style="font-family: var(--serif); font-weight:700; font-size:16px; margin-top:6px;">Outils simples</div>
-                  <div class="sublead" style="margin:6px 0 0;">Support décisionnel au quotidien.</div>
-                </div>
-                <div class="project" style="padding:14px;">
-                  <div class="kicker">04</div>
-                  <div style="font-family: var(--serif); font-weight:700; font-size:16px; margin-top:6px;">Terrain ↔ réflexion</div>
-                  <div class="sublead" style="margin:6px 0 0;">Projets vivants, pas abstraction.</div>
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top:14px;">
-              <div class="figure">Visuel d’ambiance (lieu / coulisses / carnet) — 16:9</div>
-              <div class="caption">Un seul visuel fort ici = tu remplis l’espace sans bavarder.</div>
-            </div>
-          </div>
+          <div class="home-bottom" aria-hidden="true"></div>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 2 : PREVIEW -->
-    <section id="preview" class="panel"
-      data-bubbles="insights|clairs; actions|concrètes; lisibilité|non-tech; rythme|revue; preuves|captures; pilotage|direction">
-      <div class="bubble-layer" aria-hidden="true"></div>
-
+    <!-- PREVIEW -->
+    <section id="preview" class="panel">
       <div class="container">
         <div class="section-title">
           <h2>Aperçu livrable : dashboard / synthèse décisionnelle</h2>
@@ -781,73 +557,8 @@
       </div>
     </section>
 
-    <!-- PANEL 3 : APPORT + TURNTABLE -->
-    <section id="apporte" class="panel"
-      data-bubbles="clarté|dans le flou; publics|qui revient; outils|utilisés; passation|clean; doc|simple; tempo|projet">
-      <div class="bubble-layer" aria-hidden="true"></div>
-
-      <div class="container">
-        <div class="section-title">
-          <h2>Ce que j’apporte</h2>
-          <div class="note">et ça se joue</div>
-        </div>
-
-        <div class="deck">
-          <div class="turntable" id="turntable" style="z-index:1;">
-            <div class="turntable-top">
-              <div>
-                <div class="kicker">Module interactif</div>
-                <div style="font-family: var(--serif); font-weight:700; font-size:20px; margin-top:6px;">Trois “pistes”</div>
-                <div class="sublead" style="margin-top:6px;">Clique une piste. Survole le disque pour “play”.</div>
-              </div>
-              <button class="btn ghost" type="button" id="ttToggle" aria-pressed="false">Play / Pause</button>
-            </div>
-
-            <div class="tracks" role="tablist" aria-label="Pistes">
-              <div class="track" role="tab" tabindex="0" data-track="0" aria-selected="true">Clarté</div>
-              <div class="track" role="tab" tabindex="0" data-track="1" aria-selected="false">Publics</div>
-              <div class="track" role="tab" tabindex="0" data-track="2" aria-selected="false">Outils</div>
-            </div>
-
-            <div style="height:12px;"></div>
-
-            <div class="platter" id="platter" aria-label="Tourne-disque">
-              <div class="vinyl" id="vinyl">
-                <div class="grooves"></div>
-              </div>
-              <div class="arm" id="arm"><div class="needle"></div></div>
-            </div>
-
-            <div class="caption">Interaction légère = personnalité, sans nuire à la lisibilité.</div>
-          </div>
-
-          <div class="card" style="z-index:1;">
-            <div class="kicker">Ce que ça veut dire, concrètement</div>
-            <div class="tt-copy" id="ttCopy" style="margin-top:12px;">
-              <h3 id="ttTitle">Clarté dans le flou</h3>
-              <p id="ttText">
-                Je récupère des infos dispersées (fichiers, outils, équipes) et je les rends lisibles. Une structure simple, une passation claire, et on évite les “tableaux magiques”.
-              </p>
-            </div>
-
-            <div style="margin-top:12px;" class="project">
-              <div class="kicker">En 1 phrase</div>
-              <div style="margin-top:8px; color: rgba(17,17,17,.82);">
-                Je ne “fais pas de la data” : j’aide une équipe à piloter un projet culturel avec une lecture claire.
-              </div>
-            </div>
-
-            <div class="foot">Oui, c’est un tourne-disque. Non, tu n’es pas DJ (sauf si tu veux).</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANEL 4 : PROJETS -->
-    <section id="projets" class="panel"
-      data-bubbles="billetterie|priorité; rtm|réel; musique|lien; preuve|visuelle; impact|équipe; décision|rapide">
-      <div class="bubble-layer" aria-hidden="true"></div>
-
+    <!-- PROJETS -->
+    <section id="projets" class="panel">
       <div class="container">
         <div class="section-title">
           <h2>Projets</h2>
@@ -867,14 +578,9 @@
                 <div class="label">Livrables</div>
                 <div class="value">Pipeline • contrôles qualité • exports • dashboard direction.</div>
               </div>
-              <div>
-                <div class="label">Ce que ça prouve</div>
-                <div class="value">Du brut au pilotage lisible (non-tech friendly).</div>
-              </div>
             </div>
             <div class="project-actions">
-              <a class="btn primary" href="projects/billetterie.html">Voir le cas complet</a>
-              <a class="btn ghost" href="#contact">Me contacter</a>
+              <a class="btn cta" href="projects/billetterie.html">Voir le cas complet</a>
             </div>
           </article>
 
@@ -883,21 +589,12 @@
             <p class="tagline">Structuration de données réelles complexes</p>
             <div class="dl">
               <div>
-                <div class="label">Problème</div>
-                <div class="value">Sources hétérogènes : cohérence, qualité, restitution opérationnelle.</div>
-              </div>
-              <div>
                 <div class="label">Livrables</div>
                 <div class="value">Base structurée • règles qualité • carte / restitution • doc.</div>
               </div>
-              <div>
-                <div class="label">Ce que ça prouve</div>
-                <div class="value">Autonomie + sérieux sur un gros sujet concret.</div>
-              </div>
             </div>
             <div class="project-actions">
-              <a class="btn" href="projects/rtm.html">Explorer</a>
-              <a class="btn ghost" href="#contact">Me contacter</a>
+              <a class="btn soft" href="projects/rtm.html">Explorer</a>
             </div>
           </article>
 
@@ -906,99 +603,22 @@
             <p class="tagline">Connexion à la création + analyse utile</p>
             <div class="dl">
               <div>
-                <div class="label">Problème</div>
-                <div class="value">Comprendre une dynamique artistique / public / programmation.</div>
-              </div>
-              <div>
                 <div class="label">Livrables</div>
                 <div class="value">Mini outil / note / restitution courte.</div>
               </div>
-              <div>
-                <div class="label">Ce que ça prouve</div>
-                <div class="value">Connectée au terrain culturel (pas “tech random”).</div>
-              </div>
             </div>
             <div class="project-actions">
-              <a class="btn" href="projects/musique.html">Voir</a>
-              <a class="btn ghost" href="#contact">Me contacter</a>
+              <a class="btn soft" href="projects/musique.html">Voir</a>
             </div>
           </article>
         </div>
 
-        <div class="foot">Si tu ajoutes un 4e projet, je viens te retirer GitHub Pages moi-même. (Non.)</div>
+        <div class="foot">Sobre, lisible, et ça fait sérieux. Comme toi quand tu dors 8h. (Rare.)</div>
       </div>
     </section>
 
-    <!-- PANEL 5 : PROCESS -->
-    <section id="process" class="panel"
-      data-bubbles="cadrage|clair; structurer|vite; restituer|simple; doc|passation; feedback|itérations; terrain|réalité">
-      <div class="bubble-layer" aria-hidden="true"></div>
-
-      <div class="container">
-        <div class="section-title">
-          <h2>Comment je bosse</h2>
-          <div class="note">3 étapes</div>
-        </div>
-
-        <div class="steps">
-          <div class="step" style="z-index:1;">
-            <div class="n">1</div>
-            <h4>Clarifier le besoin</h4>
-            <p>Décisions à prendre, contraintes, équipes, et attentes réalistes.</p>
-          </div>
-          <div class="step" style="z-index:1;">
-            <div class="n">2</div>
-            <h4>Structurer l’information</h4>
-            <p>Organisation, contrôles qualité, exports simples, documentation utile.</p>
-          </div>
-          <div class="step" style="z-index:1;">
-            <div class="n">3</div>
-            <h4>Restituer</h4>
-            <p>Insights actionnables : dashboard, synthèse courte, recommandations.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANEL 6 : À PROPOS -->
-    <section id="apropos" class="panel"
-      data-bubbles="sciences cog|base; culture|vraie; projets|humains; méthode|simple; Marseille|terrain; envie|coulisses">
-      <div class="bubble-layer" aria-hidden="true"></div>
-
-      <div class="container">
-        <div class="section-title">
-          <h2>À propos</h2>
-          <div class="note">court, crédible</div>
-        </div>
-
-        <div class="grid cols-2">
-          <div class="card" style="z-index:1;">
-            <p class="lead">
-              Formée en sciences cognitives, je m’intéresse aux projets culturels parce qu’ils sont humains, vivants et complexes.
-            </p>
-            <p class="sublead">
-              Ce que j’aime : comprendre les publics, organiser les infos, faire le lien terrain ↔ décision, et livrer des supports simples que l’équipe utilise vraiment.
-            </p>
-            <p class="sublead" style="margin-bottom:0;">
-              Je cherche un premier poste dans une structure culturelle/musicale (coordination, production junior, publics, pilotage).
-            </p>
-
-            <div class="foot">Basée à Marseille — disponibilité : à remplir.</div>
-          </div>
-
-          <div class="card" style="z-index:1;">
-            <div class="figure">Photo / visuel “ambiance” (16:9)</div>
-            <div class="caption">Une image sobre suffit. Le reste = preuves (projets).</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANEL 7 : CONTACT -->
-    <section id="contact" class="panel"
-      data-bubbles="email|direct; linkedin|pro; github|preuves; cv|pdf; dispo|simple; parlons|15min">
-      <div class="bubble-layer" aria-hidden="true"></div>
-
+    <!-- CONTACT -->
+    <section id="contact" class="panel">
       <div class="container">
         <div class="section-title">
           <h2>Parlons.</h2>
@@ -1016,26 +636,12 @@
               </div>
             </div>
 
-            <div class="project" style="padding:14px; margin-top:10px;">
-              <div class="kicker">LinkedIn</div>
-              <div style="margin-top:6px;">
-                <a href="https://www.linkedin.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
-              </div>
-            </div>
-
-            <div class="project" style="padding:14px; margin-top:10px;">
-              <div class="kicker">GitHub</div>
-              <div style="margin-top:6px;">
-                <a href="https://github.com/" target="_blank" rel="noopener">Remplacer par ton lien</a>
-              </div>
-            </div>
-
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
-              <a class="btn primary" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
-              <a class="btn ghost" href="#home">Retour en haut</a>
+              <a class="btn soft" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+              <a class="btn dark" href="#home">Retour en haut</a>
             </div>
 
-            <div class="foot">© <span id="y"></span> Alice Gay — HTML/CSS/JS — GitHub Pages</div>
+            <div class="foot">© <span id="y"></span> Alice Gay — GitHub Pages</div>
           </div>
 
           <div class="card" style="z-index:1;">
@@ -1045,6 +651,7 @@
         </div>
       </div>
     </section>
+
   </main>
 
   <script>
@@ -1052,7 +659,7 @@
     const yearEl = document.getElementById('y');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // Sync header height (in case it wraps)
+    // Sync header height
     const headerEl = document.querySelector('header.site');
     const syncHeaderH = () => {
       if (!headerEl) return;
@@ -1062,245 +669,7 @@
     window.addEventListener('resize', syncHeaderH, { passive:true });
     syncHeaderH();
 
-    // Active nav link with IntersectionObserver (snap-friendly)
-    const navLinks = Array.from(document.querySelectorAll('header.site nav a'));
-    const sections = navLinks
-      .map(a => document.querySelector(a.getAttribute('href')))
-      .filter(Boolean);
-
-    const viewport = document.getElementById('viewport');
-
-    const setActive = (id) => {
-      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
-    };
-
-    if (viewport && sections.length) {
-      const io = new IntersectionObserver((entries) => {
-        const visible = entries
-          .filter(e => e.isIntersecting)
-          .sort((a,b) => (b.intersectionRatio - a.intersectionRatio))[0];
-        if (visible?.target?.id) setActive(visible.target.id);
-      }, { root: viewport, threshold: [0.35, 0.55, 0.75] });
-
-      sections.forEach(sec => io.observe(sec));
-    }
-
-    // ======= Bubble auto-layout + parallax =======
-    function parseBubbles(str){
-      return (str || "")
-        .split(";")
-        .map(s => s.trim())
-        .filter(Boolean)
-        .map(pair => {
-          const [t, sub] = pair.split("|").map(x => (x || "").trim());
-          return { t, sub };
-        });
-    }
-
-    function layoutBubbles(panel){
-      const layer = panel.querySelector(".bubble-layer");
-      if(!layer) return;
-
-      layer.innerHTML = "";
-
-      const data = parseBubbles(panel.getAttribute("data-bubbles"));
-      if(!data.length) return;
-
-      const rect = panel.getBoundingClientRect();
-
-      // ✅ safe zones (évite header + évite centre)
-      const safeTop = Math.max(86, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) + 18);
-      const safeBottom = 42;
-      const safeSide = 18;
-
-      const maxW = rect.width - safeSide*2;
-      const maxH = rect.height - safeTop - safeBottom;
-
-      const bubbles = data.map((b, i) => {
-        const el = document.createElement("div");
-        el.className = "bubble";
-        el.setAttribute("role","button");
-        el.tabIndex = 0;
-        el.innerHTML = `${b.t}${b.sub ? `<small>${b.sub}</small>` : ""}`;
-        el.dataset.i = i;
-        layer.appendChild(el);
-        return el;
-      });
-
-      // centre à éviter (zone du contenu)
-      const avoidCx = rect.width / 2;
-      const avoidCy = rect.height / 2;
-      const avoidRx = rect.width * 0.22;  // largeur zone à éviter
-      const avoidRy = rect.height * 0.22; // hauteur zone à éviter
-
-      const placed = [];
-      const triesPerBubble = 70;
-
-      function overlapsCenter(x, y, w, h){
-        const bx = x + w/2;
-        const by = y + h/2;
-        return (Math.abs(bx - avoidCx) < avoidRx) && (Math.abs(by - avoidCy) < avoidRy);
-      }
-
-      bubbles.forEach((el, idx) => {
-        const w = el.offsetWidth;
-        const h = el.offsetHeight;
-
-        let best = null;
-
-        for(let t=0; t<triesPerBubble; t++){
-          const x = safeSide + Math.random()*(maxW - w);
-          const y = safeTop + Math.random()*(maxH - h);
-
-          // pénalité si dans la zone centrale
-          const centerPenalty = overlapsCenter(x,y,w,h) ? 18000 : 0;
-
-          let overlap = 0;
-          for(const p of placed){
-            const ox = Math.max(0, Math.min(x+w, p.x+p.w) - Math.max(x, p.x));
-            const oy = Math.max(0, Math.min(y+h, p.y+p.h) - Math.max(y, p.y));
-            overlap += ox*oy;
-          }
-
-          // distance au centre (on préfère loin)
-          const dist = Math.hypot((x+w/2)-avoidCx, (y+h/2)-avoidCy);
-
-          const score = overlap + centerPenalty - dist*0.25; // lower better
-          if(best === null || score < best.score){
-            best = { x, y, w, h, score };
-          }
-        }
-
-        const pos = best || { x: safeSide, y: safeTop, w, h };
-        placed.push(pos);
-
-        el.style.left = pos.x + "px";
-        el.style.top  = pos.y + "px";
-
-        const rot = (Math.random()*2 - 1) * 1.2;
-        const depth = 0.6 + Math.random()*0.9;
-        el.style.transform = `translate3d(0,0,0) rotate(${rot}deg)`;
-        el.dataset.depth = depth.toFixed(2);
-      });
-
-      // bubble click -> scroll “aha”
-      const anchorMap = ["#preview","#apporte","#projets","#process","#apropos","#contact"];
-      bubbles.forEach((b,i) => {
-        const go = () => {
-          const a = anchorMap[i % anchorMap.length];
-          const target = document.querySelector(a);
-          if(target) target.scrollIntoView({ behavior:"smooth", block:"start" });
-        };
-        b.addEventListener("click", go);
-        b.addEventListener("keydown", (e) => {
-          if(e.key === "Enter" || e.key === " "){
-            e.preventDefault(); go();
-          }
-        });
-      });
-    }
-
-    const panels = Array.from(document.querySelectorAll("section.panel"));
-    function relayoutAll(){ panels.forEach(layoutBubbles); }
-    window.addEventListener("resize", () => { relayoutAll(); }, { passive:true });
-    requestAnimationFrame(() => { relayoutAll(); });
-
-    // parallax on mouse (light)
-    if (viewport){
-      viewport.addEventListener("mousemove", (e) => {
-        const vx = e.clientX / window.innerWidth - 0.5;
-        const vy = e.clientY / window.innerHeight - 0.5;
-
-        const current = panels.find(p => {
-          const r = p.getBoundingClientRect();
-          return r.top <= window.innerHeight*0.35 && r.bottom >= window.innerHeight*0.65;
-        });
-        if(!current) return;
-
-        const layer = current.querySelector(".bubble-layer");
-        if(!layer) return;
-
-        const bs = layer.querySelectorAll(".bubble");
-        bs.forEach((b) => {
-          const d = parseFloat(b.dataset.depth || "1");
-          const tx = vx * 14 * d;
-          const ty = vy * 10 * d;
-          b.style.translate = `${tx}px ${ty}px`;
-        });
-      });
-    }
-
-    // ======= Hero underline follows mouse =======
-    const nameWrap = document.getElementById("nameWrap");
-    const underline = document.getElementById("inkUnderline");
-    if(nameWrap && underline){
-      nameWrap.addEventListener("mousemove", (e) => {
-        const r = nameWrap.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width;
-        const scale = 0.6 + x * 0.6;
-        underline.style.transform = `scaleX(${scale})`;
-      });
-      nameWrap.addEventListener("mouseleave", () => {
-        underline.style.transform = "scaleX(1)";
-      });
-    }
-
-    // ======= Turntable interactions =======
-    const turntable = document.getElementById("turntable");
-    const ttToggle = document.getElementById("ttToggle");
-    const tracks = Array.from(document.querySelectorAll(".track"));
-    const ttTitle = document.getElementById("ttTitle");
-    const ttText = document.getElementById("ttText");
-    const platter = document.getElementById("platter");
-
-    const trackData = [
-      {
-        title: "Clarté dans le flou",
-        text: "Je récupère des infos dispersées (fichiers, outils, équipes) et je les rends lisibles. Une structure simple, une passation claire, et on évite les “tableaux magiques”."
-      },
-      {
-        title: "Compréhension des publics",
-        text: "Je transforme des signaux (ventes, retours, comportements, timing) en lecture humaine et actionnable : qui vient, qui revient, qui décroche — et quoi tester."
-      },
-      {
-        title: "Outils simples et utilisés",
-        text: "Dashboards direction, exports terrain, mini-synthèses : je privilégie des supports que l’équipe peut lire et utiliser, sans dépendre d’un spécialiste."
-      }
-    ];
-
-    function setTrack(i){
-      if (!ttTitle || !ttText) return;
-      tracks.forEach((t, idx) => t.setAttribute("aria-selected", String(idx === i)));
-      ttTitle.textContent = trackData[i].title;
-      ttText.textContent  = trackData[i].text;
-
-      if(turntable?.classList.contains("is-playing")){
-        turntable.classList.remove("is-playing");
-        void turntable.offsetWidth;
-        turntable.classList.add("is-playing");
-      }
-    }
-
-    tracks.forEach((t) => {
-      t.addEventListener("click", () => setTrack(parseInt(t.dataset.track,10)));
-      t.addEventListener("keydown", (e) => {
-        if(e.key === "Enter" || e.key === " "){
-          e.preventDefault();
-          t.click();
-        }
-      });
-    });
-
-    let playing = false;
-    function setPlaying(on){
-      playing = on;
-      turntable?.classList.toggle("is-playing", on);
-      ttToggle?.setAttribute("aria-pressed", String(on));
-    }
-
-    ttToggle?.addEventListener("click", () => setPlaying(!playing));
-    platter?.addEventListener("mouseenter", () => setPlaying(true));
-    platter?.addEventListener("mouseleave", () => setPlaying(false));
+    // IMPORTANT: bulles désactivées => pas de JS de layoutBubbles ici.
   </script>
 </body>
 </html>
