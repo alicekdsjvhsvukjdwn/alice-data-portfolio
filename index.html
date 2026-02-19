@@ -538,7 +538,7 @@ Pixel border (style image 2)
 
 /* HOME panel en colonne : hero en haut, pixels en bas */
 #home.home-panel{
-  min-height: calc(100svh + var(--transition-h) - var(--transition-overlap));
+  min-height: 100svh;
   padding-bottom: 0;
   display: flex;
   flex-direction: column;
@@ -613,7 +613,7 @@ Pixel border (style image 2)
   z-index: 1;
 
   /* ✅ rapproche la transition du hero */
-  margin-top: calc(-1 * var(--transition-pull));
+  margin-top: calc(-1 * var(--transition-pull) - 1px);
 
   /* ✅ déborde sur PREVIEW */
   margin-bottom: calc(-1 * var(--transition-overlap));
@@ -626,6 +626,7 @@ Pixel border (style image 2)
 
 /* le SVG pixel */
 #home.home-panel .home-bottom .px-grad{
+  /* ton code existant */
   position:absolute;
   inset:0;
   width:100%;
@@ -635,16 +636,20 @@ Pixel border (style image 2)
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   z-index: 1;
-}
 
-/* fades au-dessus du SVG */
-#home.home-panel .home-bottom::before,
-#home.home-panel .home-bottom::after{
-  content:"";
-  position:absolute;
-  left:0; right:0;
-  pointer-events:none;
-  z-index: 2;
+  /* ✅ fondu ultra smooth, supprime le trait */
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
 }
 
 /* fondu haut (pour que ça “rentre” dans le hero) */
@@ -663,9 +668,14 @@ Pixel border (style image 2)
 
 /* PREVIEW : on pousse le contenu vers le bas pour laisser voir les pixels en dessous */
 #preview.panel{
-  padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px) + var(--transition-overlap));
+  /* espace normal du panel */
+  padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px));
+
+  /* petit extra pour respirer sous la transition, mais pas un gouffre */
+  padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px) + clamp(60px, 10vh, 140px));
+
   position: relative;
-  z-index: 2; /* au-dessus du débordement */
+  z-index: 2;
 }
 
 /* Responsive */
@@ -1111,6 +1121,7 @@ updateScrollFX();
   </script>
 </body>
 </html>
+
 
 
 
