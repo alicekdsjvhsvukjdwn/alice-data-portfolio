@@ -394,85 +394,73 @@ h2{
 .home-top h1{ max-width: 22ch; }
 .home-top .lead{ max-width: 56ch; }
 
-/* ----- Home full-bleed separator ----- */
+/* ===== Transition pixel full-bleed (HOME -> PREVIEW) ===== */
+
+:root{
+  --transition-h: clamp(260px, 40vh, 520px);
+  --transition-overlap: clamp(90px, 14vh, 180px); /* combien ça “mange” la section suivante */
+}
+
+/* HOME: on ne veut pas de padding-bottom qui crée un trou */
 #home.home-panel{
   padding-bottom: 0;
 }
 
+/* la zone full-bleed */
 #home.home-panel .home-bottom{
   width: 100vw;
-  margin-left: calc(50% - 50vw);
-  height: var(--home-bottom-h);
-  border-top: 1px solid rgba(17,17,17,.12);
-  border-bottom: 1px solid rgba(17,17,17,.12);
-  border-left: none;
-  border-right: none;
-  border-radius: 0;
+  margin-left: calc(50% - 50vw); /* sort du container */
+  height: var(--transition-h);
+  position: relative;
   overflow: hidden;
+  border: 0;
+  border-radius: 0;
 
+  /* base soft (derrière les pixels) : ça “fond” avec ton bg ivoire */
   background:
-    radial-gradient(900px 420px at 55% 22%, rgba(255,255,255,.55), rgba(255,255,255,0) 58%),
-    radial-gradient(900px 520px at 10% 50%, rgba(90,110,160,.25), rgba(255,255,255,0) 62%),
-    radial-gradient(900px 520px at 88% 55%, rgba(80,120,160,.32), rgba(255,255,255,0) 64%),
+    radial-gradient(900px 520px at 50% 10%, rgba(255,255,255,.65), rgba(255,255,255,0) 60%),
+    radial-gradient(1100px 700px at 15% 55%, rgba(90,110,160,.28), rgba(255,255,255,0) 62%),
+    radial-gradient(1100px 700px at 85% 55%, rgba(80,120,160,.34), rgba(255,255,255,0) 64%),
     linear-gradient(180deg, rgba(250,250,247,0) 0%, rgba(250,250,247,1) 100%);
 }
 
-/* Brain */
-.brain{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position: relative;
-  min-height: 240px;
+/* le SVG pixel par-dessus */
+.px-grad{
+  position:absolute;
+  inset:0;
+  width: 100%;
+  height: 100%;
+  display:block;
+  opacity: .95;
 }
 
-/* Image PNG transparent */
-.brain img{
-  width: clamp(300px, 32vw, 620px);
-  height: auto;
-  opacity: .92;
-  transform: translateX(10px) translateY(6px);
-  image-rendering: auto; /* si tu veux pixel net: change en pixelated */
-  /* image-rendering: pixelated; */
-}
-
-/* Halo blanc très subtil pour fondre dans le background */
-.brain::after{
+/* petit “fade” en bas pour que ça rentre propre dans la section suivante */
+#home.home-panel .home-bottom::after{
   content:"";
   position:absolute;
-  inset:-22% -18%;
-  background: radial-gradient(circle at 50% 45%,
-    rgba(250,250,247,0) 0%,
-    rgba(250,250,247,.15) 52%,
-    rgba(250,250,247,.70) 74%,
-    rgba(250,250,247,1) 92%);
+  inset:auto 0 0 0;
+  height: 34%;
   pointer-events:none;
+  background: linear-gradient(180deg, rgba(250,250,247,0) 0%, rgba(250,250,247,1) 95%);
 }
 
-/* Boutons + pills bien espacés */
-.hero-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top: 10px;
-}
-.hero-pills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top: 12px;
+/* === Continuité visuelle : la transition déborde sur PREVIEW === */
+
+/* on fait remonter la transition sous #preview */
+#home.home-panel .home-bottom{
+  margin-bottom: calc(-1 * var(--transition-overlap));
+  z-index: 0;
 }
 
-/* Bande dégradé bas */
-.home-bottom{
-  border-radius: 18px;
-  border: 1px solid rgba(17,17,17,.12);
-  overflow: hidden;
-  background:
-    radial-gradient(900px 420px at 55% 22%, rgba(255,255,255,.55), rgba(255,255,255,0) 58%),
-    radial-gradient(900px 520px at 10% 50%, rgba(90,110,160,.25), rgba(255,255,255,0) 62%),
-    radial-gradient(900px 520px at 88% 55%, rgba(80,120,160,.32), rgba(255,255,255,0) 64%),
-    linear-gradient(180deg, rgba(250,250,247,0) 0%, rgba(250,250,247,1) 100%);
+/* et on pousse le contenu de preview vers le bas (sinon ça se superpose) */
+#preview.panel{
+  padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px) + var(--transition-overlap));
+}
+
+/* optionnel: assure que preview passe au-dessus si besoin */
+#preview.panel, #preview.panel .container{
+  position: relative;
+  z-index: 1;
 }
 
 /* ======= Home fallback (si t'as pas encore home-wrap/home-top/home-bottom) =======
@@ -573,8 +561,11 @@ h2{
       </div>
     
       <!-- FULL BLEED -->
-      <div class="home-bottom" aria-hidden="true"></div>
-    </section>
+      <!-- FULL BLEED -->
+      <div class="home-bottom" aria-hidden="true">
+        <svg id="pxGrad" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
+      </div>
+
 
 
     <!-- PREVIEW -->
@@ -731,8 +722,103 @@ h2{
     window.addEventListener('resize', syncHeaderH, { passive:true });
     syncHeaderH();
 
+    // ===== Pixel gradient generator (SVG) =====
+  const svg = document.getElementById("pxGrad");
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+  function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+
+  // palette proche de ton mock (bleu/gris doux)
+  const palette = [
+    { r: 235, g: 242, b: 248 }, // très clair
+    { r: 200, g: 218, b: 232 }, // bleu brume
+    { r: 155, g: 182, b: 204 }, // bleu + profond
+    { r: 230, g: 236, b: 241 }, // retour clair
+  ];
+
+  function samplePalette(t){
+    t = clamp01(t);
+    const n = palette.length - 1;
+    const x = t * n;
+    const i = Math.floor(x);
+    const f = x - i;
+    const c1 = palette[i];
+    const c2 = palette[Math.min(i+1, n)];
+    return {
+      r: Math.round(lerp(c1.r, c2.r, f)),
+      g: Math.round(lerp(c1.g, c2.g, f)),
+      b: Math.round(lerp(c1.b, c2.b, f))
+    };
+  }
+
+  // petit PRNG stable (évite un rendu qui change à chaque reload)
+  function mulberry32(seed){
+    return function(){
+      let t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    }
+  }
+
+  function renderPixelGradient(){
+    if(!svg) return;
+
+    // vide
+    svg.innerHTML = "";
+
+    // densité pixels (tu peux monter/descendre)
+    const cols = 120;
+    const rows = 40;
+
+    // assure viewBox cohérent avec cols/rows => pixels carrés
+    svg.setAttribute("viewBox", `0 0 ${cols} ${rows}`);
+    svg.setAttribute("shape-rendering", "crispEdges");
+
+    const rnd = mulberry32(42);
+
+    // pour perf : on construit une string
+    let out = "";
+
+    for(let y=0; y<rows; y++){
+      const v = y / (rows - 1);
+
+      for(let x=0; x<cols; x++){
+        const u = x / (cols - 1);
+
+        // gradient principal : vertical (haut -> bas)
+        // + un “vague” horizontal léger pour éviter une bande plate
+        let t = 0.12 + 0.88 * v;
+        t += (Math.sin(u * Math.PI * 2) * 0.04) * (0.3 + 0.7*v);
+
+        // dither/noise : plus fort au milieu, plus soft aux bords
+        const noise = (rnd() - 0.5) * 0.14;
+        t += noise * (0.25 + 0.75 * (1 - Math.abs(v - 0.5)*2));
+
+        t = clamp01(t);
+
+        const c = samplePalette(t);
+
+        // alpha : plus transparent en haut (fond ivoire), plus dense au centre
+        const a = clamp01(0.08 + v*0.85) * (0.85 + (rnd()-0.5)*0.12);
+
+        out += `<rect x="${x}" y="${y}" width="1" height="1" fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
+      }
+    }
+
+    svg.innerHTML = out;
+  }
+
+  renderPixelGradient();
+
+  // si tu veux recalculer au resize (pas obligatoire, mais ok)
+  window.addEventListener("resize", () => {
+    // on garde le rendu stable, donc pas besoin, mais tu peux le relancer si tu changes cols/rows selon taille
+    // renderPixelGradient();
+  }, { passive:true });
     // IMPORTANT: bulles désactivées => pas de JS de layoutBubbles ici.
   </script>
 </body>
 </html>
+
 
