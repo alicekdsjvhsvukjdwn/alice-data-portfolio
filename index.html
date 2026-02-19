@@ -607,7 +607,7 @@ Pixel border (style image 2)
   margin-left: calc(50% - 50vw);
   height: var(--transition-h);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border: 0;
   border-radius: 0;
   z-index: 1;
@@ -650,6 +650,10 @@ Pixel border (style image 2)
     black 82%,
     transparent 100%
   );
+}
+    
+#home .px-grad{
+  overflow: visible; /* laisse dépasser hors viewBox */
 }
 
 /* fondu haut (pour que ça “rentre” dans le hero) */
@@ -1048,7 +1052,7 @@ Pixel border (style image 2)
   // ===== réglages "seulement certains pixels bougent"
   const BAND_COUNT = 7;       // bandes verticales
   const MOVE_FRAC  = 0.16;    // % de pixels qui bougent (0.10–0.22 recommandé)
-  const MOVE_MAX_PX = 3.0;    // amplitude max (px) des pixels mobiles (évite les trous)
+  const MOVE_MAX_PX = 6.0;    // amplitude max (px) des pixels mobiles (évite les trous)
 
   // On stocke uniquement les groupes "move"
   let moveBandsA = [];
@@ -1065,7 +1069,7 @@ Pixel border (style image 2)
 
     // marge de dessin (doit être >= MOVE_MAX_PX en "pixel units")
     // Ici 6 c’est confortable.
-    const pad = 6;
+    const pad = 14;
     const cols = viewCols + pad*2;
     const rows = viewRows + pad*2;
 
@@ -1263,6 +1267,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
