@@ -364,16 +364,15 @@ h2{
 .caption{ margin-top: 10px; font-size: 12px; color: rgba(17,17,17,.58); letter-spacing: .02em; }
 
 /* =========================================================
-   HOME — cerveau PNG transparent + dégradé bas fondu
-   (Option “best UX” : hero qui remplit, pas de vide)
+   HOME — cerveau PNG transparent + transition pixels (fade haut + bas)
    ========================================================= */
 
-/* Si tu ajoutes dans ton HTML: 
-   <div class="home-wrap">
-     <div class="home-top"> ... </div>
-     <div class="home-bottom"> ... </div>
-   </div>
-*/
+:root{
+  --transition-h: clamp(260px, 40vh, 520px);
+  --transition-overlap: clamp(90px, 14vh, 180px);
+}
+
+/* wrapper */
 .home-wrap{
   min-height: calc(100svh - var(--header-h) - var(--home-bottom-h));
   display: grid;
@@ -390,115 +389,94 @@ h2{
   padding-top: clamp(8px, 2vh, 18px);
 }
 
-/* Texte hero: plus “grand écran friendly” */
 .home-top h1{ max-width: 22ch; }
 .home-top .lead{ max-width: 56ch; }
-
-/* ===== Transition pixel full-bleed (HOME -> PREVIEW) ===== */
-
-:root{
-  --transition-h: clamp(260px, 40vh, 520px);
-  --transition-overlap: clamp(90px, 14vh, 180px); /* combien ça “mange” la section suivante */
-}
 
 /* HOME: on ne veut pas de padding-bottom qui crée un trou */
 #home.home-panel{
   padding-bottom: 0;
 }
 
-/* la zone full-bleed */
+/* la zone full-bleed (pixels) */
 #home.home-panel .home-bottom{
   width: 100vw;
-  margin-left: calc(50% - 50vw); /* sort du container */
+  margin-left: calc(50% - 50vw);
   height: var(--transition-h);
   position: relative;
   overflow: hidden;
   border: 0;
   border-radius: 0;
 
-   /* base solide partout (plus de transparence en haut) */
-  background-color: var(--bg);
-
-  /* tes halos bleu/gris */
+  /* fond ivoire + halos doux derrière */
   background:
-  radial-gradient(1100px 700px at 15% 55%, rgba(90,110,160,.22), rgba(250,250,247,0) 62%),
-  radial-gradient(1100px 700px at 85% 55%, rgba(80,120,160,.26), rgba(250,250,247,0) 64%),
-  var(--bg);
+    radial-gradient(1100px 700px at 15% 55%, rgba(90,110,160,.22), rgba(250,250,247,0) 62%),
+    radial-gradient(1100px 700px at 85% 55%, rgba(80,120,160,.26), rgba(250,250,247,0) 64%),
+    var(--bg);
 }
 
-/* le SVG pixel par-dessus */
-.px-grad{
-  position:absolute;
-  inset:0;
+/* IMPORTANT: SVG EN DESSOUS */
+#home.home-panel .home-bottom .px-grad{
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display:block;
   opacity: .95;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  z-index: 1;
 }
 
-#home.home-panel .home-bottom::before{
-  content:"";
-  position:absolute;
-  inset:0 0 auto 0;
-  height: 22%;
-  pointer-events:none;
-  background: linear-gradient(180deg, rgba(250,250,247,1) 0%, rgba(250,250,247,0) 85%);
-}
-
-/* petit “fade” en bas pour que ça rentre propre dans la section suivante */
+/* IMPORTANT: fades AU-DESSUS du SVG (sinon ton fade haut est invisible) */
+#home.home-panel .home-bottom::before,
 #home.home-panel .home-bottom::after{
   content:"";
   position:absolute;
-  inset:auto 0 0 0;
-  height: 34%;
+  left:0; right:0;
   pointer-events:none;
-  background: linear-gradient(180deg, rgba(250,250,247,0) 0%, rgba(250,250,247,1) 95%);
+  z-index: 2;
+}
+
+/* fondu haut : ivoire -> transparent */
+#home.home-panel .home-bottom::before{
+  top:0;
+  height: 28%; /* ajuste 22% -> 38% selon l'intensité */
+  background: linear-gradient(
+    180deg,
+    rgba(250,250,247,1) 0%,
+    rgba(250,250,247,0) 90%
+  );
+}
+
+/* fondu bas : transparent -> ivoire */
+#home.home-panel .home-bottom::after{
+  bottom:0;
+  height: 34%;
+  background: linear-gradient(
+    180deg,
+    rgba(250,250,247,0) 0%,
+    rgba(250,250,247,1) 95%
+  );
 }
 
 /* === Continuité visuelle : la transition déborde sur PREVIEW === */
-
-/* on fait remonter la transition sous #preview */
 #home.home-panel .home-bottom{
   margin-bottom: calc(-1 * var(--transition-overlap));
   z-index: 0;
 }
 
-/* et on pousse le contenu de preview vers le bas (sinon ça se superpose) */
 #preview.panel{
   padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px) + var(--transition-overlap));
 }
 
-/* optionnel: assure que preview passe au-dessus si besoin */
 #preview.panel, #preview.panel .container{
   position: relative;
   z-index: 1;
 }
 
-/* ======= Home fallback (si t'as pas encore home-wrap/home-top/home-bottom) =======
-   Ça évite l'effet "petit au centre" rien qu'avec tes classes existantes.
-*/
-#home .grid.cols-2{
-  grid-template-columns: minmax(520px, 1.15fr) minmax(360px, .85fr);
-  gap: var(--hero-gap);
-  align-items: center;
-}
-#home h1{ max-width: 22ch; }
-#home .card{ padding: clamp(22px, 2.5vw, 40px); }
-
-@media (min-width: 1400px){
-  #home h1{ font-size: clamp(46px, 3.4vw, 76px); }
-  #home .lead{ font-size: clamp(14px, 1vw, 19px); }
-}
-
+/* Responsive */
 @media (max-width: 980px){
-  .home-wrap{ grid-template-rows: auto; }
   .home-top{
-    grid-template-columns: 1fr;
-    align-items: start;
-  }
-  #home .grid.cols-2{
     grid-template-columns: 1fr;
     align-items: start;
   }
@@ -507,6 +485,7 @@ h2{
     transform: none;
   }
 }
+
 
 /* ======= Turntable / steps etc (tes styles peuvent rester si tu veux)
    Je laisse volontairement minimal ici, parce que ton ancien CSS est déjà correct.
@@ -833,6 +812,7 @@ h2{
   </script>
 </body>
 </html>
+
 
 
 
