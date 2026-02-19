@@ -277,6 +277,133 @@ h2{
   overflow: hidden;
 }
 
+/* =========================
+Pixel border (style image 2)
+========================= */
+
+:root{
+  /* SVG "pixel border" (data-uri). Center transparent, ring pixelisé */
+  --px-border-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'%3E%3Crect width='32' height='32' fill='none'/%3E%3Crect x='0' y='0' width='8' height='8' fill='%23111111'/%3E%3Crect x='8' y='0' width='8' height='8' fill='%23888888'/%3E%3Crect x='16' y='0' width='8' height='8' fill='%23EAEAEA'/%3E%3Crect x='24' y='0' width='8' height='8' fill='%23555555'/%3E%3Crect x='0' y='8' width='8' height='8' fill='%23D8D8D8'/%3E%3Crect x='24' y='8' width='8' height='8' fill='%23BDBDBD'/%3E%3Crect x='0' y='16' width='8' height='8' fill='%23777777'/%3E%3Crect x='24' y='16' width='8' height='8' fill='%23181818'/%3E%3Crect x='0' y='24' width='8' height='8' fill='%23F2F2F2'/%3E%3Crect x='8' y='24' width='8' height='8' fill='%23666666'/%3E%3Crect x='16' y='24' width='8' height='8' fill='%23CFCFCF'/%3E%3Crect x='24' y='24' width='8' height='8' fill='%23222222'/%3E%3C/svg%3E");
+}
+
+/* grille projets dans la "page" preview */
+.px-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+  align-items: stretch;
+}
+
+@media (max-width: 980px){
+  .px-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px){
+  .px-grid{ grid-template-columns: 1fr; }
+}
+
+/* carte avec bordure pixel */
+.px-card{
+  position: relative;
+  background: rgba(255,255,255,.82);
+  border-radius: 18px;
+  overflow: hidden; /* important : clip le border-image aux coins */
+  padding: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.06);
+  transform: translateY(0);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+
+.px-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(0,0,0,.09);
+}
+
+/* bordure pixel via pseudo-element */
+.px-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border: 12px solid transparent;                 /* épaisseur bordure */
+  border-image: var(--px-border-img) 8 round;     /* 8 = slice (taille pixel) */
+  opacity: .95;
+}
+
+/* un filet intérieur propre (évite le côté "moche flou") */
+.px-card::after{
+  content:"";
+  position:absolute;
+  inset:12px;              /* colle à l’intérieur de la bordure */
+  border-radius: 12px;
+  border: 1px solid rgba(17,17,17,.10);
+  pointer-events:none;
+}
+
+/* “cover” en haut comme image 1 */
+.px-media{
+  height: 150px;
+  border-radius: 14px;
+  border: 1px solid rgba(17,17,17,.12);
+  background:
+    radial-gradient(680px 260px at 15% 20%, rgba(29,78,216,.18), transparent 55%),
+    radial-gradient(640px 280px at 85% 30%, rgba(29,78,216,.12), transparent 60%),
+    rgba(250,250,247,.9);
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.px-media::before{
+  /* petit grain soft pour rappeler ton mood */
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.06;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: multiply;
+}
+
+/* textes */
+.px-card h3{
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.px-card .desc{
+  margin: 0 0 12px;
+  color: rgba(17,17,17,.72);
+  font-size: 14px;
+}
+
+.px-meta{
+  display:grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.px-meta .label{
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(17,17,17,.55);
+  font-weight: 800;
+}
+
+.px-meta .value{
+  color: rgba(17,17,17,.82);
+  font-size: 13px;
+}
+
+.px-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top: 14px;
+}
 /* ======= Grids (Figma-like auto-fit) ======= */
 .grid{
   display:grid;
@@ -592,46 +719,101 @@ h2{
       </div>
     </section>
     <!-- PREVIEW -->
-    <section id="preview" class="panel">
-      <div class="container">
-        <div class="section-title">
-          <h2>Aperçu livrable : dashboard / synthèse décisionnelle</h2>
-          <div class="note">preuve rapide</div>
-        </div>
+   <section id="preview" class="panel">
+  <div class="container">
+    <div class="section-title">
+      <h2>Projets</h2>
+      <div class="note">3 preuves — net</div>
+    </div>
 
-        <div class="grid cols-2">
-          <div class="card" style="z-index:1;">
-            <div class="figure">Capture dashboard / synthèse (16:9)</div>
-            <div class="caption">Mets ici ta meilleure capture billetterie (même sur données fictives).</div>
+    <p class="sublead">
+      Des cas concrets, un livrable lisible, et une logique “décision → action”.
+    </p>
+
+    <div class="px-grid">
+
+      <!-- 1 -->
+      <article class="px-card">
+        <div class="px-media" aria-hidden="true"></div>
+        <h3>RTM (Stage 6 mois)</h3>
+        <p class="desc">Structuration de données réelles complexes + restitution exploitable.</p>
+
+        <div class="px-meta">
+          <div>
+            <div class="label">Livrables</div>
+            <div class="value">Base structurée • règles qualité • carte/restitution • doc.</div>
           </div>
-
-          <div class="card" style="z-index:1;">
-            <div class="kicker">Insights → Actions</div>
-            <h2 style="margin-top:10px;">Une équipe comprend quoi faire ensuite</h2>
-
-            <div style="margin-top: 14px;">
-              <div class="kicker" style="opacity:.85;">INSIGHTS</div>
-              <ul style="margin:10px 0 14px; padding-left: 18px; color: rgba(17,17,17,.80);">
-                <li>Les ventes “late” dominent : fenêtre de relance à anticiper.</li>
-                <li>Une part de publics revient : opportunité fidélisation.</li>
-                <li>Le panier varie selon formats : optimisation tarifs/offres.</li>
-              </ul>
-
-              <div style="height:1px; background: var(--line); margin: 12px 0;"></div>
-
-              <div class="kicker" style="opacity:.85;">ACTIONS</div>
-              <ul style="margin:10px 0 0; padding-left: 18px; color: rgba(17,17,17,.80);">
-                <li>Segmenter les relances (réguliers vs occasionnels).</li>
-                <li>Tester préventes / packs pour lisser remplissage.</li>
-                <li>Optimiser calendrier com selon timing d’achat.</li>
-              </ul>
-            </div>
-
-            <div class="foot">Ça, c’est ton vrai “produit”.</div>
+          <div>
+            <div class="label">Ce que ça prouve</div>
+            <div class="value">Autonomie, rigueur, et capacité à rendre simple.</div>
           </div>
         </div>
-      </div>
-    </section>
+
+        <div class="px-actions">
+          <a class="btn soft" href="projects/rtm.html">Explorer →</a>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="px-card">
+        <div class="px-media" aria-hidden="true" style="
+          background:
+            radial-gradient(680px 260px at 25% 25%, rgba(29,78,216,.14), transparent 55%),
+            radial-gradient(640px 280px at 75% 35%, rgba(194,65,12,.12), transparent 60%),
+            rgba(250,250,247,.9);
+        "></div>
+
+        <h3>Pilotage billetterie & publics</h3>
+        <p class="desc">Lecture publics/événements pour piloter une stratégie et clarifier les décisions.</p>
+
+        <div class="px-meta">
+          <div>
+            <div class="label">Livrables</div>
+            <div class="value">Pipeline • contrôles qualité • exports • dashboard direction.</div>
+          </div>
+          <div>
+            <div class="label">Ce que ça prouve</div>
+            <div class="value">Du brut → du pilotage lisible (non-tech friendly).</div>
+          </div>
+        </div>
+
+        <div class="px-actions">
+          <a class="btn soft" href="projects/billetterie.html">Explorer →</a>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="px-card">
+        <div class="px-media" aria-hidden="true" style="
+          background:
+            radial-gradient(680px 260px at 15% 20%, rgba(16,185,129,.10), transparent 55%),
+            radial-gradient(640px 280px at 85% 30%, rgba(29,78,216,.12), transparent 60%),
+            rgba(250,250,247,.9);
+        "></div>
+
+        <h3>Musique & créatif</h3>
+        <p class="desc">Connexion création ↔ analyse utile : mini outil / restitution courte.</p>
+
+        <div class="px-meta">
+          <div>
+            <div class="label">Livrables</div>
+            <div class="value">Mini outil • note courte • approche “utile, pas gadget”.</div>
+          </div>
+          <div>
+            <div class="label">Ce que ça prouve</div>
+            <div class="value">Compréhension terrain culturel + sens du rendu.</div>
+          </div>
+        </div>
+
+        <div class="px-actions">
+          <a class="btn soft" href="projects/musique.html">Explorer →</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
 
     <!-- PROJETS -->
     <section id="projets" class="panel">
@@ -846,6 +1028,7 @@ h2{
   </script>
 </body>
 </html>
+
 
 
 
