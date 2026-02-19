@@ -420,7 +420,10 @@ h2{
   background-color: var(--bg);
 
   /* tes halos bleu/gris */
-  background: var(--bg);
+  background:
+  radial-gradient(1100px 700px at 15% 55%, rgba(90,110,160,.22), rgba(250,250,247,0) 62%),
+  radial-gradient(1100px 700px at 85% 55%, rgba(80,120,160,.26), rgba(250,250,247,0) 64%),
+  var(--bg);
 }
 
 /* le SVG pixel par-dessus */
@@ -439,9 +442,9 @@ h2{
   content:"";
   position:absolute;
   inset:0 0 auto 0;
-  height: 28%;
+  height: 22%;
   pointer-events:none;
-  background: linear-gradient(180deg, rgba(250,250,247,1) 0%, rgba(250,250,247,0) 90%);
+  background: linear-gradient(180deg, rgba(250,250,247,1) 0%, rgba(250,250,247,0) 85%);
 }
 
 /* petit “fade” en bas pour que ça rentre propre dans la section suivante */
@@ -830,6 +833,7 @@ h2{
   </script>
 </body>
 </html>
+
 
 
 
