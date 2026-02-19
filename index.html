@@ -416,12 +416,14 @@ h2{
   border: 0;
   border-radius: 0;
 
-  /* base soft (derrière les pixels) : ça “fond” avec ton bg ivoire */
-  background:
-    radial-gradient(900px 520px at 50% 10%, rgba(255,255,255,.65), rgba(255,255,255,0) 60%),
+   /* base solide partout (plus de transparence en haut) */
+  background-color: var(--bg);
+
+  /* tes halos bleu/gris */
+  background-image:
+    radial-gradient(900px 520px at 50% 10%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
     radial-gradient(1100px 700px at 15% 55%, rgba(90,110,160,.28), rgba(255,255,255,0) 62%),
-    radial-gradient(1100px 700px at 85% 55%, rgba(80,120,160,.34), rgba(255,255,255,0) 64%),
-    linear-gradient(180deg, rgba(250,250,247,0) 0%, rgba(250,250,247,1) 100%);
+    radial-gradient(1100px 700px at 85% 55%, rgba(80,120,160,.34), rgba(255,255,255,0) 64%);
 }
 
 /* le SVG pixel par-dessus */
@@ -563,13 +565,10 @@ h2{
       </div>
     
       <!-- FULL BLEED -->
-      <!-- FULL BLEED -->
       <div class="home-bottom" aria-hidden="true">
         <svg id="pxGrad" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
       </div>
-
-
-
+    </section>
     <!-- PREVIEW -->
     <section id="preview" class="panel">
       <div class="container">
@@ -770,8 +769,8 @@ h2{
     svg.innerHTML = "";
 
     // densité pixels (tu peux monter/descendre)
-    const cols = 64;
-    const rows = 22;
+    const cols = 52;
+    const rows = 18;
 
     // assure viewBox cohérent avec cols/rows => pixels carrés
     svg.setAttribute("viewBox", `0 0 ${cols} ${rows}`);
@@ -794,15 +793,18 @@ h2{
         t += (Math.sin(u * Math.PI * 2) * 0.04) * (0.3 + 0.7*v);
 
         // dither/noise : plus fort au milieu, plus soft aux bords
-        const noise = (rnd() - 0.5) * 0.28;
+        const noise = (rnd() - 0.5) * 0.36;
         t += noise * (0.25 + 0.75 * (1 - Math.abs(v - 0.5)*2));
 
         t = clamp01(t);
 
         const c = samplePalette(t);
 
-        // alpha : plus transparent en haut (fond ivoire), plus dense au centre
-        const a = clamp01(0.18 + v*0.92) * (0.95 + (rnd()-0.5)*0.20);
+        // alpha : pixels visibles dès le haut (pas de fondu)
+        const topBoost = 0.42 * (1 - v); // +42% en haut -> 0 en bas
+        const aBase = 0.48 + 0.32*v + topBoost; // haut ~0.90 / bas ~0.80
+        const a = clamp01(aBase) * (0.95 + (rnd()-0.5)*0.18);
+
 
         out += `<rect x="${x}" y="${y}" width="1" height="1" fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
       }
@@ -822,6 +824,7 @@ h2{
   </script>
 </body>
 </html>
+
 
 
 
