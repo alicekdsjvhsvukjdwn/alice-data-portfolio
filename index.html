@@ -432,6 +432,8 @@ h2{
   height: 100%;
   display:block;
   opacity: .95;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 /* petit “fade” en bas pour que ça rentre propre dans la section suivante */
@@ -768,8 +770,8 @@ h2{
     svg.innerHTML = "";
 
     // densité pixels (tu peux monter/descendre)
-    const cols = 120;
-    const rows = 40;
+    const cols = 64;
+    const rows = 22;
 
     // assure viewBox cohérent avec cols/rows => pixels carrés
     svg.setAttribute("viewBox", `0 0 ${cols} ${rows}`);
@@ -792,7 +794,7 @@ h2{
         t += (Math.sin(u * Math.PI * 2) * 0.04) * (0.3 + 0.7*v);
 
         // dither/noise : plus fort au milieu, plus soft aux bords
-        const noise = (rnd() - 0.5) * 0.14;
+        const noise = (rnd() - 0.5) * 0.28;
         t += noise * (0.25 + 0.75 * (1 - Math.abs(v - 0.5)*2));
 
         t = clamp01(t);
@@ -800,7 +802,7 @@ h2{
         const c = samplePalette(t);
 
         // alpha : plus transparent en haut (fond ivoire), plus dense au centre
-        const a = clamp01(0.08 + v*0.85) * (0.85 + (rnd()-0.5)*0.12);
+        const a = clamp01(0.18 + v*0.92) * (0.95 + (rnd()-0.5)*0.20);
 
         out += `<rect x="${x}" y="${y}" width="1" height="1" fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
       }
@@ -820,5 +822,6 @@ h2{
   </script>
 </body>
 </html>
+
 
 
