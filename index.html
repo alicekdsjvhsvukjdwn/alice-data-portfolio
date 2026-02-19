@@ -1087,8 +1087,13 @@ const preview = document.getElementById('preview');
 function updateScrollFX(){
   if(!viewport || !preview) return;
 
-  const r = preview.getBoundingClientRect();
-  const prog = clamp01(1 - (r.top / (window.innerHeight * 0.92)));
+  // distance entre le top du viewport scrollable et le top de preview
+  const vpTop = viewport.getBoundingClientRect().top;
+  const prTop = preview.getBoundingClientRect().top;
+
+  const dist = prTop - vpTop;                 // px
+  const range = viewport.clientHeight * 0.92; // zone d’activation
+  const prog = clamp01(1 - (dist / range));
 
   document.documentElement.style.setProperty('--px', prog.toFixed(3));
 }
@@ -1106,6 +1111,7 @@ updateScrollFX();
   </script>
 </body>
 </html>
+
 
 
 
