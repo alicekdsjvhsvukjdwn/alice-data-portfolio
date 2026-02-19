@@ -374,10 +374,10 @@ h2{
 
 /* wrapper */
 .home-wrap{
-  min-height: calc(100svh - var(--header-h) - var(--home-bottom-h));
+  min-height: calc(100svh - var(--header-h) - var(--transition-h));
   display: grid;
   grid-template-rows: 1fr;
-  gap: clamp(18px, 3vh, 26px);
+  gap: clamp(18px, 2vh, 18px);
 }
 
 /* HERO (haut) */
@@ -461,8 +461,9 @@ h2{
 
 /* === Continuité visuelle : la transition déborde sur PREVIEW === */
 #home.home-panel .home-bottom{
+  margin-top: calc(-1 * clamp(40px, 7vh, 120px));
   margin-bottom: calc(-1 * var(--transition-overlap));
-  z-index: 0;
+  z-index: 1;
 }
 
 #preview.panel{
@@ -812,6 +813,7 @@ h2{
   </script>
 </body>
 </html>
+
 
 
 
