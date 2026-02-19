@@ -985,7 +985,7 @@ Pixel border (style image 2)
 
   <script>
   // =========================
-  // Setup (year + header height)
+  // Setup (refs + utils)
   // =========================
   const yearEl = document.getElementById('y');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -999,25 +999,20 @@ Pixel border (style image 2)
   window.addEventListener('resize', syncHeaderH, { passive:true });
   syncHeaderH();
 
-  // =========================
-  // DOM refs
-  // =========================
   const viewport = document.getElementById('viewport');
   const preview  = document.getElementById('preview');
   const svg      = document.getElementById('pxGrad');
 
-  // =========================
-  // Utils
-  // =========================
+  const prefersReduced =
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function lerp(a,b,t){ return a + (b-a)*t; }
   function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-
-  // (anti-shimmer) => pas d’arrondis agressifs (sinon ça "saute")
-  // 0.25px = stable et fluide
-  function quant(x){ return Math.round(x * 4) / 4; }
+  function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
+  function quant(x, step=0.25){ return Math.round(x/step)*step; }
 
   // =========================
-  // Palette (bleu/gris doux)
+  // Pixel field (SVG) — 2 layers, split into bands
   // =========================
   const palette = [
     { r: 235, g: 242, b: 248 },
@@ -1047,22 +1042,25 @@ Pixel border (style image 2)
       t = Math.imul(t ^ (t >>> 15), t | 1);
       t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    }
+    };
   }
 
-  // =========================
-  // Pixel gradient generator (2 layers, padded)
-  // =========================
+  const BAND_COUNT = 7; // + tu montes, + c'est "granulaire", mais + lourd
+
+  let bandElsA = [];
+  let bandElsB = [];
+
   function renderPixelGradient(){
     if(!svg) return;
 
     svg.innerHTML = "";
 
+    // Zone visible
     const viewCols = 72;
     const viewRows = 26;
 
-    // on dessine plus large (padding) pour pouvoir translater sans trous
-    const pad  = 8;
+    // On dessine un peu plus large, pour pouvoir translater sans "trous"
+    const pad = 6;
     const cols = viewCols + pad*2;
     const rows = viewRows + pad*2;
 
@@ -1072,183 +1070,213 @@ Pixel border (style image 2)
     const rndA = mulberry32(42);
     const rndB = mulberry32(1337);
 
-    function buildLayer(rnd, alphaMul){
-      let out = "";
+    function buildLayer(rnd, alphaMul, layerId){
+      // strings par bande
+      const bands = Array.from({length:BAND_COUNT}, () => "");
+
       for(let y=0; y<rows; y++){
-        const vy = (y - pad) / (viewRows - 1);
+        const vy = (y - pad) / (viewRows - 1); // -inf..inf
+        const v01 = clamp01(vy);
+
+        // bande selon Y visible
+        const yVisible = (y - pad);
+        let bi = Math.floor((yVisible / (viewRows-1)) * BAND_COUNT);
+        bi = clamp(bi, 0, BAND_COUNT-1);
+
         for(let x=0; x<cols; x++){
           const ux = (x - pad) / (viewCols - 1);
 
-          let t = 0.12 + 0.88 * clamp01(vy);
-          t += (Math.sin(ux * Math.PI * 2) * 0.04) * (0.3 + 0.7*clamp01(vy));
+          // gradient vertical + vague horizontale très légère
+          let t = 0.12 + 0.88 * v01;
+          t += (Math.sin(ux * Math.PI * 2) * 0.04) * (0.3 + 0.7*v01);
 
+          // dither/noise stable
           const noise = (rnd() - 0.5) * 0.36;
-          t += noise * (0.25 + 0.75 * (1 - Math.abs(clamp01(vy) - 0.5)*2));
+          t += noise * (0.25 + 0.75 * (1 - Math.abs(v01 - 0.5)*2));
           t = clamp01(t);
 
           const c = samplePalette(t);
 
-          const v01 = clamp01(vy);
+          // alpha : +dense en haut, +soft en bas
           const topBoost = 0.42 * (1 - v01);
           const aBase = 0.48 + 0.32*v01 + topBoost;
           const a = clamp01(aBase) * (0.95 + (rnd()-0.5)*0.18) * alphaMul;
 
-          out += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1" fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
+          // x/y décalés pour dépasser le viewBox (marge pad)
+          bands[bi] += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1" fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
         }
+      }
+
+      // wrap bands
+      let out = "";
+      for(let i=0; i<BAND_COUNT; i++){
+        out += `<g id="${layerId}_b${i}">${bands[i]}</g>`;
       }
       return out;
     }
 
-    const layerA = buildLayer(rndA, 1.00);
-    const layerB = buildLayer(rndB, 0.35);
+    const layerA = buildLayer(rndA, 1.00, "pxA");
+    const layerB = buildLayer(rndB, 0.35, "pxB");
 
     svg.innerHTML = `
       <g id="pxA">${layerA}</g>
       <g id="pxB">${layerB}</g>
     `;
+
+    // Cache band elements for animation
+    bandElsA = Array.from({length:BAND_COUNT}, (_,i) => svg.querySelector(`#pxA_b${i}`));
+    bandElsB = Array.from({length:BAND_COUNT}, (_,i) => svg.querySelector(`#pxB_b${i}`));
   }
 
   renderPixelGradient();
 
   // =========================
-  // Motion logic: ONLY ON SCROLL
+  // Scroll -> coherent motion (no jitter)
+  //   - velocity computed in rAF (stable dt)
+  //   - velocity + progress smoothed
   // =========================
-  const prefersReduced =
-    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lastT = performance.now();
+  let lastST = viewport ? viewport.scrollTop : 0;
 
-  let lastSt = viewport ? viewport.scrollTop : 0;
-  let lastT  = performance.now();
+  let velRaw = 0;
+  let velSm  = 0;     // px/s (smoothed)
+  let progRaw = 0;    // 0..1 (raw)
+  let progSm  = 0;    // 0..1 (smoothed)
 
-  let vel = 0;        // px/s instant
-  let velSmooth = 0;  // px/s lissé
+  let lastScrollActivity = performance.now();
+  let ticking = false;
 
-  // offsets animés (les "pixels qui glissent")
-  let offX = 0, offY = 0;         // position actuelle
-  let targetX = 0, targetY = 0;   // cible
+  // Just mark activity; we do the real math in rAF
+  function onScroll(){
+    lastScrollActivity = performance.now();
+    ticking = true;
+  }
+  if (viewport){
+    viewport.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll, { passive:true });
+  }
 
-  // pour couper l’anim quand c’est quasi à zéro
-  let activity = 0; // 0..1 (monte quand scroll, redescend)
-
-  // progress pour ton CSS --px (tu l'utilises pour parallax/opacity)
-  let prog = 0;
-
-  function computeProg(){
+  function computeProgress(){
     if(!viewport || !preview) return 0;
-    const dist  = preview.offsetTop - viewport.scrollTop;
+
+    // progress basé sur l’arrivée de #preview dans le viewport scrollable
+    const vpTop = viewport.getBoundingClientRect().top;
+    const prTop = preview.getBoundingClientRect().top;
+
+    const dist  = prTop - vpTop;
     const range = viewport.clientHeight * 0.92;
+
     return clamp01(1 - (dist / range));
   }
 
-  function loop(){
-    if(!viewport || !svg){
+  function applyBandTransforms(){
+    if(!svg) return;
+
+    // amplitude liée à la vitesse, mais lissée
+    // down scroll (velSm > 0) => pixels go UP (negative Y)
+    const v = clamp(velSm, -1800, 1800);
+    const speed01 = clamp01(Math.abs(v) / 1400); // 0..1
+
+    // Si pas de scroll depuis un moment et vitesse ~0, on stoppe vraiment
+    const idleFor = performance.now() - lastScrollActivity;
+    const almostStill = Math.abs(v) < 6 && speed01 < 0.02;
+
+    if (idleFor > 220 && almostStill){
+      // retour propre à 0 (une seule fois)
+      if (ticking){
+        for(let i=0;i<BAND_COUNT;i++){
+          const a = bandElsA[i], b = bandElsB[i];
+          if (a) a.setAttribute('transform', `translate(0 0)`);
+          if (b) b.setAttribute('transform', `translate(0 0)`);
+        }
+        svg.style.opacity = "";
+        ticking = false;
+      }
+      return;
+    }
+
+    // Scroll coherence:
+    // - baseY suit le sens inverse du scroll (down => up)
+    // - chaque bande a un "poids" différent => impression "certains pixels"
+    const baseY = -v * 0.0032; // px (800 px/s => ~ -2.56px)
+
+    // Un peu de structure en fonction de la progression (pour que ça "vit" en descente)
+    const progY = -progSm * 4.0; // px (indépendant du sens, juste une mise en tension)
+
+    // Weights (toutes positives => down => up partout, mais pas pareil)
+    // (tu peux changer, c’est ça qui donne la signature du mouvement)
+    const wA = [1.25, 0.70, 1.05, 0.55, 0.95, 0.62, 0.88];
+    const wB = [0.55, 0.95, 0.60, 1.10, 0.65, 1.00, 0.72];
+
+    // X drift très léger, alterné, aussi dépendant du scroll (cohérent)
+    const baseX = v * 0.0012; // px (down => +x, up => -x)
+
+    for(let i=0; i<BAND_COUNT; i++){
+      const a = bandElsA[i];
+      const b = bandElsB[i];
+
+      // Layer A: plus présent
+      const yA = (baseY * wA[i]) + (progY * (1 - i/(BAND_COUNT-1)) * 0.35);
+      const xA = baseX * ((i % 2 === 0) ? 1 : -1) * (0.35 + 0.45*speed01);
+
+      // Layer B: parallax différent
+      const yB = (baseY * wB[i] * 0.85) + (progY * (i/(BAND_COUNT-1)) * 0.28);
+      const xB = baseX * ((i % 2 === 0) ? -1 : 1) * (0.25 + 0.35*speed01);
+
+      // Quantize => évite le “shimmer”/tremblement à l’écran
+      const qxA = quant(xA, 0.25);
+      const qyA = quant(yA, 0.25);
+      const qxB = quant(xB, 0.25);
+      const qyB = quant(yB, 0.25);
+
+      if(a) a.setAttribute('transform', `translate(${qxA} ${qyA})`);
+      if(b) b.setAttribute('transform', `translate(${qxB} ${qyB})`);
+    }
+
+    // opacité légère (optionnelle) : augmente un poil quand la transition "s’active"
+    svg.style.opacity = (0.90 + progSm * 0.08).toFixed(3);
+
+    ticking = true;
+  }
+
+  function loop(now){
+    if(prefersReduced || !viewport){
       requestAnimationFrame(loop);
       return;
     }
 
-    const now = performance.now();
-    const dt  = Math.max(0.016, (now - lastT) / 1000);
+    const dt = clamp((now - lastT) / 1000, 0.001, 0.05);
     lastT = now;
 
-    // ---------
-    // 1) Lire scroll et vitesse
-    // ---------
+    // Velocity computed in rAF (stable dt)
     const st = viewport.scrollTop;
-    vel = (st - lastSt) / dt;
-    lastSt = st;
+    velRaw = (st - lastST) / dt; // px/s
+    lastST = st;
 
-    // lissage (évite le "tremblement")
-    velSmooth += (vel - velSmooth) * 0.12;
+    // Smooth velocity (critical to kill jitter)
+    velSm = lerp(velSm, velRaw, 0.14);
 
-    // ---------
-    // 2) Détecter activité scroll
-    // ---------
-    const vAbs = Math.abs(velSmooth);
-    // si tu scroll vraiment => activity monte vite ; sinon elle retombe
-    const actTarget = vAbs > 30 ? 1 : 0;     // seuil px/s
-    activity += (actTarget - activity) * (actTarget ? 0.25 : 0.08);
+    // Progress smoothed too (prevents step-like snapping)
+    progRaw = computeProgress();
+    progSm  = lerp(progSm, progRaw, 0.10);
 
-    // ---------
-    // 3) Mettre à jour --px (ton progress scroll)
-    // ---------
-    prog += (computeProg() - prog) * 0.14;
-    document.documentElement.style.setProperty('--px', prog.toFixed(3));
+    // Keep your CSS --px (for your existing parallax/opacity rules)
+    document.documentElement.style.setProperty('--px', progSm.toFixed(3));
 
-    if(prefersReduced){
-      // rien à faire
-      requestAnimationFrame(loop);
-      return;
-    }
-
-    // ---------
-    // 4) Convertir vitesse en "glissement" (sens du scroll)
-    // ---------
-    // velSmooth > 0 = scroll down => pixels "descendent"
-    // velSmooth < 0 = scroll up   => pixels "montent"
-    //
-    // force : clamp + scaling
-    const v = Math.max(-1600, Math.min(1600, velSmooth));
-    const force = v / 1600; // -1..1
-
-    // Cibles (plus tu scroll vite, plus ça glisse)
-    // (Y suit le scroll, X bouge un peu pour faire vivant)
-    targetY = force * 5.5;                 // amplitude verticale (px)
-    targetX = force * -2.6 + (prog - 0.5) * 1.2; // léger drift
-
-    // ---------
-    // 5) Inertie (damping) : on va vers la cible, puis retour au repos
-    // ---------
-    // Quand activity retombe, target tend vers 0 naturellement.
-    // Ici: off -> target (spring)
-    const spring = 0.16;     // vitesse de suivi
-    const friction = 0.86;   // "frein" naturel
-
-    // petit "ressort" : vitesse interne implicite via friction
-    offX = (offX + (targetX - offX) * spring) * friction;
-    offY = (offY + (targetY - offY) * spring) * friction;
-
-    // ---------
-    // 6) Appliquer transform aux 2 couches (parallax)
-    // ---------
-    const gA = svg.querySelector('#pxA');
-    const gB = svg.querySelector('#pxB');
-
-    if(gA && gB){
-      // couche A : suit plus
-      const ax = quant(offX * 1.0);
-      const ay = quant(offY * 1.0);
-
-      // couche B : parallax inverse plus léger
-      const bx = quant(offX * -0.7);
-      const by = quant(offY * 0.55);
-
-      // IMPORTANT : aucun mouvement si pas de scroll (activity ~0)
-      // => on "gate" avec activity
-      const k = activity;
-
-      gA.setAttribute('transform', `translate(${(ax*k).toFixed(2)} ${(ay*k).toFixed(2)})`);
-      gB.setAttribute('transform', `translate(${(bx*k).toFixed(2)} ${(by*k).toFixed(2)})`);
-
-      // micro variation d'opacité UNIQUEMENT pendant scroll
-      const op = 0.92 + prog*0.08 + (k * 0.03);
-      svg.style.opacity = op.toFixed(3);
-    }
+    applyBandTransforms();
 
     requestAnimationFrame(loop);
   }
 
   requestAnimationFrame(loop);
-
-  // recalc sur resize
-  window.addEventListener('resize', () => {
-    // si tu veux re-render en fonction de la taille, décommente :
-    // renderPixelGradient();
-  }, { passive:true });
 </script>
+
 
 
 
 </body>
 </html>
+
 
 
 
