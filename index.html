@@ -984,11 +984,12 @@ Pixel border (style image 2)
   </main>
 
   <script>
-  // Year
+  // =========================
+  // Setup (year + header height)
+  // =========================
   const yearEl = document.getElementById('y');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // Sync header height
   const headerEl = document.querySelector('header.site');
   const syncHeaderH = () => {
     if (!headerEl) return;
@@ -998,16 +999,22 @@ Pixel border (style image 2)
   window.addEventListener('resize', syncHeaderH, { passive:true });
   syncHeaderH();
 
-  // ===== DOM refs (IMPORTANT : avant le reste)
+  // =========================
+  // DOM refs
+  // =========================
   const viewport = document.getElementById('viewport');
   const preview  = document.getElementById('preview');
   const svg      = document.getElementById('pxGrad');
 
-  // ===== Utils
+  // =========================
+  // Utils
+  // =========================
   function lerp(a,b,t){ return a + (b-a)*t; }
   function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
-  // Palette
+  // =========================
+  // Palette (bleu/gris doux)
+  // =========================
   const palette = [
     { r: 235, g: 242, b: 248 },
     { r: 200, g: 218, b: 232 },
@@ -1030,6 +1037,7 @@ Pixel border (style image 2)
     };
   }
 
+  // PRNG stable
   function mulberry32(seed){
     return function(){
       let t = seed += 0x6D2B79F5;
@@ -1039,7 +1047,9 @@ Pixel border (style image 2)
     }
   }
 
-  // ===== Pixel gradient generator (2 layers)
+  // =========================
+  // Pixel gradient generator (2 layers, padded)
+  // =========================
   function renderPixelGradient(){
     if(!svg) return;
 
@@ -1048,7 +1058,8 @@ Pixel border (style image 2)
     const viewCols = 72;
     const viewRows = 26;
 
-    const pad = 6;
+    // on dessine plus large pour pouvoir bouger sans "trous"
+    const pad  = 6;
     const cols = viewCols + pad*2;
     const rows = viewRows + pad*2;
 
@@ -1065,15 +1076,18 @@ Pixel border (style image 2)
         for(let x=0; x<cols; x++){
           const ux = (x - pad) / (viewCols - 1);
 
+          // gradient vertical + vague horizontale
           let t = 0.12 + 0.88 * clamp01(vy);
           t += (Math.sin(ux * Math.PI * 2) * 0.04) * (0.3 + 0.7*clamp01(vy));
 
+          // dither
           const noise = (rnd() - 0.5) * 0.36;
           t += noise * (0.25 + 0.75 * (1 - Math.abs(clamp01(vy) - 0.5)*2));
           t = clamp01(t);
 
           const c = samplePalette(t);
 
+          // alpha
           const v01 = clamp01(vy);
           const topBoost = 0.42 * (1 - v01);
           const aBase = 0.48 + 0.32*v01 + topBoost;
@@ -1096,72 +1110,118 @@ Pixel border (style image 2)
 
   renderPixelGradient();
 
-  // ===== Scroll-driven + animation
-  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // =========================
+  // Motion settings
+  // =========================
+  const prefersReduced =
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let prog = 0;       // 0..1
-  let vel  = 0;       // px/s
-  let lastScrollTop = viewport ? viewport.scrollTop : 0;
-  let lastTime = performance.now();
+  // quantize helper (anti-shimmer)
+  // 0.5px steps = doux + stable ; mets 1px si tu veux full pixel lock
+  function q(x){ return Math.round(x * 2) / 2; }
 
-  function updateScrollFX(){
+  // =========================
+  // Scroll sampling (SMOOTH) — rAF only
+  // =========================
+  let prog = 0;          // lissé 0..1
+  let progTarget = 0;    // cible 0..1
+  let vel = 0;           // px/s instantané
+  let velSmooth = 0;     // px/s lissé
+
+  let lastSt = viewport ? viewport.scrollTop : 0;
+  let lastT  = performance.now();
+
+  function computeTargets(){
     if(!viewport || !preview) return;
 
-    const now = performance.now();
-    const dt  = Math.max(16, now - lastTime);
-    lastTime  = now;
-
-    // vitesse scroll (sur le container scrollable)
-    const st = viewport.scrollTop;
-    vel = (st - lastScrollTop) / (dt/1000);
-    lastScrollTop = st;
-
-    // prog basé sur l’arrivée de #preview dans le viewport scrollable
-    const vpTop = viewport.getBoundingClientRect().top;
-    const prTop = preview.getBoundingClientRect().top;
-
-    const dist  = prTop - vpTop;
+    // ✅ calcule en scrollTop (plus stable que getBoundingClientRect)
+    const dist  = preview.offsetTop - viewport.scrollTop; // px
     const range = viewport.clientHeight * 0.92;
-
-    prog = clamp01(1 - (dist / range));
-    document.documentElement.style.setProperty('--px', prog.toFixed(3));
+    progTarget = clamp01(1 - (dist / range));
   }
 
+  function tickScroll(){
+    if(!viewport){
+      requestAnimationFrame(tickScroll);
+      return;
+    }
+
+    const now = performance.now();
+    const dtS = Math.max(0.016, (now - lastT) / 1000);
+    lastT = now;
+
+    const st = viewport.scrollTop;
+    vel = (st - lastSt) / dtS;
+    lastSt = st;
+
+    computeTargets();
+
+    // lissage (tweakables)
+    const aProg = 0.14;   // plus bas = plus smooth
+    const aVel  = 0.10;
+
+    prog      += (progTarget - prog) * aProg;
+    velSmooth += (vel - velSmooth) * aVel;
+
+    document.documentElement.style.setProperty('--px', prog.toFixed(3));
+
+    requestAnimationFrame(tickScroll);
+  }
+
+  requestAnimationFrame(tickScroll);
+  window.addEventListener('resize', computeTargets, { passive:true });
+  computeTargets();
+
+  // =========================
+  // Pixel animation (time + scroll influence smooth)
+  // =========================
   function animatePixels(tms){
     if(!prefersReduced && svg){
       const t = tms / 1000;
+
       const a = svg.querySelector('#pxA');
       const b = svg.querySelector('#pxB');
 
       if(a && b){
-        const v = Math.max(-1800, Math.min(1800, vel));
-        const kick = v * 0.0009;
+        // ✅ velocity smooth clamp
+        const v = Math.max(-1200, Math.min(1200, velSmooth));
 
-        const dxA = Math.sin(t*0.9 + prog*2.2) * 1.6 + kick*6.0;
-        const dyA = Math.cos(t*0.7 + prog*1.4) * 1.0 + kick*2.5;
+        // ✅ kick beaucoup plus soft (sinon "sauts")
+        const kick = v * 0.00022;
 
-        const dxB = Math.sin(t*1.3 + prog*3.1) * -2.2 - kick*4.0;
-        const dyB = Math.cos(t*1.1 + prog*1.9) *  1.4 - kick*1.8;
+        // base motion (vivant même sans scroll)
+        const baseA = Math.sin(t*0.9 + prog*2.2) * 1.6;
+        const baseAy= Math.cos(t*0.7 + prog*1.4) * 1.0;
 
-        a.setAttribute('transform', `translate(${dxA.toFixed(2)} ${dyA.toFixed(2)})`);
-        b.setAttribute('transform', `translate(${dxB.toFixed(2)} ${dyB.toFixed(2)})`);
+        const baseB = Math.sin(t*1.3 + prog*3.1) * -2.2;
+        const baseBy= Math.cos(t*1.1 + prog*1.9) *  1.4;
 
+        // scroll influence (douce)
+        const dxA = baseA + kick * 6.0;
+        const dyA = baseAy + kick * 2.5;
+
+        const dxB = baseB - kick * 4.0;
+        const dyB = baseBy - kick * 1.8;
+
+        // ✅ quantize anti-shimmer
+        a.setAttribute('transform', `translate(${q(dxA).toFixed(2)} ${q(dyA).toFixed(2)})`);
+        b.setAttribute('transform', `translate(${q(dxB).toFixed(2)} ${q(dyB).toFixed(2)})`);
+
+        // petite respiration d'opacité
         svg.style.opacity = (0.92 + prog*0.08 + Math.sin(t*0.6)*0.02).toFixed(3);
       }
     }
+
     requestAnimationFrame(animatePixels);
   }
 
-  if(viewport){
-    viewport.addEventListener('scroll', updateScrollFX, { passive:true });
-    window.addEventListener('resize', updateScrollFX, { passive:true });
-  }
-  updateScrollFX();
   requestAnimationFrame(animatePixels);
 </script>
 
+
 </body>
 </html>
+
 
 
 
