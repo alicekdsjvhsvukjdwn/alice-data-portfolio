@@ -203,7 +203,8 @@ nav.links::-webkit-scrollbar{ display:none; }
 /* ======= Viewport / panels ======= */
 .viewport{
   height: 100svh;
-  overflow-y: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   scroll-snap-type: none;
   scroll-behavior: smooth;
   position: relative;
@@ -816,9 +817,6 @@ Pixel border (style image 2)
     transform: none;
   }
 }
-
-.home-left{ position: relative; z-index: 3; }
-.brain{ position: relative; z-index: 3; }
 
 :root{ --px: 0; } /* progress scroll 0..1 */
 
@@ -1748,6 +1746,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
