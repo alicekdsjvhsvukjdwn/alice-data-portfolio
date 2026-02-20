@@ -203,7 +203,7 @@ nav.links::-webkit-scrollbar{ display:none; }
 /* ======= Viewport / panels ======= */
 .viewport{
   height: 100svh;
-  overflow-y: auto;
+  overflow-y: hidden;
   scroll-snap-type: none;
   scroll-behavior: smooth;
   position: relative;
@@ -686,17 +686,21 @@ Pixel border (style image 2)
 #home .container,
 .home-top{ overflow: visible; }
 
-/* cerveau plus gros + déborde à droite */
+/* cerveau derrière le texte */
 .brain{
-  justify-self: end;
+  position: relative;
+  z-index: 2;
+  justify-self: start;                 /* <-- clé : overflow vers la droite */
   align-self: start;
   margin-top: clamp(-36px, -4vh, -14px);
-  margin-right: clamp(-28px, -2.4vw, -10px); /* pousse hors container */
+  margin-right: clamp(-60px, -6vw, -20px); /* <-- le pousse hors container à droite */
+  pointer-events: none;                /* optionnel : évite qu’il “bloque” la souris */
 }
 
 .brain img{
-  width: clamp(640px, 58vw, 1120px); /* BOUM */
-  max-width: none;                  /* <-- clé : autorise > colonne */
+  display: block;
+  width: clamp(600px, 56vw, 1080px);   /* un peu moins agressif que 1120 si besoin */
+  max-width: none;
   height: auto;
 }
     
@@ -1744,6 +1748,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
