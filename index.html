@@ -817,7 +817,7 @@ Pixel border (style image 2)
 */
 :root{
   --transition-h-small: clamp(220px, 30vh, 360px);
-  --transition-overlap-small: clamp(60px, 10vh, 140px);
+  --transition-overlap-small: clamp(20px, 6vh, 80px);
 }
 
 /* Pixels version "petite" */
@@ -827,6 +827,7 @@ Pixel border (style image 2)
   height: var(--transition-h-small);
   position: relative;
   overflow: visible;
+  margin-top: 18px;
   z-index: 1;
 
   /* petit débord léger sur la section suivante (effet séparateur) */
@@ -861,6 +862,12 @@ Pixel border (style image 2)
     black 82%,
     transparent 100%
   );
+}
+/* Formations au-dessus du séparateur + un peu d'air en bas */
+.edu-wrap{
+  position: relative;
+  z-index: 2;
+  padding-bottom: 24px; /* ajuste 16–40px */
 }
   </style>
 </head>
@@ -1437,6 +1444,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
