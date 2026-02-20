@@ -682,22 +682,24 @@ Pixel border (style image 2)
   z-index: 3;
 }
 
-/* cerveau collé à droite + remonté */
+/* autorise le débord dans le hero */
+#home .container,
+.home-top{ overflow: visible; }
+
+/* cerveau plus gros + déborde à droite */
 .brain{
-  justify-self: end;                 /* droite */
-  align-self: start;                 /* haut */
-  margin-top: clamp(-28px, -3.2vh, -10px); /* remonte (ajuste si besoin) */
-  padding-right: clamp(0px, 1vw, 10px);    /* micro marge à droite */
+  justify-self: end;
+  align-self: start;
+  margin-top: clamp(-36px, -4vh, -14px);
+  margin-right: clamp(-28px, -2.4vw, -10px); /* pousse hors container */
 }
 
-/* image plus grosse mais qui ne déborde PAS de sa colonne */
 .brain img{
-  width: clamp(520px, 42vw, 820px); /* plus gros */
-  max-width: 100%;                  /* empêche de déborder de la colonne */
+  width: clamp(640px, 58vw, 1120px); /* BOUM */
+  max-width: none;                  /* <-- clé : autorise > colonne */
   height: auto;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
 }
+    
 /* sur écrans un peu "moyens", on évite que ça se tasse */
 @media (max-width: 1100px){
   .home-top{
@@ -1065,27 +1067,7 @@ Pixel border (style image 2)
   text-transform: uppercase;
   color: rgba(17,17,17,.62);
 }  
-    
-/* === OVERRIDE FINAL : cerveau top-right + gros, stable === */
-.home-top{
-  grid-template-columns: minmax(520px, 1.05fr) minmax(440px, .95fr);
-  align-items: start;
-}
-
-.brain{
-  justify-self: end;
-  align-self: start;
-  margin-top: clamp(-28px, -3.2vh, -10px);
-  padding-right: 0;
-}
-
-.brain img{
-  width: clamp(520px, 42vw, 820px);
-  max-width: 100%;
-  height: auto;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
+  
   </style>
 </head>
 
@@ -1762,6 +1744,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
