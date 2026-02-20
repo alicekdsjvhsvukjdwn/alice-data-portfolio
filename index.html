@@ -619,6 +619,15 @@ Pixel border (style image 2)
   --hero-bottom-safe: clamp(12px, 3.5vh, 44px);
 }
 
+#home.home-panel .home-bottom::before,
+#home.home-panel .home-bottom::after{
+  content:"";
+  position:absolute;
+  left:0; right:0;
+  pointer-events:none;
+  z-index: 2; /* au-dessus du svg */
+}    
+
 /* HOME panel en colonne : hero en haut, pixels en bas */
 #home.home-panel{
   min-height: 100svh;
@@ -806,7 +815,53 @@ Pixel border (style image 2)
    Je laisse volontairement minimal ici, parce que ton ancien CSS est déjà correct.
    Si tu veux, je te refais aussi tout le module turntable en version "clean + légère".
 */
+:root{
+  --transition-h-small: clamp(220px, 30vh, 360px);
+  --transition-overlap-small: clamp(60px, 10vh, 140px);
+}
 
+/* Pixels version "petite" */
+.scroll-pixels{
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  height: var(--transition-h-small);
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+
+  /* petit débord léger sur la section suivante (effet séparateur) */
+  margin-bottom: calc(-1 * var(--transition-overlap-small));
+
+  background:
+    radial-gradient(900px 560px at 15% 55%, rgba(90,110,160,.16), rgba(250,250,247,0) 62%),
+    radial-gradient(900px 560px at 85% 55%, rgba(80,120,160,.18), rgba(250,250,247,0) 64%),
+    var(--bg);
+}
+
+/* On garde le même fondu doux que HOME */
+.scroll-pixels .px-grad{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  opacity:.92;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
+}
   </style>
 </head>
 
@@ -867,11 +922,12 @@ Pixel border (style image 2)
         </div>
       </div>
     
-      <!-- FULL BLEED -->
-      <div class="home-bottom" aria-hidden="true">
-        <svg id="pxGrad" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
+      <!-- FULL BLEED (HOME — grand) -->
+      <div class="home-bottom" id="homePixels" aria-hidden="true">
+        <svg id="pxGradHome" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
       </div>
     </section>
+    
     <!-- PREVIEW -->
    <section id="preview" class="panel">
   <div class="container">
@@ -1021,6 +1077,10 @@ Pixel border (style image 2)
           </article>
         </div>
       </div>
+    <!-- FULL BLEED (APRÈS FORMATIONS — petit) -->
+    <div class="scroll-pixels" id="eduPixels" aria-hidden="true">
+      <svg id="pxGradEdu" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
+    </div>
   </div>
 </section>
 
@@ -1139,8 +1199,20 @@ Pixel border (style image 2)
   syncHeaderH();
 
   const viewport = document.getElementById('viewport');
-  const preview  = document.getElementById('preview');
-  const svg      = document.getElementById('pxGrad');
+  const preview = document.getElementById('preview');
+
+  const pixelScenes = [
+    {
+      wrap: document.getElementById('homePixels'),
+      svg: document.getElementById('pxGradHome'),
+      scale: 1.0   // HOME : mouvement normal
+    },
+    {
+      wrap: document.getElementById('eduPixels'),
+      svg: document.getElementById('pxGradEdu'),
+      scale: 0.55  // Formations : mouvement plus subtil
+    }
+  ].filter(s => s.wrap && s.svg);
 
   const prefersReduced =
     window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1189,119 +1261,117 @@ Pixel border (style image 2)
   const MOVE_FRAC  = 0.16;    // % de pixels qui bougent (0.10–0.22 recommandé)
   const MOVE_MAX_PX = 6.0;    // amplitude max (px) des pixels mobiles (évite les trous)
 
-  // On stocke uniquement les groupes "move"
-  let moveBandsA = [];
-  let moveBandsB = [];
-
   // overlay plus visible
   const OVERLAY_DARKEN = 0.78;   // 1 = identique, 0.75–0.85 conseillé
   const OVERLAY_ALPHA  = 0.95;   // boost d'opacité pour qu'on le voie
 
-  function renderPixelGradient(){
-  if(!svg) return;
-
-  svg.innerHTML = "";
-
-  // Zone visible (garde tes valeurs si tu veux)
-  const viewCols = 72;
-  const viewRows = 26;
-
-  // marge de dessin pour permettre aux pixels de sortir sans être coupés
-  const pad = 14;
-  const cols = viewCols + pad*2;
-  const rows = viewRows + pad*2;
-
-  svg.setAttribute("viewBox", `0 0 ${viewCols} ${viewRows}`);
-  svg.setAttribute("shape-rendering", "crispEdges");
-
-  const rndA = mulberry32(42);
-  const rndB = mulberry32(1337);
-
-  function darkenRGB(c, k){
-    return {
-      r: Math.max(0, Math.min(255, Math.round(c.r * k))),
-      g: Math.max(0, Math.min(255, Math.round(c.g * k))),
-      b: Math.max(0, Math.min(255, Math.round(c.b * k)))
-    };
-  }
-
-  function buildLayer(rnd, alphaMul, layerId){
-    // ✅ base = TOUS les pixels (fixe)
-    let baseAll = "";
-
-    // ✅ overlay = seulement quelques pixels, par bandes (bouge)
-    const moveBands = Array.from({length:BAND_COUNT}, () => "");
-
-    for(let y=0; y<rows; y++){
-      const vy = (y - pad) / (viewRows - 1);
-      const v01 = clamp01(vy);
-
-      const yVisible = (y - pad);
-      let bi = Math.floor((yVisible / (viewRows-1)) * BAND_COUNT);
-      bi = clamp(bi, 0, BAND_COUNT-1);
-
-      for(let x=0; x<cols; x++){
-        const ux = (x - pad) / (viewCols - 1);
-
-        let t = 0.12 + 0.88 * v01;
-        t += (Math.sin(ux * Math.PI * 2) * 0.04) * (0.3 + 0.7*v01);
-
-        const noise = (rnd() - 0.5) * 0.36;
-        t += noise * (0.25 + 0.75 * (1 - Math.abs(v01 - 0.5)*2));
-        t = clamp01(t);
-
-        const c = samplePalette(t);
-
-        const topBoost = 0.42 * (1 - v01);
-        const aBase = 0.48 + 0.32*v01 + topBoost;
-        const a = clamp01(aBase) * (0.95 + (rnd()-0.5)*0.18) * alphaMul;
-
-        // === BASE (fixe) : on dessine tout le monde
-        baseAll += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
-          fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
-
-        // === OVERLAY (mobile) : on duplique juste une fraction
-        const pick = rnd(); // stable car rnd seedé
-        if (pick < MOVE_FRAC){
-          const d = darkenRGB(c, OVERLAY_DARKEN);
-          const a2 = clamp01(a * OVERLAY_ALPHA);
-
-          moveBands[bi] += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
-            fill="rgba(${d.r},${d.g},${d.b},${a2.toFixed(3)})"/>`;
+  function renderPixelGradient(targetSvg){
+    if(!targetSvg) return { moveBandsA: [], moveBandsB: [] };
+  
+    targetSvg.innerHTML = "";
+  
+    const viewCols = 72;
+    const viewRows = 26;
+  
+    const pad = 14;
+    const cols = viewCols + pad*2;
+    const rows = viewRows + pad*2;
+  
+    targetSvg.setAttribute("viewBox", `0 0 ${viewCols} ${viewRows}`);
+    targetSvg.setAttribute("shape-rendering", "crispEdges");
+  
+    // seed stable mais différent par svg (pour éviter clones parfaits)
+    const seedBase = (targetSvg.id === "pxGradEdu") ? 202 : 42;
+    const rndA = mulberry32(seedBase);
+    const rndB = mulberry32(seedBase * 31);
+  
+    function darkenRGB(c, k){
+      return {
+        r: Math.max(0, Math.min(255, Math.round(c.r * k))),
+        g: Math.max(0, Math.min(255, Math.round(c.g * k))),
+        b: Math.max(0, Math.min(255, Math.round(c.b * k)))
+      };
+    }
+  
+    function buildLayer(rnd, alphaMul, layerId){
+      let baseAll = "";
+      const moveBands = Array.from({length:BAND_COUNT}, () => "");
+  
+      for(let y=0; y<rows; y++){
+        const vy = (y - pad) / (viewRows - 1);
+        const v01 = clamp01(vy);
+  
+        const yVisible = (y - pad);
+        let bi = Math.floor((yVisible / (viewRows-1)) * BAND_COUNT);
+        bi = clamp(bi, 0, BAND_COUNT-1);
+  
+        for(let x=0; x<cols; x++){
+          const ux = (x - pad) / (viewCols - 1);
+  
+          let t = 0.12 + 0.88 * v01;
+          t += (Math.sin(ux * Math.PI * 2) * 0.04) * (0.3 + 0.7*v01);
+  
+          const noise = (rnd() - 0.5) * 0.36;
+          t += noise * (0.25 + 0.75 * (1 - Math.abs(v01 - 0.5)*2));
+          t = clamp01(t);
+  
+          const c = samplePalette(t);
+  
+          const topBoost = 0.42 * (1 - v01);
+          const aBase = 0.48 + 0.32*v01 + topBoost;
+          const a = clamp01(aBase) * (0.95 + (rnd()-0.5)*0.18) * alphaMul;
+  
+          baseAll += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
+            fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
+  
+          const pick = rnd();
+          if (pick < MOVE_FRAC){
+            const d = darkenRGB(c, OVERLAY_DARKEN);
+            const a2 = clamp01(a * OVERLAY_ALPHA);
+  
+            moveBands[bi] += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
+              fill="rgba(${d.r},${d.g},${d.b},${a2.toFixed(3)})"/>`;
+          }
         }
       }
+  
+      let moveOut = "";
+      for(let i=0;i<BAND_COUNT;i++){
+        moveOut += `<g id="${layerId}_b${i}_move">${moveBands[i]}</g>`;
+      }
+  
+      return {
+        base: `<g id="${layerId}_base">${baseAll}</g>`,
+        move: `<g id="${layerId}_move">${moveOut}</g>`
+      };
     }
-
-    // Wrap : base fixe + overlay move par bandes
-    let moveOut = "";
-    for(let i=0;i<BAND_COUNT;i++){
-      moveOut += `<g id="${layerId}_b${i}_move">${moveBands[i]}</g>`;
-    }
-
-    return {
-      base: `<g id="${layerId}_base">${baseAll}</g>`,
-      move: `<g id="${layerId}_move">${moveOut}</g>`
-    };
+  
+    const A = buildLayer(rndA, 1.00, `${targetSvg.id}_pxA`);
+    const B = buildLayer(rndB, 0.35, `${targetSvg.id}_pxB`);
+  
+    targetSvg.innerHTML = `
+      ${A.base}
+      ${B.base}
+      ${A.move}
+      ${B.move}
+    `;
+  
+    const moveBandsA = Array.from({length:BAND_COUNT}, (_,i) =>
+      targetSvg.querySelector(`#${targetSvg.id}_pxA_b${i}_move`)
+    );
+    const moveBandsB = Array.from({length:BAND_COUNT}, (_,i) =>
+      targetSvg.querySelector(`#${targetSvg.id}_pxB_b${i}_move`)
+    );
+  
+    return { moveBandsA, moveBandsB };
   }
 
-  // Deux couches comme avant : A (fort) + B (léger)
-  const A = buildLayer(rndA, 1.00, "pxA");
-  const B = buildLayer(rndB, 0.35, "pxB");
 
-  svg.innerHTML = `
-    ${A.base}
-    ${B.base}
-    ${A.move}
-    ${B.move}
-  `;
-
-  // Cache: uniquement les move-groups (overlay)
-  moveBandsA = Array.from({length:BAND_COUNT}, (_,i) => svg.querySelector(`#pxA_b${i}_move`));
-  moveBandsB = Array.from({length:BAND_COUNT}, (_,i) => svg.querySelector(`#pxB_b${i}_move`));
-}
-
-
-  renderPixelGradient();
+  pixelScenes.forEach(scene => {
+    const out = renderPixelGradient(scene.svg);
+    scene.moveBandsA = out.moveBandsA;
+    scene.moveBandsB = out.moveBandsB;
+  });
 
   // =========================
   // Scroll -> coherent motion (no jitter)
@@ -1326,73 +1396,72 @@ Pixel border (style image 2)
     window.addEventListener('resize', onScroll, { passive:true });
   }
 
-  function computeProgress(){
-    if(!viewport || !preview) return 0;
+  function computeProgressForWrap(wrap){
+    if(!viewport || !wrap) return 0;
     const vpTop = viewport.getBoundingClientRect().top;
-    const prTop = preview.getBoundingClientRect().top;
-    const dist  = prTop - vpTop;
+    const elTop = wrap.getBoundingClientRect().top;
+    const dist  = elTop - vpTop;
     const range = viewport.clientHeight * 0.92;
     return clamp01(1 - (dist / range));
   }
 
-  function applyMoveTransforms(){
-    if(!svg) return;
-
+ function applyMoveTransforms(){
     // vitesse lissée + clamp
     const v = clamp(velSm, -1800, 1800);
-
-    // down scroll => pixels move UP (negative Y)
-    // amplitude limitée (sinon trous / barres)
-    const baseY = clamp(-v * 0.0028, -MOVE_MAX_PX, MOVE_MAX_PX);
-    const baseX = clamp( v * 0.0010, -MOVE_MAX_PX, MOVE_MAX_PX);
-
-    // progress ajoute une "mise en tension" très légère (pas obligatoire)
-    const progY = -progSm * 1.2;
-
-    // stop si vraiment idle
+  
+    // stop si idle (global)
     const idleFor = performance.now() - lastScrollActivity;
-    const almostStill = Math.abs(v) < 6 && Math.abs(baseY) < 0.02;
-
-    if (idleFor > 220 && almostStill){
-      if (ticking){
-        for(let i=0;i<BAND_COUNT;i++){
-          const a = moveBandsA[i], b = moveBandsB[i];
-          if (a) a.setAttribute('transform', `translate(0 0)`);
-          if (b) b.setAttribute('transform', `translate(0 0)`);
+    const almostStill = Math.abs(v) < 6;
+  
+    pixelScenes.forEach(scene => {
+      const svg = scene.svg;
+      if(!svg) return;
+  
+      const progLocal = computeProgressForWrap(scene.wrap);
+      const s = scene.scale ?? 1;
+  
+      const baseY = clamp(-v * 0.0028 * s, -MOVE_MAX_PX, MOVE_MAX_PX);
+      const baseX = clamp( v * 0.0010 * s, -MOVE_MAX_PX, MOVE_MAX_PX);
+  
+      const progY = -progLocal * 1.2 * s;
+  
+      if (idleFor > 220 && almostStill){
+        if (scene._ticking){
+          for(let i=0;i<BAND_COUNT;i++){
+            const a = scene.moveBandsA?.[i];
+            const b = scene.moveBandsB?.[i];
+            if (a) a.setAttribute('transform', `translate(0 0)`);
+            if (b) b.setAttribute('transform', `translate(0 0)`);
+          }
+          svg.style.opacity = "";
+          scene._ticking = false;
         }
-        svg.style.opacity = "";
-        ticking = false;
+        return;
       }
-      return;
-    }
-
-    // weights: donnent l'impression que "certains pixels" réagissent plus
-    const wA = [1.00, 0.45, 0.85, 0.35, 0.75, 0.40, 0.65];
-    const wB = [0.40, 0.75, 0.42, 0.90, 0.48, 0.82, 0.55];
-
-    for(let i=0;i<BAND_COUNT;i++){
-      const a = moveBandsA[i];
-      const b = moveBandsB[i];
-
-      // A: mouvement principal
-      let yA = baseY * wA[i] + progY * (1 - i/(BAND_COUNT-1)) * 0.15;
-      let xA = baseX * ((i%2===0)? 1 : -1) * 0.55;
-
-      // B: parallax différent, plus discret
-      let yB = baseY * wB[i] * 0.85 + progY * (i/(BAND_COUNT-1)) * 0.12;
-      let xB = baseX * ((i%2===0)? -1 : 1) * 0.45;
-
-      // quantize anti-shimmer
-      xA = quant(xA, 0.25); yA = quant(yA, 0.25);
-      xB = quant(xB, 0.25); yB = quant(yB, 0.25);
-
-      if(a) a.setAttribute('transform', `translate(${xA} ${yA})`);
-      if(b) b.setAttribute('transform', `translate(${xB} ${yB})`);
-    }
-
-    // opacité légère (option)
-    svg.style.opacity = (0.90 + progSm * 0.07).toFixed(3);
-    ticking = true;
+  
+      const wA = [1.00, 0.45, 0.85, 0.35, 0.75, 0.40, 0.65];
+      const wB = [0.40, 0.75, 0.42, 0.90, 0.48, 0.82, 0.55];
+  
+      for(let i=0;i<BAND_COUNT;i++){
+        const a = scene.moveBandsA?.[i];
+        const b = scene.moveBandsB?.[i];
+  
+        let yA = baseY * wA[i] + progY * (1 - i/(BAND_COUNT-1)) * 0.15;
+        let xA = baseX * ((i%2===0)? 1 : -1) * 0.55;
+  
+        let yB = baseY * wB[i] * 0.85 + progY * (i/(BAND_COUNT-1)) * 0.12;
+        let xB = baseX * ((i%2===0)? -1 : 1) * 0.45;
+  
+        xA = quant(xA, 0.25); yA = quant(yA, 0.25);
+        xB = quant(xB, 0.25); yB = quant(yB, 0.25);
+  
+        if(a) a.setAttribute('transform', `translate(${xA} ${yA})`);
+        if(b) b.setAttribute('transform', `translate(${xB} ${yB})`);
+      }
+  
+      svg.style.opacity = (0.90 + progLocal * 0.07).toFixed(3);
+      scene._ticking = true;
+    });
   }
 
   function loop(now){
@@ -1411,12 +1480,12 @@ Pixel border (style image 2)
     // smoothing (le coeur du "plus de tremblement")
     velSm = lerp(velSm, velRaw, 0.14);
 
-    progRaw = computeProgress();
-    progSm  = lerp(progSm, progRaw, 0.10);
-
-    // garde ton CSS --px (pour tes effets existants)
+    // --px : tu peux le garder basé sur le scroll global si tu veux
+    // (utile pour le cerveau etc.) : on le met sur la position générale du viewport
+    const globalProg = clamp01(viewport.scrollTop / (viewport.scrollHeight - viewport.clientHeight + 1));
+    progSm = lerp(progSm, globalProg, 0.08);
     document.documentElement.style.setProperty('--px', progSm.toFixed(3));
-
+    
     applyMoveTransforms();
 
     requestAnimationFrame(loop);
@@ -1427,6 +1496,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
