@@ -500,6 +500,89 @@ Pixel border (style image 2)
   margin-top: 14px;
 }
 
+/* ======= Formations ======= */
+.edu-wrap{
+  margin-top: clamp(34px, 5vh, 64px);
+}
+
+.edu-title{
+  margin: 0 0 8px;
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  font-size: clamp(22px, 2.2vw, 34px);
+}
+
+.edu-sub{
+  margin: 0 0 18px;
+  color: rgba(17,17,17,.58);
+  font-size: 14px;
+  max-width: 70ch;
+}
+
+.edu-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  align-items: stretch;
+}
+
+@media (max-width: 860px){
+  .edu-grid{ grid-template-columns: 1fr; }
+}
+
+.edu-card{
+  background: rgba(255,255,255,.82);
+  border: 1px solid rgba(17,17,17,.10);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.06);
+  padding: 16px 16px 14px;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+}
+
+.edu-icon{
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(17,17,17,.10);
+  background: color-mix(in srgb, var(--accent) 10%, #fff);
+}
+
+.edu-icon.pink{
+  background: color-mix(in srgb, #ec4899 14%, #fff);
+}
+
+.edu-mini{
+  display:flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 1px;
+}
+
+.edu-program{
+  font-weight: 800;
+  font-size: 12px;
+  color: rgba(17,17,17,.88);
+  line-height: 1.2;
+}
+
+.edu-school{
+  font-size: 11px;
+  color: rgba(17,17,17,.55);
+}
+
+.edu-desc{
+  grid-column: 1 / -1;
+  margin: 6px 0 0;
+  color: rgba(17,17,17,.72);
+  font-size: 13px;
+  line-height: 1.5;
+}
+    
 /* ======= Figures ======= */
 .figure{
   width:100%;
@@ -884,6 +967,59 @@ Pixel border (style image 2)
           <a class="btn soft" href="projects/musique.html">Explorer →</a>
         </div>
       </article>
+
+      <div class="edu-wrap">
+        <h3 class="edu-title">Formations</h3>
+        <p class="edu-sub">A little line about what’s being said and who’s saying it.</p>
+      
+        <div class="edu-grid">
+          <!-- Master -->
+          <article class="edu-card">
+            <div class="edu-icon" aria-hidden="true">
+              <!-- petit smiley minimal -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
+                <path d="M8.6 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M15.4 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M8.7 14.2c1.2 1.4 2.6 2.1 3.3 2.1s2.1-.7 3.3-2.1" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+      
+            <div class="edu-mini">
+              <div class="edu-program">Master Sciences Cognitives</div>
+              <div class="edu-school">Aix-Marseille Université</div>
+            </div>
+      
+            <p class="edu-desc">
+              Master de Sciences cognitives communication, langage et cerveau :
+              comprendre l’interaction entre le langage et la communication d’un point de vue neuronal.
+            </p>
+          </article>
+      
+          <!-- Licence -->
+          <article class="edu-card">
+            <div class="edu-icon pink" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
+                <path d="M9.2 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M14.8 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M8.8 15.1c1.1-1 2.2-1.5 3.2-1.5s2.1.5 3.2 1.5" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+      
+            <div class="edu-mini">
+              <div class="edu-program">Licence MIASHS</div>
+              <div class="edu-school">Université de Bordeaux</div>
+            </div>
+      
+            <p class="edu-desc">
+              Mathématiques, informatique appliqués aux sciences humaines et sociales :
+              formation complète en mathématiques (statistiques, probabilités, analyse, etc.),
+              informatique (Python, web, JS, Matlab, etc.) et sciences cognitives.
+            </p>
+          </article>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -1292,6 +1428,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
