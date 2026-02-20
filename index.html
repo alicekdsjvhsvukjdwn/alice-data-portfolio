@@ -682,15 +682,30 @@ Pixel border (style image 2)
   z-index: 3;
 }
 
-/* cerveau */
+/* cerveau : plus haut + plus à droite */
 .brain{
   position: relative;
   z-index: 3;
+
+  /* ✅ le colle à droite dans la grille */
+  justify-self: end;
+  align-self: start;
+
+  /* ✅ le remonte (ajuste si besoin) */
+  margin-top: clamp(-22px, -3vh, -6px);
+
+  /* ✅ option : petit push vers la droite (si tu veux vraiment "coin") */
+  margin-right: clamp(-10px, -1.6vw, -2px);
 }
+
+/* ✅ cerveau plus gros */
 .brain img{
-  width: min(520px, 100%);
+  width: clamp(520px, 42vw, 760px);
   height: auto;
   display: block;
+
+  /* optionnel : micro remontée supplémentaire sans casser le flow */
+  transform: translateY(clamp(-10px, -1.2vh, -2px));
 }
 
 /* ===== Transition pixels (full-bleed) ===== */
@@ -779,8 +794,16 @@ Pixel border (style image 2)
     grid-template-columns: 1fr;
     align-items: start;
   }
+
+  .brain{
+    justify-self: start;   /* en mobile, on évite le “coin haut droit” */
+    margin-top: 10px;
+    margin-right: 0;
+  }
+
   .brain img{
     width: min(520px, 92vw);
+    transform: none;
   }
 }
 
@@ -1713,6 +1736,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
