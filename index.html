@@ -1144,6 +1144,39 @@ Pixel border (style image 2)
 .vinyl.yellow{ --label:#f59e0b; }
 .vinyl.blue  { --label:#3b82f6; }
 .vinyl.green { --label:#22c55e; }
+
+/* ======= Footer ======= */
+footer.site-footer{
+  border-top: 1px solid var(--line);
+  background: rgba(250,250,247,.92);
+  padding: 22px 0 26px;
+}
+
+.footer-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: rgba(17,17,17,.62);
+  font-size: 12px;
+}
+
+.footer-links{
+  display:flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-links a{
+  color: rgba(17,17,17,.62);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.footer-links a:hover{
+  color: rgba(17,17,17,.82);
+  border-bottom-color: rgba(17,17,17,.22);
+}
   
   </style>
 </head>
@@ -1691,6 +1724,11 @@ Pixel border (style image 2)
       </div>
     </section>
 
+    <!-- FULL BLEED (APRÈS ABOUT — petit) -->
+    <div class="scroll-pixels" id="aboutPixels" aria-hidden="true">
+      <svg id="pxGradAbout" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
+    </div>
+
     <!-- CONTACT -->
     <section id="contact" class="panel">
       <div class="container">
@@ -1728,12 +1766,27 @@ Pixel border (style image 2)
 
   </main>
 
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="y2"></span> Alice Gay — Marseille</div>
+  
+      <div class="footer-links">
+        <a href="mailto:alice1gay@gmail.fr">Email</a>
+        <a href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
+        <a href="#home">Haut</a>
+      </div>
+    </div>
+  </footer>
+
   <script>
   // =========================
   // Setup (refs + utils)
   // =========================
   const yearEl = document.getElementById('y');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  const yearEl2 = document.getElementById('y2');
+  if (yearEl2) yearEl2.textContent = new Date().getFullYear();
 
   const headerEl = document.querySelector('header.site');
   const syncHeaderH = () => {
@@ -1748,16 +1801,9 @@ Pixel border (style image 2)
   const preview = document.getElementById('preview');
 
   const pixelScenes = [
-    {
-      wrap: document.getElementById('homePixels'),
-      svg: document.getElementById('pxGradHome'),
-      scale: 1.0   // HOME : mouvement normal
-    },
-    {
-      wrap: document.getElementById('eduPixels'),
-      svg: document.getElementById('pxGradEdu'),
-      scale: 0.55  // Formations : mouvement plus subtil
-    }
+    { wrap: document.getElementById('homePixels'),  svg: document.getElementById('pxGradHome'),  scale: 1.0  },
+    { wrap: document.getElementById('eduPixels'),   svg: document.getElementById('pxGradEdu'),   scale: 0.55 },
+    { wrap: document.getElementById('aboutPixels'), svg: document.getElementById('pxGradAbout'), scale: 0.55 }
   ].filter(s => s.wrap && s.svg);
 
   const prefersReduced =
@@ -2060,6 +2106,7 @@ Pixel border (style image 2)
 
 </body>
 </html>
+
 
 
 
