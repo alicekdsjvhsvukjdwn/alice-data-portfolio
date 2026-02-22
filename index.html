@@ -1025,16 +1025,6 @@ Pixel border (style image 2)
   gap: 10px;
 }
 
-.work-visual{
-  border-radius: 14px;
-  border: 1px solid rgba(17,17,17,.10);
-  background: rgba(250,250,247,.92);
-  height: 140px;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-}
-
 .work-copy{
   display:grid;
   gap: 6px;
@@ -1073,9 +1063,15 @@ Pixel border (style image 2)
 /* =========================
    Pixel turntables (interactive)
    ========================= */
-
 .work-visual{
   position: relative;
+  border-radius: 14px;
+  border: 1px solid rgba(17,17,17,.10);
+  background: rgba(250,250,247,.92);
+  height: 140px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
   cursor: pointer;
   user-select: none;
 }
@@ -1106,6 +1102,8 @@ Pixel border (style image 2)
   shape-rendering: crispEdges;
 }
 
+.tt-arm{ transition: transform .14s ease; }
+    
 /* couleurs (tu gardes ton noir doux + accent) */
 .tt .ink   { fill: rgba(17,17,17,.55); }
 .tt .ink2  { fill: rgba(17,17,17,.28); }
@@ -1931,39 +1929,6 @@ Pixel border (style image 2)
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
