@@ -47,9 +47,13 @@
 
   /* Zone principale: rail gauche / carte / inspecteur */
   .main{
-    display:grid;grid-template-columns: 320px 1fr 420px;gap:10px;
-    padding:10px;height:calc(100vh - 110px); /* approx toolbar height */
-  }
+      display:grid;
+      grid-template-columns: 320px 1fr 420px;
+      gap:10px;
+      padding:10px;
+      height: calc(100dvh - 110px);
+      min-height: 520px;
+    }
   .rail{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;overflow:auto;box-shadow:var(--shadow)}
   .mapwrap{position:relative;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)}
   #map{position:absolute;inset:0}
@@ -1533,5 +1537,6 @@ updateCounter();
 </script>
 </body>
 </html>
+
 
 
