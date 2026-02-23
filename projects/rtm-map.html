@@ -164,6 +164,46 @@
   .multi-item:hover{background:#101826}
   .multi-badge{font-size:11px;color:var(--muted)}
   .badge-small{display:inline-block;font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+
+  /* === Loading overlay === */
+  .loading-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(11,15,25,.72);
+    backdrop-filter: blur(4px);
+    z-index: 5000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .loading-overlay.show{ display:flex; }
+  
+  .loading-box{
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 14px;
+    padding: 16px 18px;
+    min-width: 260px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #e5e7eb;
+    font-size: 14px;
+  }
+  
+  .spinner{
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,.18);
+    border-top-color: #6A4C93;
+    border-radius: 999px;
+    animation: spin .8s linear infinite;
+  }
+  
+  @keyframes spin{
+    to { transform: rotate(360deg); }
+  }
   </style>
 </head>
 
@@ -362,6 +402,13 @@
     </aside>
   </div>
 
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <div id="loadingText">Chargement des données…</div>
+    </div>
+  </div>
+
   <!-- MODALES -->
   <!-- Stations -->
   <div id="stationsModal" class="modal" aria-hidden="true">
@@ -439,6 +486,17 @@ const safeDOM = {
   removeClass: (sel, className) => { const el = $(sel); if (el) el.classList.remove(className); },
   toggle: (sel, className, force) => { const el = $(sel); if (el) el.classList.toggle(className, force); }
 };
+  
+function showLoading(text = 'Chargement…'){
+  const overlay = document.getElementById('loadingOverlay');
+  const label = document.getElementById('loadingText');
+  if (label) label.textContent = text;
+  if (overlay) overlay.classList.add('show');
+}
+function hideLoading(){
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) overlay.classList.remove('show');
+}
 
 /* ---------- Toasts ---------- */
 class ToastManager{
@@ -1198,7 +1256,7 @@ function getWorkingRows(){ return (window.FILTERED_ROWS && window.FILTERED_ROWS.
   const inp = document.getElementById('file'); if(!inp) return;
   inp.disabled = false;
   inp.addEventListener('change', async (ev)=>{
-    const file = ev.target.files?.[0]; if(!file) return;
+    const file = ev.target.files?.[0]; if(!file) return; showLoading(`Chargement de ${file.name}…`);
     const name = file.name.toLowerCase();
     try{
       if (name.endsWith('.xlsx') || name.endsWith('.xls')){
@@ -1244,6 +1302,7 @@ function getWorkingRows(){ return (window.FILTERED_ROWS && window.FILTERED_ROWS.
       console.error('Erreur import:', err);
       toast.error(`Import impossible : ${err?.message || err}`);
     }finally{
+      hideLoading();
       inp.value = '';
     }
   });
@@ -1251,6 +1310,7 @@ function getWorkingRows(){ return (window.FILTERED_ROWS && window.FILTERED_ROWS.
 
 async function loadDemoJson(){
   try{
+    showLoading('Chargement du dataset démo…');
     const res = await fetch('../assets/rtm/T1T2T3_anonymized.json', { cache: 'force-cache' });
     if (!res.ok) throw new Error('Dataset JSON démo introuvable.');
 
@@ -1298,10 +1358,13 @@ async function loadDemoJson(){
     applyFilters();
     enableCriteriaBuilder();
 
+    hideLoading();
+
     toast.success(`JSON chargé: ${DATA.length} lignes`);
   }catch(e){
     console.warn('Demo JSON non chargée:', e);
     toast.error(`Démo JSON: ${e?.message || e}`);
+    hideLoading();
   }
 }
 
@@ -1537,6 +1600,7 @@ updateCounter();
 </script>
 </body>
 </html>
+
 
 
 
