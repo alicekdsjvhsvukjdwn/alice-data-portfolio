@@ -1246,6 +1246,50 @@ function getWorkingRows(){ return (window.FILTERED_ROWS && window.FILTERED_ROWS.
   });
 })();
 
+async function loadDemoXlsx(){
+  try{
+    if (!window.XLSX) return; // si la lib n'est pas encore chargée, tant pis
+    const res = await fetch('../assets/rtm/T1T2T3_anonymized.xlsx');
+    if (!res.ok) throw new Error('Dataset démo introuvable.');
+    const buf = await res.arrayBuffer();
+
+    const wb = XLSX.read(buf, { type:'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    let rows = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false });
+
+    rows = rows.map(row=>{
+      const obj = {};
+      for(const [k,v] of Object.entries(row)){
+        obj[mapHeader(k)] = (v==null ? '' : v);
+      }
+      return obj;
+    });
+
+    const NUM_KEYS = [ 'Rayon de courbure [m]','Pente [pourcentage]','Ecartement (GL) [mm]','Dévers [mm]','Gauche_mm','Vitesse (GL) [km/h]' ];
+    DATA = rows.map(r=>{
+      NUM_KEYS.forEach(k=>{
+        if(r.hasOwnProperty(k)){
+          const v = String(r[k] ?? '').replace(',', '.');
+          const n = parseFloat(v);
+          if(!isNaN(n)) r[k] = n;
+        }
+      });
+      if ('LEP' in r) r.LEP = toOuiNon(r.LEP);
+      if ('BAE' in r) r.BAE = toOuiNon(r.BAE);
+      if ('SST' in r) r.SST = toOuiNon(r.SST);
+      return r;
+    });
+
+    buildFieldControls();
+    initializeChipsFromData();
+    applyFilters();
+    enableCriteriaBuilder();
+  }catch(e){
+    console.warn('Demo XLSX non chargée:', e);
+  }
+}
+
+window.addEventListener('load', loadDemoXlsx);
 /* ---------- Marker manager ---------- */
 class MarkerManager{
   constructor(map){ this.map=map; this.temporaryMarkers=[]; this.maxMarkers=5; }
@@ -1476,3 +1520,4 @@ updateCounter();
 </script>
 </body>
 </html>
+
