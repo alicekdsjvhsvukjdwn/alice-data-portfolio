@@ -107,16 +107,39 @@
   .leaflet-bar a:hover{background:#111827}
 
   /* Responsive */
-  @media (max-width: 1200px){
-    .main{grid-template-columns: 300px 1fr; }
-    .inspect{display:none} /* side sheet masqué par défaut */
-    .btn.inspect-toggle{display:inline-flex}
+  @media (max-width: 1400px){
+    .main{
+      grid-template-columns: 250px 1fr; /* rail + carte */
+    }
+    .inspect{
+      display:none; /* inspecteur masqué par défaut */
+    }
+    .btn.inspect-toggle{
+      display:inline-flex;
+    }
   }
+  
   @media (max-width: 900px){
-    .main{grid-template-columns: 1fr}
-    .rail{position:fixed;left:10px;top:90px;bottom:10px;width:320px;max-width:86vw;transform:translateX(-120%);transition:transform .2s ease;z-index:2000}
-    .rail.open{transform:translateX(0)}
-    .btn.rail-toggle{display:inline-flex}
+    .main{
+      grid-template-columns: 1fr; /* carte seule */
+    }
+    .rail{
+      position:fixed;
+      left:10px;
+      top:90px;
+      bottom:10px;
+      width:300px;
+      max-width:86vw;
+      transform:translateX(-120%);
+      transition:transform .2s ease;
+      z-index:2000;
+    }
+    .rail.open{
+      transform:translateX(0);
+    }
+    .btn.rail-toggle{
+      display:inline-flex;
+    }
   }
 
   /* Système de notifications */
@@ -549,7 +572,9 @@ $('#anomChk').addEventListener('change', (e)=>{
 $('#railToggle')?.addEventListener('click', ()=> $('#rail').classList.toggle('open'));
 $('#inspectToggle')?.addEventListener('click', ()=>{
   const ins = $('#inspect');
-  ins.style.display = (ins.style.display==='none' || getComputedStyle(ins).display==='none') ? 'block' : 'none';
+  if (!ins) return;
+  const hidden = getComputedStyle(ins).display === 'none';
+  ins.style.display = hidden ? 'flex' : 'none'; // inspect est en flex dans ton CSS
 });
 
 /* ---------- Chips interactions ---------- */
@@ -1600,6 +1625,7 @@ updateCounter();
 </script>
 </body>
 </html>
+
 
 
 
