@@ -12,7 +12,6 @@
   <!-- Lib Excel -->
   <!-- Parsers (méthode compacte) -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
   :root{
@@ -1246,37 +1245,47 @@ function getWorkingRows(){ return (window.FILTERED_ROWS && window.FILTERED_ROWS.
   });
 })();
 
-async function loadDemoXlsx(){
+async function loadDemoJson(){
   try{
-    if (!window.XLSX) return; // si la lib n'est pas encore chargée, tant pis
-    const res = await fetch('../assets/rtm/T1T2T3_anonymized.xlsx');
-    if (!res.ok) throw new Error('Dataset démo introuvable.');
-    const buf = await res.arrayBuffer();
+    const res = await fetch('../assets/rtm/T1T2T3_anonymized.json', { cache: 'force-cache' });
+    if (!res.ok) throw new Error('Dataset JSON démo introuvable.');
 
-    const wb = XLSX.read(buf, { type:'array' });
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    let rows = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false });
+    let rows = await res.json();
+    if (!Array.isArray(rows)) throw new Error('JSON invalide (attendu: liste d’objets).');
 
+    // Normalise headers + valeurs vides
     rows = rows.map(row=>{
       const obj = {};
-      for(const [k,v] of Object.entries(row)){
-        obj[mapHeader(k)] = (v==null ? '' : v);
+      for (const [k, v] of Object.entries(row)){
+        obj[mapHeader(k)] = (v == null ? '' : v);
       }
       return obj;
     });
 
-    const NUM_KEYS = [ 'Rayon de courbure [m]','Pente [pourcentage]','Ecartement (GL) [mm]','Dévers [mm]','Gauche_mm','Vitesse (GL) [km/h]' ];
+    const NUM_KEYS = [
+      'Rayon de courbure [m]',
+      'Pente [pourcentage]',
+      'Ecartement (GL) [mm]',
+      'Dévers [mm]',
+      'Gauche_mm',
+      'Vitesse (GL) [km/h]'
+    ];
+
     DATA = rows.map(r=>{
+      // cast numériques
       NUM_KEYS.forEach(k=>{
-        if(r.hasOwnProperty(k)){
-          const v = String(r[k] ?? '').replace(',', '.');
-          const n = parseFloat(v);
+        if (Object.prototype.hasOwnProperty.call(r, k)){
+          const vv = String(r[k] ?? '').replace(',', '.');
+          const n = parseFloat(vv);
           if(!isNaN(n)) r[k] = n;
         }
       });
+
+      // normalise bool-ish
       if ('LEP' in r) r.LEP = toOuiNon(r.LEP);
       if ('BAE' in r) r.BAE = toOuiNon(r.BAE);
       if ('SST' in r) r.SST = toOuiNon(r.SST);
+
       return r;
     });
 
@@ -1284,12 +1293,16 @@ async function loadDemoXlsx(){
     initializeChipsFromData();
     applyFilters();
     enableCriteriaBuilder();
+
+    toast.success(`JSON chargé: ${DATA.length} lignes`);
   }catch(e){
-    console.warn('Demo XLSX non chargée:', e);
+    console.warn('Demo JSON non chargée:', e);
+    toast.error(`Démo JSON: ${e?.message || e}`);
   }
 }
 
-window.addEventListener('load', loadDemoXlsx);
+window.addEventListener('load', loadDemoJson);
+
 /* ---------- Marker manager ---------- */
 class MarkerManager{
   constructor(map){ this.map=map; this.temporaryMarkers=[]; this.maxMarkers=5; }
@@ -1520,4 +1533,5 @@ updateCounter();
 </script>
 </body>
 </html>
+
 
