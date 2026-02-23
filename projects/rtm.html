@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RTM — Structuration & qualité des données | Alice Gay</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#FAFAF7; --ink:#111; --muted:#6B7280;
+      --line: rgba(17,17,17,.12);
+      --surface: rgba(255,255,255,.82);
+      --shadow: 0 18px 50px rgba(0,0,0,.08);
+      --radius: 18px;
+      --accent:#1D4ED8;
+
+      --maxw: clamp(980px, 92vw, 1480px);
+      --pad: clamp(16px, 2.4vw, 32px);
+
+      --serif:"Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; font-family:var(--sans); color:var(--ink);
+      background: var(--bg); line-height:1.6;
+    }
+    a{ color: inherit; }
+    .container{ max-width: var(--maxw); margin:0 auto; padding: 0 var(--pad); }
+
+    header{
+      position: sticky; top:0; z-index:20;
+      background: rgba(250,250,247,.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0;
+      gap: 12px;
+    }
+    .brand{ font-weight: 900; font-size: 13px; letter-spacing:.02em; }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 14px; border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.85);
+      text-decoration:none;
+      font-weight:800; font-size: 13px;
+      transition: transform .12s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn.dark{
+      background: rgba(17,17,17,.92);
+      color:#fff; border-color: rgba(0,0,0,.12);
+    }
+    .btn.cta{
+      background: color-mix(in srgb, var(--accent) 14%, #fff);
+      border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    main{ padding: clamp(22px, 3.5vh, 44px) 0 clamp(40px, 6vh, 80px); }
+
+    h1{
+      font-size: clamp(28px, 3.4vw, 54px);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+      margin: 18px 0 10px;
+    }
+    .kicker{
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(17,17,17,.55);
+      margin-top: 10px;
+    }
+    .lead{
+      max-width: 72ch;
+      color: rgba(17,17,17,.72);
+      font-size: 15px;
+      margin: 0 0 18px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: clamp(14px, 2vw, 22px);
+      align-items: start;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(16px, 2vw, 26px);
+    }
+
+    .dl{
+      display:grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .dl .row{
+      display:grid;
+      gap: 2px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(17,17,17,.10);
+      background: rgba(255,255,255,.75);
+    }
+    .dl .label{
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,.55);
+    }
+    .dl .value{
+      font-size: 13px;
+      color: rgba(17,17,17,.80);
+    }
+
+    .iframe{
+      width:100%;
+      height: min(70vh, 820px);
+      border: 1px solid rgba(17,17,17,.14);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .note{
+      font-size: 12px;
+      color: rgba(17,17,17,.58);
+      margin-top: 10px;
+    }
+
+    footer{
+      border-top: 1px solid var(--line);
+      background: rgba(250,250,247,.92);
+      padding: 18px 0 22px;
+    }
+    .footer-inner{
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      color: rgba(17,17,17,.62); font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">Alice Gay — Projet RTM</div>
+      <div class="actions">
+        <a class="btn" href="../index.html">← Retour portfolio</a>
+        <a class="btn dark" href="../assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="kicker">Stage 6 mois — Données réelles (présentation anonymisée)</div>
+      <h1>RTM — Structuration, contrôles qualité et restitution exploitable</h1>
+      <p class="lead">
+        Travail de nettoyage / normalisation / vérification de cohérence sur des données tramway, avec production de règles qualité
+        et d’une restitution interactive. <strong>La démo ci-dessous utilise un fichier anonymisé.</strong>
+      </p>
+
+      <div class="actions" style="margin: 10px 0 18px;">
+        <a class="btn cta" href="rtm-map.html" target="_blank" rel="noopener">Ouvrir la carte en grand ↗</a>
+        <a class="btn" href="../assets/rtm/T1T2T3_anonymized.xlsx" target="_blank" rel="noopener">Télécharger le dataset anonymisé</a>
+      </div>
+
+      <div class="grid">
+        <section class="card">
+          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">Démo interactive</h2>
+          <iframe class="iframe" src="rtm-map.html" title="Carte interactive RTM (anonymisée)"></iframe>
+          <div class="note">
+            Si la carte ne charge rien automatiquement, utilise le bouton d’import dans la carte et sélectionne
+            <code>T1T2T3_anonymized.xlsx</code>.
+          </div>
+        </section>
+
+        <aside class="card">
+          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">Ce que j’ai fait</h2>
+          <div class="dl">
+            <div class="row">
+              <div class="label">Objectif</div>
+              <div class="value">Rendre les données fiables + lisibles pour décision / exploitation.</div>
+            </div>
+            <div class="row">
+              <div class="label">Méthode</div>
+              <div class="value">Normalisation, règles de cohérence, détection d’anomalies, restitution.</div>
+            </div>
+            <div class="row">
+              <div class="label">Livrables</div>
+              <div class="value">Base structurée • contrôles qualité • carte interactive • documentation.</div>
+            </div>
+            <div class="row">
+              <div class="label">Confidentialité</div>
+              <div class="value">Démo = données anonymisées (pas de données brutes publiées).</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px; display:grid; gap:10px;">
+            <a class="btn" href="../assets/rtm/anonymize_rtm.py" target="_blank" rel="noopener">Voir le script d’anonymisation</a>
+            <a class="btn" href="mailto:alice1gay@gmail.fr">Me contacter</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© <span id="y"></span> Alice Gay — Marseille</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="../index.html">Portfolio</a>
+        <a href="mailto:alice1gay@gmail.fr">Email</a>
+        <a href="#top" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">Haut</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const y = document.getElementById('y');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
