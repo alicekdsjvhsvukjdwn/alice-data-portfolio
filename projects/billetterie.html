@@ -178,7 +178,77 @@
       padding: 3px 6px;
       border-radius: 6px;
     }
-
+    .gallery{
+      display:grid;
+      gap:14px;
+      margin-top: 8px;
+    }
+    
+    .shot{
+      border: 1px solid rgba(17,17,17,.12);
+      border-radius: 14px;
+      background: rgba(255,255,255,.78);
+      padding: 10px;
+    }
+    
+    .shot img{
+      width:100%;
+      display:block;
+      border-radius: 10px;
+      border:1px solid rgba(17,17,17,.10);
+      background:#fff;
+    }
+    
+    .shot h3{
+      margin: 8px 0 4px;
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.15;
+    }
+    
+    .shot p{
+      margin:0;
+      font-size:13px;
+      color: rgba(17,17,17,.72);
+    }
+    
+    .stack{
+      display:grid;
+      gap:12px;
+    }
+    
+    .mini-steps{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+    }
+    
+    .mini-step{
+      border:1px solid rgba(17,17,17,.10);
+      background: rgba(255,255,255,.75);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    
+    .mini-step .n{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color: rgba(17,17,17,.55);
+    }
+    
+    .mini-step .t{
+      font-weight:700;
+      font-size:13px;
+      margin-top:2px;
+    }
+    
+    .mini-step .d{
+      font-size:12px;
+      color: rgba(17,17,17,.72);
+    }
+    
     footer{
       border-top: 1px solid var(--line);
       background: rgba(250,250,247,.92);
@@ -217,11 +287,13 @@
       </div>
 
       <div class="actions" style="margin: 10px 0 18px;">
-        <a class="btn cta" href="../assets/billetterie/dashboard_billeterie.pdf" target="_blank" rel="noopener">
-          Ouvrir le dashboard (PDF) ↗
-        </a>
+        <a class="btn cta" href="#dashboards">Voir les dashboards (captures)</a>
         <a class="btn" href="../assets/billetterie/dashboard_billeterie.xlsx" target="_blank" rel="noopener">
-          Télécharger le dashboard Excel
+          Télécharger le classeur Excel (.xlsx)
+        </a>
+        <a class="btn" href="../assets/billetterie/kpi_daily_excel.csv" target="_blank" rel="noopener">CSV KPI journaliers</a>
+        <a class="btn" href="../assets/billetterie/dashboard_billeterie.pdf" target="_blank" rel="noopener">
+          Version PDF (aperçu statique)
         </a>
       </div>
 
