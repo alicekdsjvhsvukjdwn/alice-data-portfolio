@@ -299,21 +299,82 @@
 
       <div class="grid">
         <section class="card">
-          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">Aperçu du dashboard</h2>
-
-          <iframe
-            class="preview"
-            src="../assets/billetterie/dashboard_billeterie.pdf"
-            title="Dashboard billetterie PDF"
-            loading="lazy"
-          ></iframe>
-
+          <h2 id="dashboards" style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">
+            Vues du dashboard
+          </h2>
+          
+          <div class="gallery">
+            <article class="shot">
+              <img src="../assets/billetterie/capture-dash-direction_complet.png" alt="Dashboard Direction — vue synthèse avec KPI et graphiques" loading="lazy">
+              <h3>Dashboard Direction — synthèse visuelle</h3>
+              <p>
+                Vue de pilotage rapide : KPI globaux, tendance CA, top événements, répartition par genre et par zone.
+              </p>
+            </article>
+          
+            <article class="shot">
+              <img src="../assets/billetterie/capture-dash-direction_tableaux.png" alt="Dashboard Direction — version avec tableaux croisés et graphiques" loading="lazy">
+              <h3>Dashboard Direction — version tableaux</h3>
+              <p>
+                Même lecture métier, avec tableaux croisés visibles pour montrer la traçabilité des chiffres et la structure d’analyse.
+              </p>
+            </article>
+          
+            <article class="shot">
+              <img src="../assets/billetterie/capture-dash-ops.png" alt="Dashboard Ops — alertes, diagnostics et actions" loading="lazy">
+              <h3>Dashboard Ops — alertes et actions</h3>
+              <p>
+                Vue opérationnelle : alertes de baisse, diagnostics (risque / impact / no-show) et plan d’actions priorisé.
+              </p>
+            </article>
+          </div>
+          
           <div class="note">
-            Aperçu embarqué du dashboard PDF. Si l’affichage du PDF est bloqué par le navigateur, utilise le bouton “Ouvrir le dashboard (PDF)”.
+            Le classeur final contient plusieurs feuilles dédiées à des usages différents (pilotage direction vs. exécution opérationnelle).
           </div>
 
-          <h3 style="font-family:var(--serif); margin:18px 0 8px;">Fichiers du projet</h3>
+          <h3 style="font-family:var(--serif); margin:18px 0 8px;">Pipeline de création</h3>
+
+          <div class="mini-steps">
+            <div class="mini-step">
+              <div class="n">Étape 1</div>
+              <div class="t">Génération de données synthétiques</div>
+              <div class="d">Simulation d’un cas billetterie réaliste (événements, ventes, remplissage, no-show, zones) sans publier de données réelles.</div>
+            </div>
+          
+            <div class="mini-step">
+              <div class="n">Étape 2</div>
+              <div class="t">Contrôles qualité</div>
+              <div class="d">Vérifications de cohérence et contrôles métier avant restitution (valeurs, formats, logique des indicateurs).</div>
+            </div>
+          
+            <div class="mini-step">
+              <div class="n">Étape 3</div>
+              <div class="t">Préparation des exports</div>
+              <div class="d">Structuration des tables pour Excel / reporting : KPI journaliers, KPI par événement, dimensions de référence.</div>
+            </div>
+          
+            <div class="mini-step">
+              <div class="n">Étape 4</div>
+              <div class="t">Export Excel final</div>
+              <div class="d">Assemblage du classeur final avec vues Direction et Ops, prêtes à être lues par des profils non techniques.</div>
+            </div>
+          </div>
+
+          <h3 style="font-family:var(--serif); margin:18px 0 8px;">Ressources et fichiers</h3>
           <div class="file-list">
+            <div class="file-item">
+              <div><code>capture-dash-direction_complet.png</code> — vue direction (synthèse visuelle)</div>
+              <a class="btn" href="../assets/billetterie/capture-dash-direction_complet.png" target="_blank" rel="noopener">Voir</a>
+            </div>
+            <div class="file-item">
+              <div><code>capture-dash-direction_tableaux.png</code> — vue direction (tableaux + graphiques)</div>
+              <a class="btn" href="../assets/billetterie/capture-dash-direction_tableaux.png" target="_blank" rel="noopener">Voir</a>
+            </div>
+            <div class="file-item">
+              <div><code>capture-dash-ops.png</code> — vue opérationnelle (alertes / actions)</div>
+              <a class="btn" href="../assets/billetterie/capture-dash-ops.png" target="_blank" rel="noopener">Voir</a>
+            </div>
             <div class="file-item">
               <div><code>01_generate_data.py</code> — génération du dataset synthétique</div>
               <a class="btn" href="../assets/billetterie/01_generate_data.py" target="_blank" rel="noopener">Voir</a>
@@ -354,11 +415,15 @@
             </div>
             <div class="row">
               <div class="label">Pipeline</div>
-              <div class="value">Génération → contrôles qualité → exports structurés → dashboard Excel / PDF.</div>
+              <div class="value">Pipeline Python de bout en bout : génération → contrôles qualité → exports → restitution Excel (Direction + Ops).</div>
             </div>
             <div class="row">
               <div class="label">KPI</div>
-              <div class="value">Volumes, CA, remplissage, tendances journalières, performance par événement.</div>
+              <div class="value">CA, tickets vendus, panier moyen, remplissage, no-show, tendances, performance par événement et par zone.</div>
+            </div>
+            <div class="row">
+              <div class="label">Restitution</div>
+              <div class="value">Deux vues complémentaires : pilotage Direction (synthèse) et pilotage Ops (alertes, diagnostics, actions).</div>
             </div>
             <div class="row">
               <div class="label">Compétences montrées</div>
