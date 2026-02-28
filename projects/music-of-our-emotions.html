@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Music Of Our Emotions — Projet | Alice Gay</title>
+  <meta name="description" content="Affective computing : prédiction d'état émotionnel à partir de signaux physiologiques + génération musicale." />
+  <link rel="icon" href="../assets/favicon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#FAFAF7; --ink:#111; --muted:#6B7280;
+      --line: rgba(17,17,17,.12);
+      --surface: rgba(255,255,255,.82);
+      --shadow: 0 18px 50px rgba(0,0,0,.08);
+      --radius: 18px;
+      --accent:#1D4ED8;
+      --maxw: min(1100px, 100%);
+      --pad: clamp(16px, 4vw, 42px);
+      --serif: "Playfair Display", ui-serif, Georgia, serif;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:var(--sans); color:var(--ink); background:var(--bg); line-height:1.55; }
+    a{ color:inherit; }
+    .container{ max-width:var(--maxw); margin:0 auto; padding: 28px var(--pad) 80px; }
+    .topbar{ display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom: 18px; }
+    .brand{ font-weight:900; letter-spacing:.02em; font-size:13px; }
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 14px; border-radius:999px;
+      border:1px solid var(--line); background: rgba(255,255,255,.82);
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+      font-weight:800; font-size:13px; text-decoration:none;
+    }
+    .btn:hover{ background: rgba(255,255,255,.96); }
+    .btn.dark{ background: rgba(17,17,17,.92); color:#fff; border-color: rgba(0,0,0,.10); }
+    .btn.dark:hover{ background:#111; }
+    .hero{
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 2.4vw, 34px);
+      overflow:hidden;
+    }
+    h1{ margin:0 0 10px; font-size: clamp(28px, 3.2vw, 46px); line-height:1.08; }
+    .lead{ margin: 0 0 16px; color: rgba(17,17,17,.72); max-width: 70ch; }
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; margin: 12px 0 4px; }
+    .chip{ border:1px solid var(--line); background: rgba(255,255,255,.78); border-radius:999px; padding: 8px 12px; font-size:12px; font-weight:700; color: rgba(17,17,17,.78); }
+    .grid{ display:grid; gap:14px; margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(min(360px,100%), 1fr)); }
+    .card{
+      background: rgba(255,255,255,.84);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.06);
+    }
+    .k{ font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:900; color: rgba(17,17,17,.56); }
+    .p{ margin: 8px 0 0; color: rgba(17,17,17,.76); font-size:14px; }
+    .media{
+      margin-top: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(17,17,17,.12);
+      overflow:hidden;
+      background: rgba(255,255,255,.65);
+    }
+    .media img{ display:block; width:100%; height:auto; }
+    .audio{ width:100%; margin-top: 10px; }
+    .foot{ margin-top: 14px; font-size:12px; color: rgba(17,17,17,.56); }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">Alice GAY</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="../index.html#preview">← Projets</a>
+        <a class="btn dark" href="../index.html#contact">Me contacter</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>Music Of Our Emotions</h1>
+      <p class="lead">
+        Projet open source : à partir de signaux physiologiques, extraction de features, prédiction de dimensions émotionnelles,
+        puis génération d’une proposition musicale (démo audio incluse).
+      </p>
+
+      <div class="chips">
+        <span class="chip">Python</span>
+        <span class="chip">ML</span>
+        <span class="chip">Feature engineering</span>
+        <span class="chip">Affective computing</span>
+        <span class="chip">Génération musicale</span>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px;">
+        <!-- Remplace par TON lien GitHub -->
+        <a class="btn" href="REPLACE_WITH_GITHUB_URL" target="_blank" rel="noopener">Code (GitHub)</a>
+        <!-- Optionnel si tu exportes tes slides -->
+        <a class="btn" href="../assets/projects/mooe/slides.pdf" target="_blank" rel="noopener">Slides (PDF)</a>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="k">Objectif</div>
+          <p class="p">
+            Transformer un signal brut (physio) en information exploitable : état émotionnel → décision de génération musicale.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="k">Pipeline</div>
+          <p class="p">
+            Prétraitement → features → entraînement/évaluation → prédiction → mapping / génération → rendu audio.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="k">Résultats</div>
+          <p class="p">
+            Résumé des performances + exemple de rendu (audio). (Ajoute ici 1–2 métriques quand tu veux.)
+          </p>
+        </div>
+      </div>
+
+      <div class="media">
+        <img src="../assets/projects/mooe/pipeline.png" alt="Schéma du pipeline : capteurs → features → modèle → musique">
+      </div>
+
+      <div class="media">
+        <img src="../assets/projects/mooe/results.png" alt="Résultats : métriques / figures">
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <div class="k">Démo audio</div>
+        <audio class="audio" controls preload="none">
+          <source src="../assets/projects/mooe/generated_music_2.wav" type="audio/wav">
+          Votre navigateur ne supporte pas l'audio.
+        </audio>
+        <div class="foot">
+          Démo issue du projet open source. Sources & licence : voir le repo GitHub.
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <div class="k">Limites & suite</div>
+        <p class="p">
+          Généralisation inter-individus, bruit/variabilité, évaluation utilisateur. Suite : calibration perso, modèles séquentiels,
+          et critères musicaux plus stricts (cohérence, structure).
+        </p>
+      </div>
+    </section>
+
+    <div class="foot">© <span id="y"></span> Alice Gay</div>
+  </div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
