@@ -130,8 +130,68 @@
         </div>
       </div>
 
-      <div class="media">
-        <img src="../assets/mooe/pipeline.png" alt="Schéma du pipeline : capteurs → features → modèle → musique">
+      <div class="media" style="padding:14px;">
+        <svg viewBox="0 0 980 190" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma du pipeline">
+          <defs>
+            <style>
+              .box{fill:rgba(255,255,255,.92);stroke:rgba(17,17,17,.18);stroke-width:2;rx:14;ry:14}
+              .boxMuted{fill:rgba(255,255,255,.55);stroke:rgba(17,17,17,.14);stroke-width:2;rx:14;ry:14}
+              .t{font:800 15px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#111}
+              .s{font:600 12px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:rgba(17,17,17,.65)}
+              .tag{font:800 11px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:rgba(17,17,17,.58); letter-spacing:.08em}
+              .a{stroke:rgba(17,17,17,.32);stroke-width:2}
+            </style>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <path d="M0,0 L10,3 L0,6 Z" fill="rgba(17,17,17,.32)"/>
+            </marker>
+          </defs>
+      
+          <!-- Row 1: pipeline complet (grisé sur acquisition/CNN) -->
+          <text class="tag" x="14" y="22">PIPELINE COMPLET (concept)</text>
+      
+          <rect class="boxMuted" x="14"  y="36" width="160" height="62"/>
+          <rect class="boxMuted" x="198" y="36" width="160" height="62"/>
+          <rect class="boxMuted" x="382" y="36" width="160" height="62"/>
+          <rect class="box"      x="566" y="36" width="160" height="62"/>
+          <rect class="box"      x="750" y="36" width="216" height="62"/>
+      
+          <line class="a" x1="174" y1="67" x2="198" y2="67" marker-end="url(#arrow)"/>
+          <line class="a" x1="358" y1="67" x2="382" y2="67" marker-end="url(#arrow)"/>
+          <line class="a" x1="542" y1="67" x2="566" y2="67" marker-end="url(#arrow)"/>
+          <line class="a" x1="726" y1="67" x2="750" y2="67" marker-end="url(#arrow)"/>
+      
+          <text class="t" x="94"  y="62" text-anchor="middle">Capteurs</text>
+          <text class="s" x="94"  y="82" text-anchor="middle">EEG / GSR / Resp</text>
+      
+          <text class="t" x="278" y="62" text-anchor="middle">Features</text>
+          <text class="s" x="278" y="82" text-anchor="middle">prétraitement</text>
+      
+          <text class="t" x="462" y="62" text-anchor="middle">CNN → VAD</text>
+          <text class="s" x="462" y="82" text-anchor="middle">valence/arousal/dominance</text>
+      
+          <text class="t" x="646" y="62" text-anchor="middle">Émotions</text>
+          <text class="s" x="646" y="82" text-anchor="middle">RandomForest</text>
+      
+          <text class="t" x="858" y="62" text-anchor="middle">Prompt → Audio</text>
+          <text class="s" x="858" y="82" text-anchor="middle">génération musicale</text>
+      
+          <!-- Row 2: ce que tu exécutes vraiment -->
+          <text class="tag" x="14" y="128">DÉMO OFFLINE (reproductible)</text>
+      
+          <rect class="box" x="14"  y="142" width="220" height="40"/>
+          <rect class="box" x="258" y="142" width="220" height="40"/>
+          <rect class="box" x="502" y="142" width="220" height="40"/>
+          <rect class="box" x="746" y="142" width="220" height="40"/>
+      
+          <line class="a" x1="234" y1="162" x2="258" y2="162" marker-end="url(#arrow)"/>
+          <line class="a" x1="478" y1="162" x2="502" y2="162" marker-end="url(#arrow)"/>
+          <line class="a" x1="722" y1="162" x2="746" y2="162" marker-end="url(#arrow)"/>
+      
+          <text class="t" x="124" y="168" text-anchor="middle">VAD (exemple)</text>
+          <text class="t" x="368" y="168" text-anchor="middle">RF émotions</text>
+          <text class="t" x="612" y="168" text-anchor="middle">Prompt</text>
+          <text class="t" x="856" y="168" text-anchor="middle">WAV généré</text>
+        </svg>
       </div>
 
       <div class="media">
