@@ -11,28 +11,26 @@
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
 
-  <!-- Typos -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Editorial culture */
-      --bg: #FAFAF7;
-      --ink: #111111;
-      --muted: #6B7280;
+      --bg:#FAFAF7;
+      --ink:#111111;
+      --muted:#6B7280;
       --line: rgba(17,17,17,.12);
       --surface: rgba(255,255,255,.78);
       --shadow: 0 18px 50px rgba(0,0,0,.08);
       --radius: 18px;
 
-      /* Accent */
-      --accent: #1D4ED8;
+      --accent:#1D4ED8;
 
-      /* Responsive sizing */
       --maxw: min(1800px, 100%);
       --header-h: 68px;
+
       --pad-x: clamp(16px, 4vw, 56px);
       --gap: clamp(12px, 1.8vw, 20px);
 
@@ -77,10 +75,10 @@
       padding: 0 var(--pad-x);
     }
 
-    /* ======= Header ======= */
+    /* ===== Header ===== */
     header.site{
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top:0; left:0; right:0;
       height: var(--header-h);
       z-index: 60;
       background: rgba(250,250,247,.86);
@@ -96,7 +94,6 @@
     }
 
     .brand{
-      font-family: var(--sans);
       font-weight: 800;
       letter-spacing: .02em;
       font-size: 13px;
@@ -105,58 +102,27 @@
       align-items:center;
       gap:10px;
     }
-
     .brand svg{ width:18px; height:18px; }
-
-    nav.links{
-      display:flex;
-      gap: 6px;
-      align-items:center;
-      overflow-x:auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      margin-left: 6px;
-    }
-    nav.links::-webkit-scrollbar{ display:none; }
 
     .nav .spacer{ flex:1; }
 
-    .nav a{
-      font-size: 13px;
-      color: rgba(17,17,17,.70);
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      white-space: nowrap;
-      transition: background .15s ease, border-color .15s ease, color .15s ease;
-    }
-    .nav a:hover{
-      background: rgba(17,17,17,.04);
-      text-decoration: none;
-    }
-    .nav a.active{
-      color: var(--ink);
-      background: color-mix(in srgb, var(--accent) 10%, transparent);
-      border-color: color-mix(in srgb, var(--accent) 25%, transparent);
-    }
-
     .btn{
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
       background: rgba(255,255,255,.82);
       box-shadow: 0 1px 0 rgba(0,0,0,.02);
-      font-weight: 700;
-      font-size: 13px;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      white-space: nowrap;
+      font-weight:700;
+      font-size:13px;
+      transition: transform .12s ease, background .12s ease;
+      white-space:nowrap;
     }
-    .btn.soft{ background: rgba(255,255,255,.86); }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.96); text-decoration:none; }
     .btn.ghost{ background: transparent; }
-
+    .btn.soft{ background: rgba(255,255,255,.86); }
     .btn.dark{
       background: rgba(17,17,17,.92);
       color:#fff;
@@ -164,33 +130,12 @@
       box-shadow: 0 14px 26px rgba(0,0,0,.10);
     }
     .btn.dark:hover{ background: rgba(17,17,17,1); }
-
     .btn.cta{
       background: color-mix(in srgb, var(--accent) 14%, #fff);
       border-color: color-mix(in srgb, var(--accent) 28%, transparent);
     }
 
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.96); text-decoration:none; }
-
-    .cta-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin: 10px 0 12px;
-    }
-
-    .pill-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    @media (max-width: 760px){
-      .nav .spacer{ display:none; }
-      nav.links{ display:none; } /* tu peux remettre un burger plus tard si tu veux */
-    }
-
-    /* ======= Viewport / panels ======= */
+    /* ===== Viewport ===== */
     .viewport{
       height: 100svh;
       overflow-y: auto;
@@ -199,7 +144,6 @@
       position: relative;
       background: var(--bg);
     }
-
     @media (prefers-reduced-motion: reduce){
       .viewport{ scroll-behavior:auto; }
       .btn{ transition:none; }
@@ -207,7 +151,7 @@
 
     section.panel{
       min-height: 100svh;
-      display: block;
+      display:block;
       padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px));
       padding-bottom: clamp(26px, 5vh, 70px);
       position: relative;
@@ -215,7 +159,7 @@
     }
     section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 
-    /* ======= Grain overlay ======= */
+    /* ===== Grain ===== */
     .grain{
       pointer-events:none;
       position:absolute;
@@ -227,63 +171,62 @@
       background-size: 240px 240px;
     }
 
-    /* ======= Typography ======= */
-    .kicker{
-      color: rgba(17,17,17,.60);
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      font-weight: 800;
-      font-size: 12px;
-    }
-
+    /* ===== Typography ===== */
     h1{
-      font-family: var(--sans);
-      font-weight: 800;
-      letter-spacing: -.02em;
-      line-height: 1.04;
+      font-weight:800;
+      letter-spacing:-.02em;
+      line-height:1.04;
       margin: 10px 0 12px;
       font-size: clamp(34px, 4.1vw, 70px);
     }
-
     h2{
       font-family: var(--serif);
-      font-weight: 700;
-      letter-spacing: -.01em;
+      font-weight:700;
+      letter-spacing:-.01em;
       margin: 0 0 12px;
       font-size: clamp(22px, 2.6vw, 40px);
-      line-height: 1.12;
+      line-height:1.12;
     }
-
     .lead{
       font-size: clamp(14px, 1.05vw, 18px);
       color: rgba(17,17,17,.72);
       margin: 0 0 16px;
       max-width: 62ch;
     }
-
     .sublead{
       font-size: 14px;
       color: var(--muted);
       margin: 0 0 16px;
       max-width: 72ch;
     }
+    .pill-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      border-radius:999px;
+      padding: 8px 12px;
+      font-size:12px;
+      font-weight:600;
+      color: rgba(17,17,17,.78);
+    }
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 12px; }
 
     .section-title{
       display:flex;
       align-items:baseline;
       justify-content:space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+      gap:12px;
+      margin-bottom:14px;
     }
     .section-title .note{
       color: var(--muted);
-      font-size: 13px;
+      font-size:13px;
       white-space: nowrap;
     }
 
-    .foot{ margin-top: 14px; font-size: 12px; color: rgba(17,17,17,.56); }
-
-    /* ======= Cards / surfaces ======= */
+    /* ===== Cards ===== */
     .card{
       background: var(--surface);
       border: 1px solid var(--line);
@@ -293,10 +236,13 @@
       position: relative;
       overflow: hidden;
     }
+    .grid{ display:grid; gap: var(--gap); }
+    .grid.cols-2{
+      grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
+      align-items: start;
+    }
 
-    /* =========================
-       Pixel border (project cards)
-       ========================= */
+    /* ===== Projects cards (pixel border) ===== */
     :root{
       --px-border-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'%3E%3Crect width='32' height='32' fill='none'/%3E%3Crect x='0' y='0' width='8' height='8' fill='%23111111'/%3E%3Crect x='8' y='0' width='8' height='8' fill='%23888888'/%3E%3Crect x='16' y='0' width='8' height='8' fill='%23EAEAEA'/%3E%3Crect x='24' y='0' width='8' height='8' fill='%23555555'/%3E%3Crect x='0' y='8' width='8' height='8' fill='%23D8D8D8'/%3E%3Crect x='24' y='8' width='8' height='8' fill='%23BDBDBD'/%3E%3Crect x='0' y='16' width='8' height='8' fill='%23777777'/%3E%3Crect x='24' y='16' width='8' height='8' fill='%23181818'/%3E%3Crect x='0' y='24' width='8' height='8' fill='%23F2F2F2'/%3E%3Crect x='8' y='24' width='8' height='8' fill='%23666666'/%3E%3Crect x='16' y='24' width='8' height='8' fill='%23CFCFCF'/%3E%3Crect x='24' y='24' width='8' height='8' fill='%23222222'/%3E%3C/svg%3E");
     }
@@ -320,10 +266,8 @@
       transform: translateY(0);
       transition: transform .14s ease, box-shadow .14s ease;
     }
-    .px-card:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 18px 42px rgba(0,0,0,.09);
-    }
+    .px-card:hover{ transform: translateY(-2px); box-shadow: 0 18px 42px rgba(0,0,0,.09); }
+
     .px-card::before{
       content:"";
       position:absolute;
@@ -376,7 +320,6 @@
       color: rgba(17,17,17,.72);
       font-size: 14px;
     }
-
     .px-meta{
       display:grid;
       gap: 10px;
@@ -400,31 +343,10 @@
       margin-top: 14px;
     }
 
-    /* ======= Grids ======= */
-    .grid{ display:grid; gap: var(--gap); }
-    .grid.cols-2{
-      grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
-      align-items: start;
-    }
-
-    /* ======= Pills ======= */
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.78);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      color: rgba(17,17,17,.78);
-    }
-
-    /* ======= Formations ======= */
+    /* ===== Formations ===== */
     .edu-wrap{ margin-top: clamp(40px, 6vh, 80px); }
     .edu-title{
       margin: 0 0 8px;
-      font-family: var(--sans);
       font-weight: 800;
       letter-spacing: -.01em;
       font-size: clamp(22px, 2.2vw, 34px);
@@ -436,7 +358,7 @@
       max-width: 70ch;
     }
     .edu-grid{
-      display: grid;
+      display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--gap);
       align-items: stretch;
@@ -449,7 +371,7 @@
       border-radius: 14px;
       box-shadow: 0 12px 30px rgba(0,0,0,.06);
       padding: 16px 16px 14px;
-      display: grid;
+      display:grid;
       grid-template-columns: 34px 1fr;
       gap: 12px;
     }
@@ -457,17 +379,15 @@
       width: 34px;
       height: 34px;
       border-radius: 10px;
-      display: grid;
-      place-items: center;
+      display:grid;
+      place-items:center;
       border: 1px solid rgba(17,17,17,.10);
       background: color-mix(in srgb, var(--accent) 10%, #fff);
     }
     .edu-icon.pink{ background: color-mix(in srgb, #ec4899 14%, #fff); }
-
-    .edu-mini{ display:flex; flex-direction: column; gap: 2px; margin-top: 1px; }
+    .edu-mini{ display:flex; flex-direction: column; gap:2px; margin-top:1px; }
     .edu-program{ font-weight: 800; font-size: 12px; color: rgba(17,17,17,.88); line-height: 1.2; }
     .edu-school{ font-size: 11px; color: rgba(17,17,17,.55); }
-
     .edu-desc{
       grid-column: 1 / -1;
       margin: 6px 0 0;
@@ -476,15 +396,14 @@
       line-height: 1.5;
     }
 
-    /* ======= About ======= */
-    #about.panel{ position: relative; z-index: 2; }
-    .about-wrap{ display: grid; gap: clamp(18px, 3vh, 34px); }
+    /* ===== About ===== */
+    .about-wrap{ display:grid; gap: clamp(18px, 3vh, 34px); }
 
     .about-top{
-      display: grid;
+      display:grid;
       grid-template-columns: minmax(280px, 420px) 1fr;
       gap: clamp(18px, 3vw, 46px);
-      align-items: start;
+      align-items:start;
       position: relative;
       padding-top: clamp(6px, 1vh, 10px);
     }
@@ -492,21 +411,16 @@
     .about-top::after{
       content:"";
       position:absolute;
-      top: 0;
-      bottom: 0;
-      width: 1px;
+      top:0; bottom:0;
+      width:1px;
       background: rgba(17,17,17,.12);
-      opacity: .7;
+      opacity:.7;
       pointer-events:none;
     }
-    .about-top::before{ left: 0; }
-    .about-top::after{ right: 0; }
+    .about-top::before{ left:0; }
+    .about-top::after{ right:0; }
 
-    .about-photo{
-      display: grid;
-      place-items: center;
-      padding: 10px 0;
-    }
+    .about-photo{ display:grid; place-items:center; padding:10px 0; }
     .about-photo .frame{
       width: min(340px, 100%);
       aspect-ratio: 1 / 1;
@@ -514,23 +428,16 @@
       border: 1px solid rgba(17,17,17,.12);
       background: rgba(255,255,255,.60);
       box-shadow: 0 10px 26px rgba(0,0,0,.06);
-      overflow: hidden;
-      display: grid;
-      place-items: center;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
     }
-    .about-photo img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-      filter: contrast(1.02);
-    }
+    .about-photo img{ width:100%; height:100%; object-fit: cover; display:block; filter: contrast(1.02); }
 
-    .about-text{ padding: 10px 0; }
+    .about-text{ padding:10px 0; }
     .about-text h3{
-      margin: 0 0 10px;
-      font-family: var(--sans);
-      font-weight: 800;
+      margin:0 0 10px;
+      font-weight:800;
       letter-spacing: -.01em;
       font-size: clamp(18px, 1.6vw, 22px);
     }
@@ -541,136 +448,102 @@
       line-height: 1.65;
     }
 
-    /* ======= Work steps ======= */
-    .work-title{ margin-top: clamp(8px, 1.6vh, 10px); }
-    .work-grid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--gap);
-      align-items: stretch;
-    }
-
     @media (max-width: 980px){
       .about-top{ grid-template-columns: 1fr; }
-      .work-grid{ grid-template-columns: 1fr; }
       .about-top::before, .about-top::after{ display:none; }
     }
 
-    .work-card{
-      background: rgba(255,255,255,.86);
-      border: 1px solid rgba(17,17,17,.12);
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.06);
-      padding: 14px;
-      display:grid;
-      gap: 10px;
-    }
-    .work-copy{ display:grid; gap: 6px; }
-    .work-copy .mini{
-      font-family: var(--sans);
-      font-weight: 800;
-      font-size: 13px;
-      color: rgba(17,17,17,.84);
-    }
-    .work-copy .micro{
-      font-size: 12px;
-      color: rgba(17,17,17,.62);
-      line-height: 1.45;
-    }
-    .work-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      width: fit-content;
-      border: 1px solid rgba(17,17,17,.10);
-      background: rgba(255,255,255,.72);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: rgba(17,17,17,.62);
-    }
-
-    .work-visual{
+    /* ===== Parallax window (fenêtre) ===== */
+    .parallax-holder{
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      height: clamp(380px, 70vh, 760px);
       position: relative;
-      border-radius: 14px;
-      border: 1px solid rgba(17,17,17,.10);
-      background: rgba(250,250,247,.92);
-      height: 140px;
-      display:grid;
-      place-items:center;
-      overflow:visible;
-      cursor: pointer;
-      user-select: none;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--bg);
     }
 
-    .tt-btn{
-      all: unset;
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      border-radius: 14px;
+    .parallax-frame{
+      position: sticky;
+      top: calc(var(--header-h) + 14px);
+      height: clamp(240px, 52vh, 520px);
+      margin: 0 auto;
+      width: min(1200px, calc(100% - var(--pad-x) * 2));
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(17,17,17,.14);
+      box-shadow: 0 18px 50px rgba(0,0,0,.10);
+      background: #ddd;
+      transform: translateZ(0);
+      --pimg: none;
+      --py: 0px;
     }
 
-    .tt-btn:focus-visible{
-      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
-      outline-offset: 3px;
-      border-radius: 16px;
-    }
-
-    .tt-wrap{
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display:grid;
-      place-items:center;
-      overflow: visible;
-      border-radius: 12px;
-    }
-    .tt-wrap::after{
+    .parallax-frame::before{
       content:"";
       position:absolute;
-      inset:10px;
-      border-radius: 12px;
-      border: 1px solid rgba(17,17,17,.06);
+      inset:-10%;
+      background-image: var(--pimg);
+      background-size: cover;
+      background-position: center;
+      will-change: transform;
+      transform: translate3d(0, var(--py), 0) scale(1.02);
+      filter: saturate(1.02) contrast(1.02);
+    }
+
+    .parallax-glass{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(to bottom,
+          rgba(250,250,247,.88) 0%,
+          rgba(250,250,247,.22) 35%,
+          rgba(250,250,247,.22) 65%,
+          rgba(250,250,247,.88) 100%
+        );
       pointer-events:none;
-      z-index: 2;
     }
 
-    .vinyl{
-      width: 128px;
-      height: 128px;
-      display: block;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      shape-rendering: crispEdges;
+    .parallax-frame::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.06;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      mix-blend-mode: multiply;
+      pointer-events:none;
     }
-    .vinyl .px-black{ fill:#0b0b0b; }
-    .vinyl .px-white{ fill:#f3f3f3; }
-    .vinyl .px-hole { fill:#0b0b0b; }
-    .vinyl .px-label{ fill: var(--label, #1D4ED8); }
 
-    .vinyl-rot{
-      transform-box: view-box;
-      transform-origin: 50% 50%;
+    /* ===== Footer ===== */
+    footer.site-footer{
+      border-top: 1px solid var(--line);
+      background: rgba(250,250,247,.92);
+      padding: 22px 0 26px;
     }
-    .tt-btn:hover .vinyl-rot,
-    .tt-btn[aria-pressed="true"] .vinyl-rot{
-      animation: vinylSpin 1.05s linear infinite;
+    .footer-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: rgba(17,17,17,.62);
+      font-size: 12px;
     }
-    @keyframes vinylSpin{ to{ transform: rotate(360deg); } }
+    .footer-links{ display:flex; gap: 12px; flex-wrap: wrap; }
+    .footer-links a{
+      color: rgba(17,17,17,.62);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+    .footer-links a:hover{
+      color: rgba(17,17,17,.82);
+      border-bottom-color: rgba(17,17,17,.22);
+    }
 
-    .vinyl.red   { --label:#ef4444; }
-    .vinyl.yellow{ --label:#f59e0b; }
-    .vinyl.blue  { --label:#3b82f6; }
-
-    /* =========================================================
-       HOME
-       ========================================================= */
+    /* ===== Home ===== */
     #home.home-panel{
       min-height: 100svh;
       padding-bottom: 0;
@@ -713,9 +586,6 @@
     .home-top h1{ max-width: 22ch; }
     .home-top .lead{ max-width: 56ch; }
 
-    .home-left{ position: relative; z-index: 3; }
-    #home .container, .home-top{ overflow: visible; }
-
     .brain{
       position: relative;
       z-index: 2;
@@ -725,11 +595,12 @@
       margin-right: clamp(-60px, -6vw, -20px);
       pointer-events: none;
     }
+
     .brain img{
-      display: block;
+      display:block;
       width: clamp(520px, 48vw, 920px);
-      max-width: none;
-      height: auto;
+      max-width:none;
+      height:auto;
       --brain-float: calc(var(--px) * -10px);
       transform: translate3d(0, var(--brain-float), 0);
       transition: transform .05s linear;
@@ -738,11 +609,7 @@
 
     @media (max-width: 1100px){
       .home-top{ grid-template-columns: 1fr; }
-      .brain{
-        justify-self: start;
-        margin-top: 10px;
-        margin-right: 0;
-      }
+      .brain{ margin-top: 10px; margin-right: 0; }
       .brain img{ width: min(480px, 90vw); }
     }
 
@@ -803,7 +670,6 @@
         black 82%,
         transparent 100%
       );
-      overflow: visible;
       transition: opacity .08s linear;
       will-change: opacity;
     }
@@ -812,113 +678,6 @@
       padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px) + clamp(60px, 10vh, 140px));
       position: relative;
       z-index: 2;
-    }
-
-    /* =========================================================
-       SEPARATORS (image background reveal + parallax)
-       ========================================================= */
-    .sep{
-      position: relative;
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      height: clamp(240px, 46vh, 520px);
-      overflow: hidden;
-      isolation: isolate;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-
-      /* progress 0..1 injecté par JS */
-      --p: 0;
-      --sep-bg: none;
-    }
-
-    .sep::before{
-      content:"";
-      position:absolute;
-      inset:-8%;
-      background:
-        linear-gradient(to bottom,
-          rgba(250,250,247,.92) 0%,
-          rgba(250,250,247,.35) 30%,
-          rgba(250,250,247,.35) 70%,
-          rgba(250,250,247,.92) 100%
-        ),
-        var(--sep-bg);
-      background-size: cover;
-      background-position: center;
-      transform: translate3d(0, calc((0.5 - var(--p)) * 18px), 0);
-      opacity: calc(0.12 + var(--p) * 0.88);
-      filter: saturate(1.02) contrast(1.03);
-      transition: opacity .08s linear;
-      z-index: 0;
-    }
-
-    .sep::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      opacity: .06;
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
-      mix-blend-mode: multiply;
-      pointer-events:none;
-      z-index: 1;
-    }
-
-    .sep-inner{
-      position: relative;
-      z-index: 2;
-      height: 100%;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .sep-kicker{
-      font-size: 11px;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      font-weight: 900;
-      color: rgba(17,17,17,.62);
-    }
-
-    .sep-title{
-      font-family: var(--serif);
-      font-size: clamp(20px, 2.4vw, 34px);
-      font-weight: 700;
-      color: rgba(17,17,17,.88);
-    }
-
-    /* ======= Footer ======= */
-    footer.site-footer{
-      border-top: 1px solid var(--line);
-      background: rgba(250,250,247,.92);
-      padding: 22px 0 26px;
-    }
-    .footer-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: rgba(17,17,17,.62);
-      font-size: 12px;
-    }
-    .footer-links{
-      display:flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .footer-links a{
-      color: rgba(17,17,17,.62);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-    }
-    .footer-links a:hover{
-      color: rgba(17,17,17,.82);
-      border-bottom-color: rgba(17,17,17,.22);
     }
   </style>
 </head>
@@ -980,7 +739,7 @@
         </div>
       </div>
 
-      <!-- FULL BLEED (HOME — grand pixels) -->
+      <!-- HOME pixels -->
       <div class="home-bottom" id="homePixels" aria-hidden="true">
         <svg id="pxGradHome" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
       </div>
@@ -994,17 +753,13 @@
           <div class="note">3 preuves — net</div>
         </div>
 
-        <p class="sublead">
-          Des cas concrets, un livrable lisible, et une logique “décision → action”.
-        </p>
+        <p class="sublead">Des cas concrets, un livrable lisible, et une logique “décision → action”.</p>
 
         <div style="margin: 10px 0 18px;">
           <a class="btn soft" href="#contact">Me contacter</a>
         </div>
 
         <div class="px-grid">
-
-          <!-- 1 -->
           <article class="px-card">
             <div class="px-media" aria-hidden="true"></div>
             <h3>RTM (Stage 6 mois)</h3>
@@ -1026,7 +781,6 @@
             </div>
           </article>
 
-          <!-- 2 -->
           <article class="px-card">
             <div class="px-media" aria-hidden="true" style="
               background:
@@ -1056,7 +810,6 @@
             </div>
           </article>
 
-          <!-- 3 -->
           <article class="px-card">
             <div class="px-media" aria-hidden="true" style="
               background:
@@ -1085,7 +838,6 @@
               <a class="btn soft" href="projects/music-of-our-emotions.html">Explorer →</a>
             </div>
           </article>
-
         </div>
 
         <div class="edu-wrap">
@@ -1093,7 +845,6 @@
           <p class="edu-sub">A little line about what’s being said and who’s saying it.</p>
 
           <div class="edu-grid">
-            <!-- Master -->
             <article class="edu-card">
               <div class="edu-icon" aria-hidden="true">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -1103,19 +854,16 @@
                   <path d="M8.7 14.2c1.2 1.4 2.6 2.1 3.3 2.1s2.1-.7 3.3-2.1" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
                 </svg>
               </div>
-
               <div class="edu-mini">
                 <div class="edu-program">Master Sciences Cognitives</div>
                 <div class="edu-school">Aix-Marseille Université</div>
               </div>
-
               <p class="edu-desc">
                 Master de Sciences cognitives communication, langage et cerveau :
                 comprendre l’interaction entre le langage et la communication d’un point de vue neuronal.
               </p>
             </article>
 
-            <!-- Licence -->
             <article class="edu-card">
               <div class="edu-icon pink" aria-hidden="true">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -1125,12 +873,10 @@
                   <path d="M8.8 15.1c1.1-1 2.2-1.5 3.2-1.5s2.1.5 3.2 1.5" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
                 </svg>
               </div>
-
               <div class="edu-mini">
                 <div class="edu-program">Licence MIASHS</div>
                 <div class="edu-school">Université de Bordeaux</div>
               </div>
-
               <p class="edu-desc">
                 Mathématiques, informatique appliqués aux sciences humaines et sociales :
                 formation complète en mathématiques (statistiques, probabilités, analyse, etc.),
@@ -1142,11 +888,10 @@
       </div>
     </section>
 
-    <!-- SEPARATOR (image reveal) : Projets -> À propos -->
-    <section class="sep" data-bg="assets/sep_about.jpg" aria-hidden="true">
-      <div class="sep-inner container">
-        <div class="sep-kicker">Chapitre</div>
-        <div class="sep-title">À propos</div>
+    <!-- PARALLAX WINDOW : Projets -> À propos -->
+    <section class="parallax-holder" aria-hidden="true">
+      <div class="parallax-frame" data-parallax-img="assets/parallax_01.jpg">
+        <div class="parallax-glass"></div>
       </div>
     </section>
 
@@ -1159,7 +904,6 @@
         </div>
 
         <div class="about-wrap">
-
           <div class="about-top">
             <div class="about-photo" aria-label="Image à propos">
               <div class="frame">
@@ -1178,216 +922,14 @@
               </p>
             </div>
           </div>
-
-          <div class="work-title">
-            <h3 class="edu-title" style="margin:0;">Comment je bosse</h3>
-          </div>
-
-          <div class="work-grid">
-            <!-- 1 -->
-            <article class="work-card">
-              <div class="work-visual">
-                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 1">
-                  <div class="tt-wrap">
-                    <!-- SVG inchangé -->
-                    <svg class="vinyl red" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <g class="vinyl-rot">
-                        <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                        <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                        <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                        <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                        <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                        <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                        <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                        <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                        <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                        <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                        <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                        <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                        <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                        <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                        <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                        <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                        <rect class="px-black" x="13" y="31" width="6" height="1"/>
-
-                        <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                        <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                        <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                        <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                        <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                        <rect class="px-white" x="24" y="21" width="1" height="1"/>
-
-                        <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                        <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                        <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                        <rect class="px-hole" x="15" y="15" width="2" height="2"/>
-                      </g>
-                    </svg>
-                  </div>
-                </button>
-              </div>
-
-              <div class="work-copy">
-                <div class="work-badge">Step 1</div>
-                <div class="mini">Clarifier le besoin</div>
-                <div class="micro">Décisions à prendre, contraintes, équipes, attentes réalistes.</div>
-              </div>
-            </article>
-
-            <!-- 2 -->
-            <article class="work-card">
-              <div class="work-visual">
-                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 2">
-                  <div class="tt-wrap">
-                    <svg class="vinyl yellow" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <g class="vinyl-rot">
-                        <!-- (identique à ton SVG) -->
-                        <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                        <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                        <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                        <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                        <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                        <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                        <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                        <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                        <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                        <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                        <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                        <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                        <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                        <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                        <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                        <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                        <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                        <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                        <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                        <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                        <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                        <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                        <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                        <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                        <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                        <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                        <rect class="px-hole" x="15" y="15" width="2" height="2"/>
-                      </g>
-                    </svg>
-                  </div>
-                </button>
-              </div>
-
-              <div class="work-copy">
-                <div class="work-badge">Step 2</div>
-                <div class="mini">Structurer l’information</div>
-                <div class="micro">Organisation, contrôles qualité, exports simples, documentation utile.</div>
-              </div>
-            </article>
-
-            <!-- 3 -->
-            <article class="work-card">
-              <div class="work-visual">
-                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 3">
-                  <div class="tt-wrap">
-                    <svg class="vinyl blue" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <g class="vinyl-rot">
-                        <!-- (identique à ton SVG) -->
-                        <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                        <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                        <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                        <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                        <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                        <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                        <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                        <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                        <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                        <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                        <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                        <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                        <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                        <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                        <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                        <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                        <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                        <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                        <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                        <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                        <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                        <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                        <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                        <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                        <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                        <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                        <rect class="px-hole" x="15" y="15" width="2" height="2"/>
-                      </g>
-                    </svg>
-                  </div>
-                </button>
-              </div>
-
-              <div class="work-copy">
-                <div class="work-badge">Step 3</div>
-                <div class="mini">Restituer</div>
-                <div class="micro">Insights actionnables, dashboard, synthèse courte, recommandations.</div>
-              </div>
-            </article>
-          </div>
-
         </div>
       </div>
     </section>
 
-    <!-- SEPARATOR (image reveal) : À propos -> Contact -->
-    <section class="sep" data-bg="assets/sep_contact.jpg" aria-hidden="true">
-      <div class="sep-inner container">
-        <div class="sep-kicker">Chapitre</div>
-        <div class="sep-title">Contact</div>
+    <!-- PARALLAX WINDOW : À propos -> Contact -->
+    <section class="parallax-holder" aria-hidden="true">
+      <div class="parallax-frame" data-parallax-img="assets/parallax_02.jpg">
+        <div class="parallax-glass"></div>
       </div>
     </section>
 
@@ -1404,7 +946,7 @@
             <p class="lead">Si tu as un projet culturel à structurer et des publics à comprendre : parlons.</p>
 
             <div class="card" style="padding:14px; margin-top:10px;">
-              <div class="kicker">Email</div>
+              <div style="font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color: rgba(17,17,17,.58);">Email</div>
               <div style="margin-top:6px; font-weight:600;">
                 <a href="mailto:alice1gay@gmail.com">alice1gay@gmail.com</a>
               </div>
@@ -1415,7 +957,7 @@
               <a class="btn dark" href="#home">Retour en haut</a>
             </div>
 
-            <div class="foot">© <span id="y"></span> Alice Gay — GitHub Pages</div>
+            <div style="margin-top:14px; font-size:12px; color: rgba(17,17,17,.56);">© <span id="y"></span> Alice Gay — GitHub Pages</div>
           </div>
 
           <div class="card" style="z-index:1;">
@@ -1440,13 +982,14 @@
         </div>
       </div>
     </footer>
-
   </main>
 
   <script>
     // =========================
-    // Setup (year + header height)
+    // Setup
     // =========================
+    const viewport = document.getElementById('viewport');
+
     const yearEl = document.getElementById('y');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
     const yearEl2 = document.getElementById('y2');
@@ -1461,301 +1004,91 @@
     window.addEventListener('resize', syncHeaderH, { passive:true });
     syncHeaderH();
 
-    const viewport = document.getElementById('viewport');
-
     const prefersReduced =
       window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+    function clamp01(v){ return clamp(v, 0, 1); }
     function lerp(a,b,t){ return a + (b-a)*t; }
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-    function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
-    function quant(x, step=0.25){ return Math.round(x/step)*step; }
 
     // =========================
-    // Pixel field (SVG) — (ton code inchangé)
+    // Parallax windows (fenêtre)
     // =========================
-    const pixelScenes = [
-      { wrap: document.getElementById('homePixels'),  svg: document.getElementById('pxGradHome'),  scale: 1.0  }
-    ].filter(s => s.wrap && s.svg);
+    const frames = Array.from(document.querySelectorAll('.parallax-frame'));
 
-    const palette = [
-      { r: 235, g: 242, b: 248 },
-      { r: 200, g: 218, b: 232 },
-      { r: 155, g: 182, b: 204 },
-      { r: 230, g: 236, b: 241 },
-    ];
-
-    function samplePalette(t){
-      t = clamp01(t);
-      const n = palette.length - 1;
-      const x = t * n;
-      const i = Math.floor(x);
-      const f = x - i;
-      const c1 = palette[i];
-      const c2 = palette[Math.min(i+1, n)];
-      return {
-        r: Math.round(lerp(c1.r, c2.r, f)),
-        g: Math.round(lerp(c1.g, c2.g, f)),
-        b: Math.round(lerp(c1.b, c2.b, f))
-      };
-    }
-
-    function mulberry32(seed){
-      return function(){
-        let t = seed += 0x6D2B79F5;
-        t = Math.imul(t ^ (t >>> 15), t | 1);
-        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-    }
-
-    const BAND_COUNT = 7;
-    const MOVE_FRAC  = 0.16;
-    const MOVE_MAX_PX = 6.0;
-    const OVERLAY_DARKEN = 0.78;
-    const OVERLAY_ALPHA  = 0.95;
-
-    function renderPixelGradient(targetSvg){
-      if(!targetSvg) return { moveBandsA: [], moveBandsB: [] };
-      targetSvg.innerHTML = "";
-
-      const viewCols = 72;
-      const viewRows = 26;
-
-      const pad = 14;
-      const cols = viewCols + pad*2;
-      const rows = viewRows + pad*2;
-
-      targetSvg.setAttribute("viewBox", `0 0 ${viewCols} ${viewRows}`);
-      targetSvg.setAttribute("shape-rendering", "crispEdges");
-
-      const seedBase = 42;
-      const rndA = mulberry32(seedBase);
-      const rndB = mulberry32(seedBase * 31);
-
-      function darkenRGB(c, k){
-        return {
-          r: Math.max(0, Math.min(255, Math.round(c.r * k))),
-          g: Math.max(0, Math.min(255, Math.round(c.g * k))),
-          b: Math.max(0, Math.min(255, Math.round(c.b * k)))
-        };
-      }
-
-      function buildLayer(rnd, alphaMul, layerId){
-        let baseAll = "";
-        const moveBands = Array.from({length:BAND_COUNT}, () => "");
-
-        for(let y=0; y<rows; y++){
-          const vy = (y - pad) / (viewRows - 1);
-          const v01 = clamp01(vy);
-
-          const yVisible = (y - pad);
-          let bi = Math.floor((yVisible / (viewRows-1)) * BAND_COUNT);
-          bi = clamp(bi, 0, BAND_COUNT-1);
-
-          for(let x=0; x<cols; x++){
-            const ux = (x - pad) / (viewCols - 1);
-
-            let t = 0.12 + 0.88 * v01;
-            t += (Math.sin(ux * Math.PI * 2) * 0.04) * (0.3 + 0.7*v01);
-
-            const noise = (rnd() - 0.5) * 0.36;
-            t += noise * (0.25 + 0.75 * (1 - Math.abs(v01 - 0.5)*2));
-            t = clamp01(t);
-
-            const c = samplePalette(t);
-
-            const topBoost = 0.42 * (1 - v01);
-            const aBase = 0.48 + 0.32*v01 + topBoost;
-            const a = clamp01(aBase) * (0.95 + (rnd()-0.5)*0.18) * alphaMul;
-
-            baseAll += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
-              fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
-
-            const pick = rnd();
-            if (pick < MOVE_FRAC){
-              const d = darkenRGB(c, OVERLAY_DARKEN);
-              const a2 = clamp01(a * OVERLAY_ALPHA);
-
-              moveBands[bi] += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
-                fill="rgba(${d.r},${d.g},${d.b},${a2.toFixed(3)})"/>`;
-            }
-          }
-        }
-
-        let moveOut = "";
-        for(let i=0;i<BAND_COUNT;i++){
-          moveOut += `<g id="${layerId}_b${i}_move">${moveBands[i]}</g>`;
-        }
-
-        return {
-          base: `<g id="${layerId}_base">${baseAll}</g>`,
-          move: `<g id="${layerId}_move">${moveOut}</g>`
-        };
-      }
-
-      const A = buildLayer(rndA, 1.00, `${targetSvg.id}_pxA`);
-      const B = buildLayer(rndB, 0.35, `${targetSvg.id}_pxB`);
-
-      targetSvg.innerHTML = `${A.base}${B.base}${A.move}${B.move}`;
-
-      const moveBandsA = Array.from({length:BAND_COUNT}, (_,i) =>
-        targetSvg.querySelector(`#${targetSvg.id}_pxA_b${i}_move`)
-      );
-      const moveBandsB = Array.from({length:BAND_COUNT}, (_,i) =>
-        targetSvg.querySelector(`#${targetSvg.id}_pxB_b${i}_move`)
-      );
-
-      return { moveBandsA, moveBandsB };
-    }
-
-    pixelScenes.forEach(scene => {
-      const out = renderPixelGradient(scene.svg);
-      scene.moveBandsA = out.moveBandsA;
-      scene.moveBandsB = out.moveBandsB;
+    // branche les images une fois
+    frames.forEach(f => {
+      const src = f.getAttribute('data-parallax-img');
+      if (src) f.style.setProperty('--pimg', `url("${src}")`);
     });
 
-    // =========================
-    // Separators: reveal on scroll (viewport scroll)
-    // =========================
-    function updateSeparators(){
+    function updateParallaxFrames(){
       if(!viewport) return;
+
       const vp = viewport.getBoundingClientRect();
+      const vpCenter = vp.top + vp.height / 2;
 
-      document.querySelectorAll('.sep').forEach(sep => {
-        const bg = sep.getAttribute('data-bg');
-        if (bg) sep.style.setProperty('--sep-bg', `url("${bg}")`);
+      frames.forEach(frame => {
+        // parent = holder (la zone)
+        const holder = frame.closest('.parallax-holder');
+        if (!holder) return;
 
-        const r = sep.getBoundingClientRect();
-        const center = r.top + r.height/2;
-        const t = 1 - Math.abs((center - (vp.top + vp.height/2)) / (vp.height/2));
+        const r = holder.getBoundingClientRect();
+
+        // progress 0..1 : 0 quand loin, 1 quand le holder est centré
+        const holderCenter = r.top + r.height/2;
+        const t = 1 - Math.abs((holderCenter - vpCenter) / (vp.height/2));
         const p = clamp01(t);
 
-        sep.style.setProperty('--p', p.toFixed(3));
+        // déplacement vertical de l'image (feeling "background behind")
+        // signe inversé pour l'effet "parallax"
+        const maxShift = 34; // px (augmente si tu veux plus “dramatic”)
+        const y = (0.5 - p) * maxShift;
+
+        frame.style.setProperty('--py', `${y.toFixed(2)}px`);
       });
     }
 
     // =========================
-    // Scroll loop: global progress + pixel movement
+    // HOME pixels (TON code existant)
+    // -> ici je laisse minimal : si tu veux remettre ton générateur de pixels,
+    //    colle-le simplement ici, ça ne gêne pas le parallax.
     // =========================
-    let lastT  = performance.now();
-    let lastST = viewport ? viewport.scrollTop : 0;
-    let velSm  = 0;
-    let progSm = 0;
-    let lastScrollActivity = performance.now();
+    function updateGlobalPX(){
+      if(!viewport) return;
+      const globalProg = clamp01(viewport.scrollTop / (viewport.scrollHeight - viewport.clientHeight + 1));
+      document.documentElement.style.setProperty('--px', globalProg.toFixed(3));
+    }
 
     function onScroll(){
-      lastScrollActivity = performance.now();
-      updateSeparators();
+      updateParallaxFrames();
+      updateGlobalPX();
     }
 
     if (viewport){
       viewport.addEventListener('scroll', onScroll, { passive:true });
       window.addEventListener('resize', onScroll, { passive:true });
-      updateSeparators();
+      updateParallaxFrames();
+      updateGlobalPX();
     }
 
-    function computeProgressForWrap(wrap){
-      if(!viewport || !wrap) return 0;
-      const vpTop = viewport.getBoundingClientRect().top;
-      const elTop = wrap.getBoundingClientRect().top;
-      const dist  = elTop - vpTop;
-      const range = viewport.clientHeight * 0.92;
-      return clamp01(1 - (dist / range));
-    }
-
-    function applyMoveTransforms(){
-      const v = clamp(velSm, -1800, 1800);
-      const idleFor = performance.now() - lastScrollActivity;
-      const almostStill = Math.abs(v) < 6;
-
-      pixelScenes.forEach(scene => {
-        const svg = scene.svg;
-        if(!svg) return;
-
-        const progLocal = computeProgressForWrap(scene.wrap);
-        const s = scene.scale ?? 1;
-
-        const baseY = clamp(-v * 0.0028 * s, -MOVE_MAX_PX, MOVE_MAX_PX);
-        const baseX = clamp( v * 0.0010 * s, -MOVE_MAX_PX, MOVE_MAX_PX);
-
-        if (idleFor > 220 && almostStill){
-          for(let i=0;i<BAND_COUNT;i++){
-            const a = scene.moveBandsA?.[i];
-            const b = scene.moveBandsB?.[i];
-            if (a) a.setAttribute('transform', `translate(0 0)`);
-            if (b) b.setAttribute('transform', `translate(0 0)`);
-          }
-          svg.style.opacity = "";
-          return;
-        }
-
-        const wA = [1.00, 0.45, 0.85, 0.35, 0.75, 0.40, 0.65];
-        const wB = [0.40, 0.75, 0.42, 0.90, 0.48, 0.82, 0.55];
-
-        for(let i=0;i<BAND_COUNT;i++){
-          const a = scene.moveBandsA?.[i];
-          const b = scene.moveBandsB?.[i];
-
-          let yA = baseY * wA[i];
-          let xA = baseX * ((i%2===0)? 1 : -1) * 0.55;
-
-          let yB = baseY * wB[i] * 0.85;
-          let xB = baseX * ((i%2===0)? -1 : 1) * 0.45;
-
-          xA = quant(xA, 0.25); yA = quant(yA, 0.25);
-          xB = quant(xB, 0.25); yB = quant(yB, 0.25);
-
-          if(a) a.setAttribute('transform', `translate(${xA} ${yA})`);
-          if(b) b.setAttribute('transform', `translate(${xB} ${yB})`);
-        }
-
-        svg.style.opacity = (0.90 + progLocal * 0.07).toFixed(3);
-      });
-    }
-
-    function loop(now){
-      if(prefersReduced || !viewport){
+    // =========================
+    // Smooth loop for better feel
+    // =========================
+    let progSm = 0;
+    function loop(){
+      if (prefersReduced || !viewport){
         requestAnimationFrame(loop);
         return;
       }
-
-      const dt = clamp((now - lastT) / 1000, 0.001, 0.05);
-      lastT = now;
-
-      const st = viewport.scrollTop;
-      const velRaw = (st - lastST) / dt;
-      lastST = st;
-
-      velSm = lerp(velSm, velRaw, 0.14);
-
       const globalProg = clamp01(viewport.scrollTop / (viewport.scrollHeight - viewport.clientHeight + 1));
       progSm = lerp(progSm, globalProg, 0.08);
       document.documentElement.style.setProperty('--px', progSm.toFixed(3));
 
-      applyMoveTransforms();
+      updateParallaxFrames();
       requestAnimationFrame(loop);
     }
-
     requestAnimationFrame(loop);
-
-    // =========================
-    // Turntables: click = toggle play/pause
-    // =========================
-    document.querySelectorAll('.tt-btn').forEach(btn => {
-      const toggle = () => {
-        const pressed = btn.getAttribute('aria-pressed') === 'true';
-        btn.setAttribute('aria-pressed', String(!pressed));
-      };
-
-      btn.addEventListener('click', toggle);
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggle();
-        }
-      });
-    });
   </script>
 </body>
 </html>
