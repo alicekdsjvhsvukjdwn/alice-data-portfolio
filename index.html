@@ -652,16 +652,16 @@
 
     .banner-img .parallax-holder{
       /* This creates “time” while scrolling */
-      height: clamp(420px, 78vh, 860px);
+      height: clamp(220px, 40vh, 420px);
       position: relative;
     }
 
     .banner-img .parallax-frame{
       /* sticky block showing the image while holder scrolls */
       position: sticky;
-      top: var(--header-h);
-      height: calc(100svh - var(--header-h));
-      min-height: 420px;
+      top: calc(var(--header-h) + 10px);
+      height: clamp(220px, 42vh, 420px);
+      min-height: unset;
       width: 100%;
       overflow: hidden;
       isolation: isolate;
@@ -1392,3 +1392,4 @@
   </script>
 </body>
 </html>
+
