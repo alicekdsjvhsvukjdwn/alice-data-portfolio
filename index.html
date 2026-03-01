@@ -741,6 +741,90 @@
       color: rgba(17,17,17,.82);
       border-bottom-color: rgba(17,17,17,.22);
     }
+
+    /* =========================
+   CTA Parallax (copie sitebase: title over background)
+   ========================= */
+
+    section.cta.parallax-cta{
+      /* hauteur “bandeau” (comme ton screenshot) */
+      min-height: clamp(280px, 46vh, 520px);
+    
+      /* full-bleed */
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+    
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    
+      /* background piloté par JS (viewport scroll) */
+      background-image: var(--bgimg, none);
+      background-size: cover;
+      background-position: center var(--bgy, 50%);
+      background-repeat: no-repeat;
+    
+      /* séparation douce */
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    
+    /* voile pour garder ton ivory + lisibilité du titre */
+    section.cta.parallax-cta::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 420px at 20% 45%, rgba(29,78,216,.18), transparent 60%),
+        radial-gradient(900px 420px at 80% 55%, rgba(80,120,160,.22), transparent 62%),
+        linear-gradient(to bottom,
+          rgba(250,250,247,.88) 0%,
+          rgba(250,250,247,.18) 35%,
+          rgba(250,250,247,.18) 65%,
+          rgba(250,250,247,.90) 100%
+        );
+      pointer-events:none;
+    }
+    
+    /* grain léger (comme ton esthétique) */
+    section.cta.parallax-cta::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.05;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      background-size: 220px 220px;
+      mix-blend-mode: multiply;
+      pointer-events:none;
+    }
+    
+    section.cta.parallax-cta .container{
+      position: relative;
+      z-index: 2;
+    }
+    
+    section.cta.parallax-cta .text-center{
+      text-align: center;
+      padding: clamp(22px, 5vh, 56px) 0;
+    }
+    
+    section.cta.parallax-cta h1{
+      margin: 0 0 10px;
+      font-family: var(--sans);
+      font-weight: 900;
+      letter-spacing: -.02em;
+      font-size: clamp(34px, 4.2vw, 64px);
+      line-height: 1.02;
+      text-shadow: 0 10px 40px rgba(0,0,0,.10);
+    }
+    
+    section.cta.parallax-cta .cta-sub{
+      margin: 0;
+      color: rgba(17,17,17,.70);
+      font-size: clamp(13px, 1.2vw, 16px);
+    }
   </style>
 </head>
 
@@ -956,11 +1040,12 @@
       </div>
     </section>
 
-    <!-- ✅ Parallax separator 1 (full-bleed, no visible window) -->
-    <section class="banner-img" aria-hidden="true">
-      <div class="parallax-holder">
-        <div class="parallax-frame">
-          <img src="assets/parallax_01.jpg" alt="">
+    <!-- ======= Séparation (style sitebase: CTA + titre + fond parallax) ======= -->
+    <section class="cta parallax-cta" data-bg="assets/parallax_definitions.jpg">
+      <div class="container">
+        <div class="text-center">
+          <h1>Définitions</h1>
+          <p class="cta-sub">Quelques repères avant la suite.</p>
         </div>
       </div>
     </section>
@@ -1022,10 +1107,11 @@
     </section>
 
     <!-- ✅ Parallax separator 2 (full-bleed, no visible window) -->
-    <section class="banner-img" aria-hidden="true">
-      <div class="parallax-holder">
-        <div class="parallax-frame">
-          <img src="assets/parallax_02.jpg" alt="">
+    <section class="cta parallax-cta" data-bg="assets/parallax_contact.jpg">
+      <div class="container">
+        <div class="text-center">
+          <h1>Parlons</h1>
+          <p class="cta-sub">Simple, direct, efficace.</p>
         </div>
       </div>
     </section>
@@ -1109,33 +1195,43 @@
     function quant(x, step=0.25){ return Math.round(x/step)*step; }
 
     // =========================
-    // Parallax separators (simulate "background behind" inside .viewport)
+    // CTA Parallax (simulate fixed bg inside .viewport)
     // =========================
-    const parallaxImgs = Array.from(document.querySelectorAll('.banner-img .parallax-frame img'));
-
-    function updateParallax(){
+    const ctaParallax = Array.from(document.querySelectorAll('.parallax-cta'));
+    
+    ctaParallax.forEach(sec => {
+      const src = sec.getAttribute('data-bg');
+      if (src) sec.style.setProperty('--bgimg', `url("${src}")`);
+    });
+    
+    // calc background Y based on section position in viewport
+    function updateCtaParallax(){
       if (!viewport) return;
+    
       const vp = viewport.getBoundingClientRect();
-      const vpCenter = vp.top + vp.height/2;
-
-      parallaxImgs.forEach(img => {
-        const holder = img.closest('.banner-img')?.querySelector('.parallax-holder');
-        if (!holder) return;
-
-        const r = holder.getBoundingClientRect();
-        const holderCenter = r.top + r.height/2;
-
-        // progress 0..1 (1 when centered)
-        const t = 1 - Math.abs((holderCenter - vpCenter) / (vp.height/2));
-        const p = clamp01(t);
-
-        // translate image a bit for parallax depth
-        const maxShift = 42; // px
-        const y = (0.5 - p) * maxShift;
-
-        img.style.setProperty('--py', `${y.toFixed(2)}px`);
+      const vpH = vp.height;
+    
+      ctaParallax.forEach(sec => {
+        const r = sec.getBoundingClientRect();
+    
+        // progress: 0 (just entered) -> 1 (leaving)
+        const t = (vp.bottom - r.top) / (vpH + r.height);
+        const p = Math.max(0, Math.min(1, t));
+    
+        // move background a bit (parallax depth)
+        // 50% center ± shift
+        const shift = 18; // en "%", augmente à 24 si tu veux plus marqué
+        const y = 50 + (p - 0.5) * -shift;
+    
+        sec.style.setProperty('--bgy', `${y.toFixed(2)}%`);
       });
     }
+
+if (viewport){
+  viewport.addEventListener('scroll', updateCtaParallax, { passive:true });
+  window.addEventListener('resize', updateCtaParallax, { passive:true });
+  updateCtaParallax();
+}
 
     // =========================
     // HOME pixels (restored)
@@ -1392,4 +1488,5 @@
   </script>
 </body>
 </html>
+
 
