@@ -291,11 +291,14 @@
     .hero-brain-3d{
       position: absolute;
       left: 50%;
-      top: 52%;
-      width: min(760px, 92vw);      /* pas full page */
+      top: 50%;
+      width: clamp(900px, 120vw, 1600px); /* très grand desktop, s'adapte */
       aspect-ratio: 664 / 384;
       transform: translate(-50%, -50%);
       transform-style: preserve-3d;
+    }
+    @media (max-width: 820px){
+      .hero-brain-3d{ width: min(1100px, 140vw); } /* mobile/tablette: toujours massif */
     }
     
     /* image = relief + ombres (drop-shadow suit l’alpha du PNG → zéro rectangle) */
@@ -1285,6 +1288,7 @@
   
 </body>
 </html>
+
 
 
 
