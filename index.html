@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -469,121 +470,87 @@
    - reste à côté plus longtemps sur écran moyen
    - en très petit : passe dessous mais “collé” (pas perdu en bas)
    ========================================================= */
-    #home.home-panel{
-      min-height: 100svh;
-      padding-bottom: 0;
+    /* Fond immersif avec ton image */
+    .home-panel {
+      min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      background: url('ton-image-paysage.jpg') no-repeat center center;
+      background-size: cover;
       position: relative;
+      overflow: hidden;
     }
     
-    #home.home-panel::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-      background:
-        radial-gradient(900px 560px at 0% 38%, rgba(80,120,160,.16), rgba(250,250,247,0) 62%),
-        radial-gradient(700px 420px at 18% 10%, rgba(80,120,160,.09), rgba(250,250,247,0) 60%);
-      opacity: calc(0.85 + var(--px) * 0.15);
-      transition: opacity .05s linear;
+    /* Voile semi-transparent pour améliorer la lisibilité du texte */
+    .home-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2); /* Voile sombre léger */
+      z-index: 1;
     }
     
-    #home.home-panel .container{
-      position: relative;
-      z-index: 2;
-    }
-    
-    /* HERO */
-    .home-wrap{
-      flex: 1;
-      display: grid;
-      align-items: start;
-      padding-top: clamp(8px, 2vh, 18px);
-      padding-bottom: var(--hero-bottom-safe);
-    }
-    
-    .home-top{
-      display: grid;
-    
-      /* ✅ plus souple : reste en 2 colonnes plus longtemps */
-      grid-template-columns: minmax(420px, 1.15fr) minmax(300px, .85fr);
-    
-      align-items: start;
-      gap: var(--hero-gap);
-      padding-top: clamp(6px, 1.6vh, 14px);
-    }
-    
-    .home-top h1{ max-width: 22ch; }
-    .home-top .lead{ max-width: 56ch; }
-    
-    .home-left{
-      position: relative;
-      z-index: 3;
-    }
-    
-    #home .container,
-    .home-top{ overflow: visible; }
-    
-    /* ✅ Cerveau : aligné en haut + remonté */
-    .brain{
+    /* Conteneur du contenu (texte/bouton) */
+    .home-content {
       position: relative;
       z-index: 2;
-    
-      justify-self: end;    /* reste à droite */
-      align-self: start;
-    
-      margin-top: clamp(-64px, -6vh, -22px);   /* remonte */
-      margin-right: clamp(-60px, -6vw, -18px);
-    
-      pointer-events: none;
+      max-width: 800px;
+      padding: 2rem;
+      margin: 0 auto;
     }
     
-    /* ✅ Taille plus stable : évite qu’il force la mise en page */
-    .brain img{
-      display: block;
-      width: clamp(360px, 36vw, 760px);
-      max-width: none;
-      height: auto;
-    
-      --brain-float: calc(var(--px) * -10px);
-      transform: translate3d(0, var(--brain-float), 0);
-      transition: transform .05s linear;
-      will-change: transform;
+    /* Titre élégant et lisible */
+    .home-content h1 {
+      font-family: 'Playfair Display', serif; /* Police élégante */
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 300;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Ombre pour le contraste */
+      line-height: 1.2;
     }
     
-    /* ✅ Écran moyen : on garde côte à côte (pas 1 colonne trop tôt) */
-    @media (max-width: 980px){
-      .home-top{
-        grid-template-columns: 1fr minmax(260px, 340px);
-        gap: clamp(14px, 3vw, 28px);
-      }
-    
-      .brain{
-        margin-top: clamp(-52px, -6vh, -18px);
-        margin-right: 0;
-      }
-    
-      .brain img{
-        width: min(340px, 42vw);
-      }
+    /* Sous-titre */
+    .home-content p {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
     
-    /* ✅ Petit écran : 1 colonne, mais cerveau “collé” au texte */
-    @media (max-width: 720px){
-      .home-top{
-        grid-template-columns: 1fr;
-      }
+    /* Bouton stylisé */
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .btn:hover {
+      background: white;
+      transform: translateY(-2px);
+    }
     
-      .brain{
-        justify-self: start;
-        margin-top: clamp(-120px, -10vh, -60px);
-      }
-    
-      .brain img{
-        width: min(420px, 88vw);
-      }
+    /* Animation subtile pour le fond (optionnel) */
+    @keyframes slowPan {
+      0% { background-position: center top; }
+      100% { background-position: center bottom; }
+    }
+    .home-panel {
+      animation: slowPan 20s linear infinite;
+      background-attachment: fixed; /* Pour un effet immersif au défilement */
     }
     
     /* HOME pixels full-bleed */
@@ -973,36 +940,20 @@
 
     <!-- HOME -->
     <section id="home" class="panel home-panel">
+      <div class="immersive-bg">
+        <!-- Fond : ton image de paysage onirique -->
+        <div class="overlay"></div>
+      </div>
       <div class="container">
-        <div class="home-wrap">
-          <div class="home-top">
-            <div class="home-left">
-              <h1>Je structure des projets culturels en comprenant les publics et les dynamiques humaines</h1>
-
-              <p class="lead">
-                Sciences cognitives + culture/musique. Basée à Marseille.
-                Je cherche un premier poste en coulisses (coordination / publics / production junior / pilotage)
-              </p>
-
-              <div class="cta-row">
-                <a class="btn cta" href="#preview">Voir les projets</a>
-                <a class="btn soft" href="#contact">Me contacter</a>
-                <a class="btn soft" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">Visualiser CV</a>
-              </div>
-
-              <div class="pill-row">
-                <span class="pill">Stage 6 mois (données réelles)</span>
-                <span class="pill">Billetterie (pilotage + insights)</span>
-                <span class="pill">Outils non-tech</span>
-              </div>
-            </div>
-
-            <div class="brain" aria-label="Illustration cerveau">
-              <img src="assets/brain.png" alt="Cerveau pixelisé">
-            </div>
-          </div>
+        <div class="home-content">
+          <h1>Je crée des ponts entre les publics et les projets culturels.</h1>
+          <p>Sciences cognitives, musique et dynamiques humaines.</p>
+          <a class="btn" href="#projects">Découvrir mes projets</a>
         </div>
       </div>
+    </section>
+
+
 
       <!-- Pixels HOME -->
       <div class="home-bottom" id="homePixels" aria-hidden="true">
@@ -1806,6 +1757,7 @@
   </script>
 </body>
 </html>
+
 
 
 
