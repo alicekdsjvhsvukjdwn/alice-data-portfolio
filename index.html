@@ -270,56 +270,65 @@
       overflow: hidden;
     }
 
-    /* ===== Brain as "background" but 3D ===== */
-    #home{ position: relative; overflow:hidden; }
-    
+    /* ===== Brain as "background" but 3D (PROPRE) ===== */
     .hero-brain-bg{
       position:absolute;
       inset:0;
-      z-index:0;           /* derrière le contenu */
+      z-index:0;
       pointer-events:none;
-      perspective: 900px;
+      perspective: 1100px;      /* <-- important */
     }
     
+    /* Le wrapper DOIT avoir une taille + être centré */
     .hero-brain-3d{
-      overflow: visible; /* important */
-    }
-    
-    .hero-brain-3d img{
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      transform-origin: 50% 50%;
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      width: clamp(620px, 86vw, 1180px);
+      aspect-ratio: 664 / 384;
+      transform: translate(-50%, -50%);
+      transform-style: preserve-3d;
       will-change: transform;
     }
     
-    /* ombre + highlight = volume */
+    /* L'image remplit le wrapper */
+    .hero-brain-3d img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      display:block;
+      transform-origin: 50% 50%;
+      will-change: transform;
+      backface-visibility: hidden;
+    }
+    
+    /* Ombre "volume" */
     .hero-brain-3d::before{
       content:"";
       position:absolute;
-      left: 12%;
-      right: 12%;
-      bottom: -10%;
+      left: 10%;
+      right: 10%;
+      bottom: -12%;
       height: 28%;
-      background: radial-gradient(closest-side, rgba(0,0,0,.60), transparent 70%);
-      filter: blur(12px);
-      opacity: .75;
+      background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent 72%);
+      filter: blur(14px);
+      opacity: .55;
       transform: translateZ(0);
+      pointer-events:none;
     }
     
+    /* Highlight léger */
     .hero-brain-3d::after{
       content:"";
       position:absolute;
-      inset:-8%;
+      inset:-10%;
       background:
-        radial-gradient(650px 280px at 30% 25%, rgba(255,255,255,.20), transparent 60%),
-        radial-gradient(650px 280px at 70% 70%, rgba(93,139,244,.14), transparent 62%);
+        radial-gradient(700px 320px at 28% 28%, rgba(255,255,255,.16), transparent 60%),
+        radial-gradient(700px 320px at 72% 72%, rgba(93,139,244,.12), transparent 62%);
       mix-blend-mode: screen;
-      opacity: .55;
-      transform: translateZ(8px);
+      opacity: .45;
+      transform: translateZ(10px);
+      pointer-events:none;
     }
     
     #home .container{
@@ -335,8 +344,8 @@
       z-index:1;
       pointer-events:none;
       background:
-        radial-gradient(1000px 520px at 50% 40%, rgba(0,0,0,.18), rgba(0,0,0,.58)),
-        linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.55));
+        radial-gradient(1100px 620px at 50% 45%, rgba(0,0,0,.10), rgba(0,0,0,.45)),
+        linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.42));
     }
 
     .home-content{
@@ -1207,15 +1216,12 @@
       updateHeaderState();
     }
 
-    // ===== Brain 3D tilt (desktop) — tilt sur l'IMG, pas le conteneur
+    // ===== Brain 3D tilt (desktop) — tilt sur l'IMG
     const brainWrap = document.getElementById('brain3d');
     const brainImg  = brainWrap ? brainWrap.querySelector('img') : null;
     
     if (brainWrap && brainImg && home && window.matchMedia('(pointer:fine)').matches) {
       let tx = 0, ty = 0, cx = 0, cy = 0;
-    
-      // le wrapper reste centré
-      brainWrap.style.transform = 'translate(-50%,-50%)';
     
       home.addEventListener('mousemove', (e) => {
         const r = home.getBoundingClientRect();
@@ -1226,14 +1232,13 @@
       }, { passive:true });
     
       const tick = () => {
-        cx += (tx - cx) * 0.06;
-        cy += (ty - cy) * 0.06;
+        cx += (tx - cx) * 0.07;
+        cy += (ty - cy) * 0.07;
     
-        const rx = (-cy * 10).toFixed(2);
-        const ry = ( cx * 14).toFixed(2);
+        const rx = (-cy * 14).toFixed(2);  // plus fort
+        const ry = ( cx * 18).toFixed(2);  // plus fort
     
-        // tilt + profondeur sur l'image (c'est ça que tu veux voir bouger)
-        brainImg.style.transform = `translateZ(28px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        brainImg.style.transform = `translateZ(60px) rotateX(${rx}deg) rotateY(${ry}deg)`;
     
         requestAnimationFrame(tick);
       };
@@ -1287,6 +1292,7 @@
   
 </body>
 </html>
+
 
 
 
