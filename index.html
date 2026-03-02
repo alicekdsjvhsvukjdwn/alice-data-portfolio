@@ -262,11 +262,78 @@
       position: relative;
 
       color: #fff;
-      background-image: url('assets/paysage-onirique.jpg');
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
       overflow: hidden;
+    }
+
+    /* ===== Brain as "background" but 3D ===== */
+    #home{ position: relative; overflow:hidden; }
+    
+    .hero-brain-bg{
+      position:absolute;
+      inset:0;
+      z-index:0;           /* derrière le contenu */
+      pointer-events:none;
+    }
+    
+    .hero-brain-3d{
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      width: clamp(520px, 78vw, 980px);
+      aspect-ratio: 664 / 384;
+      transform: translate(-50%,-50%);
+      transform-style: preserve-3d;
+      will-change: transform, filter;
+      opacity: .95;
+      filter: drop-shadow(0 30px 70px rgba(0,0,0,.45));
+    }
+    
+    /* l’image */
+    .hero-brain-3d img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      display:block;
+      transform: translateZ(22px);
+    }
+    
+    /* ombre + highlight = volume */
+    .hero-brain-3d::before{
+      content:"";
+      position:absolute;
+      left: 12%;
+      right: 12%;
+      bottom: -10%;
+      height: 28%;
+      background: radial-gradient(closest-side, rgba(0,0,0,.60), transparent 70%);
+      filter: blur(12px);
+      opacity: .75;
+      transform: translateZ(0);
+    }
+    
+    .hero-brain-3d::after{
+      content:"";
+      position:absolute;
+      inset:-8%;
+      background:
+        radial-gradient(650px 280px at 30% 25%, rgba(255,255,255,.20), transparent 60%),
+        radial-gradient(650px 280px at 70% 70%, rgba(93,139,244,.14), transparent 62%);
+      mix-blend-mode: screen;
+      opacity: .55;
+      transform: translateZ(8px);
+    }
+    
+    /* ton overlay de lisibilité doit rester AU-DESSUS du cerveau mais SOUS le texte */
+    #home::before{
+      z-index:1; /* IMPORTANT: overlay au-dessus */
+    }
+    
+    #home .container{
+      position:relative;
+      z-index:2; /* texte au-dessus */
     }
 
     /* overlay pour lisibilité + évite “blanc sur blanc” */
@@ -451,6 +518,11 @@
 
     <!-- HOME (UNE SEULE FOIS, propre) -->
     <section id="home" class="panel home-panel">
+      <div class="hero-brain-bg" aria-hidden="true">
+        <div class="hero-brain-3d" id="brain3d">
+          <img src="assets/cerveau-portfolio.png" alt="">
+        </div>
+      </div>
       <div class="container">
         <div class="home-content">
           <h1>Je crée des ponts entre les publics et les projets culturels.</h1>
@@ -645,27 +717,34 @@
     }
 
     // ===== “3D brain/logo” (tilt léger au mouvement souris desktop)
-    const brand = document.getElementById('brand3d');
-    const logo = brand?.querySelector('.logo3d');
-
-    if (brand && logo && window.matchMedia('(pointer:fine)').matches){
-      brand.addEventListener('mousemove', (e) => {
-        const r = brand.getBoundingClientRect();
-        const cx = r.left + r.width/2;
-        const cy = r.top + r.height/2;
-        const dx = (e.clientX - cx) / (r.width/2);
-        const dy = (e.clientY - cy) / (r.height/2);
-
-        const rx = (-dy * 12).toFixed(2);
-        const ry = ( dx * 12).toFixed(2);
-
-        logo.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(6px)`;
-      });
-
-      brand.addEventListener('mouseleave', () => {
-        logo.style.transform = `rotateX(0deg) rotateY(0deg) translateZ(0)`;
-      });
+    const brain = document.getElementById('brain3d');
+    const home = document.getElementById('home');
+    
+    if (brain && home && window.matchMedia('(pointer:fine)').matches) {
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+    
+      home.addEventListener('mousemove', (e) => {
+        const r = home.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+        const dy = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+        tx = Math.max(-1, Math.min(1, dx));
+        ty = Math.max(-1, Math.min(1, dy));
+      }, { passive:true });
+    
+      const tick = () => {
+        cx += (tx - cx) * 0.06;
+        cy += (ty - cy) * 0.06;
+    
+        const rx = (-cy * 8).toFixed(2);
+        const ry = ( cx * 12).toFixed(2);
+        const tz = 0;
+    
+        brain.style.transform = `translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(${tz}px)`;
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
     }
   </script>
 </body>
 </html>
+
