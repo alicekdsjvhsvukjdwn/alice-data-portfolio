@@ -282,25 +282,18 @@
     }
     
     .hero-brain-3d{
-      position:absolute;
-      left: 50%;
-      top: 50%;
-      width: clamp(520px, 78vw, 980px);
-      aspect-ratio: 664 / 384;
-      transform: translate(-50%,-50%);
-      transform-style: preserve-3d;
-      will-change: transform, filter;
-      opacity: .95;
-      filter: drop-shadow(0 30px 70px rgba(0,0,0,.45));
+      overflow: visible; /* important */
     }
     
-    /* l’image */
     .hero-brain-3d img{
-      width:100%;
-      height:100%;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
-      display:block;
-      transform: translateZ(22px);
+      display: block;
+      transform-origin: 50% 50%;
+      will-change: transform;
     }
     
     /* ombre + highlight = volume */
@@ -704,11 +697,15 @@
       updateHeaderState();
     }
 
-    // ===== Brain 3D tilt (desktop)
-    const brain = document.getElementById('brain3d');
+    // ===== Brain 3D tilt (desktop) — tilt sur l'IMG, pas le conteneur
+    const brainWrap = document.getElementById('brain3d');
+    const brainImg  = brainWrap ? brainWrap.querySelector('img') : null;
     
-    if (brain && home && window.matchMedia('(pointer:fine)').matches) {
+    if (brainWrap && brainImg && home && window.matchMedia('(pointer:fine)').matches) {
       let tx = 0, ty = 0, cx = 0, cy = 0;
+    
+      // le wrapper reste centré
+      brainWrap.style.transform = 'translate(-50%,-50%)';
     
       home.addEventListener('mousemove', (e) => {
         const r = home.getBoundingClientRect();
@@ -722,10 +719,12 @@
         cx += (tx - cx) * 0.06;
         cy += (ty - cy) * 0.06;
     
-        const rx = (-cy * 8).toFixed(2);
-        const ry = ( cx * 12).toFixed(2);
+        const rx = (-cy * 10).toFixed(2);
+        const ry = ( cx * 14).toFixed(2);
     
-        brain.style.transform = `translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        // tilt + profondeur sur l'image (c'est ça que tu veux voir bouger)
+        brainImg.style.transform = `translateZ(28px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    
         requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
@@ -734,6 +733,7 @@
   
 </body>
 </html>
+
 
 
 
