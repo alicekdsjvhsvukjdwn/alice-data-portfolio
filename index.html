@@ -18,43 +18,37 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      /* Editorial culture */
-      --bg: #FAFAF7;
-      --ink: #111111;
-      --muted: #6B7280;
-      --line: rgba(17,17,17,.12);
-      --surface: rgba(255,255,255,.78);
-      --shadow: 0 18px 50px rgba(0,0,0,.08);
+    :root {
+      /* Fond de page noir */
+      --bg: #121212; /* Noir profond */
+      --ink: #f0f0f0; /* Texte clair pour contraste */
+      --muted: #a0a0a0;
+      --line: rgba(255, 255, 255, 0.12);
+      --surface: rgba(30, 30, 30, 0.88);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
       --radius: 18px;
-
-      /* Accent */
-      --accent: #1D4ED8;
-
-      /* Responsive sizing */
+    
+      /* Accent (optionnel) */
+      --accent: #5d8bf4;
+    
+      /* Autres variables inchangées */
       --maxw: min(1800px, 100%);
       --header-h: 68px;
-
       --pad-x: clamp(16px, 4vw, 56px);
       --gap: clamp(12px, 1.8vw, 20px);
-
       --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
-      --sans:  Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
-
-      --grain-opacity: .05;
-
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      --grain-opacity: 0.03; /* Réduit pour fond noir */
+    
       /* Home */
       --hero-gap: clamp(18px, 3vw, 56px);
-
-      /* Home pixels transition */
       --transition-h: clamp(520px, 72vh, 980px);
       --transition-overlap: clamp(240px, 32vh, 460px);
       --transition-pull: clamp(80px, 12vh, 160px);
       --hero-bottom-safe: clamp(12px, 3.5vh, 44px);
-
-      /* progress scroll 0..1 */
       --px: 0;
     }
+
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -80,15 +74,25 @@
     }
 
     /* ======= Header ======= */
-    header.site{
+    header.site {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: var(--header-h);
       z-index: 60;
-      background: rgba(250,250,247,.86);
+      background: rgba(250, 250, 247, 0.92); /* Clair au départ */
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
+      transition: background 0.3s ease, color 0.3s ease;
     }
+    
+    /* Quand on descend, le header devient noir */
+    header.site.scrolled {
+      background: rgba(20, 20, 20, 0.96); /* Noir au défilement */
+      color: #f0f0f0;
+    }
+
 
     .nav{
       height: var(--header-h);
@@ -465,11 +469,6 @@
 
    /* =========================================================
    HOME — Hero immersif (paysage onirique)
-   Objectifs :
-   - Fond immersif avec ton image de paysage
-   - Texte centré, lisible et élégant
-   - Bouton d’action visible et interactif
-   - Transition pixelisée vers la section suivante
    ========================================================= */
     #home.home-panel {
       min-height: 100svh;
@@ -481,22 +480,20 @@
       background: url('assets/paysage-onirique.jpg') no-repeat center center;
       background-size: cover;
       overflow: hidden;
-      animation: slowPan 20s linear infinite;
-      background-attachment: fixed;
+      background-attachment: scroll; /* Évite les bugs de défilement */
     }
     
-    /* Voile semi-transparent pour améliorer la lisibilité */
+    /* Voile très léger pour garder le fond net */
     #home.home-panel::before {
       content: "";
       position: absolute;
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      background: rgba(0, 0, 0, 0.35); /* Voile plus marqué pour le contraste */
-      opacity: 0.9;
+      background: rgba(0, 0, 0, 0.1); /* Voile minimal pour un fond net */
+      opacity: 0.7;
     }
     
-    /* Conteneur principal */
     #home.home-panel .container {
       position: relative;
       z-index: 2;
@@ -506,52 +503,37 @@
       padding-top: clamp(8px, 2vh, 18px);
     }
     
-    /* Layout du contenu principal */
-    .home-wrap {
-      flex: 1;
-      display: grid;
-      align-items: start;
-      padding-top: clamp(8px, 2vh, 18px);
-      padding-bottom: var(--hero-bottom-safe);
-    }
-    
-    /* Conteneur du texte et du bouton */
-    .home-top {
-      display: grid;
-      grid-template-columns: 1fr;
-      align-items: start;
-      gap: var(--hero-gap);
-      padding-top: clamp(6px, 1.6vh, 14px);
-      justify-items: center;
+    .home-content {
       text-align: center;
+      max-width: 800px;
+      padding: 2rem;
+      margin: 0 auto;
     }
     
-    /* Titre principal */
-    .home-top h1 {
-      max-width: 26ch;
+    .home-content h1 {
       font-family: 'Playfair Display', serif;
       font-weight: 300;
       font-size: clamp(2.5rem, 6vw, 4rem);
       margin: 0 auto 1rem;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
       line-height: 1.2;
+      color: white;
     }
     
-    /* Sous-titre */
-    .home-top .lead {
-      max-width: 56ch;
+    .home-content p {
       font-family: 'Open Sans', sans-serif;
       font-size: 1.2rem;
       margin: 0 auto 2rem;
-      opacity: 0.9;
+      opacity: 0.95;
+      max-width: 600px;
+      color: rgba(255, 255, 255, 0.9);
     }
     
-    /* Bouton spécifique à la home */
     #home.home-panel .btn {
       display: inline-block;
       padding: 0.8rem 2rem;
       background: rgba(255, 255, 255, 0.9);
-      color: #333;
+      color: #121212;
       text-decoration: none;
       border-radius: 30px;
       font-weight: 500;
@@ -559,10 +541,13 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       margin: 0 auto;
     }
+    
     #home.home-panel .btn:hover {
       background: white;
+      color: #121212;
       transform: translateY(-2px);
     }
+
     
     /* Animation subtile du fond */
     @keyframes slowPan {
@@ -956,19 +941,19 @@
 
     <!-- HOME -->
     <section id="home" class="panel home-panel">
-      <div class="immersive-bg">
-        <!-- Fond : ton image de paysage onirique -->
-        <div class="overlay"></div>
-      </div>
       <div class="container">
         <div class="home-content">
           <h1>Je crée des ponts entre les publics et les projets culturels.</h1>
           <p>Sciences cognitives, musique et dynamiques humaines.</p>
-          <a class="btn" href="#projects">Découvrir mes projets</a>
+          <a class="btn" href="#projects" aria-label="Aller à la section Projets">Découvrir mes projets</a>
         </div>
       </div>
+    
+      <!-- Transition pixelisée -->
+      <div class="home-bottom" id="homePixels" aria-hidden="true">
+        <svg id="pxGradHome" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
+      </div>
     </section>
-
 
 
       <!-- Pixels HOME -->
@@ -1770,9 +1755,21 @@
         }
       });
     });
+
+    // Effet de détachement du header
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header.site');
+      if (window.scrollY > 10) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
   </script>
 </body>
 </html>
+
 
 
 
