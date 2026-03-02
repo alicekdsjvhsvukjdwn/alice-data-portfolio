@@ -736,6 +736,182 @@
       font-size: clamp(13px, 1.2vw, 16px);
     }
 
+    /* =========================
+   ABOUT + WORK (platines)
+   ========================= */
+    .about-wrap{
+      display: grid;
+      gap: clamp(18px, 3vh, 34px);
+    }
+    
+    .about-top{
+      display: grid;
+      grid-template-columns: minmax(280px, 420px) 1fr;
+      gap: clamp(18px, 3vw, 46px);
+      align-items: start;
+    }
+    
+    .about-photo{ display:grid; place-items:center; padding: 10px 0; }
+    .about-photo .frame{
+      width: min(340px, 100%);
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      border: 1px solid rgba(17,17,17,.12);
+      background: rgba(255,255,255,.60);
+      box-shadow: 0 10px 26px rgba(0,0,0,.06);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .about-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+    
+    .about-text{ padding: 10px 0; }
+    .about-text h3{
+      margin: 0 0 10px;
+      font-family: var(--sans);
+      font-weight: 800;
+      letter-spacing: -.01em;
+      font-size: clamp(18px, 1.6vw, 22px);
+    }
+    .about-text .intro{
+      max-width: 62ch;
+      color: rgba(17,17,17,.78);
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 0;
+    }
+    
+    /* ===== Comment je bosse ===== */
+    .work-title{ margin-top: 4px; }
+    .work-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--gap);
+      align-items: stretch;
+    }
+    
+    @media (max-width: 980px){
+      .about-top{ grid-template-columns: 1fr; }
+      .work-grid{ grid-template-columns: 1fr; }
+    }
+    
+    .work-card{
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(17,17,17,.12);
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.06);
+      padding: 14px;
+      display:grid;
+      gap: 10px;
+    }
+    
+    .work-copy{ display:grid; gap: 6px; }
+    .work-copy .mini{
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 13px;
+      color: rgba(17,17,17,.84);
+    }
+    .work-copy .micro{
+      font-size: 12px;
+      color: rgba(17,17,17,.62);
+      line-height: 1.45;
+    }
+    
+    .work-badge{
+      display:inline-flex;
+      align-items:center;
+      width: fit-content;
+      border: 1px solid rgba(17,17,17,.10);
+      background: rgba(255,255,255,.72);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,.62);
+    }
+    
+    /* ===== Platines ===== */
+    .work-visual{
+      position: relative;
+      border-radius: 14px;
+      border: 1px solid rgba(17,17,17,.10);
+      background: rgba(250,250,247,.92);
+      height: 140px;
+      display:grid;
+      place-items:center;
+      overflow: visible;
+      user-select: none;
+    }
+    
+    .tt-btn{
+      all: unset;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border-radius: 14px;
+    }
+    
+    .tt-btn:focus-visible{
+      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+      outline-offset: 3px;
+      border-radius: 16px;
+    }
+    
+    .tt-wrap{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display:grid;
+      place-items:center;
+      overflow: visible;
+      border-radius: 12px;
+    }
+    
+    .tt-wrap::after{
+      content:"";
+      position:absolute;
+      inset:10px;
+      border-radius: 12px;
+      border: 1px solid rgba(17,17,17,.06);
+      pointer-events:none;
+      z-index: 2;
+    }
+    
+    .vinyl{
+      width: 128px;
+      height: 128px;
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      shape-rendering: crispEdges;
+    }
+    
+    .vinyl .px-black{ fill:#0b0b0b; }
+    .vinyl .px-white{ fill:#f3f3f3; }
+    .vinyl .px-hole { fill:#0b0b0b; }
+    .vinyl .px-label{ fill: var(--label, #1D4ED8); }
+    
+    .vinyl-rot{
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+    }
+    
+    .tt-btn:hover .vinyl-rot,
+    .tt-btn[aria-pressed="true"] .vinyl-rot{
+      animation: vinylSpin 1.05s linear infinite;
+    }
+    
+    @keyframes vinylSpin{ to{ transform: rotate(360deg); } }
+    
+    .vinyl.red   { --label:#ef4444; }
+    .vinyl.yellow{ --label:#f59e0b; }
+    .vinyl.blue  { --label:#3b82f6; }
+
     /* ======= Footer ======= */
     footer.site-footer{
       border-top: 1px solid var(--line);
@@ -1000,256 +1176,20 @@
           <h2>À propos</h2>
           <div class="note">qui je suis + comment je bosse</div>
         </div>
-
-        <div style="display:grid; gap: clamp(18px, 3vh, 34px);">
-          <div style="
-            display:grid;
-            grid-template-columns: minmax(280px, 420px) 1fr;
-            gap: clamp(18px, 3vw, 46px);
-            align-items:start;
-            position:relative;
-            padding-top: clamp(6px, 1vh, 10px);
-          " class="about-top">
+    
+        <div class="about-wrap">
+    
+          <!-- Top: image + intro -->
+          <div class="about-top">
             <div class="about-photo" aria-label="Image à propos">
-              <div class="frame" style="
-                width:min(340px, 100%);
-                aspect-ratio: 1 / 1;
-                border-radius: 16px;
-                border: 1px solid rgba(17,17,17,.12);
-                background: rgba(255,255,255,.60);
-                box-shadow: 0 10px 26px rgba(0,0,0,.06);
-                overflow:hidden;
-                display:grid;
-                place-items:center;">
-                <img src="assets/about.png" alt="Portrait / collage À propos" style="width:100%; height:100%; object-fit:cover; display:block; filter:contrast(1.02);">
+              <div class="frame">
+                <img src="assets/about.png" alt="Portrait / collage À propos">
               </div>
             </div>
-
-            <div style="padding:10px 0;">
-              <h3 style="
-                margin:0 0 10px;
-                font-family: var(--sans);
-                font-weight: 800;
-                letter-spacing: -.01em;
-                font-size: clamp(18px, 1.6vw, 22px);
-              ">Introduction</h3>
-
-            <!-- Bottom: comment je bosse -->
-            <div class="work-title">
-              <h3 class="edu-title" style="margin:0;">Comment je bosse</h3>
-            </div>
-            
-            <div class="work-grid">
-              <!-- 1 -->
-              <article class="work-card">
-                <div class="work-visual">
-                  <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 1">
-                    <div class="tt-wrap">
-                      <svg class="vinyl red" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <g class="vinyl-rot">
-                          <!-- disque -->
-                          <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                          <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                          <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                          <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                          <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                          <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                          <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                          <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                          <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                          <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                          <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                          <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                          <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                          <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                          <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                          <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                          <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                          <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                          <rect class="px-black" x="13" y="31" width="6" height="1"/>
-            
-                          <!-- reflets -->
-                          <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                          <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                          <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                          <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                          <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                          <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                          <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                          <rect class="px-white" x="24" y="21" width="1" height="1"/>
-            
-                          <!-- label + trou -->
-                          <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                          <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                          <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                          <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                        </g>
-                      </svg>
-                    </div>
-                  </button>
-                </div>
-            
-                <div class="work-copy">
-                  <div class="work-badge">Step 1</div>
-                  <div class="mini">Clarifier le besoin</div>
-                  <div class="micro">Décisions à prendre, contraintes, équipes, attentes réalistes.</div>
-                </div>
-              </article>
-            
-              <!-- 2 -->
-              <article class="work-card">
-                <div class="work-visual">
-                  <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 2">
-                    <div class="tt-wrap">
-                      <svg class="vinyl yellow" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <g class="vinyl-rot">
-                          <!-- (reprends EXACTEMENT le même SVG que step1) -->
-                          <!-- disque -->
-                          <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                          <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                          <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                          <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                          <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                          <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                          <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                          <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                          <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                          <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                          <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                          <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                          <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                          <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                          <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                          <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                          <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                          <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                          <rect class="px-black" x="13" y="31" width="6" height="1"/>
-            
-                          <!-- reflets -->
-                          <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                          <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                          <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                          <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                          <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                          <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                          <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                          <rect class="px-white" x="24" y="21" width="1" height="1"/>
-            
-                          <!-- label + trou -->
-                          <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                          <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                          <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                          <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                        </g>
-                      </svg>
-                    </div>
-                  </button>
-                </div>
-            
-                <div class="work-copy">
-                  <div class="work-badge">Step 2</div>
-                  <div class="mini">Structurer l’information</div>
-                  <div class="micro">Organisation, contrôles qualité, exports simples, documentation utile.</div>
-                </div>
-              </article>
-            
-              <!-- 3 -->
-              <article class="work-card">
-                <div class="work-visual">
-                  <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 3">
-                    <div class="tt-wrap">
-                      <svg class="vinyl blue" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <g class="vinyl-rot">
-                          <!-- (reprends EXACTEMENT le même SVG que step1) -->
-                          <!-- disque -->
-                          <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                          <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                          <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                          <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                          <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                          <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                          <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                          <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                          <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                          <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                          <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                          <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                          <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                          <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                          <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                          <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                          <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                          <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                          <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                          <rect class="px-black" x="13" y="31" width="6" height="1"/>
-            
-                          <!-- reflets -->
-                          <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                          <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                          <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                          <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                          <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                          <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                          <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                          <rect class="px-white" x="24" y="21" width="1" height="1"/>
-            
-                          <!-- label + trou -->
-                          <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                          <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                          <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                          <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                        </g>
-                      </svg>
-                    </div>
-                  </button>
-                </div>
-            
-                <div class="work-copy">
-                  <div class="work-badge">Step 3</div>
-                  <div class="mini">Restituer</div>
-                  <div class="micro">Insights actionnables, dashboard, synthèse courte, recommandations.</div>
-                </div>
-              </article>
-            </div>
-
-              
-
-              <p style="max-width:62ch; color: rgba(17,17,17,.78); font-size:14px; line-height:1.65; margin:0;">
+    
+            <div class="about-text">
+              <h3>Introduction</h3>
+              <p class="intro">
                 Formée en sciences cognitives, je m’intéresse aux projets culturels parce qu’ils sont humains, vivants et complexes.<br><br>
                 Ce que j’aime : comprendre les publics, organiser les infos, faire le lien terrain ↔ décision,
                 et livrer des supports simples que l’équipe utilise vraiment.<br><br>
@@ -1258,59 +1198,226 @@
               </p>
             </div>
           </div>
+    
+          <!-- Bottom: comment je bosse -->
+          <div class="work-title">
+            <h3 class="edu-title" style="margin:0;">Comment je bosse</h3>
+          </div>
+    
+          <div class="work-grid">
+    
+            <!-- Step 1 -->
+            <article class="work-card">
+              <div class="work-visual">
+                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 1">
+                  <div class="tt-wrap">
+                    <svg class="vinyl red" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <g class="vinyl-rot">
+                        <rect class="px-black" x="13" y="1" width="6" height="1"/>
+                        <rect class="px-black" x="10" y="2" width="12" height="1"/>
+                        <rect class="px-black" x="8"  y="3" width="16" height="1"/>
+                        <rect class="px-black" x="6"  y="4" width="20" height="1"/>
+                        <rect class="px-black" x="5"  y="5" width="22" height="1"/>
+                        <rect class="px-black" x="4"  y="6" width="24" height="1"/>
+                        <rect class="px-black" x="3"  y="7" width="26" height="1"/>
+                        <rect class="px-black" x="2"  y="8" width="28" height="1"/>
+                        <rect class="px-black" x="2"  y="9" width="28" height="1"/>
+                        <rect class="px-black" x="1"  y="10" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="11" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="12" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="13" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="14" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="15" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="16" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="17" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="18" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="19" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="20" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="21" width="30" height="1"/>
+                        <rect class="px-black" x="1"  y="22" width="30" height="1"/>
+                        <rect class="px-black" x="2"  y="23" width="28" height="1"/>
+                        <rect class="px-black" x="2"  y="24" width="28" height="1"/>
+                        <rect class="px-black" x="3"  y="25" width="26" height="1"/>
+                        <rect class="px-black" x="4"  y="26" width="24" height="1"/>
+                        <rect class="px-black" x="5"  y="27" width="22" height="1"/>
+                        <rect class="px-black" x="6"  y="28" width="20" height="1"/>
+                        <rect class="px-black" x="8"  y="29" width="16" height="1"/>
+                        <rect class="px-black" x="10" y="30" width="12" height="1"/>
+                        <rect class="px-black" x="13" y="31" width="6" height="1"/>
+    
+                        <rect class="px-white" x="6" y="4" width="1" height="1"/>
+                        <rect class="px-white" x="7" y="4" width="1" height="1"/>
+                        <rect class="px-white" x="5" y="5" width="2" height="1"/>
+                        <rect class="px-white" x="6" y="6" width="1" height="1"/>
+                        <rect class="px-white" x="4" y="7" width="2" height="1"/>
+                        <rect class="px-white" x="5" y="8" width="1" height="1"/>
+                        <rect class="px-white" x="23" y="22" width="1" height="1"/>
+                        <rect class="px-white" x="24" y="21" width="1" height="1"/>
+    
+                        <rect class="px-label" x="14" y="14" width="4" height="4"/>
+                        <rect class="px-label" x="13" y="15" width="6" height="2"/>
+                        <rect class="px-label" x="15" y="13" width="2" height="6"/>
+                        <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
+                      </g>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+    
+              <div class="work-copy">
+                <div class="work-badge">Step 1</div>
+                <div class="mini">Clarifier le besoin</div>
+                <div class="micro">Décisions à prendre, contraintes, équipes, attentes réalistes.</div>
+              </div>
+            </article>
+    
+            <!-- Step 2 -->
+            <article class="work-card">
+              <div class="work-visual">
+                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 2">
+                  <div class="tt-wrap">
+                    <svg class="vinyl yellow" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <g class="vinyl-rot">
+                        <use href="#discPixels"></use>
+                      </g>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+              <div class="work-copy">
+                <div class="work-badge">Step 2</div>
+                <div class="mini">Structurer l’information</div>
+                <div class="micro">Organisation, contrôles qualité, exports simples, documentation utile.</div>
+              </div>
+            </article>
+    
+            <!-- Step 3 -->
+            <article class="work-card">
+              <div class="work-visual">
+                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 3">
+                  <div class="tt-wrap">
+                    <svg class="vinyl blue" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <g class="vinyl-rot">
+                        <use href="#discPixels"></use>
+                      </g>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+              <div class="work-copy">
+                <div class="work-badge">Step 3</div>
+                <div class="mini">Restituer</div>
+                <div class="micro">Insights actionnables, dashboard, synthèse courte, recommandations.</div>
+              </div>
+            </article>
+    
+          </div>
+    
+          <!-- SVG defs: permet de réutiliser le disque sans copier-coller 3 fois -->
+          <svg width="0" height="0" style="position:absolute">
+            <defs>
+              <g id="discPixels">
+                <!-- (on réutilise le même disque que step1, c’est mieux que copier 3 pavés) -->
+                <rect class="px-black" x="13" y="1" width="6" height="1"/>
+                <rect class="px-black" x="10" y="2" width="12" height="1"/>
+                <rect class="px-black" x="8"  y="3" width="16" height="1"/>
+                <rect class="px-black" x="6"  y="4" width="20" height="1"/>
+                <rect class="px-black" x="5"  y="5" width="22" height="1"/>
+                <rect class="px-black" x="4"  y="6" width="24" height="1"/>
+                <rect class="px-black" x="3"  y="7" width="26" height="1"/>
+                <rect class="px-black" x="2"  y="8" width="28" height="1"/>
+                <rect class="px-black" x="2"  y="9" width="28" height="1"/>
+                <rect class="px-black" x="1"  y="10" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="11" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="12" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="13" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="14" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="15" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="16" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="17" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="18" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="19" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="20" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="21" width="30" height="1"/>
+                <rect class="px-black" x="1"  y="22" width="30" height="1"/>
+                <rect class="px-black" x="2"  y="23" width="28" height="1"/>
+                <rect class="px-black" x="2"  y="24" width="28" height="1"/>
+                <rect class="px-black" x="3"  y="25" width="26" height="1"/>
+                <rect class="px-black" x="4"  y="26" width="24" height="1"/>
+                <rect class="px-black" x="5"  y="27" width="22" height="1"/>
+                <rect class="px-black" x="6"  y="28" width="20" height="1"/>
+                <rect class="px-black" x="8"  y="29" width="16" height="1"/>
+                <rect class="px-black" x="10" y="30" width="12" height="1"/>
+                <rect class="px-black" x="13" y="31" width="6" height="1"/>
+    
+                <rect class="px-white" x="6" y="4" width="1" height="1"/>
+                <rect class="px-white" x="7" y="4" width="1" height="1"/>
+                <rect class="px-white" x="5" y="5" width="2" height="1"/>
+                <rect class="px-white" x="6" y="6" width="1" height="1"/>
+                <rect class="px-white" x="4" y="7" width="2" height="1"/>
+                <rect class="px-white" x="5" y="8" width="1" height="1"/>
+                <rect class="px-white" x="23" y="22" width="1" height="1"/>
+                <rect class="px-white" x="24" y="21" width="1" height="1"/>
+    
+                <rect class="px-label" x="14" y="14" width="4" height="4"/>
+                <rect class="px-label" x="13" y="15" width="6" height="2"/>
+                <rect class="px-label" x="15" y="13" width="2" height="6"/>
+                <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
+              </g>
+            </defs>
+          </svg>
+    
         </div>
       </div>
-
-      
     </section>
-
-    <!-- CTA Parallax 2 -->
-    <section class="cta parallax-cta" data-bg="assets/parallax_02.jpg">
-      <div class="container">
-        <div class="text-center">
-          <h1>Parlons</h1>
-          <p class="cta-sub">Simple, direct, efficace.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="panel">
-      <div class="container">
-        <div class="section-title">
-          <h2>Parlons.</h2>
-          <div class="note">simple & direct</div>
-        </div>
-
-        <div class="grid cols-2">
-          <div class="card" style="z-index:1;">
-            <p class="lead">Si tu as un projet culturel à structurer et des publics à comprendre : parlons.</p>
-
-            <div class="card" style="padding:14px; margin-top:10px;">
-              <div class="kicker">Email</div>
-              <div style="margin-top:6px; font-weight:600;">
-                <a href="mailto:alice1gay@gmail.com">alice1gay@gmail.com</a>
+    
+        <!-- CTA Parallax 2 -->
+        <section class="cta parallax-cta" data-bg="assets/parallax_02.jpg">
+          <div class="container">
+            <div class="text-center">
+              <h1>Parlons</h1>
+              <p class="cta-sub">Simple, direct, efficace.</p>
+            </div>
+          </div>
+        </section>
+    
+        <!-- CONTACT -->
+        <section id="contact" class="panel">
+          <div class="container">
+            <div class="section-title">
+              <h2>Parlons.</h2>
+              <div class="note">simple & direct</div>
+            </div>
+    
+            <div class="grid cols-2">
+              <div class="card" style="z-index:1;">
+                <p class="lead">Si tu as un projet culturel à structurer et des publics à comprendre : parlons.</p>
+    
+                <div class="card" style="padding:14px; margin-top:10px;">
+                  <div class="kicker">Email</div>
+                  <div style="margin-top:6px; font-weight:600;">
+                    <a href="mailto:alice1gay@gmail.com">alice1gay@gmail.com</a>
+                  </div>
+                </div>
+    
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+                  <a class="btn soft" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+                  <a class="btn dark" href="#home">Retour en haut</a>
+                </div>
+    
+                <div class="foot">© <span id="y"></span> Alice Gay — GitHub Pages</div>
+              </div>
+    
+              <div class="card" style="z-index:1;">
+                <div class="sublead" style="margin:0 0 10px;">Ce que je cherche</div>
+                <div style="color: rgba(17,17,17,.78); font-size: 14px; line-height: 1.6;">
+                  CDD / missions — lieux culturels, festivals, salles — Marseille + hybride.<br>
+                  Plutôt coulisses : coordination, production junior, publics, pilotage.
+                </div>
               </div>
             </div>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
-              <a class="btn soft" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
-              <a class="btn dark" href="#home">Retour en haut</a>
-            </div>
-
-            <div class="foot">© <span id="y"></span> Alice Gay — GitHub Pages</div>
           </div>
-
-          <div class="card" style="z-index:1;">
-            <div class="sublead" style="margin:0 0 10px;">Ce que je cherche</div>
-            <div style="color: rgba(17,17,17,.78); font-size: 14px; line-height: 1.6;">
-              CDD / missions — lieux culturels, festivals, salles — Marseille + hybride.<br>
-              Plutôt coulisses : coordination, production junior, publics, pilotage.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
     <footer class="site-footer">
       <div class="container footer-inner">
@@ -1663,6 +1770,7 @@
   </script>
 </body>
 </html>
+
 
 
 
