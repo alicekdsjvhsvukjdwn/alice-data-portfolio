@@ -18,37 +18,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      /* Fond de page noir */
-      --bg: #121212; /* Noir profond */
-      --ink: #f0f0f0; /* Texte clair pour contraste */
-      --muted: #a0a0a0;
-      --line: rgba(255, 255, 255, 0.12);
-      --surface: rgba(30, 30, 30, 0.88);
-      --shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+    :root{
+      /* SITEBASE-like (propre + lisible) */
+      --bg:#FAFAF7;
+      --ink:#111;
+      --muted:#6B7280;
+      --line: rgba(17,17,17,.12);
+      --surface: rgba(255,255,255,.86);
+      --shadow: 0 18px 50px rgba(0,0,0,.08);
       --radius: 18px;
-    
-      /* Accent (optionnel) */
-      --accent: #5d8bf4;
-    
-      /* Autres variables inchangées */
+      --accent:#5d8bf4;
+
       --maxw: min(1800px, 100%);
       --header-h: 68px;
       --pad-x: clamp(16px, 4vw, 56px);
       --gap: clamp(12px, 1.8vw, 20px);
+
       --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
       --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
-      --grain-opacity: 0.03; /* Réduit pour fond noir */
-    
-      /* Home */
-      --hero-gap: clamp(18px, 3vw, 56px);
-      --transition-h: clamp(520px, 72vh, 980px);
-      --transition-overlap: clamp(240px, 32vh, 460px);
-      --transition-pull: clamp(80px, 12vh, 160px);
-      --hero-bottom-safe: clamp(12px, 3.5vh, 44px);
-      --px: 0;
-    }
 
+      --grain-opacity: 0.05;
+    }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -73,26 +63,34 @@
       padding: 0 var(--pad-x);
     }
 
-    /* ======= Header ======= */
-    header.site {
+    /* ======= Header (sitebase behavior) ======= */
+    header.site{
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: var(--header-h);
       z-index: 60;
-      background: rgba(250, 250, 247, 0.92); /* Clair au départ */
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    
-    /* Quand on descend, le header devient noir */
-    header.site.scrolled {
-      background: rgba(20, 20, 20, 0.96); /* Noir au défilement */
-      color: #f0f0f0;
+      border-bottom: 1px solid transparent;
+      transition: background .25s ease, border-color .25s ease, color .25s ease, backdrop-filter .25s ease;
+      background: transparent;              /* transparent au départ */
+      backdrop-filter: none;
+      color: #fff;                          /* sur HOME */
     }
 
+    /* état HOME (transparent + blanc) */
+    header.site.is-home{
+      background: transparent;
+      border-bottom-color: transparent;
+      backdrop-filter: none;
+      color: #fff;
+    }
+
+    /* état après HOME (noir) */
+    header.site.is-scrolled{
+      background: rgba(10,10,10,.92);
+      border-bottom-color: rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+      color: #fff;
+    }
 
     .nav{
       height: var(--header-h);
@@ -110,8 +108,25 @@
       display:flex;
       align-items:center;
       gap:10px;
+      user-select:none;
+      transform-style: preserve-3d;
+      perspective: 700px;
     }
-    .brand svg{ width:18px; height:18px; }
+
+    .brand .logo3d{
+      width:18px; height:18px;
+      display:block;
+      transform: rotateX(0deg) rotateY(0deg) translateZ(0);
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.25));
+      transition: transform .12s ease, filter .12s ease;
+      transform-origin: 50% 50%;
+    }
+
+    /* petit “3D” au survol */
+    .brand:hover .logo3d{
+      transform: rotateX(14deg) rotateY(-14deg) translateZ(6px);
+      filter: drop-shadow(0 14px 22px rgba(0,0,0,.35));
+    }
 
     .nav .spacer{ flex:1; }
 
@@ -121,41 +136,32 @@
       gap: 10px;
       padding: 10px 14px;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.10);
+      color: #fff;
       box-shadow: 0 1px 0 rgba(0,0,0,.02);
       font-weight: 700;
       font-size: 13px;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease, color .12s ease;
       white-space: nowrap;
+      text-decoration:none;
     }
-    .btn.soft{ background: rgba(255,255,255,.86); }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); }
+
+    /* boutons “sitebase” sur fond clair (hors header) */
+    .btn.light{
+      border-color: var(--line);
+      background: rgba(255,255,255,.82);
+      color: var(--ink);
+    }
+    .btn.light:hover{ background: rgba(255,255,255,.95); }
     .btn.dark{
       background: rgba(17,17,17,.92);
       color:#fff;
-      border-color: rgba(0,0,0,.10);
+      border-color: rgba(255,255,255,.12);
       box-shadow: 0 14px 26px rgba(0,0,0,.10);
     }
     .btn.dark:hover{ background: rgba(17,17,17,1); }
-    .btn.ghost{ background: transparent; }
-    .btn.cta{
-      background: color-mix(in srgb, var(--accent) 14%, #fff);
-      border-color: color-mix(in srgb, var(--accent) 28%, transparent);
-    }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.96); text-decoration:none; }
-
-    .cta-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin: 10px 0 12px;
-    }
-
-    .pill-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
 
     /* ======= Viewport ======= */
     .viewport{
@@ -173,7 +179,7 @@
 
     section.panel{
       min-height: 100svh;
-      display: block;
+      display:block;
       padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px));
       padding-bottom: clamp(26px, 5vh, 70px);
       position: relative;
@@ -194,23 +200,14 @@
     }
 
     /* ======= Typography ======= */
-    .kicker{
-      color: rgba(17,17,17,.60);
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      font-weight: 800;
-      font-size: 12px;
-    }
-
     h1{
       font-family: var(--sans);
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: -.02em;
       line-height: 1.04;
       margin: 10px 0 12px;
       font-size: clamp(34px, 4.1vw, 70px);
     }
-
     h2{
       font-family: var(--serif);
       font-weight: 700;
@@ -219,21 +216,18 @@
       font-size: clamp(22px, 2.6vw, 40px);
       line-height: 1.12;
     }
-
     .lead{
       font-size: clamp(14px, 1.05vw, 18px);
-      color: rgba(17,17,17,.72);
+      color: rgba(17,17,17,.75);
       margin: 0 0 16px;
       max-width: 62ch;
     }
-
     .sublead{
       font-size: 14px;
-      color: var(--muted);
+      color: rgba(17,17,17,.62);
       margin: 0 0 16px;
       max-width: 72ch;
     }
-
     .section-title{
       display:flex;
       align-items:baseline;
@@ -242,12 +236,10 @@
       margin-bottom: 14px;
     }
     .section-title .note{
-      color: var(--muted);
+      color: rgba(17,17,17,.55);
       font-size: 13px;
       white-space: nowrap;
     }
-
-    .foot{ margin-top: 14px; font-size: 12px; color: rgba(17,17,17,.56); }
 
     /* ======= Cards ======= */
     .card{
@@ -260,57 +252,106 @@
       overflow: hidden;
     }
 
-    /* =========================
-       Pixel border (project cards)
-       ========================= */
-    :root{
-      --px-border-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'%3E%3Crect width='32' height='32' fill='none'/%3E%3Crect x='0' y='0' width='8' height='8' fill='%23111111'/%3E%3Crect x='8' y='0' width='8' height='8' fill='%23888888'/%3E%3Crect x='16' y='0' width='8' height='8' fill='%23EAEAEA'/%3E%3Crect x='24' y='0' width='8' height='8' fill='%23555555'/%3E%3Crect x='0' y='8' width='8' height='8' fill='%23D8D8D8'/%3E%3Crect x='24' y='8' width='8' height='8' fill='%23BDBDBD'/%3E%3Crect x='0' y='16' width='8' height='8' fill='%23777777'/%3E%3Crect x='24' y='16' width='8' height='8' fill='%23181818'/%3E%3Crect x='0' y='24' width='8' height='8' fill='%23F2F2F2'/%3E%3Crect x='8' y='24' width='8' height='8' fill='%23666666'/%3E%3Crect x='16' y='24' width='8' height='8' fill='%23CFCFCF'/%3E%3Crect x='24' y='24' width='8' height='8' fill='%23222222'/%3E%3C/svg%3E");
+    /* ======= HOME (plein écran propre) ======= */
+    #home.home-panel{
+      min-height: 100svh;
+      padding-top: var(--header-h); /* évite que le header “mange” le haut */
+      padding-bottom: 0;
+      display: grid;
+      place-items: center;
+      position: relative;
+
+      color: #fff;
+      background-image: url('assets/paysage-onirique.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      overflow: hidden;
     }
 
+    /* overlay pour lisibilité + évite “blanc sur blanc” */
+    #home.home-panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      background:
+        radial-gradient(1000px 520px at 50% 40%, rgba(0,0,0,.18), rgba(0,0,0,.58)),
+        linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.55));
+    }
+
+    #home.home-panel .container{
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding-top: clamp(14px, 3vh, 26px);
+      padding-bottom: clamp(18px, 5vh, 50px);
+    }
+
+    .home-content{
+      text-align:center;
+      max-width: 860px;
+      padding: clamp(16px, 3.2vw, 30px);
+      margin: 0 auto;
+    }
+
+    .home-content h1{
+      font-family: 'Playfair Display', serif;
+      font-weight: 300;
+      font-size: clamp(2.3rem, 5.8vw, 4.1rem);
+      margin: 0 auto 1rem;
+      line-height: 1.12;
+      color: #fff;
+      text-shadow: 0 12px 44px rgba(0,0,0,.40);
+    }
+
+    .home-content p{
+      font-family: 'Open Sans', sans-serif;
+      font-size: clamp(1.02rem, 1.6vw, 1.2rem);
+      margin: 0 auto 1.8rem;
+      max-width: 56ch;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 10px 34px rgba(0,0,0,.30);
+    }
+
+    /* bouton hero (lisible) */
+    #home .btn.hero{
+      display:inline-block;
+      padding: .85rem 1.7rem;
+      background: rgba(255,255,255,.92);
+      color: #111;
+      border: 1px solid rgba(255,255,255,.35);
+    }
+    #home .btn.hero:hover{
+      background: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* ======= Grids / projects (tes styles existants, gardés) ======= */
     .px-grid{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: var(--gap);
       align-items: stretch;
     }
-    @media (max-width: 980px){
-      .px-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 640px){
-      .px-grid{ grid-template-columns: 1fr; }
-    }
+    @media (max-width: 980px){ .px-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 640px){ .px-grid{ grid-template-columns: 1fr; } }
 
     .px-card{
       position: relative;
-      background: rgba(255,255,255,.82);
+      background: rgba(255,255,255,.88);
       border-radius: 18px;
       overflow: hidden;
       padding: 18px;
       box-shadow: 0 12px 30px rgba(0,0,0,.06);
       transform: translateY(0);
       transition: transform .14s ease, box-shadow .14s ease;
-    }
-    .px-card:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 18px 42px rgba(0,0,0,.09);
-    }
-    .px-card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      border: 12px solid transparent;
-      border-image: var(--px-border-img) 8 round;
-      opacity: .95;
-    }
-    .px-card::after{
-      content:"";
-      position:absolute;
-      inset:12px;
-      border-radius: 12px;
       border: 1px solid rgba(17,17,17,.10);
-      pointer-events:none;
     }
+    .px-card:hover{ transform: translateY(-2px); box-shadow: 0 18px 42px rgba(0,0,0,.09); }
 
     .px-media{
       height: 150px;
@@ -324,22 +365,13 @@
       position: relative;
       overflow: hidden;
     }
-    .px-media::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      opacity:.06;
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
-      mix-blend-mode: multiply;
-    }
 
     .px-card h3{
       margin: 0 0 6px;
       font-family: var(--serif);
       font-size: 20px;
       line-height: 1.15;
+      color: rgba(17,17,17,.92);
     }
     .px-card .desc{
       margin: 0 0 12px;
@@ -347,11 +379,7 @@
       font-size: 14px;
     }
 
-    .px-meta{
-      display:grid;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .px-meta{ display:grid; gap: 10px; margin-top: 10px; }
     .px-meta .label{
       font-size: 11px;
       letter-spacing: .12em;
@@ -359,534 +387,22 @@
       color: rgba(17,17,17,.55);
       font-weight: 800;
     }
-    .px-meta .value{
-      color: rgba(17,17,17,.82);
-      font-size: 13px;
-    }
+    .px-meta .value{ color: rgba(17,17,17,.82); font-size: 13px; }
 
-    .px-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 14px;
-    }
+    .px-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px; }
 
-    /* ======= Grids ======= */
-    .grid{
-      display:grid;
-      gap: var(--gap);
-    }
+    .grid{ display:grid; gap: var(--gap); }
     .grid.cols-2{
       grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
       align-items: start;
     }
 
-    /* ======= Pills ======= */
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.78);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      color: rgba(17,17,17,.78);
-    }
-
-    /* ======= Formations ======= */
-    .edu-wrap{
-      margin-top: clamp(40px, 6vh, 80px);
-    }
-    .edu-title{
-      margin: 0 0 8px;
-      font-family: var(--sans);
-      font-weight: 800;
-      letter-spacing: -.01em;
-      font-size: clamp(22px, 2.2vw, 34px);
-    }
-    .edu-sub{
-      margin: 0 0 18px;
-      color: rgba(17,17,17,.58);
-      font-size: 14px;
-      max-width: 70ch;
-    }
-    .edu-grid{
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--gap);
-      align-items: stretch;
-    }
-    @media (max-width: 860px){
-      .edu-grid{ grid-template-columns: 1fr; }
-    }
-
-    .edu-card{
-      background: rgba(255,255,255,.82);
-      border: 1px solid rgba(17,17,17,.10);
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.06);
-      padding: 16px 16px 14px;
-      display: grid;
-      grid-template-columns: 34px 1fr;
-      gap: 12px;
-    }
-    .edu-icon{
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(17,17,17,.10);
-      background: color-mix(in srgb, var(--accent) 10%, #fff);
-    }
-    .edu-icon.pink{
-      background: color-mix(in srgb, #ec4899 14%, #fff);
-    }
-    .edu-mini{
-      display:flex;
-      flex-direction: column;
-      gap: 2px;
-      margin-top: 1px;
-    }
-    .edu-program{
-      font-weight: 800;
-      font-size: 12px;
-      color: rgba(17,17,17,.88);
-      line-height: 1.2;
-    }
-    .edu-school{
-      font-size: 11px;
-      color: rgba(17,17,17,.55);
-    }
-    .edu-desc{
-      grid-column: 1 / -1;
-      margin: 6px 0 0;
-      color: rgba(17,17,17,.72);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-   /* =========================================================
-   HOME — Hero immersif (paysage onirique)
-   ========================================================= */
-    #home.home-panel {
-      min-height: 100svh;
-      padding-bottom: 0;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      color: white;
-      background: url('assets/paysage-onirique.jpg') no-repeat center center;
-      background-size: cover;
-      overflow: hidden;
-      background-attachment: scroll; /* Évite les bugs de défilement */
-    }
-    
-    /* Voile très léger pour garder le fond net */
-    #home.home-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      background: rgba(0, 0, 0, 0.1); /* Voile minimal pour un fond net */
-      opacity: 0.7;
-    }
-    
-    #home.home-panel .container {
-      position: relative;
-      z-index: 2;
-      flex: 1;
-      display: grid;
-      align-items: center;
-      padding-top: clamp(8px, 2vh, 18px);
-    }
-    
-    .home-content {
-      text-align: center;
-      max-width: 800px;
-      padding: 2rem;
-      margin: 0 auto;
-    }
-    
-    .home-content h1 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 300;
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      margin: 0 auto 1rem;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-      line-height: 1.2;
-      color: white;
-    }
-    
-    .home-content p {
-      font-family: 'Open Sans', sans-serif;
-      font-size: 1.2rem;
-      margin: 0 auto 2rem;
-      opacity: 0.95;
-      max-width: 600px;
-      color: rgba(255, 255, 255, 0.9);
-    }
-    
-    #home.home-panel .btn {
-      display: inline-block;
-      padding: 0.8rem 2rem;
-      background: rgba(255, 255, 255, 0.9);
-      color: #121212;
-      text-decoration: none;
-      border-radius: 30px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      margin: 0 auto;
-    }
-    
-    #home.home-panel .btn:hover {
-      background: white;
-      color: #121212;
-      transform: translateY(-2px);
-    }
-
-    
-    /* Animation subtile du fond */
-    @keyframes slowPan {
-      0% { background-position: center 20%; }
-      100% { background-position: center 80%; }
-    }
-    
-    /* Transition pixelisée vers la section suivante */
-    #home.home-panel .home-bottom {
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      height: var(--transition-h);
-      position: relative;
-      overflow: visible;
-      border: 0;
-      border-radius: 0;
-      z-index: 1;
-      margin-top: calc(-1 * var(--transition-pull) - 1px);
-      margin-bottom: calc(-1 * var(--transition-overlap));
-      background:
-        radial-gradient(1100px 700px at 15% 55%, rgba(90, 110, 160, 0.22), rgba(250, 250, 247, 0) 62%),
-        radial-gradient(1100px 700px at 85% 55%, rgba(80, 120, 160, 0.26), rgba(250, 250, 247, 0) 64%),
-        var(--bg);
-    }
-    
-    #home.home-panel .home-bottom::before,
-    #home.home-panel .home-bottom::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      pointer-events: none;
-      z-index: 2;
-    }
-    
-    #home.home-panel .home-bottom::before {
-      top: 0;
-      height: 32%;
-      background: linear-gradient(180deg, rgba(250, 250, 247, 1) 0%, rgba(250, 250, 247, 0) 92%);
-    }
-    
-    #home.home-panel .home-bottom::after {
-      bottom: 0;
-      height: 38%;
-      background: linear-gradient(180deg, rgba(250, 250, 247, 0) 0%, rgba(250, 250, 247, 1) 96%);
-    }
-    
-    #home.home-panel .home-bottom .px-grad {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      opacity: 0.95;
-      image-rendering: pixelated;
-      z-index: 1;
-      -webkit-mask-image: linear-gradient(to bottom,
-        transparent 0%,
-        black 18%,
-        black 82%,
-        transparent 100%
-      );
-      mask-image: linear-gradient(to bottom,
-        transparent 0%,
-        black 18%,
-        black 82%,
-        transparent 100%
-      );
-    }
-    
-    /* Padding pour la section suivante */
-    #preview.panel {
-      padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px) + clamp(60px, 10vh, 140px));
-      position: relative;
-      z-index: 2;
-    }
-
-
-    /* =========================
-       CTA Parallax (style sitebase)
-       ========================= */
-
-    section.cta.parallax-cta{
-      min-height: clamp(280px, 46vh, 520px);
-
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: hidden;
-
-      background-image: var(--bgimg, none);
-      background-size: cover;
-      background-position: center var(--bgy, 50%);
-      background-repeat: no-repeat;
-
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
-
-    section.cta.parallax-cta::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(900px 420px at 20% 45%, rgba(29,78,216,.18), transparent 60%),
-        radial-gradient(900px 420px at 80% 55%, rgba(80,120,160,.22), transparent 62%),
-        linear-gradient(to bottom,
-          rgba(250,250,247,.88) 0%,
-          rgba(250,250,247,.18) 35%,
-          rgba(250,250,247,.18) 65%,
-          rgba(250,250,247,.90) 100%
-        );
-      pointer-events:none;
-    }
-
-    section.cta.parallax-cta::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      opacity:.05;
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      background-size: 220px 220px;
-      mix-blend-mode: multiply;
-      pointer-events:none;
-    }
-
-    section.cta.parallax-cta .container{
-      position: relative;
-      z-index: 2;
-    }
-
-    section.cta.parallax-cta .text-center{
-      text-align: center;
-      padding: clamp(22px, 5vh, 56px) 0;
-    }
-
-    section.cta.parallax-cta h1{
-      margin: 0 0 10px;
-      font-family: var(--sans);
-      font-weight: 900;
-      letter-spacing: -.02em;
-      font-size: clamp(34px, 4.2vw, 64px);
-      line-height: 1.02;
-      text-shadow: 0 10px 40px rgba(0,0,0,.10);
-    }
-
-    section.cta.parallax-cta .cta-sub{
-      margin: 0;
-      color: rgba(17,17,17,.70);
-      font-size: clamp(13px, 1.2vw, 16px);
-    }
-
-    /* =========================
-   ABOUT + WORK (platines)
-   ========================= */
-    .about-wrap{
-      display: grid;
-      gap: clamp(18px, 3vh, 34px);
-    }
-    
-    .about-top{
-      display: grid;
-      grid-template-columns: minmax(280px, 420px) 1fr;
-      gap: clamp(18px, 3vw, 46px);
-      align-items: start;
-    }
-    
-    .about-photo{ display:grid; place-items:center; padding: 10px 0; }
-    .about-photo .frame{
-      width: min(340px, 100%);
-      aspect-ratio: 1 / 1;
-      border-radius: 16px;
-      border: 1px solid rgba(17,17,17,.12);
-      background: rgba(255,255,255,.60);
-      box-shadow: 0 10px 26px rgba(0,0,0,.06);
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-    }
-    .about-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
-    
-    .about-text{ padding: 10px 0; }
-    .about-text h3{
-      margin: 0 0 10px;
-      font-family: var(--sans);
-      font-weight: 800;
-      letter-spacing: -.01em;
-      font-size: clamp(18px, 1.6vw, 22px);
-    }
-    .about-text .intro{
-      max-width: 62ch;
-      color: rgba(17,17,17,.78);
-      font-size: 14px;
-      line-height: 1.65;
-      margin: 0;
-    }
-    
-    /* ===== Comment je bosse ===== */
-    .work-title{ margin-top: 4px; }
-    .work-grid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--gap);
-      align-items: stretch;
-    }
-    
-    @media (max-width: 980px){
-      .about-top{ grid-template-columns: 1fr; }
-      .work-grid{ grid-template-columns: 1fr; }
-    }
-    
-    .work-card{
-      background: rgba(255,255,255,.86);
-      border: 1px solid rgba(17,17,17,.12);
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.06);
-      padding: 14px;
-      display:grid;
-      gap: 10px;
-    }
-    
-    .work-copy{ display:grid; gap: 6px; }
-    .work-copy .mini{
-      font-family: var(--sans);
-      font-weight: 800;
-      font-size: 13px;
-      color: rgba(17,17,17,.84);
-    }
-    .work-copy .micro{
-      font-size: 12px;
-      color: rgba(17,17,17,.62);
-      line-height: 1.45;
-    }
-    
-    .work-badge{
-      display:inline-flex;
-      align-items:center;
-      width: fit-content;
-      border: 1px solid rgba(17,17,17,.10);
-      background: rgba(255,255,255,.72);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: rgba(17,17,17,.62);
-    }
-    
-    /* ===== Platines ===== */
-    .work-visual{
-      position: relative;
-      border-radius: 14px;
-      border: 1px solid rgba(17,17,17,.10);
-      background: rgba(250,250,247,.92);
-      height: 140px;
-      display:grid;
-      place-items:center;
-      overflow: visible;
-      user-select: none;
-    }
-    
-    .tt-btn{
-      all: unset;
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      border-radius: 14px;
-    }
-    
-    .tt-btn:focus-visible{
-      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
-      outline-offset: 3px;
-      border-radius: 16px;
-    }
-    
-    .tt-wrap{
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display:grid;
-      place-items:center;
-      overflow: visible;
-      border-radius: 12px;
-    }
-    
-    .tt-wrap::after{
-      content:"";
-      position:absolute;
-      inset:10px;
-      border-radius: 12px;
-      border: 1px solid rgba(17,17,17,.06);
-      pointer-events:none;
-      z-index: 2;
-    }
-    
-    .vinyl{
-      width: 128px;
-      height: 128px;
-      display: block;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      shape-rendering: crispEdges;
-    }
-    
-    .vinyl .px-black{ fill:#0b0b0b; }
-    .vinyl .px-white{ fill:#f3f3f3; }
-    .vinyl .px-hole { fill:#0b0b0b; }
-    .vinyl .px-label{ fill: var(--label, #1D4ED8); }
-    
-    .vinyl-rot{
-      transform-box: fill-box;
-      transform-origin: 50% 50%;
-    }
-    
-    .tt-btn:hover .vinyl-rot,
-    .tt-btn[aria-pressed="true"] .vinyl-rot{
-      animation: vinylSpin 1.05s linear infinite;
-    }
-    
-    @keyframes vinylSpin{ to{ transform: rotate(360deg); } }
-    
-    .vinyl.red   { --label:#ef4444; }
-    .vinyl.yellow{ --label:#f59e0b; }
-    .vinyl.blue  { --label:#3b82f6; }
-
     /* ======= Footer ======= */
     footer.site-footer{
       border-top: 1px solid var(--line);
-      background: rgba(250,250,247,.92);
+      background: rgba(255,255,255,.86);
       padding: 22px 0 26px;
     }
-
     .footer-inner{
       display:flex;
       align-items:center;
@@ -896,13 +412,7 @@
       color: rgba(17,17,17,.62);
       font-size: 12px;
     }
-
-    .footer-links{
-      display:flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
+    .footer-links{ display:flex; gap: 12px; flex-wrap: wrap; }
     .footer-links a{
       color: rgba(17,17,17,.62);
       text-decoration: none;
@@ -916,22 +426,22 @@
 </head>
 
 <body>
-  <header class="site">
+  <header class="site is-home" id="siteHeader">
     <div class="container nav">
-      <div class="brand" aria-label="Accueil">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 3c1.2 2.6.8 4.6-1 6 2.2-.3 4.1.6 5 2.3.2-2.5 1.4-4.1 3.7-4.9-2.6-1.2-4-2.5-4.7-5C13.8 3.3 12.9 3 12 3Z" fill="#111"/>
-          <path d="M21 12c-2.6 1.2-4.6.8-6-1 .3 2.2-.6 4.1-2.3 5 2.5.2 4.1 1.4 4.9 3.7 1.2-2.6 2.5-4 5-4.7C20.7 13.8 21 12.9 21 12Z" fill="#111"/>
-          <path d="M12 21c-1.2-2.6-.8-4.6 1-6-2.2.3-4.1-.6-5-2.3-.2 2.5-1.4 4.1-3.7 4.9 2.6 1.2 4 2.5 4.7 5 1.2-2.6 2.1-2.9 3-2.6Z" fill="#111"/>
-          <path d="M3 12c2.6-1.2 4.6-.8 6 1-.3-2.2.6-4.1 2.3-5-2.5-.2-4.1-1.4-4.9-3.7-1.2 2.6-2.5 4-5 4.7C3.3 10.2 3 11.1 3 12Z" fill="#111"/>
-          <circle cx="12" cy="12" r="2.1" fill="#111"/>
+      <div class="brand" aria-label="Accueil" id="brand3d">
+        <svg class="logo3d" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3c1.2 2.6.8 4.6-1 6 2.2-.3 4.1.6 5 2.3.2-2.5 1.4-4.1 3.7-4.9-2.6-1.2-4-2.5-4.7-5C13.8 3.3 12.9 3 12 3Z" fill="currentColor"/>
+          <path d="M21 12c-2.6 1.2-4.6.8-6-1 .3 2.2-.6 4.1-2.3 5 2.5.2 4.1 1.4 4.9 3.7 1.2-2.6 2.5-4 5-4.7C20.7 13.8 21 12.9 21 12Z" fill="currentColor"/>
+          <path d="M12 21c-1.2-2.6-.8-4.6 1-6-2.2.3-4.1-.6-5-2.3-.2 2.5-1.4 4.1-3.7 4.9 2.6 1.2 4 2.5 4.7 5 1.2-2.6 2.1-2.9 3-2.6Z" fill="currentColor"/>
+          <path d="M3 12c2.6-1.2 4.6-.8 6 1-.3-2.2.6-4.1 2.3-5-2.5-.2-4.1-1.4-4.9-3.7-1.2 2.6-2.5 4-5 4.7C3.3 10.2 3 11.1 3 12Z" fill="currentColor"/>
+          <circle cx="12" cy="12" r="2.1" fill="currentColor"/>
         </svg>
         Alice GAY
       </div>
 
       <div class="spacer"></div>
 
-      <a class="btn ghost" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
+      <a class="btn" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
       <a class="btn dark" href="#contact">Me contacter</a>
     </div>
   </header>
@@ -939,26 +449,14 @@
   <main class="viewport" id="viewport" aria-label="Portfolio">
     <div class="grain" aria-hidden="true"></div>
 
-    <!-- HOME -->
+    <!-- HOME (UNE SEULE FOIS, propre) -->
     <section id="home" class="panel home-panel">
       <div class="container">
         <div class="home-content">
           <h1>Je crée des ponts entre les publics et les projets culturels.</h1>
           <p>Sciences cognitives, musique et dynamiques humaines.</p>
-          <a class="btn" href="#projects" aria-label="Aller à la section Projets">Découvrir mes projets</a>
+          <a class="btn hero" href="#preview" aria-label="Aller à la section Projets">Découvrir mes projets</a>
         </div>
-      </div>
-    
-      <!-- Transition pixelisée -->
-      <div class="home-bottom" id="homePixels" aria-hidden="true">
-        <svg id="pxGradHome" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
-      </div>
-    </section>
-
-
-      <!-- Pixels HOME -->
-      <div class="home-bottom" id="homePixels" aria-hidden="true">
-        <svg id="pxGradHome" class="px-grad" viewBox="0 0 120 40" preserveAspectRatio="none"></svg>
       </div>
     </section>
 
@@ -970,12 +468,10 @@
           <div class="note">3 preuves — net</div>
         </div>
 
-        <p class="sublead">
-          Des cas concrets, un livrable lisible, et une logique “décision → action”.
-        </p>
+        <p class="sublead">Des cas concrets, un livrable lisible, et une logique “décision → action”.</p>
 
         <div style="margin: 10px 0 18px;">
-          <a class="btn soft" href="#contact">Me contacter</a>
+          <a class="btn light" href="#contact">Me contacter</a>
         </div>
 
         <div class="px-grid">
@@ -996,7 +492,7 @@
             </div>
 
             <div class="px-actions">
-              <a class="btn soft" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
+              <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
             </div>
           </article>
 
@@ -1009,23 +505,21 @@
             "></div>
 
             <h3>Billetterie — KPI & dashboard (projet démo)</h3>
-            <p class="desc">
-              Pipeline analytique de billetterie avec données synthétiques : génération, contrôles qualité, exports et restitution dashboard.
-            </p>
+            <p class="desc">Pipeline analytique de billetterie : génération, contrôles qualité, exports et restitution dashboard.</p>
 
             <div class="px-meta">
               <div>
                 <div class="label">Livrables</div>
-                <div class="value">Scripts Python • CSV structurés • dashboards Excel (Direction/Ops) • captures de restitution.</div>
+                <div class="value">Scripts Python • CSV • dashboards Excel • captures.</div>
               </div>
               <div>
                 <div class="label">Ce que ça prouve</div>
-                <div class="value">Transformer un besoin métier en flux BI lisible : données, contrôles, KPI, priorisation d’actions.</div>
+                <div class="value">Besoin métier → flux BI lisible : données, contrôles, KPI, actions.</div>
               </div>
             </div>
 
             <div class="px-actions">
-              <a class="btn soft" href="projects/billetterie.html">Explorer →</a>
+              <a class="btn light" href="projects/billetterie.html">Explorer →</a>
             </div>
           </article>
 
@@ -1038,9 +532,7 @@
             "></div>
 
             <h3>Music Of Our Emotions</h3>
-            <p class="desc">
-              Affective computing : à partir de signaux physiologiques, prédire l’état émotionnel et générer une proposition musicale.
-            </p>
+            <p class="desc">Affective computing : prédire l’état émotionnel et générer une proposition musicale.</p>
 
             <div class="px-meta">
               <div>
@@ -1049,363 +541,55 @@
               </div>
               <div>
                 <div class="label">Ce que ça prouve</div>
-                <div class="value">Méthode, rigueur, et capacité à relier sciences cog ↔ rendu concret.</div>
+                <div class="value">Méthode, rigueur, et lien sciences cog ↔ rendu concret.</div>
               </div>
             </div>
 
             <div class="px-actions">
-              <a class="btn soft" href="projects/music-of-our-emotions.html">Explorer →</a>
+              <a class="btn light" href="projects/music-of-our-emotions.html">Explorer →</a>
             </div>
           </article>
         </div>
-
-        <div class="edu-wrap">
-          <h3 class="edu-title">Formations</h3>
-          <p class="edu-sub">A little line about what’s being said and who’s saying it.</p>
-
-          <div class="edu-grid">
-            <article class="edu-card">
-              <div class="edu-icon" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
-                  <path d="M8.6 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M15.4 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M8.7 14.2c1.2 1.4 2.6 2.1 3.3 2.1s2.1-.7 3.3-2.1" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-
-              <div class="edu-mini">
-                <div class="edu-program">Master Sciences Cognitives</div>
-                <div class="edu-school">Aix-Marseille Université</div>
-              </div>
-
-              <p class="edu-desc">
-                Master de Sciences cognitives communication, langage et cerveau :
-                comprendre l’interaction entre le langage et la communication d’un point de vue neuronal.
-              </p>
-            </article>
-
-            <article class="edu-card">
-              <div class="edu-icon pink" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
-                  <path d="M9.2 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M14.8 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M8.8 15.1c1.1-1 2.2-1.5 3.2-1.5s2.1.5 3.2 1.5" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-
-              <div class="edu-mini">
-                <div class="edu-program">Licence MIASHS</div>
-                <div class="edu-school">Université de Bordeaux</div>
-              </div>
-
-              <p class="edu-desc">
-                Mathématiques, informatique appliqués aux sciences humaines et sociales :
-                formation complète en mathématiques (statistiques, probabilités, analyse, etc.),
-                informatique (Python, web, JS, Matlab, etc.) et sciences cognitives.
-              </p>
-            </article>
-          </div>
-        </div>
       </div>
     </section>
 
-    <!-- CTA Parallax 1 -->
-    <section class="cta parallax-cta" data-bg="assets/parallax_01.jpg">
-      <div class="container">
-        <div class="text-center">
-          <h1>Définitions</h1>
-          <p class="cta-sub">Quelques repères avant la suite.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- À PROPOS -->
-    <section id="about" class="panel">
+    <!-- CONTACT -->
+    <section id="contact" class="panel">
       <div class="container">
         <div class="section-title">
-          <h2>À propos</h2>
-          <div class="note">qui je suis + comment je bosse</div>
+          <h2>Parlons.</h2>
+          <div class="note">simple & direct</div>
         </div>
-    
-        <div class="about-wrap">
-    
-          <!-- Top: image + intro -->
-          <div class="about-top">
-            <div class="about-photo" aria-label="Image à propos">
-              <div class="frame">
-                <img src="assets/about.png" alt="Portrait / collage À propos">
+
+        <div class="grid cols-2">
+          <div class="card" style="z-index:1;">
+            <p class="lead">Si tu as un projet culturel à structurer et des publics à comprendre : parlons.</p>
+
+            <div class="card" style="padding:14px; margin-top:10px;">
+              <div style="text-transform:uppercase;letter-spacing:.12em;font-weight:800;font-size:12px;color:rgba(17,17,17,.60);">Email</div>
+              <div style="margin-top:6px; font-weight:600;">
+                <a href="mailto:alice1gay@gmail.com">alice1gay@gmail.com</a>
               </div>
             </div>
-    
-            <div class="about-text">
-              <h3>Introduction</h3>
-              <p class="intro">
-                Formée en sciences cognitives, je m’intéresse aux projets culturels parce qu’ils sont humains, vivants et complexes.<br><br>
-                Ce que j’aime : comprendre les publics, organiser les infos, faire le lien terrain ↔ décision,
-                et livrer des supports simples que l’équipe utilise vraiment.<br><br>
-                Je cherche un premier poste dans une structure culturelle/musicale (coordination, production junior, publics, pilotage).<br>
-                Basée à Marseille — disponibilité : à remplir.
-              </p>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+              <a class="btn light" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+              <a class="btn dark" href="#home">Retour en haut</a>
+            </div>
+
+            <div style="margin-top:14px; font-size:12px; color: rgba(17,17,17,.56);">© <span id="y"></span> Alice Gay — GitHub Pages</div>
+          </div>
+
+          <div class="card" style="z-index:1;">
+            <div class="sublead" style="margin:0 0 10px;">Ce que je cherche</div>
+            <div style="color: rgba(17,17,17,.78); font-size: 14px; line-height: 1.6;">
+              CDD / missions — lieux culturels, festivals, salles — Marseille + hybride.<br>
+              Plutôt coulisses : coordination, production junior, publics, pilotage.
             </div>
           </div>
-    
-          <!-- Bottom: comment je bosse -->
-          <div class="work-title">
-            <h3 class="edu-title" style="margin:0;">Comment je bosse</h3>
-          </div>
-    
-          <div class="work-grid">
-    
-            <!-- Step 1 -->
-            <article class="work-card">
-              <div class="work-visual">
-                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 1">
-                  <div class="tt-wrap">
-                    <svg class="vinyl red" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <g class="vinyl-rot">
-                        <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                        <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                        <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                        <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                        <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                        <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                        <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                        <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                        <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                        <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                        <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                        <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                        <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                        <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                        <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                        <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                        <rect class="px-black" x="13" y="31" width="6" height="1"/>
-    
-                        <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                        <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                        <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                        <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                        <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                        <rect class="px-white" x="24" y="21" width="1" height="1"/>
-    
-                        <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                        <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                        <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                        <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                      </g>
-                    </svg>
-                  </div>
-                </button>
-              </div>
-    
-              <div class="work-copy">
-                <div class="work-badge">Step 1</div>
-                <div class="mini">Clarifier le besoin</div>
-                <div class="micro">Décisions à prendre, contraintes, équipes, attentes réalistes.</div>
-              </div>
-            </article>
-    
-            <!-- Step 2 -->
-            <article class="work-card">
-              <div class="work-visual">
-                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 2">
-                  <div class="tt-wrap">
-                   <svg class="vinyl yellow" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <g class="vinyl-rot">
-                      <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                      <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                      <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                      <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                      <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                      <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                      <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                      <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                      <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                      <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                      <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                      <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                      <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                      <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                      <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                      <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                      <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                  
-                      <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                      <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                      <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                      <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                      <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                      <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                  
-                      <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                      <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                      <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                      <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                    </g>
-                  </svg>
-
-                  </div>
-                </button>
-              </div>
-              <div class="work-copy">
-                <div class="work-badge">Step 2</div>
-                <div class="mini">Structurer l’information</div>
-                <div class="micro">Organisation, contrôles qualité, exports simples, documentation utile.</div>
-              </div>
-            </article>
-    
-            <!-- Step 3 -->
-            <article class="work-card">
-              <div class="work-visual">
-                <button class="tt-btn" type="button" aria-pressed="false" aria-label="Vinyle interactif — Step 3">
-                  <div class="tt-wrap">
-                    <svg class="vinyl blue" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <g class="vinyl-rot">
-                        <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                        <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                        <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                        <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                        <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                        <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                        <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                        <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                        <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                        <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                        <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                        <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                        <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                        <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                        <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                        <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                        <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                        <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                        <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                    
-                        <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                        <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                        <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                        <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                        <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                        <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                        <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                    
-                        <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                        <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                        <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                        <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                      </g>
-                    </svg>
-
-                  </div>
-                </button>
-              </div>
-              <div class="work-copy">
-                <div class="work-badge">Step 3</div>
-                <div class="mini">Restituer</div>
-                <div class="micro">Insights actionnables, dashboard, synthèse courte, recommandations.</div>
-              </div>
-            </article>
-    
-          </div>
-    
         </div>
       </div>
     </section>
-    
-        <!-- CTA Parallax 2 -->
-        <section class="cta parallax-cta" data-bg="assets/parallax_02.jpg">
-          <div class="container">
-            <div class="text-center">
-              <h1>Parlons</h1>
-              <p class="cta-sub">Simple, direct, efficace.</p>
-            </div>
-          </div>
-        </section>
-    
-        <!-- CONTACT -->
-        <section id="contact" class="panel">
-          <div class="container">
-            <div class="section-title">
-              <h2>Parlons.</h2>
-              <div class="note">simple & direct</div>
-            </div>
-    
-            <div class="grid cols-2">
-              <div class="card" style="z-index:1;">
-                <p class="lead">Si tu as un projet culturel à structurer et des publics à comprendre : parlons.</p>
-    
-                <div class="card" style="padding:14px; margin-top:10px;">
-                  <div class="kicker">Email</div>
-                  <div style="margin-top:6px; font-weight:600;">
-                    <a href="mailto:alice1gay@gmail.com">alice1gay@gmail.com</a>
-                  </div>
-                </div>
-    
-                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
-                  <a class="btn soft" href="assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV (PDF)</a>
-                  <a class="btn dark" href="#home">Retour en haut</a>
-                </div>
-    
-                <div class="foot">© <span id="y"></span> Alice Gay — GitHub Pages</div>
-              </div>
-    
-              <div class="card" style="z-index:1;">
-                <div class="sublead" style="margin:0 0 10px;">Ce que je cherche</div>
-                <div style="color: rgba(17,17,17,.78); font-size: 14px; line-height: 1.6;">
-                  CDD / missions — lieux culturels, festivals, salles — Marseille + hybride.<br>
-                  Plutôt coulisses : coordination, production junior, publics, pilotage.
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
     <footer class="site-footer">
       <div class="container footer-inner">
@@ -1421,15 +605,17 @@
   </main>
 
   <script>
-    // =========================
-    // Setup (year + header height)
-    // =========================
+    // ===== year + header height
     const yearEl = document.getElementById('y');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
     const yearEl2 = document.getElementById('y2');
-    if (yearEl2) yearEl2.textContent = new Date().getFullYear();
+    const y = new Date().getFullYear();
+    if (yearEl) yearEl.textContent = y;
+    if (yearEl2) yearEl2.textContent = y;
 
-    const headerEl = document.querySelector('header.site');
+    const headerEl = document.getElementById('siteHeader');
+    const viewport = document.getElementById('viewport');
+    const home = document.getElementById('home');
+
     const syncHeaderH = () => {
       if (!headerEl) return;
       const h = Math.ceil(headerEl.getBoundingClientRect().height);
@@ -1438,343 +624,48 @@
     window.addEventListener('resize', syncHeaderH, { passive:true });
     syncHeaderH();
 
-    const viewport = document.getElementById('viewport');
-    const prefersReduced =
-      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function lerp(a,b,t){ return a + (b-a)*t; }
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-    function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
-    function quant(x, step=0.25){ return Math.round(x/step)*step; }
-
-    // =========================
-    // CTA Parallax (simulate fixed bg inside .viewport)
-    // =========================
-    const ctaParallax = Array.from(document.querySelectorAll('.parallax-cta'));
-
-    ctaParallax.forEach(sec => {
-      const src = sec.getAttribute('data-bg');
-      if (src) sec.style.setProperty('--bgimg', `url("${src}")`);
-    });
-
-    function updateCtaParallax(){
-      if (!viewport) return;
-
-      const vp = viewport.getBoundingClientRect();
-      const vpH = vp.height;
-
-      ctaParallax.forEach(sec => {
-        const r = sec.getBoundingClientRect();
-
-        // progress 0..1
-        const t = (vp.bottom - r.top) / (vpH + r.height);
-        const p = Math.max(0, Math.min(1, t));
-
-        const shift = 18; // %
-        const y = 50 + (p - 0.5) * -shift;
-
-        sec.style.setProperty('--bgy', `${y.toFixed(2)}%`);
-      });
-    }
-
-    if (viewport){
-      viewport.addEventListener('scroll', updateCtaParallax, { passive:true });
-      window.addEventListener('resize', updateCtaParallax, { passive:true });
-      updateCtaParallax();
-    }
-
-    // =========================
-    // HOME pixels
-    // =========================
-    const pixelScenes = [
-      { wrap: document.getElementById('homePixels'),  svg: document.getElementById('pxGradHome'),  scale: 1.0  }
-    ].filter(s => s.wrap && s.svg);
-
-    const palette = [
-      { r: 235, g: 242, b: 248 },
-      { r: 200, g: 218, b: 232 },
-      { r: 155, g: 182, b: 204 },
-      { r: 230, g: 236, b: 241 },
-    ];
-
-    function samplePalette(t){
-      t = clamp01(t);
-      const n = palette.length - 1;
-      const x = t * n;
-      const i = Math.floor(x);
-      const f = x - i;
-      const c1 = palette[i];
-      const c2 = palette[Math.min(i+1, n)];
-      return {
-        r: Math.round(lerp(c1.r, c2.r, f)),
-        g: Math.round(lerp(c1.g, c2.g, f)),
-        b: Math.round(lerp(c1.b, c2.b, f))
-      };
-    }
-
-    function mulberry32(seed){
-      return function(){
-        let t = seed += 0x6D2B79F5;
-        t = Math.imul(t ^ (t >>> 15), t | 1);
-        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-    }
-
-    const BAND_COUNT = 7;
-    const MOVE_FRAC  = 0.16;
-    const MOVE_MAX_PX = 6.0;
-    const OVERLAY_DARKEN = 0.78;
-    const OVERLAY_ALPHA  = 0.95;
-
-    function renderPixelGradient(targetSvg){
-      if(!targetSvg) return { moveBandsA: [], moveBandsB: [] };
-
-      targetSvg.innerHTML = "";
-
-      const viewCols = 72;
-      const viewRows = 26;
-
-      const pad = 14;
-      const cols = viewCols + pad*2;
-      const rows = viewRows + pad*2;
-
-      targetSvg.setAttribute("viewBox", `0 0 ${viewCols} ${viewRows}`);
-      targetSvg.setAttribute("shape-rendering", "crispEdges");
-
-      const seedBase = 42;
-      const rndA = mulberry32(seedBase);
-      const rndB = mulberry32(seedBase * 31);
-
-      function darkenRGB(c, k){
-        return {
-          r: Math.max(0, Math.min(255, Math.round(c.r * k))),
-          g: Math.max(0, Math.min(255, Math.round(c.g * k))),
-          b: Math.max(0, Math.min(255, Math.round(c.b * k)))
-        };
-      }
-
-      function buildLayer(rnd, alphaMul, layerId){
-        let baseAll = "";
-        const moveBands = Array.from({length:BAND_COUNT}, () => "");
-
-        for(let y=0; y<rows; y++){
-          const vy = (y - pad) / (viewRows - 1);
-          const v01 = clamp01(vy);
-
-          const yVisible = (y - pad);
-          let bi = Math.floor((yVisible / (viewRows-1)) * BAND_COUNT);
-          bi = clamp(bi, 0, BAND_COUNT-1);
-
-          for(let x=0; x<cols; x++){
-            const ux = (x - pad) / (viewCols - 1);
-
-            let t = 0.12 + 0.88 * v01;
-            t += (Math.sin(ux * Math.PI * 2) * 0.04) * (0.3 + 0.7*v01);
-
-            const noise = (rnd() - 0.5) * 0.36;
-            t += noise * (0.25 + 0.75 * (1 - Math.abs(v01 - 0.5)*2));
-            t = clamp01(t);
-
-            const c = samplePalette(t);
-
-            const topBoost = 0.42 * (1 - v01);
-            const aBase = 0.48 + 0.32*v01 + topBoost;
-            const a = clamp01(aBase) * (0.95 + (rnd()-0.5)*0.18) * alphaMul;
-
-            baseAll += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
-              fill="rgba(${c.r},${c.g},${c.b},${a.toFixed(3)})"/>`;
-
-            const pick = rnd();
-            if (pick < MOVE_FRAC){
-              const d = darkenRGB(c, OVERLAY_DARKEN);
-              const a2 = clamp01(a * OVERLAY_ALPHA);
-
-              moveBands[bi] += `<rect x="${x-pad}" y="${y-pad}" width="1" height="1"
-                fill="rgba(${d.r},${d.g},${d.b},${a2.toFixed(3)})"/>`;
-            }
-          }
-        }
-
-        let moveOut = "";
-        for(let i=0;i<BAND_COUNT;i++){
-          moveOut += `<g id="${layerId}_b${i}_move">${moveBands[i]}</g>`;
-        }
-
-        return {
-          base: `<g id="${layerId}_base">${baseAll}</g>`,
-          move: `<g id="${layerId}_move">${moveOut}</g>`
-        };
-      }
-
-      const A = buildLayer(rndA, 1.00, `${targetSvg.id}_pxA`);
-      const B = buildLayer(rndB, 0.35, `${targetSvg.id}_pxB`);
-
-      targetSvg.innerHTML = `${A.base}${B.base}${A.move}${B.move}`;
-
-      const moveBandsA = Array.from({length:BAND_COUNT}, (_,i) =>
-        targetSvg.querySelector(`#${targetSvg.id}_pxA_b${i}_move`)
-      );
-      const moveBandsB = Array.from({length:BAND_COUNT}, (_,i) =>
-        targetSvg.querySelector(`#${targetSvg.id}_pxB_b${i}_move`)
-      );
-
-      return { moveBandsA, moveBandsB };
-    }
-
-    pixelScenes.forEach(scene => {
-      const out = renderPixelGradient(scene.svg);
-      scene.moveBandsA = out.moveBandsA;
-      scene.moveBandsB = out.moveBandsB;
-    });
-
-    let lastT  = performance.now();
-    let lastST = viewport ? viewport.scrollTop : 0;
-
-    let velSm  = 0;
-    let progSm = 0;
-
-    let lastScrollActivity = performance.now();
-
-    function computeProgressForWrap(wrap){
-      if(!viewport || !wrap) return 0;
-      const vpTop = viewport.getBoundingClientRect().top;
-      const elTop = wrap.getBoundingClientRect().top;
-      const dist  = elTop - vpTop;
-      const range = viewport.clientHeight * 0.92;
-      return clamp01(1 - (dist / range));
-    }
-
-    function applyMoveTransforms(){
-      const v = clamp(velSm, -1800, 1800);
-
-      const idleFor = performance.now() - lastScrollActivity;
-      const almostStill = Math.abs(v) < 6;
-
-      pixelScenes.forEach(scene => {
-        const svg = scene.svg;
-        if(!svg) return;
-
-        const progLocal = computeProgressForWrap(scene.wrap);
-        const s = scene.scale ?? 1;
-
-        const baseY = clamp(-v * 0.0028 * s, -MOVE_MAX_PX, MOVE_MAX_PX);
-        const baseX = clamp( v * 0.0010 * s, -MOVE_MAX_PX, MOVE_MAX_PX);
-
-        if (idleFor > 220 && almostStill){
-          if (scene._ticking){
-            for(let i=0;i<BAND_COUNT;i++){
-              const a = scene.moveBandsA?.[i];
-              const b = scene.moveBandsB?.[i];
-              if (a) a.setAttribute('transform', `translate(0 0)`);
-              if (b) b.setAttribute('transform', `translate(0 0)`);
-            }
-            svg.style.opacity = "";
-            scene._ticking = false;
-          }
-          return;
-        }
-
-        const wA = [1.00, 0.45, 0.85, 0.35, 0.75, 0.40, 0.65];
-        const wB = [0.40, 0.75, 0.42, 0.90, 0.48, 0.82, 0.55];
-
-        for(let i=0;i<BAND_COUNT;i++){
-          const a = scene.moveBandsA?.[i];
-          const b = scene.moveBandsB?.[i];
-
-          let yA = baseY * wA[i];
-          let xA = baseX * ((i%2===0)? 1 : -1) * 0.55;
-
-          let yB = baseY * wB[i] * 0.85;
-          let xB = baseX * ((i%2===0)? -1 : 1) * 0.45;
-
-          xA = quant(xA, 0.25); yA = quant(yA, 0.25);
-          xB = quant(xB, 0.25); yB = quant(yB, 0.25);
-
-          if(a) a.setAttribute('transform', `translate(${xA} ${yA})`);
-          if(b) b.setAttribute('transform', `translate(${xB} ${yB})`);
-        }
-
-        svg.style.opacity = (0.90 + progLocal * 0.07).toFixed(3);
-        scene._ticking = true;
-      });
-    }
-
-    function onScroll(){
-      lastScrollActivity = performance.now();
-      updateCtaParallax();
-    }
-
-    if (viewport){
-      viewport.addEventListener('scroll', onScroll, { passive:true });
-      window.addEventListener('resize', onScroll, { passive:true });
-    }
-
-    function loop(now){
-      if(prefersReduced || !viewport){
-        requestAnimationFrame(loop);
-        return;
-      }
-
-      const dt = clamp((now - lastT) / 1000, 0.001, 0.05);
-      lastT = now;
+    // ===== Header behavior (IMPORTANT: scroll is on .viewport)
+    function updateHeaderState(){
+      if (!viewport || !home || !headerEl) return;
 
       const st = viewport.scrollTop;
-      const velRaw = (st - lastST) / dt;
-      lastST = st;
+      const homeH = home.offsetHeight || viewport.clientHeight;
 
-      velSm = lerp(velSm, velRaw, 0.14);
+      // Tant qu'on est “dans” HOME => transparent
+      const inHome = st < (homeH - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 68) - 10);
 
-      const globalProg = clamp01(viewport.scrollTop / (viewport.scrollHeight - viewport.clientHeight + 1));
-      progSm = lerp(progSm, globalProg, 0.08);
-      document.documentElement.style.setProperty('--px', progSm.toFixed(3));
-
-      applyMoveTransforms();
-      updateCtaParallax();
-
-      requestAnimationFrame(loop);
+      headerEl.classList.toggle('is-home', inHome);
+      headerEl.classList.toggle('is-scrolled', !inHome);
     }
 
-    requestAnimationFrame(loop);
+    if (viewport){
+      viewport.addEventListener('scroll', updateHeaderState, { passive:true });
+      window.addEventListener('resize', updateHeaderState, { passive:true });
+      updateHeaderState();
+    }
 
-    // =========================
-    // Turntables: click = toggle play/pause
-    // =========================
-    document.querySelectorAll('.tt-btn').forEach(btn => {
-      const toggle = () => {
-        const pressed = btn.getAttribute('aria-pressed') === 'true';
-        btn.setAttribute('aria-pressed', String(!pressed));
-      };
-    
-      btn.addEventListener('click', toggle);
-    
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggle();
-        }
+    // ===== “3D brain/logo” (tilt léger au mouvement souris desktop)
+    const brand = document.getElementById('brand3d');
+    const logo = brand?.querySelector('.logo3d');
+
+    if (brand && logo && window.matchMedia('(pointer:fine)').matches){
+      brand.addEventListener('mousemove', (e) => {
+        const r = brand.getBoundingClientRect();
+        const cx = r.left + r.width/2;
+        const cy = r.top + r.height/2;
+        const dx = (e.clientX - cx) / (r.width/2);
+        const dy = (e.clientY - cy) / (r.height/2);
+
+        const rx = (-dy * 12).toFixed(2);
+        const ry = ( dx * 12).toFixed(2);
+
+        logo.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(6px)`;
       });
-    });
 
-    // Effet de détachement du header
-    window.addEventListener('scroll', () => {
-      const header = document.querySelector('header.site');
-      if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    });
-
+      brand.addEventListener('mouseleave', () => {
+        logo.style.transform = `rotateX(0deg) rotateY(0deg) translateZ(0)`;
+      });
+    }
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
