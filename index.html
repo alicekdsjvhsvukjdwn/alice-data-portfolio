@@ -523,19 +523,23 @@
     }
     .px-thumb .bg{ transition: transform .18s ease; }
     
-    .px-card:hover{ transform: translateY(-2px); box-shadow: 0 18px 42px rgba(0,0,0,.09); }
+    .px-card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 24px 70px rgba(0,0,0,.55);
+    }
 
     .px-card h3{
       margin: 0 0 6px;
       font-family: var(--serif);
       font-size: 20px;
       line-height: 1.15;
-      color: rgba(17,17,17,.92);
+      color: rgba(244,244,245,.92);
     }
     .px-card .desc{
       margin: 0 0 12px;
-      color: rgba(17,17,17,.72);
+      color: rgba(244,244,245,.72);
       font-size: 14px;
+      transition: transform .14s ease, box-shadow .14s ease;
     }
 
     .px-meta{ display:grid; gap: 10px; margin-top: 10px; }
@@ -1009,21 +1013,20 @@
             </div>
           
             <div class="px-stickers">
-              <!-- objets pixel (PNG transparents) -->
               <img class="px-sticker back" src="assets/pixel/metro.png"
-                   style="--x:18%;--y:70%;--w:140px;--r:-6deg;" alt="">
+                style="--x:18%;--y:70%;--w:140px;--r:-6deg;" alt="">
               <img class="px-sticker" src="assets/pixel/map-pin.png"
-                   style="--x:78%;--y:62%;--w:74px;--r:10deg;" alt="">
+                style="--x:78%;--y:62%;--w:74px;--r:10deg;" alt="">
               <img class="px-sticker" src="assets/pixel/gear.png"
-                   style="--x:62%;--y:78%;--w:64px;--r:-12deg;" alt="">
+                style="--x:62%;--y:78%;--w:64px;--r:-12deg;" alt="">
             </div>
+          
+            <!-- ✅ ICI (dans px-thumb) -->
+            <a class="px-labelbar" href="projects/rtm.html">Voir le projet →</a>
           </div>
-
-          <a class="px-labelbar">Voir le projet →</a>
           
           <div class="px-body">
             <p class="desc">Structuration de données réelles complexes + restitution exploitable.</p>
-          
             <div class="px-actions">
               <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
             </div>
@@ -1553,6 +1556,7 @@
   
 </body>
 </html>
+
 
 
 
