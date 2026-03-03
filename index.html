@@ -381,7 +381,7 @@
       transform: translateY(-2px);
     }
 
-    /* ======= Grids / projects (tes styles existants, gardés) ======= */
+    /* ======= Grids / Projects (tes styles existants, gardés) ======= */
     .px-grid{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -560,7 +560,51 @@
       align-items: start;
     }
 
-        /* ======= Formations ======= */
+    /* ===== Décor autour de la section Projets (style “Work” de l’exemple) ===== */
+
+    #preview{ position: relative; }
+    
+    /* zone qui porte la grille + les décors */
+    .projects-stage{
+      position: relative;
+      isolation: isolate; /* important pour les z-index propres */
+    }
+    
+    /* décors flottants */
+    .float-art{
+      position: absolute;
+      top: -54px;                 /* remonte un peu au-dessus du titre */
+      width: 420px;
+      height: 320px;
+      pointer-events: none;       /* pas de clics volés */
+      z-index: 0;                 /* derrière le contenu */
+    }
+    
+    .float-art.left{ left: -140px; }
+    .float-art.right{ right: -140px; }
+    
+    .float-art img{
+      position: absolute;
+      height: auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      filter: drop-shadow(0 18px 26px rgba(0,0,0,.55));
+      transform: translate(-50%,-50%) rotate(var(--r, 0deg));
+      opacity: var(--o, 1);
+    }
+    
+    /* ton contenu Projets au-dessus */
+    .projects-content{
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* responsive : sur petits écrans on coupe les décors (sinon c’est le bazar) */
+    @media (max-width: 980px){
+      .float-art{ display:none; }
+    }
+
+    /* ======= Formations ======= */
     .edu-wrap{
       margin-top: clamp(40px, 6vh, 80px);
     }
@@ -991,188 +1035,209 @@
     <!-- PROJETS -->
     <section id="preview" class="panel">
       <div class="container">
-        <div class="section-title">
-          <h2>Projets</h2>
-          <div class="note">3 preuves — net</div>
-        </div>
-
-        <p class="sublead">Des cas concrets, un livrable lisible, et une logique “décision → action”.</p>
-
-        <div style="margin: 10px 0 18px;">
-          <a class="btn light" href="#contact">Me contacter</a>
-        </div>
-
-        <div class="px-grid">
-          <article class="px-card">
-           <div class="px-thumb" style="--bgimg:url('assets/projects/rtm_bg.jpg');" aria-hidden="true">
-            <div class="bg"></div>
-          
-            <div class="px-head">
-              <div class="px-kicker">RTM — stage 6 mois</div>
-              <h3 class="px-title">Structuration & qualité de données</h3>
-            </div>
-          
-            <div class="px-stickers">
-              <img class="px-sticker back" src="assets/pixel/metro.png"
-                style="--x:18%;--y:70%;--w:140px;--r:-6deg;" alt="">
-              <img class="px-sticker" src="assets/pixel/map-pin.png"
-                style="--x:78%;--y:62%;--w:74px;--r:10deg;" alt="">
-              <img class="px-sticker" src="assets/pixel/gear.png"
-                style="--x:62%;--y:78%;--w:64px;--r:-12deg;" alt="">
-            </div>
-          
-            <!-- ✅ ICI (dans px-thumb) -->
-            <a class="px-labelbar" href="projects/rtm.html">Voir le projet →</a>
+        <div class="projects-stage">
+    
+          <!-- Décor gauche (autour, pas dans les cartes) -->
+          <div class="float-art left" aria-hidden="true">
+            <!-- remplace les src par TES PNG -->
+            <img src="assets/pixel/decor-left-1.png"  style="left:24%; top:42%; width:240px; --r:-8deg;">
+            <img src="assets/pixel/decor-left-2.png"  style="left:52%; top:78%; width:150px; --r:10deg;">
+            <img src="assets/pixel/decor-left-3.png"  style="left:74%; top:24%; width:120px; --r:6deg;">
           </div>
-          
-          <div class="px-body">
-            <p class="desc">Structuration de données réelles complexes + restitution exploitable.</p>
-            <div class="px-actions">
-              <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
-            </div>
+    
+          <!-- Décor droite (autour, pas dans les cartes) -->
+          <div class="float-art right" aria-hidden="true">
+            <img src="assets/pixel/decor-right-1.png" style="left:76%; top:40%; width:260px; --r:8deg;">
+            <img src="assets/pixel/decor-right-2.png" style="left:36%; top:74%; width:160px; --r:-10deg;">
+            <img src="assets/pixel/decor-right-3.png" style="left:26%; top:22%; width:120px; --r:12deg;">
           </div>
-          </article>
-
-         <article class="px-card">
-
-          <div class="px-thumb" style="--bgimg:url('assets/projects/billetterie_bg.jpg');" aria-hidden="true">
-            <div class="bg"></div>
-        
-            <div class="px-head">
-              <div class="px-kicker">Billetterie : projet démo</div>
-              <h3 class="px-title">KPI & dashboard</h3>
+    
+          <!-- Contenu Projets -->
+          <div class="projects-content">
+    
+            <div class="section-title">
+              <h2>Projets</h2>
+              <div class="note">4 preuves — net</div>
             </div>
-        
-            <div class="px-stickers">
-              <img class="px-sticker back" src="assets/pixel/ticket.png"
-                   style="--x:22%;--y:72%;--w:140px;--r:-8deg;" alt="">
-              <img class="px-sticker" src="assets/pixel/chart.png"
-                   style="--x:78%;--y:62%;--w:78px;--r:10deg;" alt="">
-              <img class="px-sticker" src="assets/pixel/excel.png"
-                   style="--x:62%;--y:80%;--w:70px;--r:-12deg;" alt="">
+    
+            <p class="sublead">Des cas concrets, un livrable lisible, et une logique “décision → action”.</p>
+    
+            <div style="margin: 10px 0 18px;">
+              <a class="btn light" href="#contact">Me contacter</a>
             </div>
-        
-            <a class="px-labelbar" href="projects/billetterie.html">Voir le projet →</a>
-          </div>
-        
-          <div class="px-body">
-            <p class="desc">Pipeline billetterie : génération, contrôles qualité, exports et restitution dashboard.</p>
-        
-            <div class="px-actions">
-              <a class="btn light" href="projects/billetterie.html">Explorer →</a>
+    
+            <div class="px-grid">
+              <!-- 1) RTM -->
+              <article class="px-card">
+                <div class="px-thumb" style="--bgimg:url('assets/projects/rtm_bg.jpg');" aria-hidden="true">
+                  <div class="bg"></div>
+    
+                  <div class="px-head">
+                    <div class="px-kicker">RTM — stage 6 mois</div>
+                    <h3 class="px-title">Structuration & qualité de données</h3>
+                  </div>
+    
+                  <div class="px-stickers">
+                    <img class="px-sticker back" src="assets/pixel/metro.png"
+                         style="--x:18%;--y:70%;--w:140px;--r:-6deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/map-pin.png"
+                         style="--x:78%;--y:62%;--w:74px;--r:10deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/gear.png"
+                         style="--x:62%;--y:78%;--w:64px;--r:-12deg;" alt="">
+                  </div>
+    
+                  <a class="px-labelbar" href="projects/rtm.html">Voir le projet →</a>
+                </div>
+    
+                <div class="px-body">
+                  <p class="desc">Structuration de données réelles complexes + restitution exploitable.</p>
+                  <div class="px-actions">
+                    <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+    
+              <!-- 2) Billetterie -->
+              <article class="px-card">
+                <div class="px-thumb" style="--bgimg:url('assets/projects/billetterie_bg.jpg');" aria-hidden="true">
+                  <div class="bg"></div>
+    
+                  <div class="px-head">
+                    <div class="px-kicker">Billetterie : projet démo</div>
+                    <h3 class="px-title">KPI & dashboard</h3>
+                  </div>
+    
+                  <div class="px-stickers">
+                    <img class="px-sticker back" src="assets/pixel/ticket.png"
+                         style="--x:22%;--y:72%;--w:140px;--r:-8deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/chart.png"
+                         style="--x:78%;--y:62%;--w:78px;--r:10deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/excel.png"
+                         style="--x:62%;--y:80%;--w:70px;--r:-12deg;" alt="">
+                  </div>
+    
+                  <a class="px-labelbar" href="projects/billetterie.html">Voir le projet →</a>
+                </div>
+    
+                <div class="px-body">
+                  <p class="desc">Pipeline billetterie : génération, contrôles qualité, exports et restitution dashboard.</p>
+                  <div class="px-actions">
+                    <a class="btn light" href="projects/billetterie.html">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+    
+              <!-- 3) MOOE -->
+              <article class="px-card">
+                <div class="px-thumb" style="--bgimg:url('assets/projects/mooe_bg.jpg');" aria-hidden="true">
+                  <div class="bg"></div>
+    
+                  <div class="px-head">
+                    <div class="px-kicker">Affective computing</div>
+                    <h3 class="px-title">Music Of Our Emotions</h3>
+                  </div>
+    
+                  <div class="px-stickers">
+                    <img class="px-sticker back" src="assets/pixel/heart.png"
+                         style="--x:22%;--y:74%;--w:130px;--r:-10deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/wave.png"
+                         style="--x:78%;--y:62%;--w:86px;--r:12deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/brain.png"
+                         style="--x:62%;--y:82%;--w:74px;--r:-8deg;" alt="">
+                  </div>
+    
+                  <a class="px-labelbar" href="projects/music-of-our-emotions.html">Voir le projet →</a>
+                </div>
+    
+                <div class="px-body">
+                  <p class="desc">Prédire l’état émotionnel à partir de signaux + générer une proposition musicale.</p>
+                  <div class="px-actions">
+                    <a class="btn light" href="projects/music-of-our-emotions.html">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+    
+              <!-- 4) Rêves lucides -->
+              <article class="px-card">
+                <div class="px-thumb" style="--bgimg:url('assets/projects/reves_bg.jpg');" aria-hidden="true">
+                  <div class="bg"></div>
+    
+                  <div class="px-head">
+                    <div class="px-kicker">Travail encadré de recherche</div>
+                    <h3 class="px-title">Rêves lucides — site interactif</h3>
+                  </div>
+    
+                  <div class="px-stickers">
+                    <img class="px-sticker back" src="assets/pixel/moon.png"
+                         style="--x:22%;--y:72%;--w:140px;--r:-8deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/stars.png"
+                         style="--x:78%;--y:62%;--w:86px;--r:10deg;" alt="">
+                    <img class="px-sticker" src="assets/pixel/zzz.png"
+                         style="--x:62%;--y:82%;--w:74px;--r:-10deg;" alt="">
+                  </div>
+    
+                  <a class="px-labelbar" href="accueil.html">Voir le projet →</a>
+                </div>
+    
+                <div class="px-body">
+                  <p class="desc">Projet web : vulgarisation + narration interactive autour du rêve et du rêve lucide.</p>
+                  <div class="px-actions">
+                    <a class="btn light" href="accueil.html">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+            </div><!-- /px-grid -->
+    
+            <div class="edu-wrap">
+              <h3 class="edu-title">Formations</h3>
+              <p class="edu-sub">Sciences cognitives + MIASHS : une base solide (humain + data + rigueur).</p>
+    
+              <div class="edu-grid">
+                <article class="edu-card">
+                  <div class="edu-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
+                      <path d="M8.6 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                      <path d="M15.4 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                      <path d="M8.7 14.2c1.2 1.4 2.6 2.1 3.3 2.1s2.1-.7 3.3-2.1" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+    
+                  <div class="edu-mini">
+                    <div class="edu-program">Master Sciences Cognitives</div>
+                    <div class="edu-school">Aix-Marseille Université</div>
+                  </div>
+    
+                  <p class="edu-desc">
+                    Communication, langage et cerveau : comprendre l’interaction langage ↔ cognition ↔ comportements.
+                  </p>
+                </article>
+    
+                <article class="edu-card">
+                  <div class="edu-icon pink" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
+                      <path d="M9.2 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                      <path d="M14.8 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
+                      <path d="M8.8 15.1c1.1-1 2.2-1.5 3.2-1.5s2.1.5 3.2 1.5" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+    
+                  <div class="edu-mini">
+                    <div class="edu-program">Licence MIASHS</div>
+                    <div class="edu-school">Université de Bordeaux</div>
+                  </div>
+    
+                  <p class="edu-desc">
+                    Maths/stats + Python/web + sciences humaines : la combo “data + terrain + méthode”.
+                  </p>
+                </article>
+              </div>
             </div>
-          </div>
-        
-        </article>
-
-          <article class="px-card">
-
-            <div class="px-thumb" style="--bgimg:url('assets/projects/mooe_bg.jpg');" aria-hidden="true">
-              <div class="bg"></div>
-          
-              <div class="px-head">
-                <div class="px-kicker">Affective computing</div>
-                <h3 class="px-title">Music Of Our Emotions</h3>
-              </div>
-          
-              <div class="px-stickers">
-                <img class="px-sticker back" src="assets/pixel/heart.png"
-                     style="--x:22%;--y:74%;--w:130px;--r:-10deg;" alt="">
-                <img class="px-sticker" src="assets/pixel/wave.png"
-                     style="--x:78%;--y:62%;--w:86px;--r:12deg;" alt="">
-                <img class="px-sticker" src="assets/pixel/brain.png"
-                     style="--x:62%;--y:82%;--w:74px;--r:-8deg;" alt="">
-              </div>
-          
-              <a class="px-labelbar" href="projects/music-of-our-emotions.html">Voir le projet →</a>
-            </div>
-          
-            <div class="px-body">
-              <p class="desc">Prédire l’état émotionnel à partir de signaux + générer une proposition musicale.</p>
-          
-              <div class="px-actions">
-                <a class="btn light" href="projects/music-of-our-emotions.html">Explorer →</a>
-              </div>
-            </div>
-          
-          </article>
-
-          <article class="px-card">
-            <div class="px-thumb" style="--bgimg:url('assets/projects/reves_bg.jpg');" aria-hidden="true">
-              <div class="bg"></div>
-          
-              <div class="px-head">
-                <div class="px-kicker">Travail encadré de recherche</div>
-                <h3 class="px-title">Rêves lucides — site interactif</h3>
-              </div>
-          
-              <div class="px-stickers">
-                <img class="px-sticker back" src="assets/pixel/moon.png"
-                     style="--x:22%;--y:72%;--w:140px;--r:-8deg;" alt="">
-                <img class="px-sticker" src="assets/pixel/stars.png"
-                     style="--x:78%;--y:62%;--w:86px;--r:10deg;" alt="">
-                <img class="px-sticker" src="assets/pixel/zzz.png"
-                     style="--x:62%;--y:82%;--w:74px;--r:-10deg;" alt="">
-              </div>
-          
-              <a class="px-labelbar" href="accueil.html">Voir le projet →</a>
-            </div>
-          
-            <div class="px-body">
-              <p class="desc">Projet web : vulgarisation + narration interactive autour du rêve et du rêve lucide.</p>
-              <div class="px-actions">
-                <a class="btn light" href="accueil.html">Explorer →</a>
-              </div>
-            </div>
-          </article>
-
-        <div class="edu-wrap">
-          <h3 class="edu-title">Formations</h3>
-          <p class="edu-sub">Sciences cognitives + MIASHS : une base solide (humain + data + rigueur).</p>
-        
-          <div class="edu-grid">
-            <article class="edu-card">
-              <div class="edu-icon" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
-                  <path d="M8.6 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M15.4 10.2h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M8.7 14.2c1.2 1.4 2.6 2.1 3.3 2.1s2.1-.7 3.3-2.1" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-        
-              <div class="edu-mini">
-                <div class="edu-program">Master Sciences Cognitives</div>
-                <div class="edu-school">Aix-Marseille Université</div>
-              </div>
-        
-              <p class="edu-desc">
-                Communication, langage et cerveau : comprendre l’interaction langage ↔ cognition ↔ comportements.
-              </p>
-            </article>
-        
-            <article class="edu-card">
-              <div class="edu-icon pink" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="rgba(17,17,17,.75)" stroke-width="1.8"/>
-                  <path d="M9.2 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M14.8 9.8h.01" stroke="rgba(17,17,17,.75)" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M8.8 15.1c1.1-1 2.2-1.5 3.2-1.5s2.1.5 3.2 1.5" stroke="rgba(17,17,17,.75)" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-        
-              <div class="edu-mini">
-                <div class="edu-program">Licence MIASHS</div>
-                <div class="edu-school">Université de Bordeaux</div>
-              </div>
-        
-              <p class="edu-desc">
-                Maths/stats + Python/web + sciences humaines : la combo “data + terrain + méthode”.
-              </p>
-            </article>
-          </div>
-        </div>
-      </div>
+    
+          </div><!-- /projects-content -->
+        </div><!-- /projects-stage -->
+      </div><!-- /container -->
     </section>
 
     <!-- CTA Parallax 1 -->
@@ -1594,6 +1659,7 @@
   
 </body>
 </html>
+
 
 
 
