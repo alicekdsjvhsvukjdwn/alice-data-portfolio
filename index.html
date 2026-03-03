@@ -794,12 +794,12 @@
     }
     .about-text .intro{
       max-width: 62ch;
-      color: rgba(17,17,17,.78);
+      color: rgba(244,244,245,.86); /* blanc lisible */
       font-size: 14px;
       line-height: 1.65;
       margin: 0;
     }
-    
+        
     /* ===== Comment je bosse ===== */
     .work-title{ margin-top: 4px; }
     .work-grid{
@@ -1226,6 +1226,7 @@
         </div>
     
         <div class="about-wrap">
+          <!-- TOP: photo + texte -->
           <div class="about-top">
             <div class="about-photo" aria-label="Image à propos">
               <div class="frame">
@@ -1245,17 +1246,21 @@
             </div>
           </div>
     
+          <!-- TITRE -->
           <div class="work-title">
             <h3 class="edu-title" style="margin:0;">Comment je bosse</h3>
           </div>
     
+          <!-- GRID: 3 cartes côte à côte -->
           <div class="work-grid">
+            <!-- STEP 1 -->
             <article class="work-card">
               <div class="work-visual">
                 <button class="tt-btn" type="button" aria-pressed="false" aria-label="Step 1">
                   <div class="tt-wrap">
                     <svg class="vinyl red" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <g class="vinyl-rot">
+                        <!-- pixels disque -->
                         <rect class="px-black" x="13" y="1" width="6" height="1"/>
                         <rect class="px-black" x="10" y="2" width="12" height="1"/>
                         <rect class="px-black" x="8"  y="3" width="16" height="1"/>
@@ -1287,7 +1292,7 @@
                         <rect class="px-black" x="8"  y="29" width="16" height="1"/>
                         <rect class="px-black" x="10" y="30" width="12" height="1"/>
                         <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                  
+    
                         <rect class="px-white" x="6" y="4" width="1" height="1"/>
                         <rect class="px-white" x="7" y="4" width="1" height="1"/>
                         <rect class="px-white" x="5" y="5" width="2" height="1"/>
@@ -1296,7 +1301,7 @@
                         <rect class="px-white" x="5" y="8" width="1" height="1"/>
                         <rect class="px-white" x="23" y="22" width="1" height="1"/>
                         <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                  
+    
                         <rect class="px-label" x="14" y="14" width="4" height="4"/>
                         <rect class="px-label" x="13" y="15" width="6" height="2"/>
                         <rect class="px-label" x="15" y="13" width="2" height="6"/>
@@ -1304,10 +1309,9 @@
                       </g>
                     </svg>
                   </div>
-                    <span class="work-badge" style="margin:10px;">Step 1</span>
-                  </div>
                 </button>
               </div>
+    
               <div class="work-copy">
                 <div class="work-badge">Step 1</div>
                 <div class="mini">Clarifier le besoin</div>
@@ -1315,11 +1319,14 @@
               </div>
             </article>
     
+            <!-- STEP 2 -->
             <article class="work-card">
               <div class="work-visual">
                 <button class="tt-btn" type="button" aria-pressed="false" aria-label="Step 2">
+                  <div class="tt-wrap">
                     <svg class="vinyl blue" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <g class="vinyl-rot">
+                        <!-- (même disque) -->
                         <rect class="px-black" x="13" y="1" width="6" height="1"/>
                         <rect class="px-black" x="10" y="2" width="12" height="1"/>
                         <rect class="px-black" x="8"  y="3" width="16" height="1"/>
@@ -1351,7 +1358,7 @@
                         <rect class="px-black" x="8"  y="29" width="16" height="1"/>
                         <rect class="px-black" x="10" y="30" width="12" height="1"/>
                         <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                  
+    
                         <rect class="px-white" x="6" y="4" width="1" height="1"/>
                         <rect class="px-white" x="7" y="4" width="1" height="1"/>
                         <rect class="px-white" x="5" y="5" width="2" height="1"/>
@@ -1360,7 +1367,7 @@
                         <rect class="px-white" x="5" y="8" width="1" height="1"/>
                         <rect class="px-white" x="23" y="22" width="1" height="1"/>
                         <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                  
+    
                         <rect class="px-label" x="14" y="14" width="4" height="4"/>
                         <rect class="px-label" x="13" y="15" width="6" height="2"/>
                         <rect class="px-label" x="15" y="13" width="2" height="6"/>
@@ -1368,10 +1375,9 @@
                       </g>
                     </svg>
                   </div>
-                    <span class="work-badge" style="margin:10px;">Step 2</span>
-                  </div>
                 </button>
               </div>
+    
               <div class="work-copy">
                 <div class="work-badge">Step 2</div>
                 <div class="mini">Structurer l’information</div>
@@ -1379,11 +1385,14 @@
               </div>
             </article>
     
+            <!-- STEP 3 -->
             <article class="work-card">
               <div class="work-visual">
                 <button class="tt-btn" type="button" aria-pressed="false" aria-label="Step 3">
+                  <div class="tt-wrap">
                     <svg class="vinyl yellow" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                       <g class="vinyl-rot">
+                        <!-- (même disque) -->
                         <rect class="px-black" x="13" y="1" width="6" height="1"/>
                         <rect class="px-black" x="10" y="2" width="12" height="1"/>
                         <rect class="px-black" x="8"  y="3" width="16" height="1"/>
@@ -1415,7 +1424,7 @@
                         <rect class="px-black" x="8"  y="29" width="16" height="1"/>
                         <rect class="px-black" x="10" y="30" width="12" height="1"/>
                         <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                  
+    
                         <rect class="px-white" x="6" y="4" width="1" height="1"/>
                         <rect class="px-white" x="7" y="4" width="1" height="1"/>
                         <rect class="px-white" x="5" y="5" width="2" height="1"/>
@@ -1424,7 +1433,7 @@
                         <rect class="px-white" x="5" y="8" width="1" height="1"/>
                         <rect class="px-white" x="23" y="22" width="1" height="1"/>
                         <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                  
+    
                         <rect class="px-label" x="14" y="14" width="4" height="4"/>
                         <rect class="px-label" x="13" y="15" width="6" height="2"/>
                         <rect class="px-label" x="15" y="13" width="2" height="6"/>
@@ -1432,21 +1441,20 @@
                       </g>
                     </svg>
                   </div>
-                    <span class="work-badge" style="margin:10px;">Step 3</span>
-                  </div>
                 </button>
               </div>
+    
               <div class="work-copy">
                 <div class="work-badge">Step 3</div>
                 <div class="mini">Restituer</div>
                 <div class="micro">Insights actionnables, dashboard, synthèse courte, reco.</div>
               </div>
             </article>
-          </div>
-        </div>
-      </div>
+          </div><!-- /work-grid -->
+        </div><!-- /about-wrap -->
+      </div><!-- /container -->
     </section>
-    
+        
     <!-- CTA Parallax 2 -->
     <section class="cta parallax-cta" data-bg="assets/parallax_02.jpg">
       <div class="container">
@@ -1626,6 +1634,7 @@
   
 </body>
 </html>
+
 
 
 
