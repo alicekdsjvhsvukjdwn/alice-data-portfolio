@@ -1,0 +1,20 @@
+name: Codestral Code Review
+on: [pull_request]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Demander une revue à Codestral
+        run: |
+          curl -X POST https://api.mistral.ai/v1/chat/completions \
+            -H "Authorization: Bearer ${{ secrets.MISTRAL_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "model": "codestral-latest",
+              "messages": [
+                {"role": "system", "content": "Tu es un expert en code. Analyse les changements suivants et donne des conseils :"},
+                {"role": "user", "content": "Voici les changements : ${{ github.event.pull_request.title }} - ${{ github.event.pull_request.html_url }}"}
+              ]
+            }'
