@@ -638,9 +638,17 @@
       box-shadow: 0 12px 30px rgba(0,0,0,.06);
       padding: 16px 16px 14px;
       display: grid;
-      grid-template-columns: 34px 1fr;
+      grid-template-columns: 34px minmax(0, 1fr);
       gap: 12px;
+      min-width: 0;
     }
+
+    .edu-card > div {
+      grid-column: 1 / -1;
+      min-width: 0;
+      width: 100%;
+    }
+    
     .edu-icon{
       width: 34px;
       height: 34px;
@@ -675,6 +683,10 @@
       color: rgba(17,17,17,.72);
       font-size: 13px;
       line-height: 1.5;
+      min-width: 0;
+      width: 100%;
+      overflow-wrap: break-word;
+      word-break: normal;
     }
 
     /* =========================
@@ -1684,6 +1696,7 @@
   
 </body>
 </html>
+
 
 
 
