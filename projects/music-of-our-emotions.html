@@ -109,11 +109,11 @@
     }
     .nav {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 13px var(--pad);
+      padding: 20px var(--pad);
       gap: 12px;
     }
     .brand {
-      font-weight: 800; font-size: 13px; letter-spacing: .04em;
+      font-weight: 900; font-size: 15px; letter-spacing: .04em;
       color: var(--ink);
     }
     .nav-actions { display: flex; gap: 10px; }
@@ -154,7 +154,7 @@
        HERO
     ══════════════════════════════════════════ */
     .hero {
-      padding: clamp(52px, 8vw, 100px) var(--pad) clamp(36px, 5vw, 64px);
+      padding: clamp(36px, 5vw, 60px) var(--pad) clamp(36px, 5vw, 64px);
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: clamp(32px, 5vw, 72px);
@@ -524,6 +524,24 @@
   <!-- ─── HERO ─── -->
   <section class="hero">
     <div>
+      <!-- meta strip -->
+      <div style="display:flex; align-items:center; gap:24px; margin-bottom:28px; flex-wrap:wrap;">
+        <div style="display:flex; flex-direction:column; gap:3px;">
+          <span style="font-size:10px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);">Projet</span>
+          <span style="font-size:22px; font-weight:900; color:var(--ink); letter-spacing:-.02em;">N°03</span>
+        </div>
+        <div style="width:1px; height:36px; background:var(--line);"></div>
+        <div style="display:flex; flex-direction:column; gap:3px;">
+          <span style="font-size:10px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);">Type</span>
+          <span style="font-size:13px; font-weight:700; color:var(--ink);">Open Source · Research</span>
+        </div>
+        <div style="width:1px; height:36px; background:var(--line);"></div>
+        <div style="display:flex; flex-direction:column; gap:3px;">
+          <span style="font-size:10px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);">Stack</span>
+          <span style="font-size:13px; font-weight:700; color:var(--ink);">Python · ML · Audio</span>
+        </div>
+      </div>
+
       <div class="hero-kicker">
         <div class="kicker-dot"></div>
         Affective Computing · Open Source
@@ -706,7 +724,7 @@
         <div class="card card-dark">
           <div class="card-title">Une question ?</div>
           <p>Je suis disponible pour présenter la démo ou discuter de la méthodologie.</p>
-          <a class="btn-block" href="mailto:alice1gay@gmail.fr">Me contacter</a>
+          <a class="btn-block" href="/cdn-cgi/l/email-protection#6504090c06005402041c250208040c094b0317">Me contacter</a>
         </div>
 
       </aside>
@@ -719,12 +737,12 @@
       <div>© <span id="y"></span> Alice Gay — Marseille</div>
       <div class="footer-links">
         <a href="../index.html">Portfolio</a>
-        <a href="mailto:alice1gay@gmail.fr">Email</a>
+        <a href="/cdn-cgi/l/email-protection#1574797c76702472746c557278747c793b7367">Email</a>
         <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Haut ↑</a>
       </div>
     </div>
   </footer>
-
+  
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
