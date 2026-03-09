@@ -7,449 +7,735 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#FAFAF7; --ink:#111; --muted:#6B7280;
-      --line: rgba(17,17,17,.12);
-      --surface: rgba(255,255,255,.82);
-      --shadow: 0 18px 50px rgba(0,0,0,.08);
-      --radius: 18px;
-      --accent:#1D4ED8;
-
-      --maxw: clamp(980px, 92vw, 1480px);
-      --pad: clamp(16px, 2.4vw, 32px);
-
-      --serif:"Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial;
+      --ink: #0f0f0f;
+      --muted: #6b7280;
+      --line: rgba(15,15,15,.10);
+      --accent: #1D4ED8;
+      --accent-pale: rgba(29,78,216,.08);
+      --surface: #ffffff;
+      --bg: #F7F7F4;
+      --radius: 16px;
+      --pad: clamp(20px, 3vw, 48px);
+      --serif: "Playfair Display", Georgia, serif;
+      --sans: Inter, system-ui, sans-serif;
     }
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0; font-family:var(--sans); color:var(--ink);
-      background: var(--bg); line-height:1.6;
-    }
-    a{ color: inherit; }
-    .container{ max-width: var(--maxw); margin:0 auto; padding: 0 var(--pad); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    header{
-      position: sticky; top:0; z-index:20;
-      background: rgba(250,250,247,.88);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      padding: 14px 0;
-      gap: 12px;
-    }
-    .brand{ font-weight: 900; font-size: 13px; letter-spacing:.02em; }
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+    html { scroll-behavior: smooth; }
 
-    .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 14px; border-radius: 999px;
-      border: 1px solid var(--line);
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(10,10,10,.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px var(--pad);
+      max-width: 100%;
+    }
+    .brand {
+      font-weight: 900; font-size: 13px; letter-spacing: .04em;
+      color: #fff; padding-left: 8px;
+    }
+    .nav-actions { display: flex; gap: 10px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 16px; border-radius: 999px;
+      font-weight: 800; font-size: 12.5px;
+      transition: transform .15s, opacity .15s;
+      white-space: nowrap; cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn:hover { transform: translateY(-1px); opacity: .88; }
+    .btn-ghost {
+      background: rgba(255,255,255,.10);
+      color: #dce8ff;
+      border-color: rgba(255,255,255,.18);
+    }
+    .btn-solid {
+      background: #fff;
+      color: #111;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--line);
       background: rgba(255,255,255,.85);
-      text-decoration:none;
-      font-weight:800; font-size: 13px;
-      transition: transform .12s ease;
-      white-space:nowrap;
     }
-    .btn:hover{ transform: translateY(-1px); }
-    .btn.dark{
-      background: rgba(17,17,17,.92);
-      color:#fff; border-color: rgba(0,0,0,.12);
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
     }
-    .btn.cta{
-      background: color-mix(in srgb, var(--accent) 14%, #fff);
-      border-color: color-mix(in srgb, var(--accent) 28%, transparent);
-    }
+    .btn-sm { padding: 6px 12px; font-size: 11.5px; }
 
-    main{ padding: clamp(22px, 3.5vh, 44px) 0 clamp(40px, 6vh, 80px); }
-
-    h1{
-      font-size: clamp(28px, 3.4vw, 54px);
+    /* ─── HERO ─── */
+    .hero {
+      background: #0f0f0f;
+      color: #fff;
+      padding: clamp(48px, 7vw, 96px) var(--pad) clamp(40px, 6vw, 72px);
+    }
+    .hero-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: end;
+    }
+    @media (max-width: 800px) { .hero-inner { grid-template-columns: 1fr; } }
+    .hero-kicker {
+      font-size: 11px; font-weight: 900; letter-spacing: .18em;
+      text-transform: uppercase; color: rgba(255,255,255,.45);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4.5vw, 64px);
       line-height: 1.05;
       letter-spacing: -.02em;
-      margin: 18px 0 10px;
+      margin-bottom: 20px;
+      max-width: 16ch;
     }
-    .kicker{
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      font-weight: 900;
+    .hero-lead {
+      font-size: clamp(14px, 1.5vw, 16px);
+      color: rgba(255,255,255,.62);
+      max-width: 54ch;
+      line-height: 1.7;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
       font-size: 12px;
-      color: rgba(17,17,17,.55);
-      margin-top: 10px;
-    }
-    .lead{
-      max-width: 72ch;
-      color: rgba(17,17,17,.72);
-      font-size: 15px;
-      margin: 0 0 18px;
-    }
-
-    .banner{
-      margin: 12px 0 18px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(29,78,216,.22);
-      background: color-mix(in srgb, var(--accent) 8%, #fff);
-      font-size: 13px;
-      color: rgba(17,17,17,.82);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: clamp(14px, 2vw, 22px);
-      align-items: start;
-    }
-    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
-
-    .card{
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(16px, 2vw, 26px);
-    }
-
-    .dl{
-      display:grid;
-      gap: 10px;
+      color: rgba(255,255,255,.55);
+      white-space: nowrap;
+      align-self: flex-start;
       margin-top: 8px;
     }
-    .dl .row{
-      display:grid;
-      gap: 2px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(17,17,17,.10);
-      background: rgba(255,255,255,.75);
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+
+    /* ─── TOOLBAR (download bar) ─── */
+    .toolbar {
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 12px var(--pad);
     }
-    .dl .label{
+    .toolbar-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .toolbar-label {
       font-size: 11px;
       font-weight: 900;
-      letter-spacing:.12em;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      color: rgba(17,17,17,.55);
-    }
-    .dl .value{
-      font-size: 13px;
-      color: rgba(17,17,17,.80);
+      color: var(--muted);
+      margin-right: 4px;
     }
 
-    .preview{
-      width:100%;
-      height: min(78vh, 980px);
-      border: 1px solid rgba(17,17,17,.14);
-      border-radius: 16px;
+    /* ─── MAIN LAYOUT ─── */
+    main { flex: 1; }
+
+    .page-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: clamp(28px, 4vw, 52px) var(--pad);
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: clamp(20px, 3vw, 40px);
+      align-items: start;
+    }
+    @media (max-width: 1100px) { .page-grid { grid-template-columns: 1fr; } }
+
+    /* ─── SECTION HEADERS ─── */
+    .section-label {
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* ─── DASHBOARD GALLERY ─── */
+    .gallery-section { margin-bottom: 48px; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .gallery-grid .shot:first-child {
+      grid-column: 1 / -1; /* first shot spans full width */
+    }
+    @media (max-width: 700px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+    .shot {
+      border-radius: var(--radius);
       overflow: hidden;
+      border: 1px solid var(--line);
       background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: box-shadow .2s, transform .2s;
     }
-
-    .note{
-      font-size: 12px;
-      color: rgba(17,17,17,.58);
-      margin-top: 10px;
+    .shot:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,.12);
+      transform: translateY(-2px);
     }
-
-    .file-list{
-      display:grid;
-      gap:10px;
-      margin-top: 14px;
+    .shot-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      border-bottom: 1px solid var(--line);
+      background: #f0f4ff;
     }
-    .file-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(17,17,17,.10);
-      background: rgba(255,255,255,.75);
+    /* Placeholder quand image absente */
+    .shot-img-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #e8edf8 0%, #dce5f5 100%);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      color: rgba(29,78,216,.5);
+      font-weight: 600;
+      letter-spacing: .04em;
     }
-    .file-item code{
-      font-size:12px;
-      background: rgba(17,17,17,.05);
-      padding: 3px 6px;
-      border-radius: 6px;
+    .shot-body { padding: 16px 18px 18px; }
+    .shot-tag {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
-    .gallery{
-      display:grid;
-      gap:14px;
-      margin-top: 8px;
-    }
-    
-    .shot{
-      border: 1px solid rgba(17,17,17,.12);
-      border-radius: 14px;
-      background: rgba(255,255,255,.78);
-      padding: 10px;
-    }
-    
-    .shot img{
-      width:100%;
-      display:block;
-      border-radius: 10px;
-      border:1px solid rgba(17,17,17,.10);
-      background:#fff;
-    }
-    
-    .shot h3{
-      margin: 8px 0 4px;
+    .tag-direction { background: #e0e9ff; color: #1e40af; }
+    .tag-ops { background: #fef3c7; color: #92400e; }
+    .shot h3 {
       font-family: var(--serif);
-      font-size: 18px;
-      line-height: 1.15;
+      font-size: 17px;
+      line-height: 1.25;
+      margin-bottom: 6px;
     }
-    
-    .shot p{
-      margin:0;
-      font-size:13px;
-      color: rgba(17,17,17,.72);
+    .shot p { font-size: 13px; color: rgba(15,15,15,.65); line-height: 1.55; }
+
+    /* ─── PIPELINE TIMELINE ─── */
+    .pipeline-section { margin-bottom: 48px; }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+      margin-top: 4px;
     }
-    
-    .stack{
-      display:grid;
-      gap:12px;
+    @media (max-width: 750px) { .timeline { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .timeline { grid-template-columns: 1fr; } }
+
+    .timeline-track {
+      position: absolute;
+      top: 26px;
+      left: 26px;
+      right: 26px;
+      height: 2px;
+      background: var(--line);
+      z-index: 0;
     }
-    
-    .mini-steps{
-      display:grid;
-      gap:10px;
-      margin-top: 10px;
+    @media (max-width: 750px) { .timeline-track { display: none; } }
+
+    .step {
+      position: relative;
+      z-index: 1;
+      padding: 0 12px 0 0;
     }
-    
-    .mini-step{
-      border:1px solid rgba(17,17,17,.10);
-      background: rgba(255,255,255,.75);
-      border-radius: 12px;
+    .step:last-child { padding-right: 0; }
+
+    .step-dot-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .step-dot {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(29,78,216,.25);
+    }
+    .step:nth-child(2) .step-dot { background: #0891b2; box-shadow: 0 4px 16px rgba(8,145,178,.25); }
+    .step:nth-child(3) .step-dot { background: #059669; box-shadow: 0 4px 16px rgba(5,150,105,.25); }
+    .step:nth-child(4) .step-dot { background: #7c3aed; box-shadow: 0 4px 16px rgba(124,58,237,.25); }
+
+    .step-content {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .step-n {
+      font-size: 10.5px; font-weight: 900; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
+    }
+    .step-title { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+    .step-desc { font-size: 12.5px; color: rgba(15,15,15,.65); line-height: 1.5; }
+
+    /* ─── FILE LIST ─── */
+    .files-section { margin-bottom: 12px; }
+
+    .file-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    @media (max-width: 640px) { .file-grid { grid-template-columns: 1fr; } }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 12px;
     }
-    
-    .mini-step .n{
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color: rgba(17,17,17,.55);
+    .file-item code {
+      font-size: 11px;
+      background: rgba(15,15,15,.05);
+      padding: 2px 6px;
+      border-radius: 5px;
+      display: block;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
     }
-    
-    .mini-step .t{
-      font-weight:700;
-      font-size:13px;
-      margin-top:2px;
+    .file-desc { color: var(--muted); font-size: 11px; }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar { display: grid; gap: 16px; }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 16px rgba(0,0,0,.05);
+      padding: clamp(16px, 2vw, 24px);
     }
-    
-    .mini-step .d{
-      font-size:12px;
-      color: rgba(17,17,17,.72);
+    .card-title {
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.2;
+      margin-bottom: 14px;
     }
-    
-    footer{
-      border-top: 1px solid var(--line);
-      background: rgba(250,250,247,.92);
-      padding: 18px 0 22px;
+
+    .dl { display: grid; gap: 8px; }
+    .dl-row {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(15,15,15,.08);
+      background: var(--bg);
     }
-    .footer-inner{
-      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      color: rgba(17,17,17,.62); font-size: 12px;
+    .dl-label {
+      font-size: 10.5px; font-weight: 900; letter-spacing: .13em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 3px;
     }
+    .dl-value { font-size: 12.5px; color: rgba(15,15,15,.78); line-height: 1.5; }
+
+    .skill-pills {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+    }
+    .pill {
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      background: var(--accent-pale);
+      color: var(--accent);
+      border: 1px solid rgba(29,78,216,.15);
+    }
+
+    .contact-card {
+      background: #0f0f0f;
+      color: #fff;
+      text-align: center;
+    }
+    .contact-card .card-title { color: #fff; }
+    .contact-card p {
+      font-size: 13px;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .btn-contact {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.16);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      transition: background .15s;
+    }
+    .btn-contact:hover { background: rgba(255,255,255,.18); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #0f0f0f;
+      border-top: 1px solid rgba(255,255,255,.07);
+      padding: 28px var(--pad) 32px;
+      margin-top: auto;
+    }
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,.50);
+      font-size: 12.5px;
+    }
+    .footer-inner a { color: rgba(255,255,255,.70); transition: color .15s; }
+    .footer-inner a:hover { color: #fff; }
+    .footer-links { display: flex; gap: 20px; }
   </style>
 </head>
 
 <body>
+
+  <!-- ── HEADER ── -->
   <header>
-    <div class="container nav">
+    <div class="nav">
       <div class="brand">Alice Gay — Projet Billetterie</div>
-      <div class="actions">
-        <a class="btn" href="../index.html">← Retour portfolio</a>
-        <a class="btn dark" href="../assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
+      <div class="nav-actions">
+        <a class="btn btn-ghost" href="../index.html">← Retour portfolio</a>
+        <a class="btn btn-solid" href="../assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
       </div>
     </div>
   </header>
 
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-kicker">Projet démo · BI / KPI / Qualité de données</div>
+        <h1>Billetterie — Pilotage & KPI</h1>
+        <p class="hero-lead">
+          Pipeline analytique de bout en bout : génération d'un dataset synthétique, contrôles qualité,
+          préparation d'exports et restitution dans un dashboard Excel orienté pilotage — Direction et Ops.
+        </p>
+      </div>
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Données 100 % synthétiques
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TOOLBAR ── -->
+  <div class="toolbar">
+    <div class="toolbar-inner">
+      <span class="toolbar-label">Télécharger</span>
+      <a class="btn btn-accent btn-sm" href="../assets/billetterie/dashboard_billeterie.xlsx" target="_blank" rel="noopener">
+        Classeur Excel (.xlsx)
+      </a>
+      <a class="btn btn-outline btn-sm" href="../assets/billetterie/kpi_daily_excel.csv" target="_blank" rel="noopener">
+        CSV KPI journaliers
+      </a>
+      <a class="btn btn-outline btn-sm" href="../assets/billetterie/dashboard_billeterie.pdf" target="_blank" rel="noopener">
+        Version PDF
+      </a>
+      <a class="btn btn-outline btn-sm" href="#dashboards">
+        Voir les dashboards ↓
+      </a>
+    </div>
+  </div>
+
+  <!-- ── CONTENT ── -->
   <main>
-    <div class="container">
-      <div class="kicker">Projet démo — BI / KPI / Qualité de données</div>
-      <h1>Billetterie — Génération de données, contrôles qualité et dashboard Excel</h1>
-      <p class="lead">
-        Projet démonstration de pipeline analytique : génération d’un dataset synthétique, contrôles qualité, préparation
-        d’exports et restitution dans un dashboard Excel / PDF orienté pilotage.
-      </p>
+    <div class="page-grid">
 
-      <div class="banner">
-        <strong>Projet démo — données synthétiques générées par script.</strong>
-        Aucune donnée réelle ou confidentielle n’est publiée.
-      </div>
+      <!-- LEFT COLUMN -->
+      <div>
 
-      <div class="actions" style="margin: 10px 0 18px;">
-        <a class="btn cta" href="#dashboards">Voir les dashboards (captures)</a>
-        <a class="btn" href="../assets/billetterie/dashboard_billeterie.xlsx" target="_blank" rel="noopener">
-          Télécharger le classeur Excel (.xlsx)
-        </a>
-        <a class="btn" href="../assets/billetterie/kpi_daily_excel.csv" target="_blank" rel="noopener">CSV KPI journaliers</a>
-        <a class="btn" href="../assets/billetterie/dashboard_billeterie.pdf" target="_blank" rel="noopener">
-          Version PDF (aperçu statique)
-        </a>
-      </div>
+        <!-- GALLERY -->
+        <section id="dashboards" class="gallery-section">
+          <div class="section-label">Vues du dashboard</div>
 
-      <div class="grid">
-        <section class="card">
-          <h2 id="dashboards" style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">
-            Vues du dashboard
-          </h2>
-          
-          <div class="gallery">
+          <div class="gallery-grid">
+
             <article class="shot">
-              <img src="../assets/billetterie/capture-dash-direction_complet.png" alt="Dashboard Direction — vue synthèse avec KPI et graphiques" loading="lazy">
-              <h3>Dashboard Direction — synthèse visuelle</h3>
-              <p>
-                Vue de pilotage rapide : KPI globaux, tendance CA, top événements, répartition par genre et par zone.
-              </p>
+              <img
+                class="shot-img"
+                src="../assets/billetterie/capture-dash-direction_complet.png"
+                alt="Dashboard Direction — synthèse"
+                loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="shot-img-placeholder" style="display:none;">capture-dash-direction_complet.png</div>
+              <div class="shot-body">
+                <span class="shot-tag tag-direction">Direction</span>
+                <h3>Synthèse visuelle</h3>
+                <p>KPI globaux, tendance CA, top événements, répartition par genre et par zone — vue de pilotage rapide.</p>
+              </div>
             </article>
-          
+
             <article class="shot">
-              <img src="../assets/billetterie/capture-dash-direction_tableaux.png" alt="Dashboard Direction — version avec tableaux croisés et graphiques" loading="lazy">
-              <h3>Dashboard Direction — version tableaux</h3>
-              <p>
-                Même lecture métier, avec tableaux croisés visibles pour montrer la traçabilité des chiffres et la structure d’analyse.
-              </p>
+              <img
+                class="shot-img"
+                src="../assets/billetterie/capture-dash-direction_tableaux.png"
+                alt="Dashboard Direction — tableaux"
+                loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="shot-img-placeholder" style="display:none;">capture-dash-direction_tableaux.png</div>
+              <div class="shot-body">
+                <span class="shot-tag tag-direction">Direction</span>
+                <h3>Version tableaux croisés</h3>
+                <p>Même lecture métier avec tableaux croisés visibles pour montrer la traçabilité des chiffres.</p>
+              </div>
             </article>
-          
+
             <article class="shot">
-              <img src="../assets/billetterie/capture-dash-ops.png" alt="Dashboard Ops — alertes, diagnostics et actions" loading="lazy">
-              <h3>Dashboard Ops — alertes et actions</h3>
-              <p>
-                Vue opérationnelle : alertes de baisse, diagnostics (risque / impact / no-show) et plan d’actions priorisé.
-              </p>
+              <img
+                class="shot-img"
+                src="../assets/billetterie/capture-dash-ops.png"
+                alt="Dashboard Ops — alertes"
+                loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="shot-img-placeholder" style="display:none;">capture-dash-ops.png</div>
+              <div class="shot-body">
+                <span class="shot-tag tag-ops">Ops</span>
+                <h3>Alertes et actions</h3>
+                <p>Alertes de baisse, diagnostics (risque / impact / no-show) et plan d'actions priorisé.</p>
+              </div>
             </article>
+
           </div>
-          
-          <div class="note">
+
+          <p style="font-size: 12px; color: var(--muted); margin-top: 12px; padding: 10px 14px; border-left: 3px solid var(--line); background: #fff; border-radius: 0 8px 8px 0;">
             Le classeur final contient plusieurs feuilles dédiées à des usages différents (pilotage direction vs. exécution opérationnelle).
+          </p>
+        </section>
+
+        <!-- PIPELINE -->
+        <section class="pipeline-section">
+          <div class="section-label">Pipeline de création</div>
+
+          <div class="timeline">
+            <div class="timeline-track"></div>
+
+            <div class="step">
+              <div class="step-dot-row">
+                <div class="step-dot">1</div>
+              </div>
+              <div class="step-content">
+                <div class="step-n">Étape 1</div>
+                <div class="step-title">Génération de données synthétiques</div>
+                <div class="step-desc">Simulation d'un cas billetterie réaliste (événements, ventes, remplissage, no-show, zones) sans données réelles.</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-dot-row">
+                <div class="step-dot">2</div>
+              </div>
+              <div class="step-content">
+                <div class="step-n">Étape 2</div>
+                <div class="step-title">Contrôles qualité</div>
+                <div class="step-desc">Vérifications de cohérence et contrôles métier avant restitution (valeurs, formats, logique des indicateurs).</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-dot-row">
+                <div class="step-dot">3</div>
+              </div>
+              <div class="step-content">
+                <div class="step-n">Étape 3</div>
+                <div class="step-title">Préparation des exports</div>
+                <div class="step-desc">Structuration des tables pour Excel / reporting : KPI journaliers, KPI par événement, dimensions de référence.</div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-dot-row">
+                <div class="step-dot">4</div>
+              </div>
+              <div class="step-content">
+                <div class="step-n">Étape 4</div>
+                <div class="step-title">Export Excel final</div>
+                <div class="step-desc">Assemblage du classeur avec vues Direction et Ops, prêtes à être lues par des profils non techniques.</div>
+              </div>
+            </div>
+
           </div>
+        </section>
 
-          <h3 style="font-family:var(--serif); margin:18px 0 8px;">Pipeline de création</h3>
-
-          <div class="mini-steps">
-            <div class="mini-step">
-              <div class="n">Étape 1</div>
-              <div class="t">Génération de données synthétiques</div>
-              <div class="d">Simulation d’un cas billetterie réaliste (événements, ventes, remplissage, no-show, zones) sans publier de données réelles.</div>
-            </div>
-          
-            <div class="mini-step">
-              <div class="n">Étape 2</div>
-              <div class="t">Contrôles qualité</div>
-              <div class="d">Vérifications de cohérence et contrôles métier avant restitution (valeurs, formats, logique des indicateurs).</div>
-            </div>
-          
-            <div class="mini-step">
-              <div class="n">Étape 3</div>
-              <div class="t">Préparation des exports</div>
-              <div class="d">Structuration des tables pour Excel / reporting : KPI journaliers, KPI par événement, dimensions de référence.</div>
-            </div>
-          
-            <div class="mini-step">
-              <div class="n">Étape 4</div>
-              <div class="t">Export Excel final</div>
-              <div class="d">Assemblage du classeur final avec vues Direction et Ops, prêtes à être lues par des profils non techniques.</div>
-            </div>
-          </div>
-
-          <h3 style="font-family:var(--serif); margin:18px 0 8px;">Ressources et fichiers</h3>
-          <div class="file-list">
+        <!-- FILES -->
+        <section class="files-section">
+          <div class="section-label">Ressources & fichiers</div>
+          <div class="file-grid">
             <div class="file-item">
-              <div><code>capture-dash-direction_complet.png</code> — vue direction (synthèse visuelle)</div>
-              <a class="btn" href="../assets/billetterie/capture-dash-direction_complet.png" target="_blank" rel="noopener">Voir</a>
+              <div><code>capture-dash-direction_complet.png</code><span class="file-desc">vue direction synthèse</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/capture-dash-direction_complet.png" target="_blank">Voir</a>
             </div>
             <div class="file-item">
-              <div><code>capture-dash-direction_tableaux.png</code> — vue direction (tableaux + graphiques)</div>
-              <a class="btn" href="../assets/billetterie/capture-dash-direction_tableaux.png" target="_blank" rel="noopener">Voir</a>
+              <div><code>capture-dash-direction_tableaux.png</code><span class="file-desc">vue direction tableaux</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/capture-dash-direction_tableaux.png" target="_blank">Voir</a>
             </div>
             <div class="file-item">
-              <div><code>capture-dash-ops.png</code> — vue opérationnelle (alertes / actions)</div>
-              <a class="btn" href="../assets/billetterie/capture-dash-ops.png" target="_blank" rel="noopener">Voir</a>
+              <div><code>capture-dash-ops.png</code><span class="file-desc">vue opérationnelle</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/capture-dash-ops.png" target="_blank">Voir</a>
             </div>
             <div class="file-item">
-              <div><code>01_generate_data.py</code> — génération du dataset synthétique</div>
-              <a class="btn" href="../assets/billetterie/01_generate_data.py" target="_blank" rel="noopener">Voir</a>
+              <div><code>01_generate_data.py</code><span class="file-desc">génération dataset synthétique</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/01_generate_data.py" target="_blank">Voir</a>
             </div>
             <div class="file-item">
-              <div><code>02_quality_checks.py</code> — contrôles qualité / cohérence</div>
-              <a class="btn" href="../assets/billetterie/02_quality_checks.py" target="_blank" rel="noopener">Voir</a>
+              <div><code>02_quality_checks.py</code><span class="file-desc">contrôles qualité</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/02_quality_checks.py" target="_blank">Voir</a>
             </div>
             <div class="file-item">
-              <div><code>03_prepare_exports.py</code> — préparation des exports</div>
-              <a class="btn" href="../assets/billetterie/03_prepare_exports.py" target="_blank" rel="noopener">Voir</a>
+              <div><code>03_prepare_exports.py</code><span class="file-desc">préparation des exports</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/03_prepare_exports.py" target="_blank">Voir</a>
             </div>
             <div class="file-item">
-              <div><code>04_export_excel_ready.py</code> — export final prêt pour Excel</div>
-              <a class="btn" href="../assets/billetterie/04_export_excel_ready.py" target="_blank" rel="noopener">Voir</a>
+              <div><code>04_export_excel_ready.py</code><span class="file-desc">export final Excel</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/04_export_excel_ready.py" target="_blank">Voir</a>
             </div>
             <div class="file-item">
-              <div><code>dim_events_excel.csv</code> — dimension événements</div>
-              <a class="btn" href="../assets/billetterie/dim_events_excel.csv" target="_blank" rel="noopener">Télécharger</a>
+              <div><code>kpi_daily_excel.csv</code><span class="file-desc">KPI journaliers</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/kpi_daily_excel.csv" target="_blank">DL</a>
             </div>
             <div class="file-item">
-              <div><code>kpi_daily_excel.csv</code> — KPI journaliers</div>
-              <a class="btn" href="../assets/billetterie/kpi_daily_excel.csv" target="_blank" rel="noopener">Télécharger</a>
+              <div><code>kpi_event_excel.csv</code><span class="file-desc">KPI par événement</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/kpi_event_excel.csv" target="_blank">DL</a>
             </div>
             <div class="file-item">
-              <div><code>kpi_event_excel.csv</code> — KPI par événement</div>
-              <a class="btn" href="../assets/billetterie/kpi_event_excel.csv" target="_blank" rel="noopener">Télécharger</a>
+              <div><code>dim_events_excel.csv</code><span class="file-desc">dimension événements</span></div>
+              <a class="btn btn-outline btn-sm" href="../assets/billetterie/dim_events_excel.csv" target="_blank">DL</a>
             </div>
           </div>
         </section>
 
-        <aside class="card">
-          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">Ce que j’ai fait</h2>
-          <div class="dl">
-            <div class="row">
-              <div class="label">Objectif</div>
-              <div class="value">Simuler un cas réel de pilotage billetterie avec pipeline de données + restitution lisible.</div>
-            </div>
-            <div class="row">
-              <div class="label">Pipeline</div>
-              <div class="value">Pipeline Python de bout en bout : génération → contrôles qualité → exports → restitution Excel (Direction + Ops).</div>
-            </div>
-            <div class="row">
-              <div class="label">KPI</div>
-              <div class="value">CA, tickets vendus, panier moyen, remplissage, no-show, tendances, performance par événement et par zone.</div>
-            </div>
-            <div class="row">
-              <div class="label">Restitution</div>
-              <div class="value">Deux vues complémentaires : pilotage Direction (synthèse) et pilotage Ops (alertes, diagnostics, actions).</div>
-            </div>
-            <div class="row">
-              <div class="label">Compétences montrées</div>
-              <div class="value">Python, structuration de données, logique BI, qualité de données, restitution.</div>
-            </div>
-            <div class="row">
-              <div class="label">Confidentialité</div>
-              <div class="value">Projet démo — données 100% synthétiques (aucune donnée réelle publiée).</div>
-            </div>
-          </div>
-
-          <div style="margin-top:14px; display:grid; gap:10px;">
-            <a class="btn" href="mailto:alice1gay@gmail.fr">Me contacter</a>
-          </div>
-        </aside>
       </div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+
+        <div class="card">
+          <div class="card-title">Ce que j'ai fait</div>
+          <div class="dl">
+            <div class="dl-row">
+              <div class="dl-label">Objectif</div>
+              <div class="dl-value">Simuler un cas réel de pilotage billetterie avec pipeline de données + restitution lisible.</div>
+            </div>
+            <div class="dl-row">
+              <div class="dl-label">Pipeline</div>
+              <div class="dl-value">Génération → contrôles qualité → exports → restitution Excel (Direction + Ops).</div>
+            </div>
+            <div class="dl-row">
+              <div class="dl-label">KPI</div>
+              <div class="dl-value">CA, tickets vendus, panier moyen, remplissage, no-show, tendances, perf. par événement et zone.</div>
+            </div>
+            <div class="dl-row">
+              <div class="dl-label">Restitution</div>
+              <div class="dl-value">Deux vues complémentaires : pilotage Direction (synthèse) et pilotage Ops (alertes, diagnostics, actions).</div>
+            </div>
+            <div class="dl-row">
+              <div class="dl-label">Confidentialité</div>
+              <div class="dl-value">Données 100 % synthétiques — aucune donnée réelle publiée.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Compétences démontrées</div>
+          <div class="skill-pills">
+            <span class="pill">Python</span>
+            <span class="pill">Pandas</span>
+            <span class="pill">Excel / VBA</span>
+            <span class="pill">Structuration données</span>
+            <span class="pill">Logique BI</span>
+            <span class="pill">Qualité de données</span>
+            <span class="pill">Restitution métier</span>
+            <span class="pill">Dashboarding</span>
+          </div>
+        </div>
+
+        <div class="card contact-card">
+          <div class="card-title">Une question ?</div>
+          <p>Je suis disponible pour en parler ou présenter le pipeline en détail.</p>
+          <a class="btn-contact" href="mailto:alice1gay@gmail.fr">Me contacter</a>
+        </div>
+
+      </aside>
     </div>
   </main>
 
+  <!-- ── FOOTER ── -->
   <footer>
-    <div class="container footer-inner">
+    <div class="footer-inner">
       <div>© <span id="y"></span> Alice Gay — Marseille</div>
-      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <div class="footer-links">
         <a href="../index.html">Portfolio</a>
         <a href="mailto:alice1gay@gmail.fr">Email</a>
-        <a href="#top" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">Haut</a>
+        <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Haut ↑</a>
       </div>
     </div>
   </footer>
@@ -458,5 +744,6 @@
     const y = document.getElementById('y');
     if (y) y.textContent = new Date().getFullYear();
   </script>
+  
 </body>
 </html>
