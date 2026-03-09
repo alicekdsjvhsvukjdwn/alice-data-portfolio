@@ -5,93 +5,535 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Music Of Our Emotions — Projet | Alice Gay</title>
   <meta name="description" content="Affective computing : prédiction d'état émotionnel à partir de signaux physiologiques + génération musicale." />
-  <link rel="icon" href="../assets/favicon.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,600&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --bg:#FAFAF7; --ink:#111; --muted:#6B7280;
-      --line: rgba(17,17,17,.12);
-      --surface: rgba(255,255,255,.82);
-      --shadow: 0 18px 50px rgba(0,0,0,.08);
-      --radius: 18px;
-      --accent:#1D4ED8;
-      --maxw: min(1100px, 100%);
-      --pad: clamp(16px, 4vw, 42px);
-      --serif: "Playfair Display", ui-serif, Georgia, serif;
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    /* ══════════════════════════════════════════
+       ROOT
+    ══════════════════════════════════════════ */
+    :root {
+      --pad: clamp(20px, 4vw, 64px);
+      --radius: 20px;
+      --serif: "Playfair Display", Georgia, serif;
+      --sans: "DM Sans", system-ui, sans-serif;
+
+      --c1: #ff6b9d; /* rose */
+      --c2: #ff9f40; /* orange */
+      --c3: #ffdd57; /* jaune */
+      --c4: #48cfad; /* vert menthe */
+      --c5: #4fc3f7; /* bleu ciel */
+      --c6: #a78bfa; /* violet */
+
+      --ink: #1a0a2e;
+      --ink-soft: rgba(26,10,46,.65);
+      --card-bg: rgba(255,255,255,.72);
+      --card-border: rgba(255,255,255,.55);
+      --line: rgba(26,10,46,.10);
     }
-    *{ box-sizing:border-box; }
-    body{ margin:0; font-family:var(--sans); color:var(--ink); background:var(--bg); line-height:1.55; }
-    a{ color:inherit; }
-    .container{ max-width:var(--maxw); margin:0 auto; padding: 28px var(--pad) 80px; }
-    .topbar{ display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom: 18px; }
-    .brand{ font-weight:900; letter-spacing:.02em; font-size:13px; }
-    .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:10px 14px; border-radius:999px;
-      border:1px solid var(--line); background: rgba(255,255,255,.82);
-      box-shadow: 0 1px 0 rgba(0,0,0,.02);
-      font-weight:800; font-size:13px; text-decoration:none;
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
     }
-    .btn:hover{ background: rgba(255,255,255,.96); }
-    .btn.dark{ background: rgba(17,17,17,.92); color:#fff; border-color: rgba(0,0,0,.10); }
-    .btn.dark:hover{ background:#111; }
-    .hero{
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(18px, 2.4vw, 34px);
-      overflow:hidden;
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ══════════════════════════════════════════
+       GRADIENT BACKGROUND — animated mesh blobs
+    ══════════════════════════════════════════ */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: #fdf6ff;
+      overflow: hidden;
     }
-    h1{ margin:0 0 10px; font-size: clamp(28px, 3.2vw, 46px); line-height:1.08; }
-    .lead{ margin: 0 0 16px; color: rgba(17,17,17,.72); max-width: 70ch; }
-    .chips{ display:flex; flex-wrap:wrap; gap:10px; margin: 12px 0 4px; }
-    .chip{ border:1px solid var(--line); background: rgba(255,255,255,.78); border-radius:999px; padding: 8px 12px; font-size:12px; font-weight:700; color: rgba(17,17,17,.78); }
-    .grid{ display:grid; gap:14px; margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(min(360px,100%), 1fr)); }
-    .card{
-      background: rgba(255,255,255,.84);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.06);
+
+    /* grain overlay for texture */
+    .bg-canvas::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      pointer-events: none;
     }
-    .k{ font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:900; color: rgba(17,17,17,.56); }
-    .p{ margin: 8px 0 0; color: rgba(17,17,17,.76); font-size:14px; }
-    .media{
-      margin-top: 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(17,17,17,.12);
-      overflow:hidden;
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .55;
+      animation: drift linear infinite;
+      will-change: transform;
+    }
+
+    .blob-1 { width: 600px; height: 600px; background: var(--c1); top: -180px; left: -140px; animation-duration: 22s; }
+    .blob-2 { width: 500px; height: 500px; background: var(--c6); top: 10%; right: -100px; animation-duration: 28s; animation-direction: reverse; }
+    .blob-3 { width: 420px; height: 420px; background: var(--c5); top: 35%; left: 25%; animation-duration: 18s; }
+    .blob-4 { width: 380px; height: 380px; background: var(--c4); bottom: 20%; right: 10%; animation-duration: 32s; animation-direction: reverse; }
+    .blob-5 { width: 300px; height: 300px; background: var(--c3); bottom: 5%; left: 5%; animation-duration: 24s; }
+    .blob-6 { width: 340px; height: 340px; background: var(--c2); top: 60%; left: 55%; animation-duration: 20s; }
+
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      25%  { transform: translate(40px, -60px) scale(1.06); }
+      50%  { transform: translate(-30px, 40px) scale(.94); }
+      75%  { transform: translate(60px, 20px) scale(1.04); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* everything above the canvas */
+    header, main, footer { position: relative; z-index: 1; }
+
+    /* ══════════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════════ */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(18px) saturate(1.4);
+      background: rgba(255,255,255,.55);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px var(--pad);
+      gap: 12px;
+    }
+    .brand {
+      font-weight: 800; font-size: 13px; letter-spacing: .04em;
+      color: var(--ink);
+    }
+    .nav-actions { display: flex; gap: 10px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 16px; border-radius: 999px;
+      font-family: var(--sans); font-weight: 700; font-size: 12.5px;
+      cursor: pointer; border: 1.5px solid transparent;
+      transition: transform .15s, box-shadow .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,.12); }
+
+    .btn-glass {
+      background: rgba(255,255,255,.70);
+      border-color: var(--card-border);
+      color: var(--ink);
+    }
+    .btn-dark {
+      background: var(--ink);
+      color: #fff;
+      border-color: transparent;
+    }
+    .btn-gradient {
+      background: linear-gradient(135deg, var(--c1), var(--c6));
+      color: #fff;
+      border-color: transparent;
+    }
+    .btn-sm { padding: 6px 13px; font-size: 11.5px; }
+    .btn-outline {
+      background: rgba(255,255,255,.6);
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    /* ══════════════════════════════════════════
+       HERO
+    ══════════════════════════════════════════ */
+    .hero {
+      padding: clamp(52px, 8vw, 100px) var(--pad) clamp(36px, 5vw, 64px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 72px);
+      align-items: center;
+    }
+    @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } }
+
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 13px 5px 5px;
+      border-radius: 999px;
       background: rgba(255,255,255,.65);
+      border: 1.5px solid var(--card-border);
+      font-size: 11px; font-weight: 800; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--ink-soft);
+      margin-bottom: 20px;
     }
-    .media img{ display:block; width:100%; height:auto; }
-    .audio{ width:100%; margin-top: 10px; }
-    .foot{ margin-top: 14px; font-size:12px; color: rgba(17,17,17,.56); }
+    .kicker-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--c1), var(--c5));
+      flex-shrink: 0;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 70px);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+      margin-bottom: 20px;
+    }
+
+    /* Spectrum underline on title */
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3), var(--c4), var(--c5), var(--c6));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-lead {
+      font-size: clamp(14px, 1.4vw, 16.5px);
+      color: var(--ink-soft);
+      line-height: 1.7;
+      max-width: 52ch;
+      margin-bottom: 28px;
+    }
+
+    .chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .chip {
+      padding: 5px 13px;
+      border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+      border: 1.5px solid rgba(255,255,255,.6);
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(8px);
+      color: var(--ink);
+    }
+    /* spectrum chips */
+    .chip:nth-child(1) { border-color: var(--c1); color: #b03060; }
+    .chip:nth-child(2) { border-color: var(--c2); color: #a04000; }
+    .chip:nth-child(3) { border-color: var(--c4); color: #1a7a60; }
+    .chip:nth-child(4) { border-color: var(--c5); color: #0369a1; }
+    .chip:nth-child(5) { border-color: var(--c6); color: #5b21b6; }
+
+    .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* right side — pipeline visual card */
+    .hero-visual {
+      background: rgba(255,255,255,.65);
+      backdrop-filter: blur(20px) saturate(1.3);
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: clamp(20px, 2.5vw, 32px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.08);
+    }
+    .visual-label {
+      font-size: 10.5px; font-weight: 800; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--ink-soft);
+      margin-bottom: 16px;
+    }
+
+    /* inline pipeline steps */
+    .pipe-row {
+      display: flex; align-items: center; gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .pipe-step {
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 12px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .pipe-step.muted {
+      background: rgba(26,10,46,.06);
+      color: var(--ink-soft);
+      border: 1px solid var(--line);
+    }
+    .pipe-step.active {
+      color: #fff;
+      border: none;
+    }
+    .ps1 { background: linear-gradient(135deg, #ff6b9d, #ff9f40); }
+    .ps2 { background: linear-gradient(135deg, #ff9f40, #ffdd57); }
+    .ps3 { background: linear-gradient(135deg, #48cfad, #4fc3f7); }
+    .ps4 { background: linear-gradient(135deg, #4fc3f7, #a78bfa); }
+
+    .pipe-arrow { color: var(--ink-soft); font-size: 14px; font-weight: 900; flex-shrink: 0; }
+
+    .pipe-row-label {
+      font-size: 10px; font-weight: 800; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--ink-soft);
+      margin-bottom: 6px; margin-top: 12px;
+    }
+
+    .pipe-divider {
+      height: 1px; background: var(--line); margin: 14px 0;
+    }
+
+    /* ══════════════════════════════════════════
+       MAIN PAGE LAYOUT
+    ══════════════════════════════════════════ */
+    main { flex: 1; }
+
+    .page-body {
+      padding: 0 var(--pad) clamp(48px, 7vw, 96px);
+      display: grid;
+      grid-template-columns: 1fr clamp(280px, 24vw, 400px);
+      gap: clamp(20px, 3vw, 48px);
+      align-items: start;
+    }
+    @media (max-width: 1100px) { .page-body { grid-template-columns: 1fr; } }
+
+    /* ══════════════════════════════════════════
+       SECTION TITLE
+    ══════════════════════════════════════════ */
+    .section-head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 18px;
+    }
+    .section-head-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .section-head span {
+      font-size: 10.5px; font-weight: 900; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--ink-soft);
+    }
+    .section-head::after {
+      content: ''; flex: 1; height: 1px; background: var(--line);
+    }
+
+    /* ══════════════════════════════════════════
+       GLASS CARD
+    ══════════════════════════════════════════ */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,.06);
+      padding: clamp(16px, 2vw, 26px);
+    }
+
+    /* ══════════════════════════════════════════
+       KPI CARDS ROW
+    ══════════════════════════════════════════ */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 700px) { .kpi-row { grid-template-columns: 1fr; } }
+
+    .kpi-card {
+      padding: 18px 20px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,.68);
+      backdrop-filter: blur(12px);
+    }
+    .kpi-label {
+      font-size: 10.5px; font-weight: 800; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 14px; font-weight: 600; color: var(--ink);
+      line-height: 1.5;
+    }
+    /* colored left border per card */
+    .kpi-card:nth-child(1) { border-left: 4px solid var(--c1); }
+    .kpi-card:nth-child(2) { border-left: 4px solid var(--c5); }
+    .kpi-card:nth-child(3) { border-left: 4px solid var(--c6); }
+
+    /* ══════════════════════════════════════════
+       RESULT VISUAL
+    ══════════════════════════════════════════ */
+    .result-section { margin-bottom: 32px; }
+
+    .media-card {
+      background: rgba(255,255,255,.75);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.06);
+    }
+    .media-card img {
+      width: 100%; display: block; height: auto;
+    }
+    .media-placeholder {
+      width: 100%; aspect-ratio: 3/1;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg,
+        rgba(255,107,157,.15) 0%,
+        rgba(79,195,247,.15) 50%,
+        rgba(167,139,250,.15) 100%
+      );
+      color: var(--ink-soft); font-size: 13px; font-weight: 600;
+      letter-spacing: .06em;
+    }
+
+    /* ══════════════════════════════════════════
+       AUDIO CARD
+    ══════════════════════════════════════════ */
+    .audio-card { margin-bottom: 32px; }
+
+    .audio-card audio {
+      width: 100%; margin: 12px 0 8px;
+      border-radius: 8px;
+    }
+    .audio-note {
+      font-size: 12px; color: var(--ink-soft); line-height: 1.6;
+    }
+    .audio-prompt {
+      margin-top: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid var(--line);
+      font-size: 12px; font-style: italic; color: var(--ink-soft);
+    }
+
+    /* ══════════════════════════════════════════
+       LIMITS CARD
+    ══════════════════════════════════════════ */
+    .limits-card p {
+      font-size: 13.5px; color: var(--ink-soft); line-height: 1.7;
+    }
+
+    /* ══════════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════════ */
+    .sidebar { display: grid; gap: 16px; }
+
+    .card-title {
+      font-family: var(--serif);
+      font-size: 19px; line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .dl { display: grid; gap: 8px; }
+    .dl-row {
+      padding: 10px 12px; border-radius: 12px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid var(--line);
+    }
+    .dl-label {
+      font-size: 10.5px; font-weight: 800; letter-spacing: .13em;
+      text-transform: uppercase; color: var(--ink-soft); margin-bottom: 3px;
+    }
+    .dl-value { font-size: 12.5px; color: var(--ink); line-height: 1.5; }
+
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+    .pill {
+      padding: 4px 11px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      border: 1.5px solid rgba(255,255,255,.7);
+      background: rgba(255,255,255,.6);
+      color: var(--ink);
+    }
+    .pill:nth-child(1) { border-color: var(--c1); color: #9a1f4a; }
+    .pill:nth-child(2) { border-color: var(--c2); color: #874000; }
+    .pill:nth-child(3) { border-color: var(--c3); color: #6b5900; }
+    .pill:nth-child(4) { border-color: var(--c4); color: #1a5e4a; }
+    .pill:nth-child(5) { border-color: var(--c5); color: #0c4a6e; }
+    .pill:nth-child(6) { border-color: var(--c6); color: #4c1d95; }
+
+    /* colored accent card */
+    .card-spectrum {
+      background: linear-gradient(135deg,
+        rgba(255,107,157,.18) 0%,
+        rgba(255,159,64,.14) 25%,
+        rgba(79,195,247,.16) 60%,
+        rgba(167,139,250,.18) 100%
+      );
+      border-color: rgba(255,255,255,.65);
+    }
+
+    /* contact card dark */
+    .card-dark {
+      background: var(--ink);
+      border-color: transparent;
+      color: #fff;
+    }
+    .card-dark .card-title { color: #fff; }
+    .card-dark p { font-size: 13px; color: rgba(255,255,255,.55); margin-bottom: 16px; line-height: 1.6; }
+    .btn-block {
+      display: block; width: 100%; text-align: center;
+      padding: 12px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--c1), var(--c6));
+      color: #fff; font-weight: 800; font-size: 13px;
+      border: none; cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-block:hover { opacity: .88; }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid rgba(255,255,255,.45);
+      background: rgba(255,255,255,.45);
+      backdrop-filter: blur(16px);
+      padding: 22px var(--pad) 26px;
+    }
+    .footer-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 14px; flex-wrap: wrap;
+      font-size: 12.5px; color: var(--ink-soft);
+    }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { color: var(--ink-soft); transition: color .15s; }
+    .footer-links a:hover { color: var(--ink); }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="topbar">
-      <div class="brand">Alice GAY</div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a class="btn" href="../index.html#preview">← Projets</a>
-        <a class="btn dark" href="../index.html#contact">Me contacter</a>
+
+  <!-- ─── ANIMATED BACKGROUND ─── -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="blob blob-5"></div>
+    <div class="blob blob-6"></div>
+  </div>
+
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="nav">
+      <div class="brand">Alice Gay</div>
+      <div class="nav-actions">
+        <a class="btn btn-glass" href="../index.html#preview">← Projets</a>
+        <a class="btn btn-dark" href="../index.html#contact">Me contacter</a>
       </div>
     </div>
+  </header>
 
-    <section class="hero">
-      <h1>Music Of Our Emotions</h1>
-      <p class="lead">
-        Projet open source : à partir de signaux physiologiques, extraction de features, prédiction de dimensions émotionnelles,
-        puis génération d’une proposition musicale (démo audio incluse).
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div>
+      <div class="hero-kicker">
+        <div class="kicker-dot"></div>
+        Affective Computing · Open Source
+      </div>
+      <h1>Music Of Our<br><em>Emotions</em></h1>
+      <p class="hero-lead">
+        À partir de signaux physiologiques, extraction de features, prédiction
+        de dimensions émotionnelles, puis génération d'une proposition musicale
+        adaptée à l'état détecté — démo audio incluse.
       </p>
-
       <div class="chips">
         <span class="chip">Python</span>
         <span class="chip">ML</span>
@@ -99,128 +541,189 @@
         <span class="chip">Affective computing</span>
         <span class="chip">Génération musicale</span>
       </div>
+      <div class="hero-cta">
+        <a class="btn btn-gradient" href="https://github.com/alicekdsjvhsvukjdwn/music-of-our-emotions-demo" target="_blank" rel="noopener">
+          Code (GitHub)
+        </a>
+        <a class="btn btn-glass" href="../assets/mooe/slides.pdf" target="_blank" rel="noopener">
+          Slides (PDF)
+        </a>
+      </div>
+    </div>
 
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px;">
-        <!-- Remplace par TON lien GitHub -->
-        <a class="btn" href="https://github.com/alicekdsjvhsvukjdwn/music-of-our-emotions-demo" target="_blank" rel="noopener">Code (GitHub)</a>
-        <!-- Optionnel si tu exportes tes slides -->
-        <a class="btn" href="../assets/mooe/slides.pdf" target="_blank" rel="noopener">Slides (PDF)</a>
+    <!-- Pipeline visual card -->
+    <div class="hero-visual">
+      <div class="visual-label">Pipeline</div>
+
+      <div class="pipe-row-label">Concept complet</div>
+      <div class="pipe-row">
+        <div class="pipe-step muted">Capteurs<br><small style="font-weight:500;font-size:10px;opacity:.7">EEG/GSR</small></div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step muted">Features<br><small style="font-weight:500;font-size:10px;opacity:.7">prétraitement</small></div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step muted">CNN→VAD<br><small style="font-weight:500;font-size:10px;opacity:.7">valence/arousal</small></div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step active ps3">Émotions<br><small style="font-weight:500;font-size:10px;opacity:.85">RandomForest</small></div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step active ps4">Audio<br><small style="font-weight:500;font-size:10px;opacity:.85">génération</small></div>
       </div>
 
-      <div class="grid">
-        <div class="card">
-          <div class="k">Objectif</div>
-          <p class="p">
-            Transformer un signal brut (physio) en information exploitable : état émotionnel → décision de génération musicale.
+      <div class="pipe-divider"></div>
+
+      <div class="pipe-row-label">Démo offline (reproductible)</div>
+      <div class="pipe-row">
+        <div class="pipe-step active ps1">VAD<br><small style="font-weight:500;font-size:10px;opacity:.85">exemple</small></div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step active ps2">RF<br><small style="font-weight:500;font-size:10px;opacity:.85">émotions</small></div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step active ps3">Prompt<br><small style="font-weight:500;font-size:10px;opacity:.85">génération</small></div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step active ps4">WAV<br><small style="font-weight:500;font-size:10px;opacity:.85">généré</small></div>
+      </div>
+
+      <div class="pipe-divider"></div>
+      <p style="font-size:11.5px; color: var(--ink-soft); line-height:1.5;">
+        La démo offline est entièrement reproductible sans matériel spécifique.
+        L'acquisition temps réel (EEG/GSR) nécessite du matériel dédié.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── PAGE BODY ─── -->
+  <main>
+    <div class="page-body">
+
+      <!-- LEFT COLUMN -->
+      <div>
+
+        <!-- KPI CARDS -->
+        <div class="section-head">
+          <div class="section-head-dot" style="background: linear-gradient(135deg, var(--c1), var(--c2));"></div>
+          <span>Résultats</span>
+        </div>
+        <div class="kpi-row" style="margin-bottom: 32px;">
+          <div class="kpi-card">
+            <div class="kpi-label">Objectif</div>
+            <div class="kpi-value">Signal physio brut → état émotionnel → décision musicale</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Modèle</div>
+            <div class="kpi-value">RandomForest sur features VAD — top émotions prédites avec scores de confiance</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Métriques</div>
+            <div class="kpi-value">Scores de probabilité par émotion. Ajouter ici 1–2 métriques de validation.</div>
+          </div>
+        </div>
+
+        <!-- RESULT IMAGE -->
+        <section class="result-section">
+          <div class="section-head">
+            <div class="section-head-dot" style="background: linear-gradient(135deg, var(--c4), var(--c5));"></div>
+            <span>Top émotions prédites</span>
+          </div>
+          <div class="media-card">
+            <img
+              src="../assets/mooe/results.png"
+              alt="Top émotions prédites (démo offline)"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            >
+            <div class="media-placeholder" style="display:none;">results.png</div>
+          </div>
+        </section>
+
+        <!-- AUDIO -->
+        <section class="card audio-card">
+          <div class="section-head" style="margin-bottom:8px;">
+            <div class="section-head-dot" style="background: linear-gradient(135deg, var(--c6), var(--c1));"></div>
+            <span>Démo audio</span>
+          </div>
+          <audio controls preload="none">
+            <source src="../assets/mooe/generated_music_2.wav" type="audio/wav">
+            Votre navigateur ne supporte pas l'audio.
+          </audio>
+          <div class="audio-note">
+            Démo offline reproductible : VAD → émotions → prompt → rendu audio.<br>
+            Acquisition temps réel non incluse (matériel requis).
+          </div>
+          <div class="audio-prompt">
+            <strong>Prompt (extrait)</strong> : "Une musique avec 62% energizing, 48% pump-up, 34% triumphant, 24% heroic, 22% joyful."
+          </div>
+        </section>
+
+        <!-- LIMITS -->
+        <section class="card limits-card">
+          <div class="section-head" style="margin-bottom:10px;">
+            <div class="section-head-dot" style="background: linear-gradient(135deg, var(--c2), var(--c3));"></div>
+            <span>Limites & suite</span>
+          </div>
+          <p>
+            Généralisation inter-individus, bruit et variabilité des signaux, évaluation utilisateur.
+            Suite envisagée : calibration personnalisée, modèles séquentiels,
+            et critères musicaux plus stricts (cohérence, structure).
           </p>
+        </section>
+
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+
+        <div class="card card-spectrum">
+          <div class="card-title">Ce que j'ai fait</div>
+          <div class="dl">
+            <div class="dl-row">
+              <div class="dl-label">Objectif</div>
+              <div class="dl-value">Transformer un signal physio brut en état émotionnel exploitable pour la génération musicale.</div>
+            </div>
+            <div class="dl-row">
+              <div class="dl-label">Pipeline</div>
+              <div class="dl-value">Prétraitement → features → entraînement/évaluation → prédiction → mapping → rendu audio.</div>
+            </div>
+            <div class="dl-row">
+              <div class="dl-label">Modèles</div>
+              <div class="dl-value">RandomForest pour la classification émotionnelle. CNN pour VAD (concept).</div>
+            </div>
+            <div class="dl-row">
+              <div class="dl-label">Données</div>
+              <div class="dl-value">Dataset open source physiologique. Démo offline reproductible.</div>
+            </div>
+          </div>
         </div>
 
         <div class="card">
-          <div class="k">Pipeline</div>
-          <p class="p">
-            Prétraitement → features → entraînement/évaluation → prédiction → mapping / génération → rendu audio.
-          </p>
+          <div class="card-title">Compétences</div>
+          <div class="skill-pills">
+            <span class="pill">Python</span>
+            <span class="pill">Scikit-learn</span>
+            <span class="pill">Pandas / NumPy</span>
+            <span class="pill">Feature engineering</span>
+            <span class="pill">Signal processing</span>
+            <span class="pill">Génération audio</span>
+          </div>
         </div>
 
-        <div class="card">
-          <div class="k">Résultats</div>
-          <p class="p">
-            Résumé des performances + exemple de rendu (audio). (Ajoute ici 1–2 métriques quand tu veux.)
-          </p>
+        <div class="card card-dark">
+          <div class="card-title">Une question ?</div>
+          <p>Je suis disponible pour présenter la démo ou discuter de la méthodologie.</p>
+          <a class="btn-block" href="mailto:alice1gay@gmail.fr">Me contacter</a>
         </div>
-      </div>
 
-      <div class="media" style="padding:14px;">
-        <svg viewBox="0 0 980 190" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma du pipeline">
-          <defs>
-            <style>
-              .box{fill:rgba(255,255,255,.92);stroke:rgba(17,17,17,.18);stroke-width:2;rx:14;ry:14}
-              .boxMuted{fill:rgba(255,255,255,.55);stroke:rgba(17,17,17,.14);stroke-width:2;rx:14;ry:14}
-              .t{font:800 15px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#111}
-              .s{font:600 12px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:rgba(17,17,17,.65)}
-              .tag{font:800 11px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:rgba(17,17,17,.58); letter-spacing:.08em}
-              .a{stroke:rgba(17,17,17,.32);stroke-width:2}
-            </style>
-            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-              <path d="M0,0 L10,3 L0,6 Z" fill="rgba(17,17,17,.32)"/>
-            </marker>
-          </defs>
-      
-          <!-- Row 1: pipeline complet (grisé sur acquisition/CNN) -->
-          <text class="tag" x="14" y="22">PIPELINE COMPLET (concept)</text>
-      
-          <rect class="boxMuted" x="14"  y="36" width="160" height="62"/>
-          <rect class="boxMuted" x="198" y="36" width="160" height="62"/>
-          <rect class="boxMuted" x="382" y="36" width="160" height="62"/>
-          <rect class="box"      x="566" y="36" width="160" height="62"/>
-          <rect class="box"      x="750" y="36" width="216" height="62"/>
-      
-          <line class="a" x1="174" y1="67" x2="198" y2="67" marker-end="url(#arrow)"/>
-          <line class="a" x1="358" y1="67" x2="382" y2="67" marker-end="url(#arrow)"/>
-          <line class="a" x1="542" y1="67" x2="566" y2="67" marker-end="url(#arrow)"/>
-          <line class="a" x1="726" y1="67" x2="750" y2="67" marker-end="url(#arrow)"/>
-      
-          <text class="t" x="94"  y="62" text-anchor="middle">Capteurs</text>
-          <text class="s" x="94"  y="82" text-anchor="middle">EEG / GSR / Resp</text>
-      
-          <text class="t" x="278" y="62" text-anchor="middle">Features</text>
-          <text class="s" x="278" y="82" text-anchor="middle">prétraitement</text>
-      
-          <text class="t" x="462" y="62" text-anchor="middle">CNN → VAD</text>
-          <text class="s" x="462" y="82" text-anchor="middle">valence/arousal/dominance</text>
-      
-          <text class="t" x="646" y="62" text-anchor="middle">Émotions</text>
-          <text class="s" x="646" y="82" text-anchor="middle">RandomForest</text>
-      
-          <text class="t" x="858" y="62" text-anchor="middle">Prompt → Audio</text>
-          <text class="s" x="858" y="82" text-anchor="middle">génération musicale</text>
-      
-          <!-- Row 2: ce que tu exécutes vraiment -->
-          <text class="tag" x="14" y="128">DÉMO OFFLINE (reproductible)</text>
-      
-          <rect class="box" x="14"  y="142" width="220" height="40"/>
-          <rect class="box" x="258" y="142" width="220" height="40"/>
-          <rect class="box" x="502" y="142" width="220" height="40"/>
-          <rect class="box" x="746" y="142" width="220" height="40"/>
-      
-          <line class="a" x1="234" y1="162" x2="258" y2="162" marker-end="url(#arrow)"/>
-          <line class="a" x1="478" y1="162" x2="502" y2="162" marker-end="url(#arrow)"/>
-          <line class="a" x1="722" y1="162" x2="746" y2="162" marker-end="url(#arrow)"/>
-      
-          <text class="t" x="124" y="168" text-anchor="middle">VAD (exemple)</text>
-          <text class="t" x="368" y="168" text-anchor="middle">RF émotions</text>
-          <text class="t" x="612" y="168" text-anchor="middle">Prompt</text>
-          <text class="t" x="856" y="168" text-anchor="middle">WAV généré</text>
-        </svg>
-      </div>
+      </aside>
+    </div>
+  </main>
 
-      <div class="media">
-        <img src="../assets/mooe/results.png" alt="Top émotions prédites (démo offline)">
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="footer-inner">
+      <div>© <span id="y"></span> Alice Gay — Marseille</div>
+      <div class="footer-links">
+        <a href="../index.html">Portfolio</a>
+        <a href="mailto:alice1gay@gmail.fr">Email</a>
+        <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Haut ↑</a>
       </div>
-
-      <div class="card" style="margin-top:14px;">
-        <div class="k">Démo audio</div>
-        <audio class="audio" controls preload="none">
-          <source src="../assets/mooe/generated_music_2.wav" type="audio/wav">
-          Votre navigateur ne supporte pas l'audio.
-        </audio>
-        <div class="foot">
-          Démo offline reproductible : VAD → émotions → prompt → rendu audio. (Acquisition temps réel non incluse : matériel requis.)
-          <strong>Prompt (extrait)</strong> : “Une musique avec 62.0% energizing, 48.0% pump-up, 34.0% triumphant, 24.0% heroic, 22.0% joyful.”
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:14px;">
-        <div class="k">Limites & suite</div>
-        <p class="p">
-          Généralisation inter-individus, bruit/variabilité, évaluation utilisateur. Suite : calibration perso, modèles séquentiels,
-          et critères musicaux plus stricts (cohérence, structure).
-        </p>
-      </div>
-    </section>
-
-    <div class="foot">© <span id="y"></span> Alice Gay</div>
-  </div>
+    </div>
+  </footer>
 
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
