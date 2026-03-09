@@ -39,18 +39,19 @@
     a{ color: inherit; }
     .container{ max-width: var(--maxw); margin:0 auto; padding: 0 var(--pad); }
 
+    /* ── HEADER NOIR ── */
     header{
       position: sticky; top:0; z-index:20;
-      background: rgba(250,250,247,.88);
+      background: rgba(10,10,10,.96);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid rgba(255,255,255,.10);
     }
     .nav{
       display:flex; align-items:center; justify-content:space-between;
       padding: 14px 0;
       gap: 12px;
     }
-    .brand{ font-weight: 900; font-size: 13px; letter-spacing:.02em; }
+    .brand{ font-weight: 900; font-size: 13px; letter-spacing:.02em; color: #fff; }
     .actions{ display:flex; gap:10px; flex-wrap:wrap; }
 
     .btn{
@@ -62,8 +63,18 @@
       font-weight:800; font-size: 13px;
       transition: transform .12s ease;
       white-space:nowrap;
+      color: #111;
     }
     .btn:hover{ transform: translateY(-1px); }
+
+    /* Boutons header : "Retour portfolio" et "CV" */
+    .btn.nav-btn{
+      background: rgba(255,255,255,.12);
+      color: #e8f0ff;
+      border-color: rgba(255,255,255,.22);
+    }
+    .btn.nav-btn:hover{ background: rgba(255,255,255,.20); }
+
     .btn.dark{
       background: rgba(17,17,17,.92);
       color:#fff; border-color: rgba(0,0,0,.12);
@@ -71,6 +82,7 @@
     .btn.cta{
       background: color-mix(in srgb, var(--accent) 14%, #fff);
       border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+      color: #111;
     }
 
     /* Conteneur principal pour le contenu */
@@ -93,20 +105,27 @@
       line-height: 1.05;
       letter-spacing: -.02em;
       margin: 18px 0 10px;
+      /* Blanc/très clair pour le titre principal */
+      color: #ffffff;
+      text-shadow: 0 2px 12px rgba(0,0,0,.35);
     }
     .kicker{
       text-transform: uppercase;
       letter-spacing: .12em;
       font-weight: 900;
       font-size: 12px;
-      color:  rgba(250, 250, 247);
+      color: rgba(220, 235, 255, 0.9);
       margin-top: 10px;
     }
     .lead{
       max-width: 72ch;
-      color: rgba(17,17,17,.72);
+      /* Texte clair sur fond sombre */
+      color: rgba(220, 235, 255, 0.88);
       font-size: 15px;
       margin: 0 0 18px;
+    }
+    .lead strong {
+      color: #fff;
     }
 
     .grid{
@@ -123,6 +142,11 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: clamp(16px, 2vw, 26px);
+    }
+
+    /* Titres des cartes en noir */
+    .card h2 {
+      color: #111 !important;
     }
 
     .dl{
@@ -182,8 +206,8 @@
     <div class="container nav">
       <div class="brand">Alice Gay — Projet RTM</div>
       <div class="actions">
-        <a class="btn" href="../index.html">← Retour portfolio</a>
-        <a class="btn dark" href="../assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
+        <a class="btn nav-btn" href="../index.html">← Retour portfolio</a>
+        <a class="btn nav-btn" href="../assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
       </div>
     </div>
   </header>
@@ -194,7 +218,7 @@
       <h1>RTM — Structuration, contrôles qualité et restitution exploitable</h1>
       <p class="lead">
         Travail de nettoyage / normalisation / vérification de cohérence sur des données tramway, avec production de règles qualité
-        et d’une restitution interactive. <strong>La démo ci-dessous utilise un fichier anonymisé.</strong>
+        et d'une restitution interactive. <strong>La démo ci-dessous utilise un fichier anonymisé.</strong>
       </p>
 
       <div class="actions" style="margin: 10px 0 18px;">
@@ -204,12 +228,12 @@
 
       <div class="grid">
         <section class="card">
-          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">Démo interactive</h2>
+          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15; color:#111;">Démo interactive</h2>
           
-          <div class="note" style="margin: 0 0 12px; font-size: 12.5px; line-height: 1.5;">
+          <div class="note" style="margin: 0 0 12px; font-size: 12.5px; line-height: 1.5; color: rgba(17,17,17,.65);">
             La carte ci-dessous est affichée dans le portfolio au format intégré.
             Le <strong>format final livré à la RTM</strong> est la <strong>version plein écran</strong>
-            (bouton “Ouvrir la carte en grand”), qui correspond au rendu prévu pour l’exploitation.
+            (bouton "Ouvrir la carte en grand"), qui correspond au rendu prévu pour l'exploitation.
           </div>
           
           <iframe
@@ -220,13 +244,13 @@
           ></iframe>
           <div class="note">
             La démo charge automatiquement un dataset anonymisé (JSON).
-            Si besoin, vous pouvez aussi tester l’import manuel avec le fichier
+            Si besoin, vous pouvez aussi tester l'import manuel avec le fichier
             <code>T1T2T3_anonymized.xlsx</code>.
           </div>
         </section>
 
         <aside class="card">
-          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15;">Ce que j’ai fait</h2>
+          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15; color:#111;">Ce que j'ai fait</h2>
           <div class="dl">
             <div class="row">
               <div class="label">Objectif</div>
@@ -234,7 +258,7 @@
             </div>
             <div class="row">
               <div class="label">Méthode</div>
-              <div class="value">Normalisation, règles de cohérence, détection d’anomalies, restitution.</div>
+              <div class="value">Normalisation, règles de cohérence, détection d'anomalies, restitution.</div>
             </div>
             <div class="row">
               <div class="label">Livrables</div>
@@ -247,8 +271,8 @@
           </div>
 
           <div style="margin-top:14px; display:grid; gap:10px;">
-            <a class="btn" href="../assets/rtm/anonymize_rtm.py" target="_blank" rel="noopener">Voir le script d’anonymisation</a>
-            <a class="btn" href="mailto:alice1gay@gmail.fr">Me contacter</a>
+            <a class="btn" href="../assets/rtm/anonymize_rtm.py" target="_blank" rel="noopener" style="color:#111;">Voir le script d'anonymisation</a>
+            <a class="btn" href="mailto:alice1gay@gmail.fr" style="color:#111;">Me contacter</a>
           </div>
         </aside>
       </div>
@@ -272,13 +296,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
