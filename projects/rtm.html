@@ -38,11 +38,10 @@
       flex-direction: column;
     }
     main { flex: 1; position: relative; z-index: 1; }
-    
+
     a{ color: inherit; }
     .container{ max-width: var(--maxw); margin:0 auto; padding: 0 var(--pad); }
 
-    /* ── HEADER NOIR ── */
     header{
       position: sticky; top:0; z-index:20;
       background: rgba(10,10,10,.96);
@@ -51,8 +50,7 @@
     }
     .nav{
       display:flex; align-items:center; justify-content:space-between;
-      padding: 14px 0;
-      gap: 12px;
+      padding: 14px 0; gap: 12px;
     }
     .brand{ font-weight: 900; font-size: 13px; letter-spacing:.02em; color: #fff; padding-left: 8px; }
     .actions{ display:flex; gap:10px; flex-wrap:wrap; }
@@ -65,55 +63,33 @@
       text-decoration:none;
       font-weight:800; font-size: 13px;
       transition: transform .12s ease;
-      white-space:nowrap;
-      color: #111;
+      white-space:nowrap; color: #111;
     }
     .btn:hover{ transform: translateY(-1px); }
-
-    .btn.nav-btn{
-      background: rgba(255,255,255,.12);
-      color: #e8f0ff;
-      border-color: rgba(255,255,255,.22);
-    }
+    .btn.nav-btn{ background: rgba(255,255,255,.12); color: #e8f0ff; border-color: rgba(255,255,255,.22); }
     .btn.nav-btn:hover{ background: rgba(255,255,255,.20); }
-
-    .btn.dark{
-      background: rgba(17,17,17,.92);
-      color:#fff; border-color: rgba(0,0,0,.12);
-    }
+    .btn.dark{ background: rgba(17,17,17,.92); color:#fff; border-color: rgba(0,0,0,.12); }
     .btn.cta{
       background: color-mix(in srgb, var(--accent) 14%, #fff);
       border-color: color-mix(in srgb, var(--accent) 28%, transparent);
       color: #111;
     }
 
-    main {
-      position: relative;
-      z-index: 1;
-      flex: 1;
-    }
-
     h1{
       font-size: clamp(28px, 3.4vw, 54px);
-      line-height: 1.05;
-      letter-spacing: -.02em;
-      margin: 18px 0 10px;
-      color: #ffffff;
+      line-height: 1.05; letter-spacing: -.02em;
+      margin: 18px 0 10px; color: #ffffff;
       text-shadow: 0 2px 12px rgba(0,0,0,.35);
     }
     .kicker{
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      font-weight: 900;
-      font-size: 12px;
-      color: rgba(220, 235, 255, 0.9);
-      margin-top: 10px;
+      text-transform: uppercase; letter-spacing: .12em;
+      font-weight: 900; font-size: 12px;
+      color: rgba(220, 235, 255, 0.9); margin-top: 10px;
     }
     .lead{
       max-width: 72ch;
       color: rgba(220, 235, 255, 0.88);
-      font-size: 15px;
-      margin: 0 0 18px;
+      font-size: 15px; margin: 0 0 18px;
     }
     .lead strong { color: #fff; }
 
@@ -136,17 +112,11 @@
 
     .dl{ display:grid; gap: 10px; margin-top: 8px; }
     .dl .row{
-      display:grid; gap: 2px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(17,17,17,.10);
+      display:grid; gap: 2px; padding: 10px 12px;
+      border-radius: 14px; border: 1px solid rgba(17,17,17,.10);
       background: rgba(255,255,255,.75);
     }
-    .dl .label{
-      font-size: 11px; font-weight: 900;
-      letter-spacing:.12em; text-transform: uppercase;
-      color: rgba(17,17,17,.55);
-    }
+    .dl .label{ font-size: 11px; font-weight: 900; letter-spacing:.12em; text-transform: uppercase; color: rgba(17,17,17,.55); }
     .dl .value{ font-size: 13px; color: rgba(17,17,17,.80); }
 
     .note{ font-size: 12px; color: rgba(17,17,17,.58); margin-top: 10px; }
@@ -158,8 +128,7 @@
     }
     .footer-inner{
       display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      color: rgba(255,255,255,.70); font-size: 13px;
-      align-items: center;
+      color: rgba(255,255,255,.70); font-size: 13px; align-items: center;
     }
     .footer-inner a{ color: rgba(255,255,255,.70); text-decoration: none; }
     .footer-inner a:hover{ color: #fff; }
@@ -192,15 +161,15 @@
       </div>
 
       <div class="grid">
+
+        <!-- Colonne gauche : démo -->
         <section class="card">
           <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15; color:#111;">Démo interactive</h2>
-          
           <div class="note" style="margin: 0 0 12px; font-size: 12.5px; line-height: 1.5; color: rgba(17,17,17,.65);">
             La carte ci-dessous est affichée dans le portfolio au format intégré.
             Le <strong>format final livré à la RTM</strong> est la <strong>version plein écran</strong>
             (bouton "Ouvrir la carte en grand"), qui correspond au rendu prévu pour l'exploitation.
           </div>
-          
           <iframe
             src="./rtm-map.html"
             title="Cartographie interactive RTM"
@@ -214,78 +183,77 @@
           </div>
         </section>
 
-        <aside class="card">
-          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15; color:#111;">Ce que j'ai fait</h2>
-          <div class="dl">
-            <div class="row">
-              <div class="label">Objectif</div>
-              <div class="value">Rendre les données fiables + lisibles pour décision / exploitation.</div>
-            </div>
-            <div class="row">
-              <div class="label">Méthode</div>
-              <div class="value">Normalisation, règles de cohérence, détection d'anomalies, restitution.</div>
-            </div>
-            <div class="row">
-              <div class="label">Livrables</div>
-              <div class="value">Base structurée • contrôles qualité • carte interactive • documentation.</div>
-            </div>
-            <div class="row">
-              <div class="label">Confidentialité</div>
-              <div class="value">Démo = données anonymisées (pas de données brutes publiées).</div>
-            </div>
-          </div>
+        <!-- Colonne droite : 2 cartes empilées -->
+        <div style="display: flex; flex-direction: column; gap: clamp(14px, 2vw, 22px);">
 
-          <div style="margin-top:14px; display:grid; gap:10px;">
-            <a class="btn" href="../assets/rtm/anonymize_rtm.py" target="_blank" rel="noopener" style="color:#111;">Voir le script d'anonymisation</a>
-            <a class="btn" href="/cdn-cgi/l/email-protection#fa9b9693999fcb9d9b83ba9d979b9396d49c88" style="color:#111;">Me contacter</a>
-          </div>
+          <aside class="card">
+            <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15; color:#111;">Ce que j'ai fait</h2>
+            <div class="dl">
+              <div class="row">
+                <div class="label">Objectif</div>
+                <div class="value">Rendre les données fiables + lisibles pour décision / exploitation.</div>
+              </div>
+              <div class="row">
+                <div class="label">Méthode</div>
+                <div class="value">Normalisation, règles de cohérence, détection d'anomalies, restitution.</div>
+              </div>
+              <div class="row">
+                <div class="label">Livrables</div>
+                <div class="value">Base structurée • contrôles qualité • carte interactive • documentation.</div>
+              </div>
+              <div class="row">
+                <div class="label">Confidentialité</div>
+                <div class="value">Démo = données anonymisées (pas de données brutes publiées).</div>
+              </div>
+            </div>
+            <div style="margin-top:14px; display:grid; gap:10px;">
+              <a class="btn" href="../assets/rtm/anonymize_rtm.py" target="_blank" rel="noopener" style="color:#111;">Voir le script d'anonymisation</a>
+              <a class="btn" href="/cdn-cgi/l/email-protection#fa9b9693999fcb9d9b83ba9d979b9396d49c88" style="color:#111;">Me contacter</a>
+            </div>
+          </aside>
 
-          <!-- ── Bulle détail stage ── -->
-          <div style="
-            margin-top: 16px;
-            background: rgba(29,78,216,0.08);
-            border: 1px solid rgba(29,78,216,0.18);
-            border-radius: 14px;
-            padding: 16px 18px;
-          ">
-            <div style="font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: rgba(17,17,17,.45); margin-bottom: 12px;">
+          <!-- Bulle détail stage — carte indépendante -->
+          <div class="card">
+            <div style="font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: rgba(17,17,17,.45); margin-bottom: 16px;">
               Ce que j'ai fait concrètement
             </div>
-            <div style="display: grid; gap: 10px;">
+            <div style="display: grid; gap: 16px;">
 
-              <div style="display: flex; gap: 10px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">①</span>
-                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 17px; flex-shrink: 0; margin-top: 2px;">①</span>
+                <p style="margin:0; font-size: 14px; color: rgba(17,17,17,.80); line-height: 1.6;">
                   <strong style="color:#111;">Revue & structuration des données</strong> — Recensement de 18 types de données techniques (revêtement, pose, rayon, écartement, dévers, vitesse, stations, ADV…) issues de fichiers hétérogènes pour T1, T2 et T3.
                 </p>
               </div>
 
-              <div style="display: flex; gap: 10px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">②</span>
-                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 17px; flex-shrink: 0; margin-top: 2px;">②</span>
+                <p style="margin:0; font-size: 14px; color: rgba(17,17,17,.80); line-height: 1.6;">
                   <strong style="color:#111;">Nettoyage & normalisation Python / Excel</strong> — Base unifiée avec clef commune PK-Source, déduplication, recalcul de PK réguliers, injection de coordonnées GPS.
                 </p>
               </div>
 
-              <div style="display: flex; gap: 10px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">③</span>
-                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 17px; flex-shrink: 0; margin-top: 2px;">③</span>
+                <p style="margin:0; font-size: 14px; color: rgba(17,17,17,.80); line-height: 1.6;">
                   <strong style="color:#111;">Règles qualité & détection d'anomalies</strong> — Critères multicritères (rayon &lt; 200 m + écartement &gt; 1 440 mm + vitesse &lt; 30 km/h → crissement). 6 zones à risque identifiées et vérifiées terrain.
                 </p>
               </div>
 
-              <div style="display: flex; gap: 10px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">④</span>
-                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 17px; flex-shrink: 0; margin-top: 2px;">④</span>
+                <p style="margin:0; font-size: 14px; color: rgba(17,17,17,.80); line-height: 1.6;">
                   <strong style="color:#111;">Restitution interactive (Power BI + carte web)</strong> — Outil de priorisation des interventions avec filtres dynamiques et cartographie des zones à risque.
                 </p>
               </div>
 
             </div>
           </div>
-          <!-- ── fin bulle ── -->
+          <!-- fin bulle -->
 
-        </aside>
+        </div>
+        <!-- fin colonne droite -->
+
       </div>
     </div>
   </main>
