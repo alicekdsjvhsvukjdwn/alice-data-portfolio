@@ -203,6 +203,16 @@
       margin-bottom: 28px;
     }
 
+    .hero-intro {
+      font-family: var(--serif);
+      font-size: clamp(19px, 2vw, 26px);
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.65;
+      max-width: 44ch;
+      margin-bottom: 28px;
+    }
+
     .chips {
       display: flex; flex-wrap: wrap; gap: 8px;
       margin-bottom: 24px;
@@ -267,6 +277,23 @@
     .ps4 { background: linear-gradient(135deg, #4fc3f7, #a78bfa); }
 
     .pipe-arrow { color: var(--ink-soft); font-size: 14px; font-weight: 900; flex-shrink: 0; }
+
+    /* chain layout — wraps gracefully */
+    .pipe-chain {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      row-gap: 8px;
+    }
+    .pipe-chain .pipe-step small {
+      display: block;
+      font-weight: 500;
+      font-size: 10px;
+      opacity: .75;
+      margin-top: 2px;
+    }
 
     .pipe-row-label {
       font-size: 10px; font-weight: 800; letter-spacing: .12em;
@@ -552,13 +579,6 @@
     </div>
   </header>
 
-  <!-- ─── INTRO ─── -->
-  <div style="padding: clamp(28px,4vw,52px) var(--pad) 0; position:relative; z-index:1; max-width: 72ch;">
-    <p style="font-size: clamp(15px, 1.5vw, 18px); color: var(--ink); line-height: 1.75; font-weight: 400;">
-      Et si votre cerveau pouvait composer de la musique ? <strong>Music Of Our Emotions</strong> est un projet de recherche qui capte des signaux physiologiques en temps réel — activité cérébrale (EEG), réponse cutanée (GSR) et respiration — pour détecter votre état émotionnel et générer automatiquement un morceau de musique qui lui correspond. Le tout sans aucune interaction manuelle.
-    </p>
-  </div>
-
   <!-- ─── HERO ─── -->
   <section class="hero">
     <div>
@@ -567,11 +587,11 @@
         Affective Computing · Open Source
       </div>
       <h1>Music Of Our<br><em>Emotions</em></h1>
-      <p class="hero-lead">
-        À partir de signaux physiologiques, extraction de features, prédiction
-        de dimensions émotionnelles, puis génération d'une proposition musicale
-        adaptée à l'état détecté — démo audio incluse.
+
+      <p class="hero-intro">
+        Et si votre cerveau pouvait composer de la musique ? Ce projet capte des signaux physiologiques — activité cérébrale EEG, réponse cutanée et respiration — pour détecter votre état émotionnel et générer automatiquement un morceau qui lui correspond.
       </p>
+
       <div class="chips">
         <span class="chip">Python</span>
         <span class="chip">ML</span>
@@ -594,29 +614,29 @@
       <div class="visual-label">Pipeline</div>
 
       <div class="pipe-row-label">Concept complet</div>
-      <div class="pipe-row">
-        <div class="pipe-step muted">Capteurs<br><small style="font-weight:500;font-size:10px;opacity:.7">EEG/GSR</small></div>
+      <div class="pipe-chain">
+        <div class="pipe-step muted">Capteurs<br><small>EEG/GSR</small></div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step muted">Features<br><small style="font-weight:500;font-size:10px;opacity:.7">prétraitement</small></div>
+        <div class="pipe-step muted">Features<br><small>prétraitement</small></div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step muted">CNN→VAD<br><small style="font-weight:500;font-size:10px;opacity:.7">valence/arousal</small></div>
+        <div class="pipe-step muted">CNN→VAD<br><small>valence/arousal</small></div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps3">Émotions<br><small style="font-weight:500;font-size:10px;opacity:.85">RandomForest</small></div>
+        <div class="pipe-step active ps3">Émotions<br><small>RandomForest</small></div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps4">Audio<br><small style="font-weight:500;font-size:10px;opacity:.85">génération</small></div>
+        <div class="pipe-step active ps4">Audio<br><small>génération</small></div>
       </div>
 
       <div class="pipe-divider"></div>
 
       <div class="pipe-row-label">Démo offline (reproductible)</div>
-      <div class="pipe-row">
-        <div class="pipe-step active ps1">VAD<br><small style="font-weight:500;font-size:10px;opacity:.85">exemple</small></div>
+      <div class="pipe-chain">
+        <div class="pipe-step active ps1">VAD<br><small>exemple</small></div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps2">RF<br><small style="font-weight:500;font-size:10px;opacity:.85">émotions</small></div>
+        <div class="pipe-step active ps2">RF<br><small>émotions</small></div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps3">Prompt<br><small style="font-weight:500;font-size:10px;opacity:.85">génération</small></div>
+        <div class="pipe-step active ps3">Prompt<br><small>génération</small></div>
         <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps4">WAV<br><small style="font-weight:500;font-size:10px;opacity:.85">généré</small></div>
+        <div class="pipe-step active ps4">WAV<br><small>généré</small></div>
       </div>
 
       <div class="pipe-divider"></div>
