@@ -231,6 +231,51 @@
         et d'une restitution interactive. <strong>La démo ci-dessous utilise un fichier anonymisé.</strong>
       </p>
 
+      <div style="
+        background: rgba(255,255,255,0.10);
+        border: 1px solid rgba(220,235,255,0.22);
+        border-radius: 16px;
+        padding: 20px 24px;
+        margin: 0 0 18px;
+        max-width: 860px;
+        backdrop-filter: blur(6px);
+      ">
+        <div style="font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: rgba(220,235,255,0.7); margin-bottom: 12px;">
+          Ce que j'ai fait concrètement
+        </div>
+        <div style="display: grid; gap: 8px;">
+      
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">①</span>
+            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
+              <strong style="color:#fff;">Revue & structuration des données</strong> — Recensement de 18 types de données techniques (revêtement, type de pose, rayon, écartement, dévers, vitesse, stations, ADV…) issues de fichiers sources hétérogènes pour les lignes T1, T2 et T3.
+            </p>
+          </div>
+      
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">②</span>
+            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
+              <strong style="color:#fff;">Nettoyage & normalisation sous Python / Excel</strong> — Construction d'une base unifiée avec clef commune PK-Source (point kilométrique RTM + fichier d'origine), déduplication, recalcul de PK réguliers, injection de coordonnées GPS.
+            </p>
+          </div>
+      
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">③</span>
+            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
+              <strong style="color:#fff;">Règles qualité & détection d'anomalies</strong> — Définition de critères de cohérence multicritères (ex. rayon &lt; 200 m + écartement &gt; 1 440 mm + vitesse &lt; 30 km/h → risque de crissement). Identification de 6 zones à risque, vérifiées empiriquement sur le terrain.
+            </p>
+          </div>
+      
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">④</span>
+            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
+              <strong style="color:#fff;">Restitution interactive (Power BI + carte web)</strong> — Outil de priorisation des interventions maintenance avec filtres dynamiques, cartographie des zones à risque et documentation des règles appliquées.
+            </p>
+          </div>
+      
+        </div>
+      </div>
+
       <div class="actions" style="margin: 10px 0 18px;">
         <a class="btn cta" href="rtm-map.html" target="_blank" rel="noopener">Ouvrir la carte en grand ↗</a>
         <a class="btn" href="../assets/rtm/T1T2T3_anonymized.xlsx" target="_blank" rel="noopener">Télécharger le dataset anonymisé</a>
@@ -306,4 +351,5 @@
   </script>
 </body>
 </html>
+
 
