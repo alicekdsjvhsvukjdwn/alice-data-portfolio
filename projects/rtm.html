@@ -70,7 +70,6 @@
     }
     .btn:hover{ transform: translateY(-1px); }
 
-    /* Boutons header : "Retour portfolio" et "CV" */
     .btn.nav-btn{
       background: rgba(255,255,255,.12);
       color: #e8f0ff;
@@ -88,20 +87,10 @@
       color: #111;
     }
 
-    /* Conteneur principal pour le contenu */
     main {
       position: relative;
       z-index: 1;
       flex: 1;
-    }
-    
-    /* Style pour les cartes et le contenu */
-    .card {
-      background: rgba(1, 103, 156, 0.9);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(16px, 2vw, 26px);
     }
 
     h1{
@@ -109,7 +98,6 @@
       line-height: 1.05;
       letter-spacing: -.02em;
       margin: 18px 0 10px;
-      /* Blanc/très clair pour le titre principal */
       color: #ffffff;
       text-shadow: 0 2px 12px rgba(0,0,0,.35);
     }
@@ -123,14 +111,11 @@
     }
     .lead{
       max-width: 72ch;
-      /* Texte clair sur fond sombre */
       color: rgba(220, 235, 255, 0.88);
       font-size: 15px;
       margin: 0 0 18px;
     }
-    .lead strong {
-      color: #fff;
-    }
+    .lead strong { color: #fff; }
 
     .grid{
       display:grid;
@@ -147,51 +132,24 @@
       box-shadow: var(--shadow);
       padding: clamp(16px, 2vw, 26px);
     }
+    .card h2 { color: #111 !important; }
 
-    /* Titres des cartes en noir */
-    .card h2 {
-      color: #111 !important;
-    }
-
-    .dl{
-      display:grid;
-      gap: 10px;
-      margin-top: 8px;
-    }
+    .dl{ display:grid; gap: 10px; margin-top: 8px; }
     .dl .row{
-      display:grid;
-      gap: 2px;
+      display:grid; gap: 2px;
       padding: 10px 12px;
       border-radius: 14px;
       border: 1px solid rgba(17,17,17,.10);
       background: rgba(255,255,255,.75);
     }
     .dl .label{
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing:.12em;
-      text-transform: uppercase;
+      font-size: 11px; font-weight: 900;
+      letter-spacing:.12em; text-transform: uppercase;
       color: rgba(17,17,17,.55);
     }
-    .dl .value{
-      font-size: 13px;
-      color: rgba(17,17,17,.80);
-    }
+    .dl .value{ font-size: 13px; color: rgba(17,17,17,.80); }
 
-    .iframe{
-      width:100%;
-      height: min(70vh, 820px);
-      border: 1px solid rgba(17,17,17,.14);
-      border-radius: 16px;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    .note{
-      font-size: 12px;
-      color: rgba(17,17,17,.58);
-      margin-top: 10px;
-    }
+    .note{ font-size: 12px; color: rgba(17,17,17,.58); margin-top: 10px; }
 
     footer{
       border-top: 1px solid rgba(255,255,255,.12);
@@ -203,10 +161,7 @@
       color: rgba(255,255,255,.70); font-size: 13px;
       align-items: center;
     }
-    .footer-inner a{
-      color: rgba(255,255,255,.70);
-      text-decoration: none;
-    }
+    .footer-inner a{ color: rgba(255,255,255,.70); text-decoration: none; }
     .footer-inner a:hover{ color: #fff; }
   </style>
 </head>
@@ -230,51 +185,6 @@
         Travail de nettoyage / normalisation / vérification de cohérence sur des données tramway, avec production de règles qualité
         et d'une restitution interactive. <strong>La démo ci-dessous utilise un fichier anonymisé.</strong>
       </p>
-
-      <div style="
-        background: rgba(255,255,255,0.10);
-        border: 1px solid rgba(220,235,255,0.22);
-        border-radius: 16px;
-        padding: 20px 24px;
-        margin: 0 0 18px;
-        max-width: 860px;
-        backdrop-filter: blur(6px);
-      ">
-        <div style="font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: rgba(220,235,255,0.7); margin-bottom: 12px;">
-          Ce que j'ai fait concrètement
-        </div>
-        <div style="display: grid; gap: 8px;">
-      
-          <div style="display: flex; gap: 10px; align-items: flex-start;">
-            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">①</span>
-            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
-              <strong style="color:#fff;">Revue & structuration des données</strong> — Recensement de 18 types de données techniques (revêtement, type de pose, rayon, écartement, dévers, vitesse, stations, ADV…) issues de fichiers sources hétérogènes pour les lignes T1, T2 et T3.
-            </p>
-          </div>
-      
-          <div style="display: flex; gap: 10px; align-items: flex-start;">
-            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">②</span>
-            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
-              <strong style="color:#fff;">Nettoyage & normalisation sous Python / Excel</strong> — Construction d'une base unifiée avec clef commune PK-Source (point kilométrique RTM + fichier d'origine), déduplication, recalcul de PK réguliers, injection de coordonnées GPS.
-            </p>
-          </div>
-      
-          <div style="display: flex; gap: 10px; align-items: flex-start;">
-            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">③</span>
-            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
-              <strong style="color:#fff;">Règles qualité & détection d'anomalies</strong> — Définition de critères de cohérence multicritères (ex. rayon &lt; 200 m + écartement &gt; 1 440 mm + vitesse &lt; 30 km/h → risque de crissement). Identification de 6 zones à risque, vérifiées empiriquement sur le terrain.
-            </p>
-          </div>
-      
-          <div style="display: flex; gap: 10px; align-items: flex-start;">
-            <span style="color: #7DD3FC; font-size: 15px; margin-top: 1px; flex-shrink: 0;">④</span>
-            <p style="margin:0; font-size: 13.5px; color: rgba(220,235,255,0.88); line-height: 1.55;">
-              <strong style="color:#fff;">Restitution interactive (Power BI + carte web)</strong> — Outil de priorisation des interventions maintenance avec filtres dynamiques, cartographie des zones à risque et documentation des règles appliquées.
-            </p>
-          </div>
-      
-        </div>
-      </div>
 
       <div class="actions" style="margin: 10px 0 18px;">
         <a class="btn cta" href="rtm-map.html" target="_blank" rel="noopener">Ouvrir la carte en grand ↗</a>
@@ -329,6 +239,52 @@
             <a class="btn" href="../assets/rtm/anonymize_rtm.py" target="_blank" rel="noopener" style="color:#111;">Voir le script d'anonymisation</a>
             <a class="btn" href="/cdn-cgi/l/email-protection#fa9b9693999fcb9d9b83ba9d979b9396d49c88" style="color:#111;">Me contacter</a>
           </div>
+
+          <!-- ── Bulle détail stage ── -->
+          <div style="
+            margin-top: 16px;
+            background: rgba(29,78,216,0.08);
+            border: 1px solid rgba(29,78,216,0.18);
+            border-radius: 14px;
+            padding: 16px 18px;
+          ">
+            <div style="font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: rgba(17,17,17,.45); margin-bottom: 12px;">
+              Ce que j'ai fait concrètement
+            </div>
+            <div style="display: grid; gap: 10px;">
+
+              <div style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">①</span>
+                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+                  <strong style="color:#111;">Revue & structuration des données</strong> — Recensement de 18 types de données techniques (revêtement, pose, rayon, écartement, dévers, vitesse, stations, ADV…) issues de fichiers hétérogènes pour T1, T2 et T3.
+                </p>
+              </div>
+
+              <div style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">②</span>
+                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+                  <strong style="color:#111;">Nettoyage & normalisation Python / Excel</strong> — Base unifiée avec clef commune PK-Source, déduplication, recalcul de PK réguliers, injection de coordonnées GPS.
+                </p>
+              </div>
+
+              <div style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">③</span>
+                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+                  <strong style="color:#111;">Règles qualité & détection d'anomalies</strong> — Critères multicritères (rayon &lt; 200 m + écartement &gt; 1 440 mm + vitesse &lt; 30 km/h → crissement). 6 zones à risque identifiées et vérifiées terrain.
+                </p>
+              </div>
+
+              <div style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: #1D4ED8; font-size: 14px; flex-shrink: 0; margin-top: 1px;">④</span>
+                <p style="margin:0; font-size: 12.5px; color: rgba(17,17,17,.75); line-height: 1.55;">
+                  <strong style="color:#111;">Restitution interactive (Power BI + carte web)</strong> — Outil de priorisation des interventions avec filtres dynamiques et cartographie des zones à risque.
+                </p>
+              </div>
+
+            </div>
+          </div>
+          <!-- ── fin bulle ── -->
+
         </aside>
       </div>
     </div>
@@ -351,5 +307,3 @@
   </script>
 </body>
 </html>
-
-
