@@ -158,7 +158,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: clamp(32px, 5vw, 72px);
-      align-items: center;
+      align-items: start;
     }
     @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } }
 
@@ -370,12 +370,38 @@
     }
     .media-card img {
       width: 100%;
-      max-height: clamp(320px, 40vh, 520px);
-      object-fit: contain;
-      display: block;
       height: auto;
+      display: block;
+      max-height: 480px;
+      object-fit: contain;
       background: #fff;
     }
+    .media-caption {
+      padding: 14px 18px 16px;
+      background: rgba(255,255,255,.6);
+      border-top: 1px solid var(--line);
+      font-size: 12.5px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .media-caption-item strong {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 3px;
+    }
+    .media-caption-item span {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    @media (max-width: 640px) { .media-caption { grid-template-columns: 1fr; } }
     .media-placeholder {
       width: 100%; aspect-ratio: 3/1;
       display: flex; align-items: center; justify-content: center;
@@ -657,6 +683,20 @@
               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
             >
             <div class="media-placeholder" style="display:none;">results.png</div>
+            <div class="media-caption">
+              <div class="media-caption-item">
+                <strong>Top émotion</strong>
+                <span>Energizing — 62%</span>
+              </div>
+              <div class="media-caption-item">
+                <strong>Espace émotionnel</strong>
+                <span>13 dimensions (Cowen et al.)</span>
+              </div>
+              <div class="media-caption-item">
+                <strong>Seuil de sélection</strong>
+                <span>Émotions &gt; 10% incluses dans le prompt</span>
+              </div>
+            </div>
           </div>
         </section>
 
