@@ -154,13 +154,18 @@
        HERO
     ══════════════════════════════════════════ */
     .hero {
-      padding: clamp(36px, 5vw, 60px) var(--pad) clamp(36px, 5vw, 64px);
+      padding: clamp(20px, 3vw, 40px) var(--pad) 0;
+      position: relative; z-index: 1;
+    }
+
+    .hero-top {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: clamp(32px, 5vw, 72px);
+      gap: clamp(32px, 5vw, 64px);
       align-items: start;
+      margin-bottom: clamp(28px, 4vw, 48px);
     }
-    @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) { .hero-top { grid-template-columns: 1fr; } }
 
     .hero-kicker {
       display: inline-flex; align-items: center; gap: 8px;
@@ -170,7 +175,7 @@
       border: 1.5px solid var(--card-border);
       font-size: 11px; font-weight: 800; letter-spacing: .14em;
       text-transform: uppercase; color: var(--ink-soft);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
     .kicker-dot {
       width: 22px; height: 22px; border-radius: 50%;
@@ -180,10 +185,10 @@
 
     .hero h1 {
       font-family: var(--serif);
-      font-size: clamp(36px, 5vw, 70px);
+      font-size: clamp(26px, 3vw, 44px);
       line-height: 1.05;
       letter-spacing: -.02em;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
 
     /* Spectrum underline on title */
@@ -205,12 +210,12 @@
 
     .hero-intro {
       font-family: var(--serif);
-      font-size: clamp(19px, 2vw, 26px);
+      font-size: clamp(16px, 1.6vw, 22px);
       font-style: italic;
       color: var(--ink);
       line-height: 1.65;
       max-width: 44ch;
-      margin-bottom: 28px;
+      margin-bottom: 22px;
     }
 
     .chips {
@@ -581,70 +586,69 @@
 
   <!-- ─── HERO ─── -->
   <section class="hero">
-    <div>
-      <div class="hero-kicker">
-        <div class="kicker-dot"></div>
-        Affective Computing · Open Source
-      </div>
-      <h1>Music Of Our<br><em>Emotions</em></h1>
 
-      <p class="hero-intro">
-        Et si votre cerveau pouvait composer de la musique ? Ce projet capte des signaux physiologiques — activité cérébrale EEG, réponse cutanée et respiration — pour détecter votre état émotionnel et générer automatiquement un morceau qui lui correspond.
-      </p>
-
-      <div class="chips">
-        <span class="chip">Python</span>
-        <span class="chip">ML</span>
-        <span class="chip">Feature engineering</span>
-        <span class="chip">Affective computing</span>
-        <span class="chip">Génération musicale</span>
+    <!-- TOP ROW: intro left / pipeline right -->
+    <div class="hero-top">
+      <div>
+        <div class="hero-kicker">
+          <div class="kicker-dot"></div>
+          Affective Computing · Open Source
+        </div>
+        <h1>Music Of Our<br><em>Emotions</em></h1>
+        <p class="hero-intro">
+          Et si votre cerveau pouvait composer de la musique ? Ce projet capte des signaux physiologiques — activité cérébrale EEG, réponse cutanée et respiration — pour détecter votre état émotionnel et générer automatiquement un morceau qui lui correspond.
+        </p>
+        <div class="chips">
+          <span class="chip">Python</span>
+          <span class="chip">ML</span>
+          <span class="chip">Feature engineering</span>
+          <span class="chip">Affective computing</span>
+          <span class="chip">Génération musicale</span>
+        </div>
+        <div class="hero-cta">
+          <a class="btn btn-gradient" href="https://github.com/alicekdsjvhsvukjdwn/music-of-our-emotions-demo" target="_blank" rel="noopener">Code (GitHub)</a>
+          <a class="btn btn-glass" href="../assets/mooe/slides.pdf" target="_blank" rel="noopener">Slides (PDF)</a>
+        </div>
       </div>
-      <div class="hero-cta">
-        <a class="btn btn-gradient" href="https://github.com/alicekdsjvhsvukjdwn/music-of-our-emotions-demo" target="_blank" rel="noopener">
-          Code (GitHub)
-        </a>
-        <a class="btn btn-glass" href="../assets/mooe/slides.pdf" target="_blank" rel="noopener">
-          Slides (PDF)
-        </a>
+
+      <!-- Pipeline visual card -->
+      <div class="hero-visual">
+        <div class="visual-label">Pipeline</div>
+
+        <div class="pipe-row-label">Concept complet</div>
+        <div class="pipe-chain">
+          <div class="pipe-step muted">Capteurs<br><small>EEG/GSR</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step muted">Features<br><small>prétraitement</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step muted">CNN→VAD<br><small>valence/arousal</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step active ps3">Émotions<br><small>RandomForest</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step active ps4">Audio<br><small>génération</small></div>
+        </div>
+
+        <div class="pipe-divider"></div>
+
+        <div class="pipe-row-label">Démo offline (reproductible)</div>
+        <div class="pipe-chain">
+          <div class="pipe-step active ps1">VAD<br><small>exemple</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step active ps2">RF<br><small>émotions</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step active ps3">Prompt<br><small>génération</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step active ps4">WAV<br><small>généré</small></div>
+        </div>
+
+        <div class="pipe-divider"></div>
+        <p style="font-size:11.5px; color:var(--ink-soft); line-height:1.5;">
+          La démo offline est entièrement reproductible sans matériel spécifique.
+          L'acquisition temps réel (EEG/GSR) nécessite du matériel dédié.
+        </p>
       </div>
     </div>
 
-    <!-- Pipeline visual card -->
-    <div class="hero-visual">
-      <div class="visual-label">Pipeline</div>
-
-      <div class="pipe-row-label">Concept complet</div>
-      <div class="pipe-chain">
-        <div class="pipe-step muted">Capteurs<br><small>EEG/GSR</small></div>
-        <span class="pipe-arrow">→</span>
-        <div class="pipe-step muted">Features<br><small>prétraitement</small></div>
-        <span class="pipe-arrow">→</span>
-        <div class="pipe-step muted">CNN→VAD<br><small>valence/arousal</small></div>
-        <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps3">Émotions<br><small>RandomForest</small></div>
-        <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps4">Audio<br><small>génération</small></div>
-      </div>
-
-      <div class="pipe-divider"></div>
-
-      <div class="pipe-row-label">Démo offline (reproductible)</div>
-      <div class="pipe-chain">
-        <div class="pipe-step active ps1">VAD<br><small>exemple</small></div>
-        <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps2">RF<br><small>émotions</small></div>
-        <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps3">Prompt<br><small>génération</small></div>
-        <span class="pipe-arrow">→</span>
-        <div class="pipe-step active ps4">WAV<br><small>généré</small></div>
-      </div>
-
-      <div class="pipe-divider"></div>
-      <p style="font-size:11.5px; color: var(--ink-soft); line-height:1.5;">
-        La démo offline est entièrement reproductible sans matériel spécifique.
-        L'acquisition temps réel (EEG/GSR) nécessite du matériel dédié.
-      </p>
-    </div>
   </section>
 
   <!-- ─── PAGE BODY ─── -->
