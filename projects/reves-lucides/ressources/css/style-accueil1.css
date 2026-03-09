@@ -1,0 +1,200 @@
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+
+@keyframes move-background {
+    from {
+      -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to { 
+      -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+  }
+  @-webkit-keyframes move-background {
+    from {
+      -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to { 
+      -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+  }
+  
+  @-moz-keyframes move-background {    
+    from {
+      -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to { 
+      -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+  }
+  
+      @-webkit-keyframes move-background {
+    from {
+      -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to { 
+      -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+  }
+  
+  .background-container{
+    position: fixed;
+    top: 0;
+    left:0;
+    bottom: 0;
+    right: 0;
+  }
+  
+  .stars {
+   background: black url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png) repeat;
+   position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    z-index: -1;
+  }
+  
+  .twinkling{
+    width:10000px;
+    height: 100%;
+    background: transparent url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png") repeat;
+    background-size: 1000px 1000px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: -1;
+      
+      -moz-animation:move-background 70s linear infinite;
+    -ms-animation:move-background 70s linear infinite;
+    -o-animation:move-background 70s linear infinite;
+    -webkit-animation:move-background 70s linear infinite;
+    animation:move-background 70s linear infinite;
+    
+  }
+  
+  .clouds{
+    width:10000px;
+    height: 100%;
+    background: transparent url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/clouds_repeat.png") repeat;
+    background-size: 1000px 1000px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 0;
+  
+     -moz-animation:move-background 150s linear infinite;
+    -ms-animation:move-background 150s linear infinite;
+    -o-animation:move-background 150s linear infinite;
+    -webkit-animation:move-background 150s linear infinite;
+    animation:move-background 150s linear infinite;
+  }
+  #moon{
+    height: 30vh;
+    width:30vh;
+    position: absolute;
+    z-index: 0;
+    right: 20px;
+  }
+  
+  View Compiled
+  
+  
+html {
+    display: flex; 
+    
+  }
+    /*body {
+      height: 100%;
+      font-family: "Open Sans", sans-serif;
+      background: linear-gradient(0deg, rgb(108, 108, 172), rgb(0, 0, 0));
+      background-repeat: no-repeat;
+      background-size: cover;
+    }  */
+    
+   
+    p {
+      font-family:  "Open Sans", sans-serif;
+      
+    }
+    
+    a {
+      color:rgb(161, 157, 197);
+      text-decoration: none;
+    }
+    
+    a:hover {
+      color: #3c8a8c;
+      text-decoration: none;
+    }
+    
+    h1 {
+      
+      font-family: "Raleway", sans-serif, bold;
+      text-transform: uppercase;
+      font-size: 100px;
+      color:#3c8a8c;
+    }
+
+    h2 {
+      font-family: 'Indie Flower', cursive, bold;
+      font-size: 3em;
+      color:rgb(255, 255, 255);
+    }
+  
+  
+   /*--------------------------------------------------------------
+    # Boutons
+    --------------------------------------------------------------*/
+
+  
+    #logo {
+      top:0%;
+      right:0%;
+      z-index:9;
+      position:relative;
+    }
+
+    .boutons {
+      /*width: 600px;*/
+      position:absolute;
+      top: 50%;
+      left: 50%;
+      right:50%;
+      /*margin-top: -2em; /*set to a negative number 1/2 of your height
+      margin-left: -15em; */
+      display:flex;
+      justify-content: center;
+      align-items:center;
+      transform: scale(1.5);
+  }
+   #bouton1 {
+      width:100px;
+      height: 150px;
+      border-radius:50%;
+       
+  } 
+  #bouton2 {
+      margin-left:140px;
+      width:100px;
+      height: 150px;
+      border-radius:50%;
+      
+  }
+    
+   #bouton1:hover {
+    transform: scale(1.5);
+    }
+   
+  #bouton2:hover {
+    transform: scale(1.5);
+    }
+    
+    
+  
+  /* Fin boutons */
+  
+  
