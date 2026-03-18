@@ -280,10 +280,6 @@
         radial-gradient(900px 520px at 20% 80%, rgba(255,255,255,.06), transparent 55%),
         var(--bg);
     }
-
-    .home-content h1 {
-      font-size: clamp(1.2rem, 2.4vw, 2.6rem);
-    }
     
     /* ---- Cerveau en "background" 3D (sans plaque/rectangle) ---- */
     .hero-brain-bg{
@@ -351,14 +347,14 @@
     
     .home-content{
       max-width: 860px;
-      padding: clamp(16px, 3.2vw, 30px);
+      padding: clamp(8px, 1.5vw, 20px);
     }
     
     .home-content h1{
       font-family: 'Playfair Display', serif;
       font-weight: 300;
-      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
-      margin: 0 auto 1rem;
+      font-size: clamp(1rem, 2vw, 2.2rem);
+      margin: 0 0 0.6rem;
       line-height: 1.12;
       color: #fff;
       text-shadow: 0 12px 44px rgba(0,0,0,.40);
@@ -366,8 +362,8 @@
     
     .home-content p{
       font-family: 'Open Sans', sans-serif;
-      font-size: clamp(1.02rem, 1.6vw, 1.2rem);
-      margin: 0 auto 1.8rem;
+      font-size: clamp(0.85rem, 1.2vw, 1rem);
+      margin: 0 0 1rem;
       max-width: 56ch;
       color: rgba(255,255,255,.92);
       text-shadow: 0 10px 34px rgba(0,0,0,.30);
@@ -605,7 +601,7 @@
     }
     
     /* responsive : sur petits écrans on coupe les décors (sinon c’est le bazar) */
-    @media (max-width: 1200px){
+    @media (max-width: 980px){
       .float-art{ display:none; }
     }
 
@@ -802,7 +798,7 @@
     }
     .about-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
     
-    .about-text{ padding: 10px 0; }
+    .about-text{ padding: 0; }
     .about-text h3{
       margin: 0 0 10px;
       font-family: var(--sans);
@@ -1024,10 +1020,10 @@
     .hero-separator {
       width: 36px; height: 1px;
       background: rgba(93,139,244,0.5);
-      margin: 18px 0 20px;
+      margin: 10px 0 12px;
     }
     .hero-tags {
-      margin-top: 36px;
+      margin-top: 16px;
       display: flex; gap: 18px; flex-wrap: wrap;
     }
     .hero-tags span {
