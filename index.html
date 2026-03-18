@@ -698,7 +698,7 @@
       overflow: hidden;
     
       background-image: var(--bgimg, none);
-      background-size: cover;
+      background-size: 110%;
       background-position: center var(--bgy, 50%);
       background-repeat: no-repeat;
     
@@ -758,6 +758,10 @@
       margin: 0;
       color: rgba(17,17,17,.70);
       font-size: clamp(13px, 1.2vw, 16px);
+    }
+
+    .cta-large { /* Banderole 0 : mes projets */
+      min-height: clamp(200px, 35vh, 380px);
     }
 
     /* =========================
@@ -1080,7 +1084,7 @@
     </section>
 
     <!-- CTA Parallax 0 -->
-    <section class="cta parallax-cta" data-bg="assets/parallax_01.jpg">
+    <section class="cta cta-large parallax-cta" data-bg="assets/parallax_01.jpg">
       <div class="container">
         <div class="text-center">
           <h1>Mes projets</h1>
@@ -1681,7 +1685,7 @@
         const r = sec.getBoundingClientRect();
         const t = (vp.bottom - r.top) / (vpH + r.height);
         const p = Math.max(0, Math.min(1, t));
-        const shift = 18;
+        const shift = 40;
         const y = 50 + (p - 0.5) * -shift;
         sec.style.setProperty('--bgy', `${y.toFixed(2)}%`);
       });
