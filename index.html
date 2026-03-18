@@ -453,15 +453,15 @@
     }
     
     /* entête texte dans l’image (comme l’exemple “NAVER …”) */
-    .px-head{
-      position:absolute;
-      left: 14px;
-      right: 14px;
-      top: 12px;
+    .px-head {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: auto;
       z-index: 3;
-      display:flex;
-      flex-direction: column;
-      gap: 6px;
+      padding: 12px 14px;
+      background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.4) 70%, transparent 100%);
     }
     
     .px-kicker{
@@ -472,13 +472,14 @@
       font-weight: 800;
     }
     
-    .px-title{
-      margin:0;
+    .px-title {
+      margin: 0;
       font-family: var(--serif);
-      font-size: 20px;
-      line-height: 1.1;
+      font-size: clamp(16px, 1.6vw, 22px);
+      line-height: 1.2;
       color: #fff;
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+      text-shadow: 0 2px 8px rgba(0,0,0,.5);
+      font-weight: 700;
     }
     
     /* stickers / objets pixel */
@@ -1120,84 +1121,79 @@
           <!-- Contenu Projets -->
           <div class="projects-content">  
             <div class="px-grid">
+              
               <!-- 1) RTM -->
-              <article class="px-card">
-                <div class="px-thumb" style="--bgimg:url('assets/projects/rtm_bg.jpg');" aria-hidden="true">
-                  <div class="bg"></div>
-    
-                  <div class="px-head">
-                    <div class="px-kicker">RTM — stage 6 mois</div>
-                    <h3 class="px-title">Structuration & qualité de données</h3>
+                <article class="px-card">
+                  <a href="projects/rtm.html" target="_blank" rel="noopener" style="display:block; text-decoration:none;">
+                    <div class="px-thumb" style="--bgimg:url('assets/projects/rtm_bg.jpg');">
+                      <div class="bg"></div>
+                      <div class="px-head">
+                        <h3 class="px-title">Structuration & qualité de données</h3>
+                      </div>
+                    </div>
+                  </a>
+                  <div class="px-body">
+                    <p class="desc">Structuration de données réelles complexes + restitution exploitable.</p>
+                    <div class="px-actions">
+                      <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
+                    </div>
                   </div>
-                </div>
-    
-                <div class="px-body">
-                  <p class="desc">Structuration de données réelles complexes + restitution exploitable.</p>
-                  <div class="px-actions">
-                    <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
+                </article>
+                
+                <!-- 2) Billetterie -->
+                <article class="px-card">
+                  <a href="projects/billetterie.html" style="display:block; text-decoration:none;">
+                    <div class="px-thumb" style="--bgimg:url('assets/projects/billetterie_bg.jpg');">
+                      <div class="bg"></div>
+                      <div class="px-head">
+                        <h3 class="px-title">KPI & dashboard</h3>
+                      </div>
+                    </div>
+                  </a>
+                  <div class="px-body">
+                    <p class="desc">Pipeline billetterie : génération, contrôles qualité, exports et restitution dashboard.</p>
+                    <div class="px-actions">
+                      <a class="btn light" href="projects/billetterie.html">Explorer →</a>
+                    </div>
                   </div>
-                </div>
-              </article>
-    
-              <!-- 2) Billetterie -->
-              <article class="px-card">
-                <div class="px-thumb" style="--bgimg:url('assets/projects/billetterie_bg.jpg');" aria-hidden="true">
-                  <div class="bg"></div>
-    
-                  <div class="px-head">
-                    <div class="px-kicker">Billetterie : projet démo</div>
-                    <h3 class="px-title">KPI & dashboard</h3>
+                </article>
+                
+                <!-- 3) MOOE -->
+                <article class="px-card">
+                  <a href="projects/music-of-our-emotions.html" style="display:block; text-decoration:none;">
+                    <div class="px-thumb" style="--bgimg:url('assets/projects/mooe_bg.jpg');">
+                      <div class="bg"></div>
+                      <div class="px-head">
+                        <h3 class="px-title">Music Of Our Emotions</h3>
+                      </div>
+                    </div>
+                  </a>
+                  <div class="px-body">
+                    <p class="desc">Prédire l'état émotionnel à partir de signaux + générer une proposition musicale.</p>
+                    <div class="px-actions">
+                      <a class="btn light" href="projects/music-of-our-emotions.html">Explorer →</a>
+                    </div>
                   </div>
-                </div>
-    
-                <div class="px-body">
-                  <p class="desc">Pipeline billetterie : génération, contrôles qualité, exports et restitution dashboard.</p>
-                  <div class="px-actions">
-                    <a class="btn light" href="projects/billetterie.html">Explorer →</a>
+                </article>
+                
+                <!-- 4) Rêves lucides -->
+                <article class="px-card">
+                  <a href="projects/reves-lucides/accueil.html" style="display:block; text-decoration:none;">
+                    <div class="px-thumb" style="--bgimg:url('assets/projects/reves_bg.jpg');">
+                      <div class="bg"></div>
+                      <div class="px-head">
+                        <h3 class="px-title">Rêves lucides — site interactif</h3>
+                      </div>
+                    </div>
+                  </a>
+                  <div class="px-body">
+                    <p class="desc">Projet web : vulgarisation + narration interactive autour du rêve et du rêve lucide.</p>
+                    <div class="px-actions">
+                      <a class="btn light" href="projects/reves-lucides/accueil.html">Explorer →</a>
+                    </div>
                   </div>
-                </div>
-              </article>
-    
-              <!-- 3) MOOE -->
-              <article class="px-card">
-                <div class="px-thumb" style="--bgimg:url('assets/projects/mooe_bg.jpg');" aria-hidden="true">
-                  <div class="bg"></div>
-    
-                  <div class="px-head">
-                    <div class="px-kicker">Affective computing</div>
-                    <h3 class="px-title">Music Of Our Emotions</h3>
-                  </div>
-
-                </div>
-    
-                <div class="px-body">
-                  <p class="desc">Prédire l’état émotionnel à partir de signaux + générer une proposition musicale.</p>
-                  <div class="px-actions">
-                    <a class="btn light" href="projects/music-of-our-emotions.html">Explorer →</a>
-                  </div>
-                </div>
-              </article>
-    
-              <!-- 4) Rêves lucides -->
-              <article class="px-card">
-                <div class="px-thumb" style="--bgimg:url('assets/projects/reves_bg.jpg');" aria-hidden="true">
-                  <div class="bg"></div>
-    
-                  <div class="px-head">
-                    <div class="px-kicker">Travail encadré de recherche</div>
-                    <h3 class="px-title">Rêves lucides — site interactif</h3>
-                  </div>
-
-                </div>
-    
-                <div class="px-body">
-                  <p class="desc">Projet web : vulgarisation + narration interactive autour du rêve et du rêve lucide.</p>
-                  <div class="px-actions">
-                    <a class="btn light" href="projects/reves-lucides/accueil.html">Explorer →</a>
-                  </div>
-                </div>
-              </article>
-            </div><!-- /px-grid -->
+                </article>
+                </div><!-- /px-grid -->
     
             <div class="edu-wrap">
               <h3 class="edu-title">Formations</h3>
