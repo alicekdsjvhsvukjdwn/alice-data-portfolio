@@ -569,20 +569,21 @@
     .projects-stage{
       position: relative;
       isolation: isolate; /* important pour les z-index propres */
+      overflow: visible;
     }
     
     /* décors flottants */
     .float-art{
       position: absolute;
       top: -54px;                 /* remonte un peu au-dessus du titre */
-      width: 420px;
+      width: clamp(180px, 22vw, 420px);
       height: 320px;
       pointer-events: none;       /* pas de clics volés */
       z-index: 0;                 /* derrière le contenu */
     }
     
-    .float-art.left{ left: 0px; }
-    .float-art.right{ right: 0px; }
+    .float-art.left{ left: clamp(-20px, -2vw, 0px); }
+    .float-art.right{ right: clamp(-20px, -2vw, 0px); }
     
     .float-art img{
       position: absolute;
@@ -598,11 +599,6 @@
     .projects-content{
       position: relative;
       z-index: 2;
-    }
-    
-    /* responsive : sur petits écrans on coupe les décors (sinon c’est le bazar) */
-    @media (max-width: 800px){
-      .float-art{ display:none; }
     }
 
     /* ======= Formations ======= */
