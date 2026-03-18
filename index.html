@@ -83,11 +83,17 @@
     }
 
     /* état après HOME (noir) */
-    header.site.is-scrolled{
+    header.site.is-scrolled {
       background: rgba(10,10,10,.45);
-      border-bottom-color: rgba(255,255,255,.06);
+      border-bottom-color: rgba(255,255,255,.05);
       backdrop-filter: blur(12px);
       color: #fff;
+      height: 52px;
+    }
+
+    header.site.is-scrolled .btn {
+      padding: 7px 11px;
+      font-size: 12px;
     }
 
     .nav{
@@ -786,7 +792,8 @@
    ========================= */
 
     #about.panel {
-      padding-top: clamp(18px, 3vh, 40px);
+       min-height: unset;
+       padding-top: clamp(18px, 3vh, 40px);
     }
     
     .about-wrap{
