@@ -565,14 +565,6 @@
 
     #preview{ position: relative; }
 
-    #preview.panel {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px));
-      padding-bottom: clamp(26px, 5vh, 70px);
-    }
-    
     #preview .container {
       width: 100%;
     }
@@ -1088,6 +1080,16 @@
       </div>
     </section>
 
+    <!-- CTA Parallax 0 -->
+    <section class="cta parallax-cta" data-bg="assets/parallax_01.jpg">
+      <div class="container">
+        <div class="text-center">
+          <h1>Mes projets</h1>
+          <p class="cta-sub">Des cas concrets, un livrable lisible, une logique décision → action</p>
+        </div>
+      </div>
+    </section>
+
     <!-- PROJETS -->
     <section id="preview" class="panel">
       <div class="container">
@@ -1113,14 +1115,7 @@
           </div>
     
           <!-- Contenu Projets -->
-          <div class="projects-content">
-    
-            <div class="section-title">
-              <h2>Projets</h2>
-            </div>
-    
-            <p class="sublead">Des cas concrets, un livrable lisible, et une logique “décision → action”.</p>
-    
+          <div class="projects-content">  
             <div style="margin: 10px 0 18px;">
               <a class="btn light" href="#contact">Me contacter</a>
             </div>
