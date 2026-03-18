@@ -564,6 +564,18 @@
     /* ===== Décor autour de la section Projets (style “Work” de l’exemple) ===== */
 
     #preview{ position: relative; }
+
+    #preview.panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px));
+      padding-bottom: clamp(26px, 5vh, 70px);
+    }
+    
+    #preview .container {
+      width: 100%;
+    }
     
     /* zone qui porte la grille + les décors */
     .projects-stage{
