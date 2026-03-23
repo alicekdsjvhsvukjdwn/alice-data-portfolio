@@ -1059,6 +1059,25 @@
       font-size: 10px; color: rgba(244,244,245,0.25);
       letter-spacing: 0.06em;
     }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .stats span {
+      background: rgba(255,255,255,0.08);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    
+    .stats span:hover {
+      background: rgba(255,255,255,0.15);
+    }
   </style>
 </head>
 
@@ -1166,10 +1185,21 @@
                     </div>
                   </a>
                   <div class="px-body">
-                    <p class="desc">+500 000 lignes intégrées, base de 49 093 enregistrements, 100 % de complétude sur T1/T2. Deux outils livrés aux équipes terrain : Power BI + cartographie HTML interactive.</p>
+                    <div class="stats">
+                      <span>500 000+ lignes</span>
+                      <span>49 093 enregistrements</span>
+                      <span>100% complétude (T1/T2)</span>
+                      <span>2 outils (Power BI + carte HTML)</span>
+                    </div>
+                  
+                    <p class="desc-impact">
+                      Données terrain transformées en outils d’aide à la décision
+                    </p>
+                  
                     <div class="px-actions">
                       <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
                     </div>
+                  
                   </div>
                 </article>
                 
