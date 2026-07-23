@@ -583,49 +583,305 @@
       align-items: start;
     }
 
-    /* ===== Décor autour de la section Projets (style “Work” de l’exemple) ===== */
+    /* =========================================================
+   DÉCORS SCIENTIFIQUES AUTOUR DE LA SECTION PROJETS
+   ========================================================= */
 
-    #preview{ position: relative; }
+#preview {
+  position: relative;
+  overflow: hidden;
+}
 
-    #preview .container {
-      width: 100%;
-    }
-    
-    /* zone qui porte la grille + les décors */
-    .projects-stage{
-      position: relative;
-      isolation: isolate; /* important pour les z-index propres */
-      overflow: visible;
-    }
-    
-    /* décors flottants */
-    .float-art{
-      position: absolute;
-      top: -120px;                 /* remonte un peu au-dessus du titre */
-      width: clamp(180px, 22vw, 420px);
-      height: 320px;
-      pointer-events: none;       /* pas de clics volés */
-      z-index: 0;                 /* derrière le contenu */
-    }
-    
-    .float-art.left{ left: clamp(-20px, -2vw, 0px); }
-    .float-art.right{ right: clamp(-20px, -2vw, 0px); }
-    
-    .float-art img{
-      position: absolute;
-      height: auto;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      filter: drop-shadow(0 18px 26px rgba(0,0,0,.55));
-      transform: translate(-50%,-50%) rotate(var(--r, 0deg));
-      opacity: var(--o, 1);
-    }
-    
-    /* ton contenu Projets au-dessus */
-    .projects-content{
-      position: relative;
-      z-index: 2;
-    }
+#preview .container {
+  width: 100%;
+}
+
+/* Zone qui contient les décors et les cartes */
+.projects-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+/* Les cartes passent devant les décors */
+.projects-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Conteneurs généraux des décors */
+.float-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Chaque SVG est positionné librement */
+.project-decor {
+  position: absolute;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* =========================================================
+   1. RÉSEAU DE POINTS / CONSTELLATION
+   ========================================================= */
+
+.decor-network {
+  width: clamp(130px, 15vw, 230px);
+  left: clamp(-55px, -3vw, -10px);
+  top: 4%;
+  opacity: 0.34;
+  transform: rotate(-8deg);
+}
+
+.decor-network .network-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+.decor-network .network-dot {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.decor-network .network-dot.main {
+  fill: var(--accent);
+}
+
+/* Légère respiration des points */
+.decor-network .network-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: networkPulse 4.5s ease-in-out infinite;
+}
+
+.decor-network .network-dot:nth-of-type(2) {
+  animation-delay: -1s;
+}
+
+.decor-network .network-dot:nth-of-type(3) {
+  animation-delay: -2s;
+}
+
+.decor-network .network-dot:nth-of-type(4) {
+  animation-delay: -3s;
+}
+
+@keyframes networkPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   2. COURBE EEG
+   ========================================================= */
+
+.decor-eeg {
+  width: clamp(230px, 28vw, 470px);
+  left: clamp(-100px, -5vw, -30px);
+  top: 55%;
+  opacity: 0.27;
+  transform: rotate(-3deg);
+}
+
+.decor-eeg .eeg-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: drawEeg 4.5s ease-out forwards;
+}
+
+.decor-eeg .eeg-guide {
+  fill: none;
+  stroke: rgba(244, 244, 245, 0.13);
+  stroke-width: 1;
+  stroke-dasharray: 4 8;
+}
+
+@keyframes drawEeg {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* =========================================================
+   3. TRACÉ GPS / CARTOGRAPHIE
+   ========================================================= */
+
+.decor-gps {
+  width: clamp(150px, 18vw, 270px);
+  right: clamp(-65px, -3vw, -15px);
+  top: 5%;
+  opacity: 0.34;
+  transform: rotate(8deg);
+}
+
+.decor-gps .gps-shadow {
+  fill: none;
+  stroke: rgba(168, 200, 122, 0.12);
+  stroke-width: 15;
+  stroke-linecap: round;
+}
+
+.decor-gps .gps-route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 7 9;
+}
+
+.decor-gps .gps-point {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.decor-gps .gps-point.end {
+  fill: var(--accent);
+}
+
+/* Petit déplacement du point final */
+.decor-gps .gps-point.end {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gpsPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes gpsPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+/* =========================================================
+   4. GRAPHIQUE DATA EN FILIGRANE
+   ========================================================= */
+
+.decor-chart {
+  width: clamp(145px, 17vw, 250px);
+  right: clamp(-45px, -2vw, 0px);
+  top: 58%;
+  opacity: 0.22;
+  transform: rotate(4deg);
+}
+
+.decor-chart .chart-grid line {
+  stroke: rgba(244, 244, 245, 0.17);
+  stroke-width: 1;
+}
+
+.decor-chart .chart-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.decor-chart .chart-area {
+  fill: url("#chartGradient");
+  opacity: 0.25;
+}
+
+.decor-chart .chart-dot {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 980px) {
+  .decor-network {
+    left: -55px;
+    top: 2%;
+    opacity: 0.24;
+  }
+
+  .decor-eeg {
+    left: -80px;
+    top: 62%;
+    opacity: 0.2;
+  }
+
+  .decor-gps {
+    right: -65px;
+    top: 15%;
+    opacity: 0.24;
+  }
+
+  .decor-chart {
+    right: -50px;
+    top: 70%;
+    opacity: 0.17;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Sur mobile, on garde seulement deux éléments légers */
+
+  .decor-network {
+    width: 125px;
+    left: -55px;
+    top: 1%;
+    opacity: 0.18;
+  }
+
+  .decor-gps {
+    width: 135px;
+    right: -60px;
+    top: 18%;
+    opacity: 0.17;
+  }
+
+  .decor-eeg,
+  .decor-chart {
+    display: none;
+  }
+}
+
+/* Respect des préférences d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .decor-network .network-dot,
+  .decor-gps .gps-point.end,
+  .decor-eeg .eeg-line {
+    animation: none;
+  }
+
+  .decor-eeg .eeg-line {
+    stroke-dashoffset: 0;
+  }
+}
 
     /* ======= Formations ======= */
     .edu-wrap {
@@ -1150,24 +1406,304 @@
       <div class="container">
         <div class="projects-stage">
     
-          <!-- Décor gauche (autour, pas dans les cartes) -->
-          <div class="float-art left" aria-hidden="true">
-            <!-- remplace les src par TES PNG -->
-            <img src="assets/pixel/piano.png" loading="lazy" style="left:24%; top:42%; width:120px; --r:-18deg;">
-            <img src="assets/pixel/ampoule.png" loading="lazy" style="left:32%; top:75%; width:75px; --r:10deg;">
-            <img src="assets/pixel/lune.png" loading="lazy" style="left:54%; top:24%; width:60px; --r:6deg;">
-            <img src="assets/pixel/cassette.png" loading="lazy" style="left:74%; top:24%; width:60px; --r:6deg;">
-            <img src="assets/pixel/clef.png" loading="lazy" style="left:74%; top:64%; width:60px; --r:6deg;">
-          </div>
+          <!-- =====================================================
+     DÉCORS GAUCHE : réseau neuronal + courbe EEG
+     ===================================================== -->
+
+<div class="float-art left" aria-hidden="true">
+
+  <!-- Réseau de points / constellation -->
+  <svg
+    class="project-decor decor-network"
+    viewBox="0 0 230 180"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g>
+      <!-- Connexions -->
+      <path
+        class="network-line"
+        d="M22 112 L70 46 L116 76 L166 30 L205 76"
+      />
+
+      <path
+        class="network-line"
+        d="M22 112 L90 145 L116 76 L178 142 L205 76"
+      />
+
+      <path
+        class="network-line"
+        d="M70 46 L90 145"
+      />
+
+      <path
+        class="network-line"
+        d="M116 76 L205 76"
+      />
+
+      <path
+        class="network-line"
+        d="M166 30 L178 142"
+      />
+
+      <!-- Points -->
+      <circle
+        class="network-dot"
+        cx="22"
+        cy="112"
+        r="5"
+      />
+
+      <circle
+        class="network-dot"
+        cx="70"
+        cy="46"
+        r="4"
+      />
+
+      <circle
+        class="network-dot"
+        cx="90"
+        cy="145"
+        r="6"
+      />
+
+      <circle
+        class="network-dot main"
+        cx="116"
+        cy="76"
+        r="6"
+      />
+
+      <circle
+        class="network-dot"
+        cx="166"
+        cy="30"
+        r="4"
+      />
+
+      <circle
+        class="network-dot"
+        cx="178"
+        cy="142"
+        r="5"
+      />
+
+      <circle
+        class="network-dot"
+        cx="205"
+        cy="76"
+        r="5"
+      />
+    </g>
+  </svg>
+
+
+  <!-- Courbe EEG -->
+  <svg
+    class="project-decor decor-eeg"
+    viewBox="0 0 500 120"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <!-- Ligne guide discrète -->
+    <path
+      class="eeg-guide"
+      d="M0 60 H500"
+    />
+
+    <!-- Signal EEG -->
+    <path
+      class="eeg-line"
+      d="
+        M0 60
+        L28 60
+        L38 55
+        L50 66
+        L62 59
+        L82 60
+        L95 52
+        L108 71
+        L120 25
+        L132 94
+        L144 47
+        L160 61
+        L184 60
+        L197 56
+        L210 67
+        L224 58
+        L249 60
+        L262 48
+        L274 76
+        L287 31
+        L301 89
+        L314 51
+        L329 60
+        L355 60
+        L368 56
+        L380 65
+        L393 58
+        L418 60
+        L431 52
+        L445 69
+        L458 41
+        L470 75
+        L482 57
+        L500 60
+      "
+    />
+  </svg>
+
+</div>
+
+
+<!-- =====================================================
+     DÉCORS DROITE : tracé GPS + graphique data
+     ===================================================== -->
     
-          <!-- Décor droite (autour, pas dans les cartes) -->
-          <div class="float-art right" aria-hidden="true">
-            <img src="assets/pixel/metro.png" loading="lazy" style="left:76%; top:40%; width:260px; --r:8deg;">
-            <img src="assets/pixel/rat.png" loading="lazy" style="left:36%; top:70%; width:160px; --r:-10deg;">
-            <img src="assets/pixel/game.png" loading="lazy" style="left:26%; top:22%; width:120px; --r:12deg;">
-            <img src="assets/pixel/cassette1.png" loading="lazy" style="left:74%; top:24%; width:120px; --r:6deg;">
-            <img src="assets/pixel/peinture.png" loading="lazy" style="left:30%; top:50%; width:120px; --r:6deg;">
-          </div>
+    <div class="float-art right" aria-hidden="true">
+    
+      <!-- Tracé GPS / carte -->
+      <svg
+        class="project-decor decor-gps"
+        viewBox="0 0 260 230"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- Halo derrière le trajet -->
+        <path
+          class="gps-shadow"
+          d="
+            M25 185
+            C58 165, 49 123, 87 108
+            C118 95, 108 55, 151 50
+            C192 45, 185 112, 228 128
+          "
+        />
+    
+        <!-- Trajet principal -->
+        <path
+          class="gps-route"
+          d="
+            M25 185
+            C58 165, 49 123, 87 108
+            C118 95, 108 55, 151 50
+            C192 45, 185 112, 228 128
+          "
+        />
+    
+        <!-- Étapes -->
+        <circle
+          class="gps-point"
+          cx="25"
+          cy="185"
+          r="7"
+        />
+    
+        <circle
+          class="gps-point"
+          cx="87"
+          cy="108"
+          r="5"
+        />
+    
+        <circle
+          class="gps-point"
+          cx="151"
+          cy="50"
+          r="5"
+        />
+    
+        <circle
+          class="gps-point end"
+          cx="228"
+          cy="128"
+          r="8"
+        />
+      </svg>
+    
+    
+      <!-- Graphique data en filigrane -->
+      <svg
+        class="project-decor decor-chart"
+        viewBox="0 0 260 180"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient
+            id="chartGradient"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="1"
+          >
+            <stop
+              offset="0%"
+              stop-color="#a8c87a"
+              stop-opacity="0.65"
+            />
+    
+            <stop
+              offset="100%"
+              stop-color="#a8c87a"
+              stop-opacity="0"
+            />
+          </linearGradient>
+        </defs>
+    
+        <!-- Grille -->
+        <g class="chart-grid">
+          <line x1="20" y1="30" x2="240" y2="30" />
+          <line x1="20" y1="70" x2="240" y2="70" />
+          <line x1="20" y1="110" x2="240" y2="110" />
+          <line x1="20" y1="150" x2="240" y2="150" />
+    
+          <line x1="20" y1="15" x2="20" y2="155" />
+          <line x1="75" y1="15" x2="75" y2="155" />
+          <line x1="130" y1="15" x2="130" y2="155" />
+          <line x1="185" y1="15" x2="185" y2="155" />
+          <line x1="240" y1="15" x2="240" y2="155" />
+        </g>
+    
+        <!-- Surface sous la courbe -->
+        <path
+          class="chart-area"
+          d="
+            M20 135
+            L57 108
+            L92 118
+            L126 71
+            L161 88
+            L198 43
+            L240 58
+            L240 150
+            L20 150
+            Z
+          "
+        />
+    
+        <!-- Courbe principale -->
+        <polyline
+          class="chart-line"
+          points="
+            20,135
+            57,108
+            92,118
+            126,71
+            161,88
+            198,43
+            240,58
+          "
+        />
+    
+        <!-- Points -->
+        <circle class="chart-dot" cx="20" cy="135" r="4" />
+        <circle class="chart-dot" cx="57" cy="108" r="4" />
+        <circle class="chart-dot" cx="92" cy="118" r="4" />
+        <circle class="chart-dot" cx="126" cy="71" r="4" />
+        <circle class="chart-dot" cx="161" cy="88" r="4" />
+        <circle class="chart-dot" cx="198" cy="43" r="4" />
+        <circle class="chart-dot" cx="240" cy="58" r="4" />
+      </svg>
+    
+    </div>
     
           <!-- Contenu Projets -->
           <div class="projects-content">  
