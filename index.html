@@ -587,14 +587,6 @@
    DÉCORS SCIENTIFIQUES AUTOUR DE LA SECTION PROJETS
    ========================================================= */
 
-#preview {
-  position: relative;
-  overflow: hidden;
-}
-
-#preview.panel {
-  padding-top: 24px;   /* ou 0px si tu veux vraiment coller au titre */
-}
 
 #preview .container {
   width: 100%;
@@ -602,8 +594,17 @@
 
 
     /* =========================================================
-   GRAND RÉSEAU NEURONAL DE FOND
+   RÉSEAU DE POINTS EN FOND
    ========================================================= */
+
+#preview {
+  position: relative;
+  overflow: hidden;
+}
+
+#preview.panel {
+  padding-top: 24px;
+}
 
 .projects-stage {
   position: relative;
@@ -612,66 +613,24 @@
   min-height: 100%;
 }
 
-/* Le grand fond couvre toute la section */
-.neural-background {
-    position: absolute;
-    top: -260px;
-    left: -120px;
-    right: -120px;
-    bottom: -120px;
-
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
+.neural-background{
+    position:absolute;
+    top:-420px;
+    left:-120px;
+    right:-120px;
+    bottom:-80px;
 }
 
-/* SVG pleine surface */
-.neural-svg {
+#neuralCanvas {
   width: 100%;
   height: 100%;
-  min-height: 1100px;
+  min-height: 1200px;
   display: block;
-  opacity: 0.28;
-}
-
-/* Ramifications secondaires */
-.neural-secondary {
-  stroke-width: 1.2;
-  opacity: 0.18;
-}
-
-/* Grosses branches */
-.neural-main {
-  stroke-width: 3;
   opacity: 0.42;
 }
 
-/* Petites ramifications */
-.neural-fine {
-  stroke-width: 1.1;
-  opacity: 0.28;
-}
 
-/* Nœuds */
-.neural-nodes circle {
-  fill: #0b0b0e;
-  stroke: var(--accent);
-  stroke-width: 2;
-  opacity: 0.8;
-}
-
-/* Halos */
-.node-glows {
-  opacity: 0.35;
-}
-
-/* Cartes au-dessus */
-.projects-content {
-  position: relative;
-  z-index: 2;
-}
-
-/* Voile pour rendre le fond moins présent sous les cartes */
+/* Assombrit légèrement les bords sans masquer le réseau */
 .projects-stage::before {
   content: "";
   position: absolute;
@@ -681,59 +640,34 @@
 
   background:
     radial-gradient(
-      circle at 50% 40%,
+      ellipse at 50% 30%,
       transparent 0%,
-      rgba(11, 11, 14, 0.12) 55%,
-      rgba(11, 11, 14, 0.32) 100%
+      rgba(11, 11, 14, 0.06) 48%,
+      rgba(11, 11, 14, 0.3) 100%
     );
 }
 
-/* Animation très lente et légère */
-.neural-svg {
-  transform-origin: center;
-  animation: neuralDrift 24s ease-in-out infinite alternate;
-}
-
-@keyframes neuralDrift {
-  from {
-    transform: translate3d(-8px, -5px, 0) scale(1.02);
-  }
-
-  to {
-    transform: translate3d(10px, 8px, 0) scale(1.035);
-  }
-}
-
-/* Mobile */
 @media (max-width: 800px) {
   .neural-background {
-    inset: -40px -180px -80px -180px;
+    inset: -120px -180px -100px -180px;
   }
 
-  .neural-svg {
-    min-height: 1500px;
-    opacity: 0.2;
-  }
-
-  .neural-main {
-    stroke-width: 2.4;
-  }
-
-  .node-glows {
-    opacity: 0.2;
+  #neuralCanvas {
+    min-height: 1600px;
+    opacity: 0.3;
   }
 }
 
-/* Accessibilité */
-@media (prefers-reduced-motion: reduce) {
-  .neural-svg {
-    animation: none;
-  }
+
+/* Cartes au-dessus */
+.projects-content {
+  position: relative;
+  z-index: 2;
 }
 
-    /* =========================================================
+  /* =========================================================
    FORMATIONS
-   ========================================================= */
+  ========================================================= */
 
 .edu-wrap {
   position: relative;
@@ -1270,174 +1204,9 @@
         <div class="projects-stage">
     
           <!-- Grand réseau neuronal en fond -->
-<div class="neural-background" aria-hidden="true">
-
-  <svg
-    class="neural-svg"
-    viewBox="0 0 1600 1100"
-    preserveAspectRatio="xMidYMid slice"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-
-    <defs>
-      <!-- Dégradé principal -->
-      <linearGradient id="neuralGradient" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#8aa965" />
-        <stop offset="45%" stop-color="#a8c87a" />
-        <stop offset="100%" stop-color="#68834c" />
-      </linearGradient>
-
-      <!-- Halo autour des nœuds -->
-      <radialGradient id="nodeGlow">
-        <stop offset="0%" stop-color="#d8f3a5" stop-opacity="0.9" />
-        <stop offset="35%" stop-color="#a8c87a" stop-opacity="0.45" />
-        <stop offset="100%" stop-color="#a8c87a" stop-opacity="0" />
-      </radialGradient>
-
-      <!-- Flou -->
-      <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="12" />
-      </filter>
-
-      <!-- Grain très léger -->
-      <filter id="organicNoise">
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.008"
-          numOctaves="3"
-          seed="7"
-        />
-        <feDisplacementMap
-          in="SourceGraphic"
-          scale="10"
-        />
-      </filter>
-    </defs>
-
-    <!-- Ramifications secondaires -->
-    <g
-      class="neural-secondary"
-      fill="none"
-      stroke="url(#neuralGradient)"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path d="M-40 220 C120 180 150 330 300 270 C430 220 420 80 560 130 C680 170 700 300 820 270 C960 235 980 90 1120 120 C1270 150 1300 310 1650 220" />
-
-      <path d="M-30 650 C150 520 250 700 390 570 C510 460 560 610 690 520 C840 420 900 610 1050 500 C1200 400 1380 520 1640 430" />
-
-      <path d="M20 1010 C190 850 310 940 470 800 C610 680 750 840 920 730 C1080 620 1240 740 1390 620 C1500 540 1570 570 1640 520" />
-
-      <path d="M180 0 C220 130 160 240 260 350 C360 470 270 610 400 720 C500 810 470 970 520 1130" />
-
-      <path d="M720 -40 C650 120 790 240 700 390 C640 500 760 650 700 780 C650 900 780 1020 750 1150" />
-
-      <path d="M1260 -50 C1160 120 1280 260 1180 420 C1100 550 1220 700 1150 850 C1090 980 1150 1050 1120 1140" />
-    </g>
-
-    <!-- Réseau principal -->
-    <g
-      class="neural-main"
-      fill="none"
-      stroke="url(#neuralGradient)"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      filter="url(#organicNoise)"
-    >
-      <!-- Nœud 1 -->
-      <path d="M320 340 C250 300 180 270 70 290" />
-      <path d="M320 340 C250 360 160 430 40 480" />
-      <path d="M320 340 C340 260 410 170 480 80" />
-      <path d="M320 340 C430 330 500 360 620 420" />
-      <path d="M320 340 C400 430 370 510 420 610" />
-      <path d="M320 340 C270 450 240 540 170 630" />
-
-      <!-- Nœud 2 -->
-      <path d="M790 250 C680 220 610 170 520 70" />
-      <path d="M790 250 C730 330 690 390 620 420" />
-      <path d="M790 250 C900 210 970 120 1080 80" />
-      <path d="M790 250 C910 310 990 360 1110 410" />
-      <path d="M790 250 C830 390 800 500 850 620" />
-
-      <!-- Nœud 3 -->
-      <path d="M1180 480 C1080 440 1010 420 920 430" />
-      <path d="M1180 480 C1260 390 1330 310 1430 230" />
-      <path d="M1180 480 C1290 500 1400 540 1580 620" />
-      <path d="M1180 480 C1110 580 1070 680 1060 800" />
-      <path d="M1180 480 C1260 600 1300 700 1390 810" />
-
-      <!-- Nœud 4 -->
-      <path d="M600 760 C520 680 450 640 420 610" />
-      <path d="M600 760 C650 640 720 610 850 620" />
-      <path d="M600 760 C500 810 410 860 260 920" />
-      <path d="M600 760 C680 860 720 950 760 1110" />
-      <path d="M600 760 C720 750 820 790 930 870" />
-
-      <!-- Nœud 5 -->
-      <path d="M1060 820 C960 760 900 720 850 620" />
-      <path d="M1060 820 C990 880 950 960 920 1090" />
-      <path d="M1060 820 C1160 770 1250 760 1390 810" />
-      <path d="M1060 820 C1150 910 1210 990 1260 1120" />
-      <path d="M1060 820 C980 820 960 840 930 870" />
-    </g>
-
-    <!-- Petites branches supplémentaires -->
-    <g
-      class="neural-fine"
-      fill="none"
-      stroke="url(#neuralGradient)"
-      stroke-linecap="round"
-    >
-      <path d="M320 340 C290 300 290 250 250 210" />
-      <path d="M320 340 C350 300 380 280 430 260" />
-      <path d="M320 340 C280 380 230 390 190 420" />
-
-      <path d="M790 250 C750 210 720 170 710 120" />
-      <path d="M790 250 C840 220 860 180 900 140" />
-      <path d="M790 250 C830 290 850 330 880 360" />
-
-      <path d="M1180 480 C1140 430 1140 380 1110 340" />
-      <path d="M1180 480 C1220 430 1240 390 1280 360" />
-      <path d="M1180 480 C1240 520 1280 540 1340 560" />
-
-      <path d="M600 760 C560 710 530 700 490 690" />
-      <path d="M600 760 C640 720 670 700 710 690" />
-      <path d="M600 760 C560 800 520 830 480 850" />
-
-      <path d="M1060 820 C1010 790 980 780 940 770" />
-      <path d="M1060 820 C1110 790 1150 780 1200 780" />
-      <path d="M1060 820 C1110 860 1140 900 1180 940" />
-    </g>
-
-    <!-- Halos -->
-    <g class="node-glows">
-      <circle cx="320" cy="340" r="75" fill="url(#nodeGlow)" filter="url(#softGlow)" />
-      <circle cx="790" cy="250" r="70" fill="url(#nodeGlow)" filter="url(#softGlow)" />
-      <circle cx="1180" cy="480" r="78" fill="url(#nodeGlow)" filter="url(#softGlow)" />
-      <circle cx="600" cy="760" r="72" fill="url(#nodeGlow)" filter="url(#softGlow)" />
-      <circle cx="1060" cy="820" r="76" fill="url(#nodeGlow)" filter="url(#softGlow)" />
-    </g>
-
-    <!-- Nœuds visibles -->
-    <g class="neural-nodes">
-      <circle cx="320" cy="340" r="8" />
-      <circle cx="790" cy="250" r="8" />
-      <circle cx="1180" cy="480" r="8" />
-      <circle cx="600" cy="760" r="8" />
-      <circle cx="1060" cy="820" r="8" />
-
-      <circle cx="620" cy="420" r="4" />
-      <circle cx="850" cy="620" r="4" />
-      <circle cx="930" cy="870" r="4" />
-      <circle cx="420" cy="610" r="4" />
-      <circle cx="1390" cy="810" r="4" />
-      <circle cx="1110" cy="410" r="4" />
-    </g>
-
-  </svg>
-
-</div>
-
+          <div class="neural-background" aria-hidden="true">
+            <canvas id="neuralCanvas"></canvas>
+          </div>
     
           <!-- Contenu Projets -->
           <div class="projects-content">  
@@ -2119,6 +1888,297 @@
         }
       });
     });
+
+    <script>
+  (() => {
+    const canvas = document.getElementById("neuralCanvas");
+
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) return;
+
+    const settings = {
+      pointCount: 260,
+      connectionDistance: 125,
+      centerPull: 0.0015,
+      movementSpeed: 0.12,
+      centralDensity: 0.72
+    };
+
+    let width = 0;
+    let height = 0;
+    let pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    let points = [];
+    let animationFrame = null;
+
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function createPoint() {
+      const useCenter = Math.random() < settings.centralDensity;
+
+      let x;
+      let y;
+
+      if (useCenter) {
+        /*
+         * Distribution concentrée autour du centre.
+         * La somme de plusieurs nombres aléatoires produit
+         * une densité plus forte au milieu.
+         */
+        x =
+          (
+            Math.random() +
+            Math.random() +
+            Math.random() +
+            Math.random()
+          ) / 4 * width;
+
+        y =
+          (
+            Math.random() +
+            Math.random() +
+            Math.random()
+          ) / 3 * height;
+      } else {
+        x = Math.random() * width;
+        y = Math.random() * height;
+      }
+
+      return {
+        x,
+        y,
+        vx: randomBetween(
+          -settings.movementSpeed,
+          settings.movementSpeed
+        ),
+        vy: randomBetween(
+          -settings.movementSpeed,
+          settings.movementSpeed
+        ),
+        radius: randomBetween(0.6, 2.1),
+        alpha: randomBetween(0.25, 0.9)
+      };
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+
+      width = Math.max(rect.width, 1);
+      height = Math.max(rect.height, 1);
+
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+      /*
+       * On recrée les points au redimensionnement pour éviter
+       * qu'ils se retrouvent hors de la zone.
+       */
+      points = Array.from(
+        { length: settings.pointCount },
+        createPoint
+      );
+    }
+
+    function updatePoints() {
+      const centerX = width * 0.5;
+      const centerY = height * 0.38;
+
+      for (const point of points) {
+        const dx = centerX - point.x;
+        const dy = centerY - point.y;
+
+        /*
+         * Très légère attraction vers le centre,
+         * pour obtenir l'effet dense de l'image de référence.
+         */
+        point.vx += dx * settings.centerPull * 0.001;
+        point.vy += dy * settings.centerPull * 0.001;
+
+        point.x += point.vx;
+        point.y += point.vy;
+
+        if (point.x < -40) point.x = width + 40;
+        if (point.x > width + 40) point.x = -40;
+
+        if (point.y < -40) point.y = height + 40;
+        if (point.y > height + 40) point.y = -40;
+
+        /*
+         * Limite la vitesse pour garder un mouvement calme.
+         */
+        const speed = Math.hypot(point.vx, point.vy);
+        const maxSpeed = settings.movementSpeed * 1.8;
+
+        if (speed > maxSpeed) {
+          point.vx = point.vx / speed * maxSpeed;
+          point.vy = point.vy / speed * maxSpeed;
+        }
+      }
+    }
+
+    function drawBackgroundGlow() {
+      const centerX = width * 0.5;
+      const centerY = height * 0.33;
+
+      const gradient = ctx.createRadialGradient(
+        centerX,
+        centerY,
+        0,
+        centerX,
+        centerY,
+        Math.max(width, height) * 0.55
+      );
+
+      gradient.addColorStop(0, "rgba(93, 139, 244, 0.16)");
+      gradient.addColorStop(0.35, "rgba(86, 190, 190, 0.08)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    function drawConnections() {
+      for (let i = 0; i < points.length; i++) {
+        const pointA = points[i];
+
+        for (let j = i + 1; j < points.length; j++) {
+          const pointB = points[j];
+
+          const dx = pointB.x - pointA.x;
+          const dy = pointB.y - pointA.y;
+          const distance = Math.hypot(dx, dy);
+
+          if (distance > settings.connectionDistance) continue;
+
+          const opacity =
+            1 - distance / settings.connectionDistance;
+
+          ctx.beginPath();
+          ctx.moveTo(pointA.x, pointA.y);
+          ctx.lineTo(pointB.x, pointB.y);
+
+          ctx.strokeStyle =
+            `rgba(170, 220, 220, ${opacity * 0.13})`;
+
+          ctx.lineWidth = 0.55;
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawRadialLines() {
+      const centerX = width * 0.5;
+      const centerY = height * 0.34;
+
+      for (let i = 0; i < points.length; i += 5) {
+        const point = points[i];
+
+        const dx = point.x - centerX;
+        const dy = point.y - centerY;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance < 120) continue;
+
+        const opacity = Math.min(distance / 1000, 1);
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(point.x, point.y);
+
+        ctx.strokeStyle =
+          `rgba(80, 180, 190, ${opacity * 0.035})`;
+
+        ctx.lineWidth = 0.7;
+        ctx.stroke();
+      }
+    }
+
+    function drawPoints() {
+      for (const point of points) {
+        ctx.beginPath();
+        ctx.arc(
+          point.x,
+          point.y,
+          point.radius,
+          0,
+          Math.PI * 2
+        );
+
+        ctx.fillStyle =
+          `rgba(235, 250, 250, ${point.alpha})`;
+
+        ctx.fill();
+
+        if (point.radius > 1.5) {
+          ctx.beginPath();
+          ctx.arc(
+            point.x,
+            point.y,
+            point.radius * 4,
+            0,
+            Math.PI * 2
+          );
+
+          ctx.fillStyle =
+            `rgba(110, 210, 210, ${point.alpha * 0.06})`;
+
+          ctx.fill();
+        }
+      }
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, width, height);
+
+      drawBackgroundGlow();
+      drawRadialLines();
+      drawConnections();
+      drawPoints();
+      updatePoints();
+
+      animationFrame = requestAnimationFrame(render);
+    }
+
+    function start() {
+      resizeCanvas();
+
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+
+      render();
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      resizeCanvas();
+    });
+
+    resizeObserver.observe(canvas);
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+
+    if (reducedMotion.matches) {
+      resizeCanvas();
+      drawBackgroundGlow();
+      drawRadialLines();
+      drawConnections();
+      drawPoints();
+    } else {
+      start();
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+  })();
   </script>
   
 </body>
