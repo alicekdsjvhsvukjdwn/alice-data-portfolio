@@ -592,6 +592,10 @@
   overflow: hidden;
 }
 
+#preview.panel {
+  padding-top: 24px;   /* ou 0px si tu veux vraiment coller au titre */
+}
+
 #preview .container {
   width: 100%;
 }
@@ -610,11 +614,15 @@
 
 /* Le grand fond couvre toute la section */
 .neural-background {
-  position: absolute;
-  inset: -80px -120px -120px -120px;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
+    position: absolute;
+    top: -260px;
+    left: -120px;
+    right: -120px;
+    bottom: -120px;
+
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
 }
 
 /* SVG pleine surface */
@@ -720,6 +728,100 @@
 @media (prefers-reduced-motion: reduce) {
   .neural-svg {
     animation: none;
+  }
+}
+
+    /* =========================================================
+   FORMATIONS
+   ========================================================= */
+
+.edu-wrap {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(40px, 6vh, 80px);
+}
+
+.edu-title {
+  margin: 0 0 20px;
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-size: clamp(22px, 2.2vw, 34px);
+}
+
+.edu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  align-items: stretch;
+}
+
+.edu-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  padding: clamp(18px, 2vw, 28px);
+
+  background: rgba(18, 18, 22, 0.72);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+
+  backdrop-filter: blur(8px);
+}
+
+.edu-year {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.edu-degree {
+  font-family: var(--serif);
+  font-size: clamp(18px, 1.8vw, 24px);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.edu-school {
+  font-size: 13px;
+  color: rgba(244, 244, 245, 0.45);
+}
+
+.edu-desc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(244, 244, 245, 0.65);
+}
+
+.edu-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.edu-tags span {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(244, 244, 245, 0.55);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 860px) {
+  .edu-grid {
+    grid-template-columns: 1fr;
   }
 }
     /* =========================
