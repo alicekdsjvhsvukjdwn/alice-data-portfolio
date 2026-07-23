@@ -596,371 +596,132 @@
   width: 100%;
 }
 
-/* Zone qui contient les décors et les cartes */
+
+    /* =========================================================
+   GRAND RÉSEAU NEURONAL DE FOND
+   ========================================================= */
+
 .projects-stage {
   position: relative;
   isolation: isolate;
-  overflow: visible;
+  overflow: hidden;
+  min-height: 100%;
 }
 
-/* Les cartes passent devant les décors */
+/* Le grand fond couvre toute la section */
+.neural-background {
+  position: absolute;
+  inset: -80px -120px -120px -120px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* SVG pleine surface */
+.neural-svg {
+  width: 100%;
+  height: 100%;
+  min-height: 1100px;
+  display: block;
+  opacity: 0.28;
+}
+
+/* Ramifications secondaires */
+.neural-secondary {
+  stroke-width: 1.2;
+  opacity: 0.18;
+}
+
+/* Grosses branches */
+.neural-main {
+  stroke-width: 3;
+  opacity: 0.42;
+}
+
+/* Petites ramifications */
+.neural-fine {
+  stroke-width: 1.1;
+  opacity: 0.28;
+}
+
+/* Nœuds */
+.neural-nodes circle {
+  fill: #0b0b0e;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0.8;
+}
+
+/* Halos */
+.node-glows {
+  opacity: 0.35;
+}
+
+/* Cartes au-dessus */
 .projects-content {
   position: relative;
   z-index: 2;
 }
 
-/* Conteneurs généraux des décors */
-.float-art {
+/* Voile pour rendre le fond moins présent sous les cartes */
+.projects-stage::before {
+  content: "";
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      transparent 0%,
+      rgba(11, 11, 14, 0.12) 55%,
+      rgba(11, 11, 14, 0.32) 100%
+    );
 }
 
-/* Chaque SVG est positionné librement */
-.project-decor {
-  position: absolute;
-  display: block;
-  overflow: visible;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* =========================================================
-   1. RÉSEAU DE POINTS / CONSTELLATION
-   ========================================================= */
-
-.decor-network {
-  width: clamp(130px, 15vw, 230px);
-  left: clamp(-55px, -3vw, -10px);
-  top: 4%;
-  opacity: 0.34;
-  transform: rotate(-8deg);
-}
-
-.decor-network .network-line {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.2;
-  stroke-linecap: round;
-  opacity: 0.6;
-}
-
-.decor-network .network-dot {
-  fill: var(--bg);
-  stroke: var(--accent);
-  stroke-width: 2;
-}
-
-.decor-network .network-dot.main {
-  fill: var(--accent);
-}
-
-/* Légère respiration des points */
-.decor-network .network-dot {
-  transform-box: fill-box;
+/* Animation très lente et légère */
+.neural-svg {
   transform-origin: center;
-  animation: networkPulse 4.5s ease-in-out infinite;
+  animation: neuralDrift 24s ease-in-out infinite alternate;
 }
 
-.decor-network .network-dot:nth-of-type(2) {
-  animation-delay: -1s;
-}
-
-.decor-network .network-dot:nth-of-type(3) {
-  animation-delay: -2s;
-}
-
-.decor-network .network-dot:nth-of-type(4) {
-  animation-delay: -3s;
-}
-
-@keyframes networkPulse {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.65;
+@keyframes neuralDrift {
+  from {
+    transform: translate3d(-8px, -5px, 0) scale(1.02);
   }
 
-  50% {
-    transform: scale(1.25);
-    opacity: 1;
-  }
-}
-
-/* =========================================================
-   2. COURBE EEG
-   ========================================================= */
-
-.decor-eeg {
-  width: clamp(230px, 28vw, 470px);
-  left: clamp(-100px, -5vw, -30px);
-  top: 55%;
-  opacity: 0.27;
-  transform: rotate(-3deg);
-}
-
-.decor-eeg .eeg-line {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-
-  stroke-dasharray: 900;
-  stroke-dashoffset: 900;
-  animation: drawEeg 4.5s ease-out forwards;
-}
-
-.decor-eeg .eeg-guide {
-  fill: none;
-  stroke: rgba(244, 244, 245, 0.13);
-  stroke-width: 1;
-  stroke-dasharray: 4 8;
-}
-
-@keyframes drawEeg {
   to {
-    stroke-dashoffset: 0;
+    transform: translate3d(10px, 8px, 0) scale(1.035);
   }
 }
 
-/* =========================================================
-   3. TRACÉ GPS / CARTOGRAPHIE
-   ========================================================= */
-
-.decor-gps {
-  width: clamp(150px, 18vw, 270px);
-  right: clamp(-65px, -3vw, -15px);
-  top: 5%;
-  opacity: 0.34;
-  transform: rotate(8deg);
-}
-
-.decor-gps .gps-shadow {
-  fill: none;
-  stroke: rgba(168, 200, 122, 0.12);
-  stroke-width: 15;
-  stroke-linecap: round;
-}
-
-.decor-gps .gps-route {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 7 9;
-}
-
-.decor-gps .gps-point {
-  fill: var(--bg);
-  stroke: var(--accent);
-  stroke-width: 2.5;
-}
-
-.decor-gps .gps-point.end {
-  fill: var(--accent);
-}
-
-/* Petit déplacement du point final */
-.decor-gps .gps-point.end {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: gpsPulse 3.5s ease-in-out infinite;
-}
-
-@keyframes gpsPulse {
-  0%,
-  100% {
-    transform: scale(1);
+/* Mobile */
+@media (max-width: 800px) {
+  .neural-background {
+    inset: -40px -180px -80px -180px;
   }
 
-  50% {
-    transform: scale(1.3);
-  }
-}
-
-/* =========================================================
-   4. GRAPHIQUE DATA EN FILIGRANE
-   ========================================================= */
-
-.decor-chart {
-  width: clamp(145px, 17vw, 250px);
-  right: clamp(-45px, -2vw, 0px);
-  top: 58%;
-  opacity: 0.22;
-  transform: rotate(4deg);
-}
-
-.decor-chart .chart-grid line {
-  stroke: rgba(244, 244, 245, 0.17);
-  stroke-width: 1;
-}
-
-.decor-chart .chart-line {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.decor-chart .chart-area {
-  fill: url("#chartGradient");
-  opacity: 0.25;
-}
-
-.decor-chart .chart-dot {
-  fill: var(--bg);
-  stroke: var(--accent);
-  stroke-width: 2;
-}
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-
-@media (max-width: 980px) {
-  .decor-network {
-    left: -55px;
-    top: 2%;
-    opacity: 0.24;
-  }
-
-  .decor-eeg {
-    left: -80px;
-    top: 62%;
+  .neural-svg {
+    min-height: 1500px;
     opacity: 0.2;
   }
 
-  .decor-gps {
-    right: -65px;
-    top: 15%;
-    opacity: 0.24;
+  .neural-main {
+    stroke-width: 2.4;
   }
 
-  .decor-chart {
-    right: -50px;
-    top: 70%;
-    opacity: 0.17;
+  .node-glows {
+    opacity: 0.2;
   }
 }
 
-@media (max-width: 640px) {
-  /* Sur mobile, on garde seulement deux éléments légers */
-
-  .decor-network {
-    width: 125px;
-    left: -55px;
-    top: 1%;
-    opacity: 0.18;
-  }
-
-  .decor-gps {
-    width: 135px;
-    right: -60px;
-    top: 18%;
-    opacity: 0.17;
-  }
-
-  .decor-eeg,
-  .decor-chart {
-    display: none;
-  }
-}
-
-/* Respect des préférences d'accessibilité */
+/* Accessibilité */
 @media (prefers-reduced-motion: reduce) {
-  .decor-network .network-dot,
-  .decor-gps .gps-point.end,
-  .decor-eeg .eeg-line {
+  .neural-svg {
     animation: none;
   }
-
-  .decor-eeg .eeg-line {
-    stroke-dashoffset: 0;
-  }
 }
-
-    /* ======= Formations ======= */
-    .edu-wrap {
-      margin-top: clamp(40px, 6vh, 80px);
-    }
-    
-    .edu-title {
-      margin: 0 0 20px;
-      font-family: var(--sans);
-      font-weight: 800;
-      letter-spacing: -.01em;
-      font-size: clamp(22px, 2.2vw, 34px);
-    }
-    
-    .edu-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--gap);
-    }
-    
-    @media (max-width: 860px) {
-      .edu-grid { grid-template-columns: 1fr; }
-    }
-    
-    .edu-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(18px, 2vw, 28px);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .edu-year {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .10em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    
-    .edu-degree {
-      font-family: var(--serif);
-      font-size: clamp(18px, 1.8vw, 24px);
-      font-weight: 600;
-      color: var(--ink);
-      line-height: 1.2;
-    }
-    
-    .edu-school {
-      font-size: 13px;
-      color: rgba(244,244,245,.45);
-    }
-    
-    .edu-desc {
-      font-size: 13px;
-      color: rgba(244,244,245,.65);
-      line-height: 1.6;
-      margin: 4px 0 0;
-    }
-    
-    .edu-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    
-    .edu-tags span {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      font-size: 11px;
-      color: rgba(244,244,245,.55);
-      font-weight: 600;
-    }
-
     /* =========================
      CTA Parallax (style sitebase)
     ========================= */
@@ -1406,304 +1167,175 @@
       <div class="container">
         <div class="projects-stage">
     
-          <!-- =====================================================
-     DÉCORS GAUCHE : réseau neuronal + courbe EEG
-     ===================================================== -->
+          <!-- Grand réseau neuronal en fond -->
+<div class="neural-background" aria-hidden="true">
 
-<div class="float-art left" aria-hidden="true">
-
-  <!-- Réseau de points / constellation -->
   <svg
-    class="project-decor decor-network"
-    viewBox="0 0 230 180"
+    class="neural-svg"
+    viewBox="0 0 1600 1100"
+    preserveAspectRatio="xMidYMid slice"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g>
-      <!-- Connexions -->
-      <path
-        class="network-line"
-        d="M22 112 L70 46 L116 76 L166 30 L205 76"
-      />
 
-      <path
-        class="network-line"
-        d="M22 112 L90 145 L116 76 L178 142 L205 76"
-      />
+    <defs>
+      <!-- Dégradé principal -->
+      <linearGradient id="neuralGradient" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#8aa965" />
+        <stop offset="45%" stop-color="#a8c87a" />
+        <stop offset="100%" stop-color="#68834c" />
+      </linearGradient>
 
-      <path
-        class="network-line"
-        d="M70 46 L90 145"
-      />
+      <!-- Halo autour des nœuds -->
+      <radialGradient id="nodeGlow">
+        <stop offset="0%" stop-color="#d8f3a5" stop-opacity="0.9" />
+        <stop offset="35%" stop-color="#a8c87a" stop-opacity="0.45" />
+        <stop offset="100%" stop-color="#a8c87a" stop-opacity="0" />
+      </radialGradient>
 
-      <path
-        class="network-line"
-        d="M116 76 L205 76"
-      />
+      <!-- Flou -->
+      <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="12" />
+      </filter>
 
-      <path
-        class="network-line"
-        d="M166 30 L178 142"
-      />
+      <!-- Grain très léger -->
+      <filter id="organicNoise">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.008"
+          numOctaves="3"
+          seed="7"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          scale="10"
+        />
+      </filter>
+    </defs>
 
-      <!-- Points -->
-      <circle
-        class="network-dot"
-        cx="22"
-        cy="112"
-        r="5"
-      />
+    <!-- Ramifications secondaires -->
+    <g
+      class="neural-secondary"
+      fill="none"
+      stroke="url(#neuralGradient)"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M-40 220 C120 180 150 330 300 270 C430 220 420 80 560 130 C680 170 700 300 820 270 C960 235 980 90 1120 120 C1270 150 1300 310 1650 220" />
 
-      <circle
-        class="network-dot"
-        cx="70"
-        cy="46"
-        r="4"
-      />
+      <path d="M-30 650 C150 520 250 700 390 570 C510 460 560 610 690 520 C840 420 900 610 1050 500 C1200 400 1380 520 1640 430" />
 
-      <circle
-        class="network-dot"
-        cx="90"
-        cy="145"
-        r="6"
-      />
+      <path d="M20 1010 C190 850 310 940 470 800 C610 680 750 840 920 730 C1080 620 1240 740 1390 620 C1500 540 1570 570 1640 520" />
 
-      <circle
-        class="network-dot main"
-        cx="116"
-        cy="76"
-        r="6"
-      />
+      <path d="M180 0 C220 130 160 240 260 350 C360 470 270 610 400 720 C500 810 470 970 520 1130" />
 
-      <circle
-        class="network-dot"
-        cx="166"
-        cy="30"
-        r="4"
-      />
+      <path d="M720 -40 C650 120 790 240 700 390 C640 500 760 650 700 780 C650 900 780 1020 750 1150" />
 
-      <circle
-        class="network-dot"
-        cx="178"
-        cy="142"
-        r="5"
-      />
-
-      <circle
-        class="network-dot"
-        cx="205"
-        cy="76"
-        r="5"
-      />
+      <path d="M1260 -50 C1160 120 1280 260 1180 420 C1100 550 1220 700 1150 850 C1090 980 1150 1050 1120 1140" />
     </g>
-  </svg>
 
+    <!-- Réseau principal -->
+    <g
+      class="neural-main"
+      fill="none"
+      stroke="url(#neuralGradient)"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      filter="url(#organicNoise)"
+    >
+      <!-- Nœud 1 -->
+      <path d="M320 340 C250 300 180 270 70 290" />
+      <path d="M320 340 C250 360 160 430 40 480" />
+      <path d="M320 340 C340 260 410 170 480 80" />
+      <path d="M320 340 C430 330 500 360 620 420" />
+      <path d="M320 340 C400 430 370 510 420 610" />
+      <path d="M320 340 C270 450 240 540 170 630" />
 
-  <!-- Courbe EEG -->
-  <svg
-    class="project-decor decor-eeg"
-    viewBox="0 0 500 120"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <!-- Ligne guide discrète -->
-    <path
-      class="eeg-guide"
-      d="M0 60 H500"
-    />
+      <!-- Nœud 2 -->
+      <path d="M790 250 C680 220 610 170 520 70" />
+      <path d="M790 250 C730 330 690 390 620 420" />
+      <path d="M790 250 C900 210 970 120 1080 80" />
+      <path d="M790 250 C910 310 990 360 1110 410" />
+      <path d="M790 250 C830 390 800 500 850 620" />
 
-    <!-- Signal EEG -->
-    <path
-      class="eeg-line"
-      d="
-        M0 60
-        L28 60
-        L38 55
-        L50 66
-        L62 59
-        L82 60
-        L95 52
-        L108 71
-        L120 25
-        L132 94
-        L144 47
-        L160 61
-        L184 60
-        L197 56
-        L210 67
-        L224 58
-        L249 60
-        L262 48
-        L274 76
-        L287 31
-        L301 89
-        L314 51
-        L329 60
-        L355 60
-        L368 56
-        L380 65
-        L393 58
-        L418 60
-        L431 52
-        L445 69
-        L458 41
-        L470 75
-        L482 57
-        L500 60
-      "
-    />
+      <!-- Nœud 3 -->
+      <path d="M1180 480 C1080 440 1010 420 920 430" />
+      <path d="M1180 480 C1260 390 1330 310 1430 230" />
+      <path d="M1180 480 C1290 500 1400 540 1580 620" />
+      <path d="M1180 480 C1110 580 1070 680 1060 800" />
+      <path d="M1180 480 C1260 600 1300 700 1390 810" />
+
+      <!-- Nœud 4 -->
+      <path d="M600 760 C520 680 450 640 420 610" />
+      <path d="M600 760 C650 640 720 610 850 620" />
+      <path d="M600 760 C500 810 410 860 260 920" />
+      <path d="M600 760 C680 860 720 950 760 1110" />
+      <path d="M600 760 C720 750 820 790 930 870" />
+
+      <!-- Nœud 5 -->
+      <path d="M1060 820 C960 760 900 720 850 620" />
+      <path d="M1060 820 C990 880 950 960 920 1090" />
+      <path d="M1060 820 C1160 770 1250 760 1390 810" />
+      <path d="M1060 820 C1150 910 1210 990 1260 1120" />
+      <path d="M1060 820 C980 820 960 840 930 870" />
+    </g>
+
+    <!-- Petites branches supplémentaires -->
+    <g
+      class="neural-fine"
+      fill="none"
+      stroke="url(#neuralGradient)"
+      stroke-linecap="round"
+    >
+      <path d="M320 340 C290 300 290 250 250 210" />
+      <path d="M320 340 C350 300 380 280 430 260" />
+      <path d="M320 340 C280 380 230 390 190 420" />
+
+      <path d="M790 250 C750 210 720 170 710 120" />
+      <path d="M790 250 C840 220 860 180 900 140" />
+      <path d="M790 250 C830 290 850 330 880 360" />
+
+      <path d="M1180 480 C1140 430 1140 380 1110 340" />
+      <path d="M1180 480 C1220 430 1240 390 1280 360" />
+      <path d="M1180 480 C1240 520 1280 540 1340 560" />
+
+      <path d="M600 760 C560 710 530 700 490 690" />
+      <path d="M600 760 C640 720 670 700 710 690" />
+      <path d="M600 760 C560 800 520 830 480 850" />
+
+      <path d="M1060 820 C1010 790 980 780 940 770" />
+      <path d="M1060 820 C1110 790 1150 780 1200 780" />
+      <path d="M1060 820 C1110 860 1140 900 1180 940" />
+    </g>
+
+    <!-- Halos -->
+    <g class="node-glows">
+      <circle cx="320" cy="340" r="75" fill="url(#nodeGlow)" filter="url(#softGlow)" />
+      <circle cx="790" cy="250" r="70" fill="url(#nodeGlow)" filter="url(#softGlow)" />
+      <circle cx="1180" cy="480" r="78" fill="url(#nodeGlow)" filter="url(#softGlow)" />
+      <circle cx="600" cy="760" r="72" fill="url(#nodeGlow)" filter="url(#softGlow)" />
+      <circle cx="1060" cy="820" r="76" fill="url(#nodeGlow)" filter="url(#softGlow)" />
+    </g>
+
+    <!-- Nœuds visibles -->
+    <g class="neural-nodes">
+      <circle cx="320" cy="340" r="8" />
+      <circle cx="790" cy="250" r="8" />
+      <circle cx="1180" cy="480" r="8" />
+      <circle cx="600" cy="760" r="8" />
+      <circle cx="1060" cy="820" r="8" />
+
+      <circle cx="620" cy="420" r="4" />
+      <circle cx="850" cy="620" r="4" />
+      <circle cx="930" cy="870" r="4" />
+      <circle cx="420" cy="610" r="4" />
+      <circle cx="1390" cy="810" r="4" />
+      <circle cx="1110" cy="410" r="4" />
+    </g>
+
   </svg>
 
 </div>
 
-
-<!-- =====================================================
-     DÉCORS DROITE : tracé GPS + graphique data
-     ===================================================== -->
-    
-    <div class="float-art right" aria-hidden="true">
-    
-      <!-- Tracé GPS / carte -->
-      <svg
-        class="project-decor decor-gps"
-        viewBox="0 0 260 230"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <!-- Halo derrière le trajet -->
-        <path
-          class="gps-shadow"
-          d="
-            M25 185
-            C58 165, 49 123, 87 108
-            C118 95, 108 55, 151 50
-            C192 45, 185 112, 228 128
-          "
-        />
-    
-        <!-- Trajet principal -->
-        <path
-          class="gps-route"
-          d="
-            M25 185
-            C58 165, 49 123, 87 108
-            C118 95, 108 55, 151 50
-            C192 45, 185 112, 228 128
-          "
-        />
-    
-        <!-- Étapes -->
-        <circle
-          class="gps-point"
-          cx="25"
-          cy="185"
-          r="7"
-        />
-    
-        <circle
-          class="gps-point"
-          cx="87"
-          cy="108"
-          r="5"
-        />
-    
-        <circle
-          class="gps-point"
-          cx="151"
-          cy="50"
-          r="5"
-        />
-    
-        <circle
-          class="gps-point end"
-          cx="228"
-          cy="128"
-          r="8"
-        />
-      </svg>
-    
-    
-      <!-- Graphique data en filigrane -->
-      <svg
-        class="project-decor decor-chart"
-        viewBox="0 0 260 180"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient
-            id="chartGradient"
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="1"
-          >
-            <stop
-              offset="0%"
-              stop-color="#a8c87a"
-              stop-opacity="0.65"
-            />
-    
-            <stop
-              offset="100%"
-              stop-color="#a8c87a"
-              stop-opacity="0"
-            />
-          </linearGradient>
-        </defs>
-    
-        <!-- Grille -->
-        <g class="chart-grid">
-          <line x1="20" y1="30" x2="240" y2="30" />
-          <line x1="20" y1="70" x2="240" y2="70" />
-          <line x1="20" y1="110" x2="240" y2="110" />
-          <line x1="20" y1="150" x2="240" y2="150" />
-    
-          <line x1="20" y1="15" x2="20" y2="155" />
-          <line x1="75" y1="15" x2="75" y2="155" />
-          <line x1="130" y1="15" x2="130" y2="155" />
-          <line x1="185" y1="15" x2="185" y2="155" />
-          <line x1="240" y1="15" x2="240" y2="155" />
-        </g>
-    
-        <!-- Surface sous la courbe -->
-        <path
-          class="chart-area"
-          d="
-            M20 135
-            L57 108
-            L92 118
-            L126 71
-            L161 88
-            L198 43
-            L240 58
-            L240 150
-            L20 150
-            Z
-          "
-        />
-    
-        <!-- Courbe principale -->
-        <polyline
-          class="chart-line"
-          points="
-            20,135
-            57,108
-            92,118
-            126,71
-            161,88
-            198,43
-            240,58
-          "
-        />
-    
-        <!-- Points -->
-        <circle class="chart-dot" cx="20" cy="135" r="4" />
-        <circle class="chart-dot" cx="57" cy="108" r="4" />
-        <circle class="chart-dot" cx="92" cy="118" r="4" />
-        <circle class="chart-dot" cx="126" cy="71" r="4" />
-        <circle class="chart-dot" cx="161" cy="88" r="4" />
-        <circle class="chart-dot" cx="198" cy="43" r="4" />
-        <circle class="chart-dot" cx="240" cy="58" r="4" />
-      </svg>
-    
-    </div>
     
           <!-- Contenu Projets -->
           <div class="projects-content">  
