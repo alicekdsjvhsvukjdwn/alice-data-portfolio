@@ -1899,8 +1899,8 @@
     if (!ctx) return;
 
     const settings = {
-      pointCount: 300,
-      connectionDistance: 125,
+      pointCount: 700,
+      connectionDistance: 180,
       movementSpeed: 0.16
     };
 
@@ -2041,6 +2041,7 @@
     function drawConnections() {
       for (let i = 0; i < points.length; i++) {
         const pointA = points[i];
+        let links = 0;
 
         for (let j = i + 1; j < points.length; j++) {
           const pointB = points[j];
@@ -2050,6 +2051,10 @@
           const distance = Math.hypot(dx, dy);
 
           if (distance > settings.connectionDistance) continue;
+
+          if (links > 12) break;
+          
+          links++;
 
           const opacity =
             1 - distance / settings.connectionDistance;
@@ -2061,7 +2066,7 @@
           ctx.strokeStyle =
             `rgba(190, 235, 235, ${opacity * 0.32})`;
 
-          ctx.lineWidth = 0.8;
+          ctx.lineWidth = 0.45;
           ctx.stroke();
         }
       }
