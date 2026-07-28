@@ -1904,27 +1904,27 @@
     
       const settings = {
         /* Nombre de zones très denses */
-        clusterCount: 18,
+        clusterCount: 10,
     
         /* Nombre de points par amas */
-        minPointsPerCluster: 28,
-        maxPointsPerCluster: 52,
+        minPointsPerCluster: 45,
+        maxPointsPerCluster: 85,
     
         /* Petits points indépendants dans les espaces vides */
-        ambientPointCount: 170,
+        ambientPointCount: 120,
     
         /* Taille physique des amas */
-        minClusterRadius: 100,
-        maxClusterRadius: 230,
+        minClusterRadius: 180,
+        maxClusterRadius: 340,
     
         /* Distance de connexion à l’intérieur des amas */
-        localConnectionDistance: 105,
+        localConnectionDistance: 145,
     
         /* Nombre maximal de liens par point */
-        maxLocalLinks: 10,
+        maxLocalLinks: 16,
     
         /* Nombre maximal de grands liens entre amas */
-        maxClusterLinks: 3,
+        maxClusterLinks: 5,
     
         /* Vitesse générale */
         movementSpeed: 0.09,
@@ -2435,11 +2435,11 @@
             const clusterB = neighbour.cluster;
     
             const opacity = Math.max(
-              0.018,
-              0.085 -
+              0.03,
+              0.13 -
                 neighbour.distance /
                   Math.max(width, height) *
-                  0.07
+                  0.09
             );
     
             ctx.beginPath();
@@ -2471,7 +2471,7 @@
             ctx.strokeStyle =
               `rgba(95, 185, 205, ${opacity})`;
     
-            ctx.lineWidth = 0.45;
+            ctx.lineWidth = 0.7;
             ctx.stroke();
           }
         }
