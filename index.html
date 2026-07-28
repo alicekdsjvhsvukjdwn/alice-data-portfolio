@@ -1889,265 +1889,788 @@
       });
     });
     
-  (() => {
-    const canvas = document.getElementById("neuralCanvas");
-
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) return;
-
-    const settings = {
-      pointCount: 700,
-      connectionDistance: 180,
-      movementSpeed: 0.16
-    };
-
-    let width = 0;
-    let height = 0;
-    let pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-    let points = [];
-    let animationFrame = null;
-
-    function randomBetween(min, max) {
-      return min + Math.random() * (max - min);
-    }
-
-    function createPoint() {
-      return {
-        x: Math.random() * width,
-        y: Math.random() * height,
+ (() => {
+      const canvas = document.getElementById("neuralCanvas");
     
-        vx: randomBetween(
-          -settings.movementSpeed,
-          settings.movementSpeed
-        ),
+      if (!canvas) return;
     
-        vy: randomBetween(
-          -settings.movementSpeed,
-          settings.movementSpeed
-        ),
+      const ctx = canvas.getContext("2d");
     
-        radius: randomBetween(0.6, 2.1),
-        alpha: randomBetween(0.25, 0.9)
+      if (!ctx) return;
+    
+      /* =========================================================
+         RÉGLAGES DU RÉSEAU
+         ========================================================= */
+    
+      const settings = {
+        /* Nombre de zones très denses */
+        clusterCount: 18,
+    
+        /* Nombre de points par amas */
+        minPointsPerCluster: 28,
+        maxPointsPerCluster: 52,
+    
+        /* Petits points indépendants dans les espaces vides */
+        ambientPointCount: 170,
+    
+        /* Taille physique des amas */
+        minClusterRadius: 100,
+        maxClusterRadius: 230,
+    
+        /* Distance de connexion à l’intérieur des amas */
+        localConnectionDistance: 105,
+    
+        /* Nombre maximal de liens par point */
+        maxLocalLinks: 10,
+    
+        /* Nombre maximal de grands liens entre amas */
+        maxClusterLinks: 3,
+    
+        /* Vitesse générale */
+        movementSpeed: 0.09,
+    
+        /* Mouvement interne des points autour de leur amas */
+        internalMovement: 0.035,
+    
+        /* Souplesse qui ramène légèrement un point vers son amas */
+        clusterElasticity: 0.00008
       };
-    }
-
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-
-      width = Math.max(rect.width, 1);
-      height = Math.max(rect.height, 1);
-
-      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-
-      canvas.width = Math.round(width * pixelRatio);
-      canvas.height = Math.round(height * pixelRatio);
-
-      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-
+    
+      let width = 0;
+      let height = 0;
+      let pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    
+      let clusters = [];
+      let points = [];
+      let ambientPoints = [];
+    
+      let animationFrame = null;
+    
+      function randomBetween(min, max) {
+        return min + Math.random() * (max - min);
+      }
+    
+      function randomInteger(min, max) {
+        return Math.floor(randomBetween(min, max + 1));
+      }
+    
       /*
-       * On recrée les points au redimensionnement pour éviter
-       * qu'ils se retrouvent hors de la zone.
+       * Distribution gaussienne approximative :
+       * les valeurs sont plus souvent proches de zéro,
+       * ce qui densifie naturellement le centre des amas.
        */
-      points = Array.from(
-        { length: settings.pointCount },
-        createPoint
-      );
-    }
-
-    function updatePoints() {
-      for (const point of points) {
-        point.x += point.vx;
-        point.y += point.vy;
-    
-        /*
-         * Petit changement aléatoire de direction.
-         * Cela évite un mouvement trop rectiligne,
-         * sans attirer les points vers le centre.
-         */
-        point.vx += randomBetween(-0.003, 0.003);
-        point.vy += randomBetween(-0.003, 0.003);
-    
-        const speed = Math.hypot(point.vx, point.vy);
-        const maxSpeed = settings.movementSpeed * 1.8;
-    
-        if (speed > maxSpeed) {
-          point.vx = point.vx / speed * maxSpeed;
-          point.vy = point.vy / speed * maxSpeed;
-        }
-    
-        /*
-         * Les points rebondissent sur les bords.
-         * Ils restent donc répartis dans tout le conteneur.
-         */
-        if (point.x <= 0) {
-          point.x = 0;
-          point.vx = Math.abs(point.vx);
-        }
-    
-        if (point.x >= width) {
-          point.x = width;
-          point.vx = -Math.abs(point.vx);
-        }
-    
-        if (point.y <= 0) {
-          point.y = 0;
-          point.vy = Math.abs(point.vy);
-        }
-    
-        if (point.y >= height) {
-          point.y = height;
-          point.vy = -Math.abs(point.vy);
-        }
+      function gaussianRandom() {
+        return (
+          Math.random() +
+          Math.random() +
+          Math.random() +
+          Math.random() -
+          2
+        ) / 2;
       }
-    }
     
-    function drawBackgroundGlow() {
-      const glow1 = ctx.createRadialGradient(
-        width * 0.22,
-        height * 0.22,
-        0,
-        width * 0.22,
-        height * 0.22,
-        Math.max(width, height) * 0.42
-      );
+      /* =========================================================
+         CRÉATION DES AMAS
+         ========================================================= */
     
-      glow1.addColorStop(0, "rgba(93, 139, 244, 0.10)");
-      glow1.addColorStop(0.45, "rgba(86, 190, 190, 0.05)");
-      glow1.addColorStop(1, "rgba(0, 0, 0, 0)");
+      function createCluster(index) {
+        const marginX = Math.min(width * 0.09, 140);
+        const marginY = Math.min(height * 0.07, 110);
     
-      ctx.fillStyle = glow1;
-      ctx.fillRect(0, 0, width, height);
+        return {
+          id: index,
     
-      const glow2 = ctx.createRadialGradient(
-        width * 0.78,
-        height * 0.65,
-        0,
-        width * 0.78,
-        height * 0.65,
-        Math.max(width, height) * 0.4
-      );
+          x: randomBetween(
+            marginX,
+            Math.max(marginX + 1, width - marginX)
+          ),
     
-      glow2.addColorStop(0, "rgba(168, 200, 122, 0.08)");
-      glow2.addColorStop(0.5, "rgba(86, 190, 190, 0.035)");
-      glow2.addColorStop(1, "rgba(0, 0, 0, 0)");
+          y: randomBetween(
+            marginY,
+            Math.max(marginY + 1, height - marginY)
+          ),
     
-      ctx.fillStyle = glow2;
-      ctx.fillRect(0, 0, width, height);
-    }
-
-    function drawConnections() {
-      for (let i = 0; i < points.length; i++) {
-        const pointA = points[i];
-        let links = 0;
-
-        for (let j = i + 1; j < points.length; j++) {
-          const pointB = points[j];
-
-          const dx = pointB.x - pointA.x;
-          const dy = pointB.y - pointA.y;
-          const distance = Math.hypot(dx, dy);
-
-          if (distance > settings.connectionDistance) continue;
-
-          if (links > 12) break;
-          
-          links++;
-
-          const opacity =
-            1 - distance / settings.connectionDistance;
-
-          ctx.beginPath();
-          ctx.moveTo(pointA.x, pointA.y);
-          ctx.lineTo(pointB.x, pointB.y);
-
-          ctx.strokeStyle =
-            `rgba(190, 235, 235, ${opacity * 0.32})`;
-
-          ctx.lineWidth = 0.45;
-          ctx.stroke();
-        }
+          radius: randomBetween(
+            settings.minClusterRadius,
+            settings.maxClusterRadius
+          ),
+    
+          vx: randomBetween(
+            -settings.movementSpeed,
+            settings.movementSpeed
+          ),
+    
+          vy: randomBetween(
+            -settings.movementSpeed,
+            settings.movementSpeed
+          ),
+    
+          pulse: Math.random() * Math.PI * 2,
+          brightness: randomBetween(0.55, 1)
+        };
       }
-    }
-
-    function drawPoints() {
-      for (const point of points) {
-        ctx.beginPath();
-        ctx.arc(
-          point.x,
-          point.y,
-          point.radius,
-          0,
-          Math.PI * 2
+    
+      function createClusterPoint(cluster) {
+        /*
+         * La majorité des points restent près du centre,
+         * mais certains s’étendent davantage autour de l’amas.
+         */
+        const spread =
+          Math.random() < 0.78
+            ? randomBetween(0.18, 0.62)
+            : randomBetween(0.62, 1);
+    
+        const angle = Math.random() * Math.PI * 2;
+    
+        const radiusX =
+          cluster.radius *
+          spread *
+          Math.abs(gaussianRandom());
+    
+        const radiusY =
+          cluster.radius *
+          0.62 *
+          spread *
+          Math.abs(gaussianRandom());
+    
+        const offsetX = Math.cos(angle) * radiusX;
+        const offsetY = Math.sin(angle) * radiusY;
+    
+        return {
+          clusterId: cluster.id,
+    
+          x: cluster.x + offsetX,
+          y: cluster.y + offsetY,
+    
+          /* Position relative souhaitée autour du centre */
+          anchorX: offsetX,
+          anchorY: offsetY,
+    
+          vx: randomBetween(
+            -settings.internalMovement,
+            settings.internalMovement
+          ),
+    
+          vy: randomBetween(
+            -settings.internalMovement,
+            settings.internalMovement
+          ),
+    
+          radius:
+            Math.random() < 0.07
+              ? randomBetween(2.3, 3.8)
+              : randomBetween(0.55, 1.7),
+    
+          alpha: randomBetween(0.28, 0.92),
+    
+          phase: Math.random() * Math.PI * 2
+        };
+      }
+    
+      function createAmbientPoint() {
+        return {
+          x: Math.random() * width,
+          y: Math.random() * height,
+    
+          vx: randomBetween(-0.035, 0.035),
+          vy: randomBetween(-0.035, 0.035),
+    
+          radius: randomBetween(0.35, 1),
+          alpha: randomBetween(0.1, 0.42),
+    
+          phase: Math.random() * Math.PI * 2
+        };
+      }
+    
+      function createScene() {
+        clusters = Array.from(
+          { length: settings.clusterCount },
+          (_, index) => createCluster(index)
         );
-
-        ctx.fillStyle =
-          `rgba(245, 255, 255, ${Math.min(point.alpha * 1.35, 1)})`;
-
-        ctx.fill();
-
-        if (point.radius > 1.5) {
+    
+        points = [];
+    
+        for (const cluster of clusters) {
+          const count = randomInteger(
+            settings.minPointsPerCluster,
+            settings.maxPointsPerCluster
+          );
+    
+          for (let i = 0; i < count; i++) {
+            points.push(createClusterPoint(cluster));
+          }
+        }
+    
+        ambientPoints = Array.from(
+          { length: settings.ambientPointCount },
+          createAmbientPoint
+        );
+      }
+    
+      /* =========================================================
+         REDIMENSIONNEMENT
+         ========================================================= */
+    
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+    
+        width = Math.max(rect.width, 1);
+        height = Math.max(rect.height, 1);
+    
+        pixelRatio = Math.min(
+          window.devicePixelRatio || 1,
+          2
+        );
+    
+        canvas.width = Math.round(width * pixelRatio);
+        canvas.height = Math.round(height * pixelRatio);
+    
+        ctx.setTransform(
+          pixelRatio,
+          0,
+          0,
+          pixelRatio,
+          0,
+          0
+        );
+    
+        createScene();
+      }
+    
+      /* =========================================================
+         MOUVEMENT DES AMAS
+         ========================================================= */
+    
+      function updateClusters() {
+        const margin = 70;
+    
+        for (const cluster of clusters) {
+          cluster.x += cluster.vx;
+          cluster.y += cluster.vy;
+    
+          /*
+           * Petite dérive aléatoire :
+           * les amas changent doucement de trajectoire.
+           */
+          cluster.vx += randomBetween(-0.0007, 0.0007);
+          cluster.vy += randomBetween(-0.0007, 0.0007);
+    
+          const speed = Math.hypot(
+            cluster.vx,
+            cluster.vy
+          );
+    
+          const maxSpeed =
+            settings.movementSpeed * 1.45;
+    
+          if (speed > maxSpeed) {
+            cluster.vx =
+              cluster.vx / speed * maxSpeed;
+    
+            cluster.vy =
+              cluster.vy / speed * maxSpeed;
+          }
+    
+          if (cluster.x < margin) {
+            cluster.x = margin;
+            cluster.vx = Math.abs(cluster.vx);
+          }
+    
+          if (cluster.x > width - margin) {
+            cluster.x = width - margin;
+            cluster.vx = -Math.abs(cluster.vx);
+          }
+    
+          if (cluster.y < margin) {
+            cluster.y = margin;
+            cluster.vy = Math.abs(cluster.vy);
+          }
+    
+          if (cluster.y > height - margin) {
+            cluster.y = height - margin;
+            cluster.vy = -Math.abs(cluster.vy);
+          }
+    
+          cluster.pulse += 0.008;
+        }
+      }
+    
+      /* =========================================================
+         MOUVEMENT DES POINTS
+         ========================================================= */
+    
+      function updatePoints() {
+        for (const point of points) {
+          const cluster = clusters[point.clusterId];
+    
+          if (!cluster) continue;
+    
+          const targetX =
+            cluster.x + point.anchorX;
+    
+          const targetY =
+            cluster.y + point.anchorY;
+    
+          /*
+           * Attraction très légère vers la position relative
+           * dans l’amas, pas vers le centre de la page.
+           */
+          point.vx +=
+            (targetX - point.x) *
+            settings.clusterElasticity;
+    
+          point.vy +=
+            (targetY - point.y) *
+            settings.clusterElasticity;
+    
+          point.vx += randomBetween(-0.0014, 0.0014);
+          point.vy += randomBetween(-0.0014, 0.0014);
+    
+          point.x += point.vx + cluster.vx;
+          point.y += point.vy + cluster.vy;
+    
+          const speed = Math.hypot(
+            point.vx,
+            point.vy
+          );
+    
+          const maxSpeed =
+            settings.internalMovement * 2.2;
+    
+          if (speed > maxSpeed) {
+            point.vx =
+              point.vx / speed * maxSpeed;
+    
+            point.vy =
+              point.vy / speed * maxSpeed;
+          }
+    
+          point.phase += 0.018;
+        }
+    
+        for (const point of ambientPoints) {
+          point.x += point.vx;
+          point.y += point.vy;
+    
+          point.vx += randomBetween(-0.0007, 0.0007);
+          point.vy += randomBetween(-0.0007, 0.0007);
+    
+          if (point.x < 0) point.x = width;
+          if (point.x > width) point.x = 0;
+    
+          if (point.y < 0) point.y = height;
+          if (point.y > height) point.y = 0;
+    
+          point.phase += 0.012;
+        }
+      }
+    
+      /* =========================================================
+         FOND LUMINEUX
+         ========================================================= */
+    
+      function drawBackgroundGlow() {
+        for (const cluster of clusters) {
+          if (cluster.brightness < 0.78) continue;
+    
+          const pulse =
+            0.9 + Math.sin(cluster.pulse) * 0.1;
+    
+          const glow = ctx.createRadialGradient(
+            cluster.x,
+            cluster.y,
+            0,
+            cluster.x,
+            cluster.y,
+            cluster.radius * 1.7 * pulse
+          );
+    
+          glow.addColorStop(
+            0,
+            `rgba(90, 210, 220, ${
+              0.045 * cluster.brightness
+            })`
+          );
+    
+          glow.addColorStop(
+            0.45,
+            `rgba(60, 150, 180, ${
+              0.025 * cluster.brightness
+            })`
+          );
+    
+          glow.addColorStop(
+            1,
+            "rgba(0, 0, 0, 0)"
+          );
+    
+          ctx.fillStyle = glow;
+    
+          ctx.fillRect(
+            cluster.x - cluster.radius * 2,
+            cluster.y - cluster.radius * 2,
+            cluster.radius * 4,
+            cluster.radius * 4
+          );
+        }
+      }
+    
+      /* =========================================================
+         LIENS LOCAUX DANS CHAQUE AMAS
+         ========================================================= */
+    
+      function drawLocalConnections() {
+        const groupedPoints = new Map();
+    
+        for (const point of points) {
+          if (!groupedPoints.has(point.clusterId)) {
+            groupedPoints.set(point.clusterId, []);
+          }
+    
+          groupedPoints
+            .get(point.clusterId)
+            .push(point);
+        }
+    
+        for (const clusterPoints of groupedPoints.values()) {
+          for (
+            let i = 0;
+            i < clusterPoints.length;
+            i++
+          ) {
+            const pointA = clusterPoints[i];
+            let links = 0;
+    
+            for (
+              let j = i + 1;
+              j < clusterPoints.length;
+              j++
+            ) {
+              const pointB = clusterPoints[j];
+    
+              const dx = pointB.x - pointA.x;
+              const dy = pointB.y - pointA.y;
+    
+              const distance = Math.hypot(dx, dy);
+    
+              if (
+                distance >
+                settings.localConnectionDistance
+              ) {
+                continue;
+              }
+    
+              const opacity =
+                1 -
+                distance /
+                  settings.localConnectionDistance;
+    
+              ctx.beginPath();
+              ctx.moveTo(pointA.x, pointA.y);
+              ctx.lineTo(pointB.x, pointB.y);
+    
+              ctx.strokeStyle =
+                `rgba(155, 225, 235, ${
+                  opacity * 0.19
+                })`;
+    
+              ctx.lineWidth =
+                pointA.radius > 2.2 ||
+                pointB.radius > 2.2
+                  ? 0.65
+                  : 0.38;
+    
+              ctx.stroke();
+    
+              links++;
+    
+              if (
+                links >= settings.maxLocalLinks
+              ) {
+                break;
+              }
+            }
+          }
+        }
+      }
+    
+      /* =========================================================
+         LIENS LONGS ENTRE LES AMAS
+         ========================================================= */
+    
+      function drawClusterConnections() {
+        for (let i = 0; i < clusters.length; i++) {
+          const clusterA = clusters[i];
+    
+          const neighbours = [];
+    
+          for (
+            let j = 0;
+            j < clusters.length;
+            j++
+          ) {
+            if (i === j) continue;
+    
+            const clusterB = clusters[j];
+    
+            const dx = clusterB.x - clusterA.x;
+            const dy = clusterB.y - clusterA.y;
+    
+            neighbours.push({
+              cluster: clusterB,
+              distance: Math.hypot(dx, dy)
+            });
+          }
+    
+          neighbours.sort(
+            (a, b) => a.distance - b.distance
+          );
+    
+          const links = neighbours.slice(
+            0,
+            settings.maxClusterLinks
+          );
+    
+          for (const neighbour of links) {
+            const clusterB = neighbour.cluster;
+    
+            const opacity = Math.max(
+              0.018,
+              0.085 -
+                neighbour.distance /
+                  Math.max(width, height) *
+                  0.07
+            );
+    
+            ctx.beginPath();
+            ctx.moveTo(clusterA.x, clusterA.y);
+    
+            /*
+             * Courbe plutôt que ligne droite,
+             * pour un rendu plus organique.
+             */
+            const middleX =
+              (clusterA.x + clusterB.x) / 2;
+    
+            const middleY =
+              (clusterA.y + clusterB.y) / 2;
+    
+            const offset =
+              Math.sin(
+                clusterA.id * 1.7 +
+                clusterB.id
+              ) * 35;
+    
+            ctx.quadraticCurveTo(
+              middleX + offset,
+              middleY - offset,
+              clusterB.x,
+              clusterB.y
+            );
+    
+            ctx.strokeStyle =
+              `rgba(95, 185, 205, ${opacity})`;
+    
+            ctx.lineWidth = 0.45;
+            ctx.stroke();
+          }
+        }
+      }
+    
+      /* =========================================================
+         POINTS ISOLÉS D’ARRIÈRE-PLAN
+         ========================================================= */
+    
+      function drawAmbientPoints() {
+        for (const point of ambientPoints) {
+          const flicker =
+            0.76 +
+            Math.sin(point.phase) * 0.24;
+    
           ctx.beginPath();
+    
           ctx.arc(
             point.x,
             point.y,
-            point.radius * 4,
+            point.radius,
             0,
             Math.PI * 2
           );
-
+    
           ctx.fillStyle =
-            `rgba(130, 225, 225, ${point.alpha * 0.14})`;
-
+            `rgba(190, 235, 240, ${
+              point.alpha * flicker
+            })`;
+    
           ctx.fill();
         }
       }
-    }
-
-    function render() {
-      ctx.clearRect(0, 0, width, height);
-
-      drawBackgroundGlow();
-      drawConnections();
-      drawPoints();
-      updatePoints();
-
-      animationFrame = requestAnimationFrame(render);
-    }
-
-    function start() {
-      resizeCanvas();
-
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
+    
+      /* =========================================================
+         POINTS DES AMAS
+         ========================================================= */
+    
+      function drawClusterPoints() {
+        for (const point of points) {
+          const flicker =
+            0.78 +
+            Math.sin(point.phase) * 0.22;
+    
+          const finalAlpha =
+            Math.min(
+              point.alpha * flicker,
+              1
+            );
+    
+          if (point.radius > 2.2) {
+            const halo = ctx.createRadialGradient(
+              point.x,
+              point.y,
+              0,
+              point.x,
+              point.y,
+              point.radius * 6
+            );
+    
+            halo.addColorStop(
+              0,
+              `rgba(225, 255, 255, ${
+                finalAlpha * 0.26
+              })`
+            );
+    
+            halo.addColorStop(
+              1,
+              "rgba(80, 210, 220, 0)"
+            );
+    
+            ctx.fillStyle = halo;
+    
+            ctx.fillRect(
+              point.x - point.radius * 6,
+              point.y - point.radius * 6,
+              point.radius * 12,
+              point.radius * 12
+            );
+          }
+    
+          ctx.beginPath();
+    
+          ctx.arc(
+            point.x,
+            point.y,
+            point.radius,
+            0,
+            Math.PI * 2
+          );
+    
+          ctx.fillStyle =
+            `rgba(235, 255, 255, ${
+              finalAlpha
+            })`;
+    
+          ctx.fill();
+        }
       }
-
-      render();
-    }
-
-    const resizeObserver = new ResizeObserver(() => {
-      resizeCanvas();
-    });
-
-    resizeObserver.observe(canvas);
-
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
-
-    if (reducedMotion.matches) {
-      resizeCanvas();
-      drawBackgroundGlow();
-      drawConnections();
-      drawPoints();
-    } else {
-      start();
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-  })();
+    
+      /* =========================================================
+         CENTRES DES AMAS
+         ========================================================= */
+    
+      function drawClusterHubs() {
+        for (const cluster of clusters) {
+          const pulse =
+            1 +
+            Math.sin(cluster.pulse) * 0.14;
+    
+          const radius =
+            randomBetween(1.8, 3.2) * pulse;
+    
+          ctx.beginPath();
+    
+          ctx.arc(
+            cluster.x,
+            cluster.y,
+            radius,
+            0,
+            Math.PI * 2
+          );
+    
+          ctx.fillStyle =
+            `rgba(215, 255, 255, ${
+              0.48 * cluster.brightness
+            })`;
+    
+          ctx.fill();
+        }
+      }
+    
+      /* =========================================================
+         RENDU
+         ========================================================= */
+    
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+    
+        drawBackgroundGlow();
+        drawClusterConnections();
+        drawLocalConnections();
+    
+        drawAmbientPoints();
+        drawClusterPoints();
+        drawClusterHubs();
+    
+        updateClusters();
+        updatePoints();
+    
+        animationFrame =
+          requestAnimationFrame(render);
+      }
+    
+      function drawStaticFrame() {
+        ctx.clearRect(0, 0, width, height);
+    
+        drawBackgroundGlow();
+        drawClusterConnections();
+        drawLocalConnections();
+    
+        drawAmbientPoints();
+        drawClusterPoints();
+        drawClusterHubs();
+      }
+    
+      function start() {
+        resizeCanvas();
+    
+        if (animationFrame) {
+          cancelAnimationFrame(animationFrame);
+        }
+    
+        render();
+      }
+    
+      const resizeObserver = new ResizeObserver(() => {
+        resizeCanvas();
+      });
+    
+      resizeObserver.observe(canvas);
+    
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
+    
+      if (reducedMotion.matches) {
+        resizeCanvas();
+        drawStaticFrame();
+      } else {
+        start();
+      }
+    
+      window.addEventListener(
+        "resize",
+        resizeCanvas
+      );
+    })();
   </script>
   
 </body>
