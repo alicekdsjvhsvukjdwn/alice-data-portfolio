@@ -1888,789 +1888,840 @@
         }
       });
     });
-    
- (() => {
-      const canvas = document.getElementById("neuralCanvas");
-    
-      if (!canvas) return;
-    
-      const ctx = canvas.getContext("2d");
-    
-      if (!ctx) return;
-    
-      /* =========================================================
-         RÉGLAGES DU RÉSEAU
-         ========================================================= */
-    
-      const settings = {
-        /* Nombre de zones très denses */
-        clusterCount: 10,
-    
-        /* Nombre de points par amas */
-        minPointsPerCluster: 45,
-        maxPointsPerCluster: 85,
-    
-        /* Petits points indépendants dans les espaces vides */
-        ambientPointCount: 120,
-    
-        /* Taille physique des amas */
-        minClusterRadius: 180,
-        maxClusterRadius: 340,
-    
-        /* Distance de connexion à l’intérieur des amas */
-        localConnectionDistance: 145,
-    
-        /* Nombre maximal de liens par point */
-        maxLocalLinks: 16,
-    
-        /* Nombre maximal de grands liens entre amas */
-        maxClusterLinks: 5,
-    
-        /* Vitesse générale */
-        movementSpeed: 0.09,
-    
-        /* Mouvement interne des points autour de leur amas */
-        internalMovement: 0.035,
-    
-        /* Souplesse qui ramène légèrement un point vers son amas */
-        clusterElasticity: 0.00008
-      };
-    
-      let width = 0;
-      let height = 0;
-      let pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-    
-      let clusters = [];
-      let points = [];
-      let ambientPoints = [];
-    
-      let animationFrame = null;
-    
-      function randomBetween(min, max) {
-        return min + Math.random() * (max - min);
+
+    (() => {
+  const canvas = document.getElementById("neuralCanvas");
+
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) return;
+
+  /* =========================================================
+     RÉGLAGES
+     ========================================================= */
+
+  const settings = {
+    /*
+     * Points répartis uniformément sur toute la surface.
+     * C'est ce qui empêche les grands espaces vides.
+     */
+    basePointCount: 950,
+
+    /*
+     * Points supplémentaires autour de zones plus lumineuses.
+     * Ils enrichissent le réseau sans former des boules isolées.
+     */
+    hotspotCount: 9,
+    hotspotPoints: 75,
+
+    /*
+     * Rayon assez grand pour que les différentes zones
+     * se rejoignent visuellement.
+     */
+    connectionDistance: 125,
+
+    maxLinksPerPoint: 7,
+
+    movementSpeed: 0.055,
+
+    /*
+     * Très légère ondulation collective.
+     */
+    flowStrength: 0.012,
+
+    /*
+     * Taille des zones denses.
+     */
+    hotspotRadiusMin: 180,
+    hotspotRadiusMax: 350
+  };
+
+  let width = 0;
+  let height = 0;
+  let pixelRatio = 1;
+
+  let points = [];
+  let hotspots = [];
+
+  let animationFrame = null;
+  let time = 0;
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  /*
+   * Approximation d’une distribution gaussienne.
+   * La majorité des valeurs sont proches du centre,
+   * mais certaines s’en éloignent.
+   */
+  function gaussianRandom() {
+    return (
+      Math.random() +
+      Math.random() +
+      Math.random() +
+      Math.random() -
+      2
+    ) / 2;
+  }
+
+  /* =========================================================
+     HOTSPOTS : ZONES PLUS DENSES
+     ========================================================= */
+
+  function createHotspots() {
+    const columns = 3;
+    const rows = Math.ceil(
+      settings.hotspotCount / columns
+    );
+
+    const cellWidth = width / columns;
+    const cellHeight = height / rows;
+
+    hotspots = [];
+
+    for (
+      let i = 0;
+      i < settings.hotspotCount;
+      i++
+    ) {
+      const column = i % columns;
+      const row = Math.floor(i / columns);
+
+      hotspots.push({
+        x:
+          column * cellWidth +
+          cellWidth * randomBetween(0.25, 0.75),
+
+        y:
+          row * cellHeight +
+          cellHeight * randomBetween(0.2, 0.8),
+
+        radius: randomBetween(
+          settings.hotspotRadiusMin,
+          settings.hotspotRadiusMax
+        ),
+
+        vx: randomBetween(-0.018, 0.018),
+        vy: randomBetween(-0.018, 0.018),
+
+        phase: Math.random() * Math.PI * 2,
+
+        brightness: randomBetween(0.65, 1)
+      });
+    }
+  }
+
+  /* =========================================================
+     POINTS RÉPARTIS PARTOUT
+     ========================================================= */
+
+  function createBasePoint() {
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+
+      vx: randomBetween(
+        -settings.movementSpeed,
+        settings.movementSpeed
+      ),
+
+      vy: randomBetween(
+        -settings.movementSpeed,
+        settings.movementSpeed
+      ),
+
+      radius:
+        Math.random() < 0.045
+          ? randomBetween(1.7, 2.8)
+          : randomBetween(0.35, 1.25),
+
+      alpha: randomBetween(0.14, 0.65),
+
+      phase: Math.random() * Math.PI * 2,
+
+      hotspotId: -1
+    };
+  }
+
+  /*
+   * Point enrichissant une zone dense,
+   * mais avec un étalement très large.
+   */
+  function createHotspotPoint(
+    hotspot,
+    hotspotId
+  ) {
+    const angle = Math.random() * Math.PI * 2;
+
+    /*
+     * Une partie des points reste proche du centre.
+     * Une autre partie s'étend largement et crée les ponts.
+     */
+    const extended =
+      Math.random() < 0.42;
+
+    const spread = extended
+      ? randomBetween(0.6, 1.65)
+      : randomBetween(0.12, 0.85);
+
+    const distance =
+      hotspot.radius *
+      spread *
+      Math.abs(gaussianRandom());
+
+    return {
+      x:
+        hotspot.x +
+        Math.cos(angle) * distance,
+
+      y:
+        hotspot.y +
+        Math.sin(angle) *
+          distance *
+          randomBetween(0.65, 1.25),
+
+      vx: randomBetween(
+        -settings.movementSpeed,
+        settings.movementSpeed
+      ),
+
+      vy: randomBetween(
+        -settings.movementSpeed,
+        settings.movementSpeed
+      ),
+
+      radius:
+        Math.random() < 0.09
+          ? randomBetween(1.8, 3.2)
+          : randomBetween(0.45, 1.45),
+
+      alpha: randomBetween(0.24, 0.9),
+
+      phase: Math.random() * Math.PI * 2,
+
+      hotspotId
+    };
+  }
+
+  function createScene() {
+    createHotspots();
+
+    points = Array.from(
+      { length: settings.basePointCount },
+      createBasePoint
+    );
+
+    hotspots.forEach(
+      (hotspot, hotspotId) => {
+        for (
+          let i = 0;
+          i < settings.hotspotPoints;
+          i++
+        ) {
+          points.push(
+            createHotspotPoint(
+              hotspot,
+              hotspotId
+            )
+          );
+        }
       }
-    
-      function randomInteger(min, max) {
-        return Math.floor(randomBetween(min, max + 1));
-      }
-    
+    );
+  }
+
+  /* =========================================================
+     DIMENSIONS
+     ========================================================= */
+
+  function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+
+    width = Math.max(rect.width, 1);
+    height = Math.max(rect.height, 1);
+
+    pixelRatio = Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+
+    canvas.width = Math.round(
+      width * pixelRatio
+    );
+
+    canvas.height = Math.round(
+      height * pixelRatio
+    );
+
+    ctx.setTransform(
+      pixelRatio,
+      0,
+      0,
+      pixelRatio,
+      0,
+      0
+    );
+
+    createScene();
+  }
+
+  /* =========================================================
+     MOUVEMENT
+     ========================================================= */
+
+  function updateHotspots() {
+    for (const hotspot of hotspots) {
+      hotspot.x += hotspot.vx;
+      hotspot.y += hotspot.vy;
+
+      hotspot.phase += 0.004;
+
       /*
-       * Distribution gaussienne approximative :
-       * les valeurs sont plus souvent proches de zéro,
-       * ce qui densifie naturellement le centre des amas.
+       * Les hotspots restent très étendus,
+       * mais se déplacent extrêmement lentement.
        */
-      function gaussianRandom() {
-        return (
-          Math.random() +
-          Math.random() +
-          Math.random() +
-          Math.random() -
-          2
-        ) / 2;
+      hotspot.vx +=
+        Math.sin(hotspot.phase) * 0.00005;
+
+      hotspot.vy +=
+        Math.cos(hotspot.phase * 0.8) *
+        0.00005;
+
+      const margin = hotspot.radius * 0.35;
+
+      if (hotspot.x < margin) {
+        hotspot.vx = Math.abs(hotspot.vx);
       }
-    
-      /* =========================================================
-         CRÉATION DES AMAS
-         ========================================================= */
-    
-      function createCluster(index) {
-        const marginX = Math.min(width * 0.09, 140);
-        const marginY = Math.min(height * 0.07, 110);
-    
-        return {
-          id: index,
-    
-          x: randomBetween(
-            marginX,
-            Math.max(marginX + 1, width - marginX)
-          ),
-    
-          y: randomBetween(
-            marginY,
-            Math.max(marginY + 1, height - marginY)
-          ),
-    
-          radius: randomBetween(
-            settings.minClusterRadius,
-            settings.maxClusterRadius
-          ),
-    
-          vx: randomBetween(
-            -settings.movementSpeed,
-            settings.movementSpeed
-          ),
-    
-          vy: randomBetween(
-            -settings.movementSpeed,
-            settings.movementSpeed
-          ),
-    
-          pulse: Math.random() * Math.PI * 2,
-          brightness: randomBetween(0.55, 1)
-        };
+
+      if (hotspot.x > width - margin) {
+        hotspot.vx = -Math.abs(hotspot.vx);
       }
-    
-      function createClusterPoint(cluster) {
-        /*
-         * La majorité des points restent près du centre,
-         * mais certains s’étendent davantage autour de l’amas.
-         */
-        const spread =
-          Math.random() < 0.78
-            ? randomBetween(0.18, 0.62)
-            : randomBetween(0.62, 1);
-    
-        const angle = Math.random() * Math.PI * 2;
-    
-        const radiusX =
-          cluster.radius *
-          spread *
-          Math.abs(gaussianRandom());
-    
-        const radiusY =
-          cluster.radius *
-          0.62 *
-          spread *
-          Math.abs(gaussianRandom());
-    
-        const offsetX = Math.cos(angle) * radiusX;
-        const offsetY = Math.sin(angle) * radiusY;
-    
-        return {
-          clusterId: cluster.id,
-    
-          x: cluster.x + offsetX,
-          y: cluster.y + offsetY,
-    
-          /* Position relative souhaitée autour du centre */
-          anchorX: offsetX,
-          anchorY: offsetY,
-    
-          vx: randomBetween(
-            -settings.internalMovement,
-            settings.internalMovement
-          ),
-    
-          vy: randomBetween(
-            -settings.internalMovement,
-            settings.internalMovement
-          ),
-    
-          radius:
-            Math.random() < 0.07
-              ? randomBetween(2.3, 3.8)
-              : randomBetween(0.55, 1.7),
-    
-          alpha: randomBetween(0.28, 0.92),
-    
-          phase: Math.random() * Math.PI * 2
-        };
+
+      if (hotspot.y < margin) {
+        hotspot.vy = Math.abs(hotspot.vy);
       }
-    
-      function createAmbientPoint() {
-        return {
-          x: Math.random() * width,
-          y: Math.random() * height,
-    
-          vx: randomBetween(-0.035, 0.035),
-          vy: randomBetween(-0.035, 0.035),
-    
-          radius: randomBetween(0.35, 1),
-          alpha: randomBetween(0.1, 0.42),
-    
-          phase: Math.random() * Math.PI * 2
-        };
+
+      if (hotspot.y > height - margin) {
+        hotspot.vy = -Math.abs(hotspot.vy);
       }
-    
-      function createScene() {
-        clusters = Array.from(
-          { length: settings.clusterCount },
-          (_, index) => createCluster(index)
-        );
-    
-        points = [];
-    
-        for (const cluster of clusters) {
-          const count = randomInteger(
-            settings.minPointsPerCluster,
-            settings.maxPointsPerCluster
-          );
-    
-          for (let i = 0; i < count; i++) {
-            points.push(createClusterPoint(cluster));
-          }
-        }
-    
-        ambientPoints = Array.from(
-          { length: settings.ambientPointCount },
-          createAmbientPoint
-        );
-      }
-    
-      /* =========================================================
-         REDIMENSIONNEMENT
-         ========================================================= */
-    
-      function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
-    
-        width = Math.max(rect.width, 1);
-        height = Math.max(rect.height, 1);
-    
-        pixelRatio = Math.min(
-          window.devicePixelRatio || 1,
-          2
-        );
-    
-        canvas.width = Math.round(width * pixelRatio);
-        canvas.height = Math.round(height * pixelRatio);
-    
-        ctx.setTransform(
-          pixelRatio,
-          0,
-          0,
-          pixelRatio,
-          0,
-          0
-        );
-    
-        createScene();
-      }
-    
-      /* =========================================================
-         MOUVEMENT DES AMAS
-         ========================================================= */
-    
-      function updateClusters() {
-        const margin = 70;
-    
-        for (const cluster of clusters) {
-          cluster.x += cluster.vx;
-          cluster.y += cluster.vy;
-    
-          /*
-           * Petite dérive aléatoire :
-           * les amas changent doucement de trajectoire.
-           */
-          cluster.vx += randomBetween(-0.0007, 0.0007);
-          cluster.vy += randomBetween(-0.0007, 0.0007);
-    
-          const speed = Math.hypot(
-            cluster.vx,
-            cluster.vy
-          );
-    
-          const maxSpeed =
-            settings.movementSpeed * 1.45;
-    
-          if (speed > maxSpeed) {
-            cluster.vx =
-              cluster.vx / speed * maxSpeed;
-    
-            cluster.vy =
-              cluster.vy / speed * maxSpeed;
-          }
-    
-          if (cluster.x < margin) {
-            cluster.x = margin;
-            cluster.vx = Math.abs(cluster.vx);
-          }
-    
-          if (cluster.x > width - margin) {
-            cluster.x = width - margin;
-            cluster.vx = -Math.abs(cluster.vx);
-          }
-    
-          if (cluster.y < margin) {
-            cluster.y = margin;
-            cluster.vy = Math.abs(cluster.vy);
-          }
-    
-          if (cluster.y > height - margin) {
-            cluster.y = height - margin;
-            cluster.vy = -Math.abs(cluster.vy);
-          }
-    
-          cluster.pulse += 0.008;
+    }
+  }
+
+  function updatePoints() {
+    time += 0.004;
+
+    for (const point of points) {
+      /*
+       * Champ ondulatoire global :
+       * tous les points suivent un mouvement continu,
+       * mais aucun ne converge vers un centre.
+       */
+      const flowX =
+        Math.sin(
+          point.y * 0.005 +
+          time +
+          point.phase
+        ) * settings.flowStrength;
+
+      const flowY =
+        Math.cos(
+          point.x * 0.004 -
+          time * 0.8 +
+          point.phase
+        ) * settings.flowStrength;
+
+      point.vx += flowX * 0.015;
+      point.vy += flowY * 0.015;
+
+      /*
+       * Les points issus d’un hotspot suivent seulement
+       * très légèrement son déplacement.
+       * Ils ne sont jamais rappelés vers son centre.
+       */
+      if (point.hotspotId >= 0) {
+        const hotspot =
+          hotspots[point.hotspotId];
+
+        if (hotspot) {
+          point.x += hotspot.vx * 0.22;
+          point.y += hotspot.vy * 0.22;
         }
       }
-    
-      /* =========================================================
-         MOUVEMENT DES POINTS
-         ========================================================= */
-    
-      function updatePoints() {
-        for (const point of points) {
-          const cluster = clusters[point.clusterId];
-    
-          if (!cluster) continue;
-    
-          const targetX =
-            cluster.x + point.anchorX;
-    
-          const targetY =
-            cluster.y + point.anchorY;
-    
-          /*
-           * Attraction très légère vers la position relative
-           * dans l’amas, pas vers le centre de la page.
-           */
-          point.vx +=
-            (targetX - point.x) *
-            settings.clusterElasticity;
-    
-          point.vy +=
-            (targetY - point.y) *
-            settings.clusterElasticity;
-    
-          point.vx += randomBetween(-0.0014, 0.0014);
-          point.vy += randomBetween(-0.0014, 0.0014);
-    
-          point.x += point.vx + cluster.vx;
-          point.y += point.vy + cluster.vy;
-    
-          const speed = Math.hypot(
-            point.vx,
-            point.vy
-          );
-    
-          const maxSpeed =
-            settings.internalMovement * 2.2;
-    
-          if (speed > maxSpeed) {
-            point.vx =
-              point.vx / speed * maxSpeed;
-    
-            point.vy =
-              point.vy / speed * maxSpeed;
-          }
-    
-          point.phase += 0.018;
-        }
-    
-        for (const point of ambientPoints) {
-          point.x += point.vx;
-          point.y += point.vy;
-    
-          point.vx += randomBetween(-0.0007, 0.0007);
-          point.vy += randomBetween(-0.0007, 0.0007);
-    
-          if (point.x < 0) point.x = width;
-          if (point.x > width) point.x = 0;
-    
-          if (point.y < 0) point.y = height;
-          if (point.y > height) point.y = 0;
-    
-          point.phase += 0.012;
-        }
+
+      point.x += point.vx;
+      point.y += point.vy;
+
+      const speed = Math.hypot(
+        point.vx,
+        point.vy
+      );
+
+      const maxSpeed =
+        settings.movementSpeed * 1.7;
+
+      if (speed > maxSpeed) {
+        point.vx =
+          point.vx / speed * maxSpeed;
+
+        point.vy =
+          point.vy / speed * maxSpeed;
       }
-    
-      /* =========================================================
-         FOND LUMINEUX
-         ========================================================= */
-    
-      function drawBackgroundGlow() {
-        for (const cluster of clusters) {
-          if (cluster.brightness < 0.78) continue;
-    
-          const pulse =
-            0.9 + Math.sin(cluster.pulse) * 0.1;
-    
-          const glow = ctx.createRadialGradient(
-            cluster.x,
-            cluster.y,
-            0,
-            cluster.x,
-            cluster.y,
-            cluster.radius * 1.7 * pulse
-          );
-    
-          glow.addColorStop(
-            0,
-            `rgba(90, 210, 220, ${
-              0.045 * cluster.brightness
-            })`
-          );
-    
-          glow.addColorStop(
-            0.45,
-            `rgba(60, 150, 180, ${
-              0.025 * cluster.brightness
-            })`
-          );
-    
-          glow.addColorStop(
-            1,
-            "rgba(0, 0, 0, 0)"
-          );
-    
-          ctx.fillStyle = glow;
-    
-          ctx.fillRect(
-            cluster.x - cluster.radius * 2,
-            cluster.y - cluster.radius * 2,
-            cluster.radius * 4,
-            cluster.radius * 4
-          );
-        }
+
+      /*
+       * Réapparition de l’autre côté :
+       * la densité reste constante partout.
+       */
+      if (point.x < -10) {
+        point.x = width + 10;
       }
-    
-      /* =========================================================
-         LIENS LOCAUX DANS CHAQUE AMAS
-         ========================================================= */
-    
-      function drawLocalConnections() {
-        const groupedPoints = new Map();
-    
-        for (const point of points) {
-          if (!groupedPoints.has(point.clusterId)) {
-            groupedPoints.set(point.clusterId, []);
-          }
-    
-          groupedPoints
-            .get(point.clusterId)
-            .push(point);
-        }
-    
-        for (const clusterPoints of groupedPoints.values()) {
-          for (
-            let i = 0;
-            i < clusterPoints.length;
-            i++
-          ) {
-            const pointA = clusterPoints[i];
-            let links = 0;
-    
-            for (
-              let j = i + 1;
-              j < clusterPoints.length;
-              j++
+
+      if (point.x > width + 10) {
+        point.x = -10;
+      }
+
+      if (point.y < -10) {
+        point.y = height + 10;
+      }
+
+      if (point.y > height + 10) {
+        point.y = -10;
+      }
+
+      point.phase += 0.006;
+    }
+  }
+
+  /* =========================================================
+     GRILLE SPATIALE
+     Évite de comparer chaque point à tous les autres.
+     ========================================================= */
+
+  function buildSpatialGrid() {
+    const cellSize =
+      settings.connectionDistance;
+
+    const grid = new Map();
+
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+
+      const cellX = Math.floor(
+        point.x / cellSize
+      );
+
+      const cellY = Math.floor(
+        point.y / cellSize
+      );
+
+      const key = `${cellX},${cellY}`;
+
+      if (!grid.has(key)) {
+        grid.set(key, []);
+      }
+
+      grid.get(key).push(i);
+    }
+
+    return {
+      grid,
+      cellSize
+    };
+  }
+
+  /* =========================================================
+     CONNEXIONS CONTINUES
+     ========================================================= */
+
+  function drawConnections() {
+    const { grid, cellSize } =
+      buildSpatialGrid();
+
+    for (let i = 0; i < points.length; i++) {
+      const pointA = points[i];
+
+      const cellX = Math.floor(
+        pointA.x / cellSize
+      );
+
+      const cellY = Math.floor(
+        pointA.y / cellSize
+      );
+
+      let links = 0;
+
+      /*
+       * Recherche dans la cellule courante
+       * et les huit cellules voisines.
+       */
+      for (
+        let offsetX = -1;
+        offsetX <= 1;
+        offsetX++
+      ) {
+        for (
+          let offsetY = -1;
+          offsetY <= 1;
+          offsetY++
+        ) {
+          const key =
+            `${cellX + offsetX},${cellY + offsetY}`;
+
+          const neighbours = grid.get(key);
+
+          if (!neighbours) continue;
+
+          for (const neighbourIndex of neighbours) {
+            if (neighbourIndex <= i) continue;
+
+            const pointB =
+              points[neighbourIndex];
+
+            const dx =
+              pointB.x - pointA.x;
+
+            const dy =
+              pointB.y - pointA.y;
+
+            const distance =
+              Math.hypot(dx, dy);
+
+            if (
+              distance >
+              settings.connectionDistance
             ) {
-              const pointB = clusterPoints[j];
-    
-              const dx = pointB.x - pointA.x;
-              const dy = pointB.y - pointA.y;
-    
-              const distance = Math.hypot(dx, dy);
-    
-              if (
-                distance >
-                settings.localConnectionDistance
-              ) {
-                continue;
-              }
-    
-              const opacity =
-                1 -
-                distance /
-                  settings.localConnectionDistance;
-    
-              ctx.beginPath();
-              ctx.moveTo(pointA.x, pointA.y);
-              ctx.lineTo(pointB.x, pointB.y);
-    
-              ctx.strokeStyle =
-                `rgba(155, 225, 235, ${
-                  opacity * 0.19
-                })`;
-    
-              ctx.lineWidth =
-                pointA.radius > 2.2 ||
-                pointB.radius > 2.2
-                  ? 0.65
-                  : 0.38;
-    
-              ctx.stroke();
-    
-              links++;
-    
-              if (
-                links >= settings.maxLocalLinks
-              ) {
-                break;
-              }
+              continue;
+            }
+
+            const opacity =
+              1 -
+              distance /
+                settings.connectionDistance;
+
+            /*
+             * Les liens entre points de zones différentes
+             * restent légèrement visibles :
+             * ils forment les ponts entre les hotspots.
+             */
+            const sameHotspot =
+              pointA.hotspotId >= 0 &&
+              pointA.hotspotId ===
+                pointB.hotspotId;
+
+            const strength = sameHotspot
+              ? 0.25
+              : 0.14;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+              pointA.x,
+              pointA.y
+            );
+
+            ctx.lineTo(
+              pointB.x,
+              pointB.y
+            );
+
+            ctx.strokeStyle =
+              `rgba(155, 225, 235, ${
+                opacity * strength
+              })`;
+
+            ctx.lineWidth =
+              sameHotspot ? 0.48 : 0.34;
+
+            ctx.stroke();
+
+            links++;
+
+            if (
+              links >=
+              settings.maxLinksPerPoint
+            ) {
+              break;
             }
           }
-        }
-      }
-    
-      /* =========================================================
-         LIENS LONGS ENTRE LES AMAS
-         ========================================================= */
-    
-      function drawClusterConnections() {
-        for (let i = 0; i < clusters.length; i++) {
-          const clusterA = clusters[i];
-    
-          const neighbours = [];
-    
-          for (
-            let j = 0;
-            j < clusters.length;
-            j++
+
+          if (
+            links >=
+            settings.maxLinksPerPoint
           ) {
-            if (i === j) continue;
-    
-            const clusterB = clusters[j];
-    
-            const dx = clusterB.x - clusterA.x;
-            const dy = clusterB.y - clusterA.y;
-    
-            neighbours.push({
-              cluster: clusterB,
-              distance: Math.hypot(dx, dy)
-            });
-          }
-    
-          neighbours.sort(
-            (a, b) => a.distance - b.distance
-          );
-    
-          const links = neighbours.slice(
-            0,
-            settings.maxClusterLinks
-          );
-    
-          for (const neighbour of links) {
-            const clusterB = neighbour.cluster;
-    
-            const opacity = Math.max(
-              0.03,
-              0.13 -
-                neighbour.distance /
-                  Math.max(width, height) *
-                  0.09
-            );
-    
-            ctx.beginPath();
-            ctx.moveTo(clusterA.x, clusterA.y);
-    
-            /*
-             * Courbe plutôt que ligne droite,
-             * pour un rendu plus organique.
-             */
-            const middleX =
-              (clusterA.x + clusterB.x) / 2;
-    
-            const middleY =
-              (clusterA.y + clusterB.y) / 2;
-    
-            const offset =
-              Math.sin(
-                clusterA.id * 1.7 +
-                clusterB.id
-              ) * 35;
-    
-            ctx.quadraticCurveTo(
-              middleX + offset,
-              middleY - offset,
-              clusterB.x,
-              clusterB.y
-            );
-    
-            ctx.strokeStyle =
-              `rgba(95, 185, 205, ${opacity})`;
-    
-            ctx.lineWidth = 0.7;
-            ctx.stroke();
+            break;
           }
         }
+
+        if (
+          links >=
+          settings.maxLinksPerPoint
+        ) {
+          break;
+        }
       }
-    
-      /* =========================================================
-         POINTS ISOLÉS D’ARRIÈRE-PLAN
-         ========================================================= */
-    
-      function drawAmbientPoints() {
-        for (const point of ambientPoints) {
-          const flicker =
-            0.76 +
-            Math.sin(point.phase) * 0.24;
-    
-          ctx.beginPath();
-    
-          ctx.arc(
+    }
+  }
+
+  /* =========================================================
+     GRANDES CONNEXIONS ENTRE ZONES
+     ========================================================= */
+
+  function drawHotspotBridges() {
+    for (
+      let i = 0;
+      i < hotspots.length;
+      i++
+    ) {
+      const hotspotA = hotspots[i];
+
+      const neighbours = hotspots
+        .map((hotspot, index) => {
+          if (index === i) return null;
+
+          return {
+            hotspot,
+            distance: Math.hypot(
+              hotspot.x - hotspotA.x,
+              hotspot.y - hotspotA.y
+            )
+          };
+        })
+        .filter(Boolean)
+        .sort(
+          (a, b) =>
+            a.distance - b.distance
+        )
+        .slice(0, 3);
+
+      for (const neighbour of neighbours) {
+        const hotspotB =
+          neighbour.hotspot;
+
+        const middleX =
+          (hotspotA.x + hotspotB.x) /
+          2;
+
+        const middleY =
+          (hotspotA.y + hotspotB.y) /
+          2;
+
+        const curve =
+          Math.sin(
+            i * 2.7 +
+            hotspotB.phase
+          ) * 65;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+          hotspotA.x,
+          hotspotA.y
+        );
+
+        ctx.quadraticCurveTo(
+          middleX + curve,
+          middleY - curve,
+          hotspotB.x,
+          hotspotB.y
+        );
+
+        ctx.strokeStyle =
+          "rgba(95, 195, 215, 0.055)";
+
+        ctx.lineWidth = 0.65;
+        ctx.stroke();
+      }
+    }
+  }
+
+  /* =========================================================
+     LUMIÈRES DIFFUSES
+     ========================================================= */
+
+  function drawHotspotGlows() {
+    for (const hotspot of hotspots) {
+      const pulse =
+        0.92 +
+        Math.sin(hotspot.phase) *
+          0.08;
+
+      const radius =
+        hotspot.radius * 1.35 * pulse;
+
+      const glow =
+        ctx.createRadialGradient(
+          hotspot.x,
+          hotspot.y,
+          0,
+          hotspot.x,
+          hotspot.y,
+          radius
+        );
+
+      glow.addColorStop(
+        0,
+        `rgba(85, 205, 220, ${
+          0.045 *
+          hotspot.brightness
+        })`
+      );
+
+      glow.addColorStop(
+        0.45,
+        `rgba(60, 150, 185, ${
+          0.025 *
+          hotspot.brightness
+        })`
+      );
+
+      glow.addColorStop(
+        1,
+        "rgba(0, 0, 0, 0)"
+      );
+
+      ctx.fillStyle = glow;
+
+      ctx.fillRect(
+        hotspot.x - radius,
+        hotspot.y - radius,
+        radius * 2,
+        radius * 2
+      );
+    }
+  }
+
+  /* =========================================================
+     POINTS
+     ========================================================= */
+
+  function drawPoints() {
+    for (const point of points) {
+      const flicker =
+        0.8 +
+        Math.sin(point.phase) * 0.2;
+
+      const alpha =
+        clamp(
+          point.alpha * flicker,
+          0,
+          1
+        );
+
+      if (point.radius > 1.65) {
+        const halo =
+          ctx.createRadialGradient(
             point.x,
             point.y,
-            point.radius,
             0,
-            Math.PI * 2
-          );
-    
-          ctx.fillStyle =
-            `rgba(190, 235, 240, ${
-              point.alpha * flicker
-            })`;
-    
-          ctx.fill();
-        }
-      }
-    
-      /* =========================================================
-         POINTS DES AMAS
-         ========================================================= */
-    
-      function drawClusterPoints() {
-        for (const point of points) {
-          const flicker =
-            0.78 +
-            Math.sin(point.phase) * 0.22;
-    
-          const finalAlpha =
-            Math.min(
-              point.alpha * flicker,
-              1
-            );
-    
-          if (point.radius > 2.2) {
-            const halo = ctx.createRadialGradient(
-              point.x,
-              point.y,
-              0,
-              point.x,
-              point.y,
-              point.radius * 6
-            );
-    
-            halo.addColorStop(
-              0,
-              `rgba(225, 255, 255, ${
-                finalAlpha * 0.26
-              })`
-            );
-    
-            halo.addColorStop(
-              1,
-              "rgba(80, 210, 220, 0)"
-            );
-    
-            ctx.fillStyle = halo;
-    
-            ctx.fillRect(
-              point.x - point.radius * 6,
-              point.y - point.radius * 6,
-              point.radius * 12,
-              point.radius * 12
-            );
-          }
-    
-          ctx.beginPath();
-    
-          ctx.arc(
             point.x,
             point.y,
-            point.radius,
-            0,
-            Math.PI * 2
+            point.radius * 5
           );
-    
-          ctx.fillStyle =
-            `rgba(235, 255, 255, ${
-              finalAlpha
-            })`;
-    
-          ctx.fill();
-        }
+
+        halo.addColorStop(
+          0,
+          `rgba(225, 255, 255, ${
+            alpha * 0.24
+          })`
+        );
+
+        halo.addColorStop(
+          1,
+          "rgba(80, 210, 225, 0)"
+        );
+
+        ctx.fillStyle = halo;
+
+        ctx.fillRect(
+          point.x - point.radius * 5,
+          point.y - point.radius * 5,
+          point.radius * 10,
+          point.radius * 10
+        );
       }
-    
-      /* =========================================================
-         CENTRES DES AMAS
-         ========================================================= */
-    
-      function drawClusterHubs() {
-        for (const cluster of clusters) {
-          const pulse =
-            1 +
-            Math.sin(cluster.pulse) * 0.14;
-    
-          const radius =
-            randomBetween(1.8, 3.2) * pulse;
-    
-          ctx.beginPath();
-    
-          ctx.arc(
-            cluster.x,
-            cluster.y,
-            radius,
-            0,
-            Math.PI * 2
-          );
-    
-          ctx.fillStyle =
-            `rgba(215, 255, 255, ${
-              0.48 * cluster.brightness
-            })`;
-    
-          ctx.fill();
-        }
-      }
-    
-      /* =========================================================
-         RENDU
-         ========================================================= */
-    
-      function render() {
-        ctx.clearRect(0, 0, width, height);
-    
-        drawBackgroundGlow();
-        drawClusterConnections();
-        drawLocalConnections();
-    
-        drawAmbientPoints();
-        drawClusterPoints();
-        drawClusterHubs();
-    
-        updateClusters();
-        updatePoints();
-    
-        animationFrame =
-          requestAnimationFrame(render);
-      }
-    
-      function drawStaticFrame() {
-        ctx.clearRect(0, 0, width, height);
-    
-        drawBackgroundGlow();
-        drawClusterConnections();
-        drawLocalConnections();
-    
-        drawAmbientPoints();
-        drawClusterPoints();
-        drawClusterHubs();
-      }
-    
-      function start() {
-        resizeCanvas();
-    
-        if (animationFrame) {
-          cancelAnimationFrame(animationFrame);
-        }
-    
-        render();
-      }
-    
-      const resizeObserver = new ResizeObserver(() => {
-        resizeCanvas();
-      });
-    
-      resizeObserver.observe(canvas);
-    
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
+
+      ctx.beginPath();
+
+      ctx.arc(
+        point.x,
+        point.y,
+        point.radius,
+        0,
+        Math.PI * 2
       );
-    
-      if (reducedMotion.matches) {
-        resizeCanvas();
-        drawStaticFrame();
-      } else {
-        start();
-      }
-    
-      window.addEventListener(
-        "resize",
-        resizeCanvas
+
+      ctx.fillStyle =
+        `rgba(230, 255, 255, ${alpha})`;
+
+      ctx.fill();
+    }
+  }
+
+  /* =========================================================
+     RENDU
+     ========================================================= */
+
+  function drawFrame() {
+    ctx.clearRect(
+      0,
+      0,
+      width,
+      height
+    );
+
+    drawHotspotGlows();
+    drawHotspotBridges();
+    drawConnections();
+    drawPoints();
+  }
+
+  function render() {
+    drawFrame();
+
+    updateHotspots();
+    updatePoints();
+
+    animationFrame =
+      requestAnimationFrame(render);
+  }
+
+  function start() {
+    resizeCanvas();
+
+    if (animationFrame) {
+      cancelAnimationFrame(
+        animationFrame
       );
-    })();
+    }
+
+    render();
+  }
+
+  const resizeObserver =
+    new ResizeObserver(() => {
+      resizeCanvas();
+    });
+
+  resizeObserver.observe(canvas);
+
+  const reducedMotion =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+
+  if (reducedMotion.matches) {
+    resizeCanvas();
+    drawFrame();
+  } else {
+    start();
+  }
+})();
+ 
   </script>
   
 </body>
