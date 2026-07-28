@@ -1899,11 +1899,9 @@
     if (!ctx) return;
 
     const settings = {
-      pointCount: 260,
+      pointCount: 300,
       connectionDistance: 125,
-      centerPull: 0.0015,
-      movementSpeed: 0.12,
-      centralDensity: 0.72
+      movementSpeed: 0.16
     };
 
     let width = 0;
@@ -1917,47 +1915,20 @@
     }
 
     function createPoint() {
-      const useCenter = Math.random() < settings.centralDensity;
-
-      let x;
-      let y;
-
-      if (useCenter) {
-        /*
-         * Distribution concentrée autour du centre.
-         * La somme de plusieurs nombres aléatoires produit
-         * une densité plus forte au milieu.
-         */
-        x =
-          (
-            Math.random() +
-            Math.random() +
-            Math.random() +
-            Math.random()
-          ) / 4 * width;
-
-        y =
-          (
-            Math.random() +
-            Math.random() +
-            Math.random()
-          ) / 3 * height;
-      } else {
-        x = Math.random() * width;
-        y = Math.random() * height;
-      }
-
       return {
-        x,
-        y,
+        x: Math.random() * width,
+        y: Math.random() * height,
+    
         vx: randomBetween(
           -settings.movementSpeed,
           settings.movementSpeed
         ),
+    
         vy: randomBetween(
           -settings.movementSpeed,
           settings.movementSpeed
         ),
+    
         radius: randomBetween(0.6, 2.1),
         alpha: randomBetween(0.25, 0.9)
       };
@@ -1987,60 +1958,83 @@
     }
 
     function updatePoints() {
-      const centerX = width * 0.5;
-      const centerY = height * 0.38;
-
       for (const point of points) {
-        const dx = centerX - point.x;
-        const dy = centerY - point.y;
-
-        /*
-         * Très légère attraction vers le centre,
-         * pour obtenir l'effet dense de l'image de référence.
-         */
-        point.vx += dx * settings.centerPull * 0.001;
-        point.vy += dy * settings.centerPull * 0.001;
-
         point.x += point.vx;
         point.y += point.vy;
-
-        if (point.x < -40) point.x = width + 40;
-        if (point.x > width + 40) point.x = -40;
-
-        if (point.y < -40) point.y = height + 40;
-        if (point.y > height + 40) point.y = -40;
-
+    
         /*
-         * Limite la vitesse pour garder un mouvement calme.
+         * Petit changement aléatoire de direction.
+         * Cela évite un mouvement trop rectiligne,
+         * sans attirer les points vers le centre.
          */
+        point.vx += randomBetween(-0.003, 0.003);
+        point.vy += randomBetween(-0.003, 0.003);
+    
         const speed = Math.hypot(point.vx, point.vy);
         const maxSpeed = settings.movementSpeed * 1.8;
-
+    
         if (speed > maxSpeed) {
           point.vx = point.vx / speed * maxSpeed;
           point.vy = point.vy / speed * maxSpeed;
         }
+    
+        /*
+         * Les points rebondissent sur les bords.
+         * Ils restent donc répartis dans tout le conteneur.
+         */
+        if (point.x <= 0) {
+          point.x = 0;
+          point.vx = Math.abs(point.vx);
+        }
+    
+        if (point.x >= width) {
+          point.x = width;
+          point.vx = -Math.abs(point.vx);
+        }
+    
+        if (point.y <= 0) {
+          point.y = 0;
+          point.vy = Math.abs(point.vy);
+        }
+    
+        if (point.y >= height) {
+          point.y = height;
+          point.vy = -Math.abs(point.vy);
+        }
       }
     }
-
+    
     function drawBackgroundGlow() {
-      const centerX = width * 0.5;
-      const centerY = height * 0.33;
-
-      const gradient = ctx.createRadialGradient(
-        centerX,
-        centerY,
+      const glow1 = ctx.createRadialGradient(
+        width * 0.22,
+        height * 0.22,
         0,
-        centerX,
-        centerY,
-        Math.max(width, height) * 0.55
+        width * 0.22,
+        height * 0.22,
+        Math.max(width, height) * 0.42
       );
-
-      gradient.addColorStop(0, "rgba(93, 139, 244, 0.16)");
-      gradient.addColorStop(0.35, "rgba(86, 190, 190, 0.08)");
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-
-      ctx.fillStyle = gradient;
+    
+      glow1.addColorStop(0, "rgba(93, 139, 244, 0.10)");
+      glow1.addColorStop(0.45, "rgba(86, 190, 190, 0.05)");
+      glow1.addColorStop(1, "rgba(0, 0, 0, 0)");
+    
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, width, height);
+    
+      const glow2 = ctx.createRadialGradient(
+        width * 0.78,
+        height * 0.65,
+        0,
+        width * 0.78,
+        height * 0.65,
+        Math.max(width, height) * 0.4
+      );
+    
+      glow2.addColorStop(0, "rgba(168, 200, 122, 0.08)");
+      glow2.addColorStop(0.5, "rgba(86, 190, 190, 0.035)");
+      glow2.addColorStop(1, "rgba(0, 0, 0, 0)");
+    
+      ctx.fillStyle = glow2;
       ctx.fillRect(0, 0, width, height);
     }
 
@@ -2070,33 +2064,6 @@
           ctx.lineWidth = 0.55;
           ctx.stroke();
         }
-      }
-    }
-
-    function drawRadialLines() {
-      const centerX = width * 0.5;
-      const centerY = height * 0.34;
-
-      for (let i = 0; i < points.length; i += 5) {
-        const point = points[i];
-
-        const dx = point.x - centerX;
-        const dy = point.y - centerY;
-        const distance = Math.hypot(dx, dy);
-
-        if (distance < 120) continue;
-
-        const opacity = Math.min(distance / 1000, 1);
-
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(point.x, point.y);
-
-        ctx.strokeStyle =
-          `rgba(80, 180, 190, ${opacity * 0.035})`;
-
-        ctx.lineWidth = 0.7;
-        ctx.stroke();
       }
     }
 
@@ -2138,7 +2105,6 @@
       ctx.clearRect(0, 0, width, height);
 
       drawBackgroundGlow();
-      drawRadialLines();
       drawConnections();
       drawPoints();
       updatePoints();
@@ -2169,7 +2135,6 @@
     if (reducedMotion.matches) {
       resizeCanvas();
       drawBackgroundGlow();
-      drawRadialLines();
       drawConnections();
       drawPoints();
     } else {
