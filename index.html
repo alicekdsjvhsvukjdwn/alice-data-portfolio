@@ -1914,28 +1914,28 @@
      * Ils enrichissent le réseau sans former des boules isolées.
      */
     hotspotCount: 9,
-    hotspotPoints: 75,
+    hotspotPoints: 150,
 
     /*
      * Rayon assez grand pour que les différentes zones
      * se rejoignent visuellement.
      */
-    connectionDistance: 125,
+    connectionDistance: 165,
 
-    maxLinksPerPoint: 7,
+    maxLinksPerPoint: 10,
 
-    movementSpeed: 0.055,
+    movementSpeed: 0.045,
 
     /*
      * Très légère ondulation collective.
      */
-    flowStrength: 0.012,
+    flowStrength: 0.1,
 
     /*
      * Taille des zones denses.
      */
-    hotspotRadiusMin: 180,
-    hotspotRadiusMax: 350
+    hotspotRadiusMin: 280,
+    hotspotRadiusMax: 520
   };
 
   let width = 0;
@@ -2065,11 +2065,11 @@
      * Une autre partie s'étend largement et crée les ponts.
      */
     const extended =
-      Math.random() < 0.42;
+      Math.random() < 0.68;
 
     const spread = extended
-      ? randomBetween(0.6, 1.65)
-      : randomBetween(0.12, 0.85);
+      ? randomBetween(0.65, 1.85)
+      : randomBetween(0.18, 1.05);
 
     const distance =
       hotspot.radius *
@@ -2414,8 +2414,8 @@
                 pointB.hotspotId;
 
             const strength = sameHotspot
-              ? 0.25
-              : 0.14;
+              ? 0.27
+              : 0.20;
 
             ctx.beginPath();
 
@@ -2435,7 +2435,7 @@
               })`;
 
             ctx.lineWidth =
-              sameHotspot ? 0.48 : 0.34;
+              sameHotspot ? 0.52 : 0.40;
 
             ctx.stroke();
 
@@ -2472,73 +2472,175 @@
      ========================================================= */
 
   function drawHotspotBridges() {
-    for (
-      let i = 0;
-      i < hotspots.length;
-      i++
-    ) {
-      const hotspotA = hotspots[i];
-
-      const neighbours = hotspots
-        .map((hotspot, index) => {
-          if (index === i) return null;
-
-          return {
-            hotspot,
-            distance: Math.hypot(
-              hotspot.x - hotspotA.x,
-              hotspot.y - hotspotA.y
-            )
-          };
-        })
-        .filter(Boolean)
-        .sort(
-          (a, b) =>
-            a.distance - b.distance
-        )
-        .slice(0, 3);
-
-      for (const neighbour of neighbours) {
-        const hotspotB =
-          neighbour.hotspot;
-
-        const middleX =
-          (hotspotA.x + hotspotB.x) /
-          2;
-
-        const middleY =
-          (hotspotA.y + hotspotB.y) /
-          2;
-
-        const curve =
-          Math.sin(
-            i * 2.7 +
-            hotspotB.phase
-          ) * 65;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-          hotspotA.x,
-          hotspotA.y
-        );
-
-        ctx.quadraticCurveTo(
-          middleX + curve,
-          middleY - curve,
-          hotspotB.x,
-          hotspotB.y
-        );
-
-        ctx.strokeStyle =
-          "rgba(95, 195, 215, 0.055)";
-
-        ctx.lineWidth = 0.65;
-        ctx.stroke();
+      /*
+       * Évite de dessiner deux fois le même pont :
+       * A → B puis B → A.
+       */
+      const drawnPairs = new Set();
+    
+      for (let i = 0; i < hotspots.length; i++) {
+        const hotspotA = hotspots[i];
+    
+        /*
+         * On relie chaque hotspot à ses trois voisins
+         * les plus proches.
+         */
+        const neighbours = hotspots
+          .map((hotspot, index) => {
+            if (index === i) return null;
+    
+            return {
+              hotspot,
+              index,
+              distance: Math.hypot(
+                hotspot.x - hotspotA.x,
+                hotspot.y - hotspotA.y
+              )
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => a.distance - b.distance)
+          .slice(0, 3);
+    
+        for (const neighbour of neighbours) {
+          const hotspotB = neighbour.hotspot;
+    
+          const pairKey = [i, neighbour.index]
+            .sort((a, b) => a - b)
+            .join("-");
+    
+          if (drawnPairs.has(pairKey)) continue;
+    
+          drawnPairs.add(pairKey);
+    
+          const dx = hotspotB.x - hotspotA.x;
+          const dy = hotspotB.y - hotspotA.y;
+          const distance = Math.hypot(dx, dy);
+    
+          if (distance === 0) continue;
+    
+          /*
+           * Vecteur perpendiculaire utilisé pour créer
+           * plusieurs filaments autour du pont principal.
+           */
+          const perpendicularX = -dy / distance;
+          const perpendicularY = dx / distance;
+    
+          /*
+           * Cinq filaments entre chaque paire de clusters.
+           * Cela ressemble davantage à une vraie continuité
+           * qu’à une seule ligne artificielle.
+           */
+          for (let filament = -2; filament <= 2; filament++) {
+            const offset = filament * 12;
+    
+            const startX =
+              hotspotA.x + perpendicularX * offset;
+    
+            const startY =
+              hotspotA.y + perpendicularY * offset;
+    
+            const endX =
+              hotspotB.x + perpendicularX * offset;
+    
+            const endY =
+              hotspotB.y + perpendicularY * offset;
+    
+            const middleX =
+              (startX + endX) / 2;
+    
+            const middleY =
+              (startY + endY) / 2;
+    
+            const curve =
+              Math.sin(
+                i * 1.9 +
+                neighbour.index * 0.8 +
+                filament
+              ) * 48;
+    
+            ctx.beginPath();
+    
+            ctx.moveTo(startX, startY);
+    
+            ctx.quadraticCurveTo(
+              middleX + perpendicularX * curve,
+              middleY + perpendicularY * curve,
+              endX,
+              endY
+            );
+    
+            /*
+             * Le filament central est plus visible,
+             * les quatre autres sont plus discrets.
+             */
+            const alpha =
+              filament === 0 ? 0.16 : 0.075;
+    
+            ctx.strokeStyle =
+              `rgba(115, 205, 220, ${alpha})`;
+    
+            ctx.lineWidth =
+              filament === 0 ? 0.85 : 0.45;
+    
+            ctx.stroke();
+          }
+    
+          /*
+           * Quelques petits points répartis le long du pont
+           * pour qu’il appartienne visuellement au réseau.
+           */
+          const bridgePointCount = Math.max(
+            5,
+            Math.floor(distance / 95)
+          );
+    
+          for (
+            let bridgePoint = 1;
+            bridgePoint < bridgePointCount;
+            bridgePoint++
+          ) {
+            const ratio =
+              bridgePoint / bridgePointCount;
+    
+            const x =
+              hotspotA.x + dx * ratio;
+    
+            const y =
+              hotspotA.y + dy * ratio;
+    
+            const wave =
+              Math.sin(
+                ratio * Math.PI +
+                hotspotA.phase
+              ) * 22;
+    
+            const finalX =
+              x + perpendicularX * wave;
+    
+            const finalY =
+              y + perpendicularY * wave;
+    
+            ctx.beginPath();
+    
+            ctx.arc(
+              finalX,
+              finalY,
+              bridgePoint % 3 === 0 ? 1.5 : 0.8,
+              0,
+              Math.PI * 2
+            );
+    
+            ctx.fillStyle =
+              bridgePoint % 3 === 0
+                ? "rgba(220, 255, 255, 0.55)"
+                : "rgba(170, 230, 235, 0.30)";
+    
+            ctx.fill();
+          }
+        }
       }
     }
-  }
-
   /* =========================================================
      LUMIÈRES DIFFUSES
      ========================================================= */
