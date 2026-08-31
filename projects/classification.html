@@ -30,7 +30,7 @@
     --mono:  "IBM Plex Mono", ui-monospace, monospace;
 
     --measure: clamp(320px, 92vw, 760px);
-    --wide: clamp(320px, 92vw, 980px);
+    --wide: clamp(320px, 94vw, 1180px);
     --pad: clamp(20px, 5vw, 56px);
   }
 
@@ -95,7 +95,15 @@
   .hero{
     max-width: var(--wide); margin: 0 auto;
     padding: clamp(36px,6vw,64px) var(--pad) clamp(28px,4vw,44px);
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+    gap: clamp(28px, 5vw, 56px);
+    align-items: start;
   }
+  @media (min-width: 900px){
+    .hero{ grid-template-columns: 1.3fr .9fr; }
+  }
+
   .eyebrow{
     font-family: var(--serif); font-style: italic; font-weight: 500;
     font-size: 15px; color: var(--ink-soft);
@@ -103,29 +111,18 @@
   }
   h1{
     font-family: var(--serif); font-weight: 650;
-    font-size: clamp(32px, 5vw, 54px);
+    font-size: clamp(32px, 4.4vw, 56px);
     line-height: 1.04; letter-spacing: -.01em;
-    max-width: 14ch;
+    max-width: 13ch;
     margin-bottom: 22px;
   }
   .hero-lead{
-    max-width: 58ch;
-    font-size: clamp(15px, 1.6vw, 17px);
+    max-width: 56ch;
+    font-size: clamp(15px, 1.4vw, 17px);
     color: var(--ink-soft);
     line-height: 1.7;
   }
   .hero-lead strong{ color: var(--ink); font-weight: 600; }
-
-  .hero-meta{
-    display:flex; flex-wrap:wrap; gap: 10px 26px;
-    margin-top: 26px;
-    padding-top: 18px;
-    border-top: 1px solid var(--rule);
-    max-width: 58ch;
-  }
-  .hero-meta div{ font-size: 12.5px; }
-  .hero-meta .k{ color: var(--ink-soft); margin-bottom: 2px; }
-  .hero-meta .v{ font-weight: 600; }
 
   .hero-actions{ margin-top: 24px; display:flex; gap: 18px; flex-wrap:wrap; }
   .link-btn{
@@ -133,6 +130,55 @@
     text-decoration: none;
     border-bottom: 1.5px solid var(--moss-deep);
     padding-bottom: 2px;
+  }
+
+  /* field-tag panel — fills the hero's right column */
+  .field-tag{
+    border: 1px solid var(--rule);
+    background: var(--paper-deep);
+    padding: 22px 24px 20px;
+  }
+  .field-tag-illustration{ display:block; width: 100%; height: auto; margin-bottom: 18px; }
+  .field-tag-title{
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+    color: var(--ink-soft); margin-bottom: 14px;
+    border-bottom: 1px solid var(--rule); padding-bottom: 10px;
+  }
+  .hero-meta{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+  .hero-meta div{ font-size: 12.5px; }
+  .hero-meta .k{ color: var(--ink-soft); margin-bottom: 2px; }
+  .hero-meta .v{ font-weight: 600; }
+
+  /* ── SECTION: two-column variant (method) ── */
+  .section-cols{
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+    gap: clamp(28px, 5vw, 56px);
+    align-items: start;
+  }
+  @media (min-width: 900px){
+    .section-cols{ grid-template-columns: 1.4fr .9fr; }
+  }
+  .method-aside{
+    border: 1px solid var(--rule);
+    background: var(--paper-deep);
+    padding: 20px 22px;
+    position: sticky; top: 24px;
+  }
+  .method-aside-title{
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+    color: var(--ink-soft); margin-bottom: 16px;
+  }
+  .flow{ display:flex; flex-direction:column; gap: 0; }
+  .flow-node{
+    font-size: 12.5px; font-weight: 600;
+    padding: 9px 0;
+  }
+  .flow-node small{ display:block; font-weight: 400; color: var(--ink-soft); font-size: 11px; margin-top: 1px; }
+  .flow-line{
+    width: 1px; height: 16px; margin-left: 1px;
+    background-image: linear-gradient(var(--ink-soft) 60%, transparent 0%);
+    background-size: 1px 5px; background-repeat: repeat-y; opacity: .5;
   }
 
   /* ── SECTION SCAFFOLDING ──────────────── */
@@ -275,6 +321,11 @@
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior:auto; }
   }
+
+  @media (max-width: 640px){
+    body::before{ opacity: .3; }
+    .field-tag{ padding: 18px 18px 16px; }
+  }
 </style>
 </head>
 
@@ -294,22 +345,45 @@
 
   <!-- HERO -->
   <section class="hero" style="border-top:none;">
-    <div class="eyebrow">Stage Master 1 — Institut de Neurosciences de la Timone</div>
-    <h1>Classification des sons environnementaux</h1>
-    <p class="hero-lead">
-      Des enregistreurs posés en forêt, à <strong>Sequoia National Park</strong>, captent en continu
-      le paysage sonore : chants d'oiseaux, vent, insectes, mais aussi avions, voix, moteurs.
-      Ce projet entraîne un modèle SVM à repérer, dans ces enregistrements, ce qui relève du
-      vivant (<strong>biophonie</strong>) et ce qui relève de l'activité humaine (<strong>anthropophonie</strong>).
-    </p>
-    <div class="hero-meta">
-      <div><div class="k">Terrain</div><div class="v">Sequoia National Park</div></div>
-      <div><div class="k">Période</div><div class="v">Février – mai 2024</div></div>
-      <div><div class="k">Méthode</div><div class="v">Spectrogramme → PCA → SVM (RBF)</div></div>
-      <div><div class="k">Étiquettes</div><div class="v">Biophonie / Anthropophonie (binaires)</div></div>
+    <div>
+      <div class="eyebrow">Stage Master 1 — Institut de Neurosciences de la Timone</div>
+      <h1>Classification des sons environnementaux</h1>
+      <p class="hero-lead">
+        Des enregistreurs posés en forêt, à <strong>Sequoia National Park</strong>, captent en continu
+        le paysage sonore : chants d'oiseaux, vent, insectes, mais aussi avions, voix, moteurs.
+        Ce projet entraîne un modèle SVM à repérer, dans ces enregistrements, ce qui relève du
+        vivant (<strong>biophonie</strong>) et ce qui relève de l'activité humaine (<strong>anthropophonie</strong>).
+      </p>
+      <div class="hero-actions">
+        <a class="link-btn" href="../assets/sons/bio_anthro_final.py" target="_blank" rel="noopener">Voir le script Python</a>
+      </div>
     </div>
-    <div class="hero-actions">
-      <a class="link-btn" href="../assets/sons/bio_anthro_final.py" target="_blank" rel="noopener">Voir le script Python</a>
+
+    <div class="field-tag">
+      <svg class="field-tag-illustration" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silhouette de séquoia au-dessus d'un spectrogramme">
+        <g fill="none" stroke="#3c5230" stroke-width="1.4" stroke-linecap="round">
+          <path d="M160 8 L146 34 L154 34 L136 60 L146 60 L124 90 L152 90 L152 118" />
+          <path d="M160 8 L174 34 L166 34 L184 60 L174 60 L196 90 L168 90" />
+        </g>
+        <g stroke="#8a7857" stroke-width="1" opacity=".55">
+          <rect x="20" y="105" width="6" height="18"/><rect x="32" y="98" width="6" height="25"/>
+          <rect x="44" y="110" width="6" height="13"/><rect x="56" y="90" width="6" height="33"/>
+          <rect x="68" y="103" width="6" height="20"/><rect x="80" y="96" width="6" height="27"/>
+          <rect x="92" y="112" width="6" height="11"/>
+          <rect x="222" y="108" width="6" height="15"/><rect x="234" y="94" width="6" height="29"/>
+          <rect x="246" y="106" width="6" height="17"/><rect x="258" y="88" width="6" height="35"/>
+          <rect x="270" y="100" width="6" height="23"/><rect x="282" y="109" width="6" height="14"/>
+          <rect x="294" y="97" width="6" height="26"/>
+        </g>
+        <line x1="0" y1="123" x2="320" y2="123" stroke="#4a5648" stroke-width="1" opacity=".3"/>
+      </svg>
+      <div class="field-tag-title">Fiche de terrain</div>
+      <div class="hero-meta">
+        <div><div class="k">Terrain</div><div class="v">Sequoia National Park</div></div>
+        <div><div class="k">Période</div><div class="v">Fév. – mai 2024</div></div>
+        <div><div class="k">Méthode</div><div class="v">Spectrogramme → PCA → SVM</div></div>
+        <div><div class="k">Étiquettes</div><div class="v">Biophonie / Anthropophonie</div></div>
+      </div>
     </div>
   </section>
 
@@ -318,27 +392,44 @@
     <div class="section-title">Carnet de méthode</div>
     <p class="section-note">Le pipeline, du fichier audio brut à l'étiquette prédite.</p>
 
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Extraction</h3>
-        <p>Les fichiers .wav sont regroupés par séquences de 6 (30 secondes découpées en segments de 5 secondes), puis transformés en spectrogrammes par transformée de Fourier à court terme (STFT).</p>
+    <div class="section-cols">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Extraction</h3>
+          <p>Les fichiers .wav sont regroupés par séquences de 6 (30 secondes découpées en segments de 5 secondes), puis transformés en spectrogrammes par transformée de Fourier à court terme (STFT).</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Réduction</h3>
+          <p>Chaque spectrogramme est projeté sur 5 composantes principales (PCA, avec whitening) pour réduire la dimensionnalité avant l'entraînement.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Classification</h3>
+          <p>Deux SVM à noyau RBF sont entraînés séparément — un pour la biophonie, un pour l'anthropophonie — avec pondération des classes et réglage des hyperparamètres (gamma, C) par recherche sur grille, validée en 4 plis stratifiés.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Restitution</h3>
+          <p>Les prédictions sont combinées (biophonie seule, anthropophonie seule, les deux, aucune des deux), puis reportées sur la forme d'onde du segment et exportées en CSV.</p>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Réduction</h3>
-        <p>Chaque spectrogramme est projeté sur 5 composantes principales (PCA, avec whitening) pour réduire la dimensionnalité avant l'entraînement.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Classification</h3>
-        <p>Deux SVM à noyau RBF sont entraînés séparément — un pour la biophonie, un pour l'anthropophonie — avec pondération des classes et réglage des hyperparamètres (gamma, C) par recherche sur grille, validée en 4 plis stratifiés.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <h3>Restitution</h3>
-        <p>Les prédictions sont combinées (biophonie seule, anthropophonie seule, les deux, aucune des deux), puis reportées sur la forme d'onde du segment et exportées en CSV.</p>
-      </div>
+
+      <aside class="method-aside">
+        <div class="method-aside-title">Résumé du pipeline</div>
+        <div class="flow">
+          <div class="flow-node">Audio <small>.wav, par groupes de 6</small></div>
+          <div class="flow-line"></div>
+          <div class="flow-node">Spectrogramme <small>STFT</small></div>
+          <div class="flow-line"></div>
+          <div class="flow-node">PCA <small>5 composantes</small></div>
+          <div class="flow-line"></div>
+          <div class="flow-node">SVM × 2 <small>biophonie, anthropophonie</small></div>
+          <div class="flow-line"></div>
+          <div class="flow-node">Étiquette combinée <small>+ CSV, formes d'onde</small></div>
+        </div>
+      </aside>
     </div>
   </section>
 
