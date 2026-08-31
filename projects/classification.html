@@ -321,6 +321,25 @@
   .code-card .doc{ color: var(--ink-soft); font-style: italic; }
   .code-note{ font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; max-width: 62ch; }
 
+  .code-disclosure summary{
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--serif); font-weight: 600; font-size: 15px;
+    padding: 12px 16px;
+    border: 1px solid var(--rule);
+    background: var(--paper-deep);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .code-disclosure summary::-webkit-details-marker{ display:none; }
+  .code-disclosure summary::before{
+    content: '+';
+    font-family: var(--mono); font-size: 14px;
+    width: 18px; text-align:center;
+  }
+  .code-disclosure[open] summary::before{ content: '–'; }
+  .code-disclosure[open] summary{ border-bottom: none; }
+  .code-disclosure .code-card{ border-top: none; }
+
   /* ── FOOTER / TAGS ─────────────────────── */
   .tags{ display:flex; flex-wrap:wrap; gap: 8px 16px; margin-bottom: 30px; }
   .tag{
@@ -574,7 +593,9 @@
   <section>
     <div class="section-title">Code</div>
     <p class="code-note">Le script complet utilisé pour l'extraction, l'entraînement et l'évaluation du modèle. <a class="link-btn" href="../assets/sons/bio_anthro_final.py" target="_blank" rel="noopener">Télécharger le fichier .py</a></p>
-    <div class="code-card"><pre><code><span class="kw">import</span> os
+    <details class="code-disclosure">
+      <summary>Afficher le script (407 lignes)</summary>
+      <div class="code-card"><pre><code><span class="kw">import</span> os
 <span class="kw">import</span> librosa
 <span class="kw">import</span> numpy <span class="kw">as</span> np
 <span class="kw">import</span> re
@@ -981,6 +1002,7 @@
 
 
 </code></pre></div>
+    </details>
   </section>
 
   <!-- SKILLS -->
