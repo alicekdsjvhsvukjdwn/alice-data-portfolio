@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Classification des sons environnementaux — Projet | Alice Gay</title>
+<title>Classification des sons environnementaux : Projet | Alice Gay</title>
 <meta name="description" content="Stage Master 1 à l'Institut de Neurosciences de la Timone : classification par SVM de sons enregistrés à Sequoia National Park (biophonie / anthropophonie)." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -398,7 +398,7 @@
   <!-- HERO -->
   <section class="hero" style="border-top:none;">
     <div>
-      <div class="eyebrow">Stage Master 1 — Institut de Neurosciences de la Timone</div>
+      <div class="eyebrow">Stage Master 1 : Institut de Neurosciences de la Timone</div>
       <h1>Classification des sons environnementaux</h1>
       <p class="hero-lead">
         Des enregistreurs posés en forêt, à <strong>Sequoia National Park</strong>, captent en continu
@@ -407,7 +407,7 @@
         vivant (<strong>biophonie</strong>) et ce qui relève de l'activité humaine (<strong>anthropophonie</strong>).
       </p>
       <div class="hero-actions">
-        <a class="link-btn" href="../assets/sons/bio_anthro_final.py" target="_blank" rel="noopener">Voir le script Python</a>
+        <a class="link-btn" href="#code">Voir le script Python</a>
       </div>
     </div>
 
@@ -432,7 +432,7 @@
       <div class="field-tag-title">Fiche de terrain</div>
       <div class="hero-meta">
         <div><div class="k">Terrain</div><div class="v">Sequoia National Park (SEKI)</div></div>
-        <div><div class="k">Période</div><div class="v">Fév. – mai 2024</div></div>
+        <div><div class="k">Période</div><div class="v">Stage : Fév. – Mai 2024</div></div>
         <div><div class="k">Méthode</div><div class="v">Spectrogramme → PCA → SVM</div></div>
         <div><div class="k">Étiquettes</div><div class="v">Biophonie / Anthropophonie</div></div>
         <div style="grid-column: 1 / -1;"><div class="k">Échantillons</div><div class="v">3 842 segments, 4 sites, 4 saisons</div></div>
@@ -602,19 +602,39 @@
   </section>
 
   <!-- LIMITS -->
-  <section class="limits">
+  <section>
     <div class="section-title">Limites & suite</div>
-    <p>
-      La labellisation manuelle introduit un biais : les bruits de pas ont par exemple été comptés
-      comme anthropophoniques, alors qu'ils sont difficiles à distinguer de pas d'animaux. La géophonie
-      (vent, ruisseaux) est quant à elle présente dans la quasi-totalité des segments, ce qui a empêché
-      de l'entraîner comme catégorie distincte plutôt que comme simple absence des deux autres.
-      L'étude porte sur quatre sites d'un même parc, ce qui limite la généralisation à d'autres habitats
-      ou conditions acoustiques. La classification repose enfin sur le spectrogramme brut réduit par PCA,
-      sans descripteurs bioacoustiques dédiés, ce qui limite la finesse de détection. Une suite possible :
-      comparer à un modèle convolutif entraîné directement sur les spectrogrammes, ou ajouter des
-      descripteurs acoustiques spécifiques (indices de biodiversité acoustique, par exemple).
-    </p>
+    <div class="section-cols">
+      <div class="limits">
+        <p>
+          La labellisation manuelle introduit un biais : les bruits de pas ont par exemple été comptés
+          comme anthropophoniques, alors qu'ils sont difficiles à distinguer de pas d'animaux. La géophonie
+          (vent, ruisseaux) est quant à elle présente dans la quasi-totalité des segments, ce qui a empêché
+          de l'entraîner comme catégorie distincte plutôt que comme simple absence des deux autres.
+          L'étude porte sur quatre sites d'un même parc, ce qui limite la généralisation à d'autres habitats
+          ou conditions acoustiques. La classification repose enfin sur le spectrogramme brut réduit par PCA,
+          sans descripteurs bioacoustiques dédiés, ce qui limite la finesse de détection. Une suite possible :
+          comparer à un modèle convolutif entraîné directement sur les spectrogrammes, ou ajouter des
+          descripteurs acoustiques spécifiques (indices de biodiversité acoustique, par exemple).
+        </p>
+      </div>
+
+      <aside class="method-aside">
+        <div class="method-aside-title">Sortie du modèle</div>
+        <img
+          src="../assets/sons/waveform_example.png"
+          alt="Forme d'onde annotée avec les prédictions du modèle sur un segment de 30 secondes"
+          style="display:block; width:100%; height:auto; border:1px solid var(--rule); margin-bottom:10px;"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        >
+        <p style="display:none; font-size:11.5px; color:var(--ink-soft); font-style:italic;">
+          waveform_example.png — à ajouter dans assets/sons/
+        </p>
+        <p style="font-size:11.5px; color:var(--ink-soft); line-height:1.5;">
+          Rouge = biophonie, bleu = anthropophonie, vert = les deux, noir = aucune des deux.
+        </p>
+      </aside>
+    </div>
   </section>
 
   <!-- CODE -->
