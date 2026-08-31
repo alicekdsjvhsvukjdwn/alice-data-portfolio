@@ -379,10 +379,11 @@
       </svg>
       <div class="field-tag-title">Fiche de terrain</div>
       <div class="hero-meta">
-        <div><div class="k">Terrain</div><div class="v">Sequoia National Park</div></div>
+        <div><div class="k">Terrain</div><div class="v">Sequoia National Park (SEKI)</div></div>
         <div><div class="k">Période</div><div class="v">Fév. – mai 2024</div></div>
         <div><div class="k">Méthode</div><div class="v">Spectrogramme → PCA → SVM</div></div>
         <div><div class="k">Étiquettes</div><div class="v">Biophonie / Anthropophonie</div></div>
+        <div style="grid-column: 1 / -1;"><div class="k">Échantillons</div><div class="v">3 842 segments, 4 sites, 4 saisons</div></div>
       </div>
     </div>
   </section>
@@ -397,7 +398,7 @@
         <div class="step">
           <div class="step-num">1</div>
           <h3>Extraction</h3>
-          <p>Les fichiers .wav sont regroupés par séquences de 6 (30 secondes découpées en segments de 5 secondes), puis transformés en spectrogrammes par transformée de Fourier à court terme (STFT).</p>
+          <p>La base SEKI regroupe des enregistrements d'une heure, pris sur 4 sites du parc à toutes les saisons, découpés en extraits de 30 secondes toutes les 5 minutes (3 842 segments labellisés au total). Chaque extrait de 30 secondes est ensuite regroupé par séquences de 6 fichiers de 5 secondes, puis transformé en spectrogramme par transformée de Fourier à court terme (STFT, hop_length 64, win_length 512).</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
@@ -491,11 +492,11 @@
     <div class="measures">
       <div class="measure">
         <div class="measure-label">Biophonie</div>
-        <div class="measure-value">— <small>à compléter</small></div>
+        <div class="measure-value">0,814 <small>précision équilibrée</small></div>
       </div>
       <div class="measure">
         <div class="measure-label">Anthropophonie</div>
-        <div class="measure-value">— <small>à compléter</small></div>
+        <div class="measure-value">0,715 <small>précision équilibrée</small></div>
       </div>
       <div class="measure">
         <div class="measure-label">Split train / test</div>
@@ -504,19 +505,46 @@
     </div>
   </section>
 
+  <!-- DURATION ANALYSIS -->
+  <section class="limits">
+    <div class="section-title">Durée des segments & type de son</div>
+    <p>
+      La biophonie est en général mieux reconnue que l'anthropophonie, quelle que soit la durée
+      des segments testée. Cet écart se resserre nettement sur les jeux de données répartis
+      uniformément entre classes : une fois le déséquilibre corrigé, les deux types de sons
+      sont classifiés avec une précision comparable.
+    </p>
+    <p style="margin-top:14px;">
+      La durée des segments joue aussi un rôle. En moyennant les résultats des jeux triés et non
+      triés, la précision équilibrée de la biophonie passe de 0,690 (segments de 2 secondes) à
+      0,661 (5 secondes) puis 0,678 (10 secondes), sans tendance nette. L'anthropophonie, elle,
+      progresse plus régulièrement avec la durée : 0,617 à 2 secondes, 0,658 à 5 secondes, puis
+      0,735 à 10 secondes — la meilleure performance toutes classes et durées confondues. Les sons
+      liés à l'activité humaine semblent donc demander une fenêtre plus longue pour être identifiés
+      de façon fiable, alors que la biophonie reste stable quelle que soit la durée choisie.
+    </p>
+    <p style="margin-top:14px;">
+      Autre constat, moins attendu : le jeu de données à distribution naturelle (non trié) généralise
+      mieux sur le test que le jeu rééquilibré, alors que ce dernier obtient de meilleurs scores en
+      validation croisée. Rééquilibrer les classes améliore l'apprentissage, mais semble éloigner le
+      modèle de la distribution réelle des sons sur le terrain, ce qui pénalise sa performance sur des
+      données non vues.
+    </p>
+  </section>
+
   <!-- LIMITS -->
   <section class="limits">
     <div class="section-title">Limites & suite</div>
     <p>
-      La géophonie (sons non-biologiques comme le vent ou l'eau) correspond ici à l'étiquette
-      « aucune des deux » : elle n'a pas été entraînée comme catégorie séparée, faute de segments
-      assez nombreux ne contenant qu'elle pour que les performances du modèle sur cette classe
-      soient significatives. Le modèle est entraîné et évalué sur un seul site d'enregistrement : sa capacité à généraliser
-      à d'autres forêts ou d'autres conditions acoustiques n'a pas été testée. La classification
-      repose sur le spectrogramme brut réduit par PCA, sans descripteurs bioacoustiques dédiés,
-      ce qui limite la finesse de détection. Une suite possible : comparer à un modèle convolutif
-      entraîné directement sur les spectrogrammes, ou ajouter des descripteurs acoustiques spécifiques
-      (indices de biodiversité acoustique, par exemple).
+      La labellisation manuelle introduit un biais : les bruits de pas ont par exemple été comptés
+      comme anthropophoniques, alors qu'ils sont difficiles à distinguer de pas d'animaux. La géophonie
+      (vent, ruisseaux) est quant à elle présente dans la quasi-totalité des segments, ce qui a empêché
+      de l'entraîner comme catégorie distincte plutôt que comme simple absence des deux autres.
+      L'étude porte sur quatre sites d'un même parc, ce qui limite la généralisation à d'autres habitats
+      ou conditions acoustiques. La classification repose enfin sur le spectrogramme brut réduit par PCA,
+      sans descripteurs bioacoustiques dédiés, ce qui limite la finesse de détection. Une suite possible :
+      comparer à un modèle convolutif entraîné directement sur les spectrogrammes, ou ajouter des
+      descripteurs acoustiques spécifiques (indices de biodiversité acoustique, par exemple).
     </p>
   </section>
 
