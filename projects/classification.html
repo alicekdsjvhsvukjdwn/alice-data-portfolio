@@ -299,6 +299,28 @@
   /* ── LIMITS ────────────────────────────── */
   .limits p{ max-width: 62ch; font-size: 14px; color: var(--ink-soft); line-height: 1.75; }
 
+  /* ── CODE BLOCK ────────────────────────── */
+  .code-card{
+    border: 1px solid var(--rule);
+    background: var(--paper-deep);
+    padding: 18px 20px;
+    overflow: hidden;
+  }
+  .code-card pre{
+    margin: 0;
+    font-family: var(--mono);
+    font-size: clamp(10.5px, 1.1vw, 12.5px);
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .code-card .kw{ font-weight: 700; color: var(--moss-deep); }
+  .code-card .c{ color: var(--ink-soft); font-style: italic; }
+  .code-card .doc{ color: var(--ink-soft); font-style: italic; }
+  .code-note{ font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; max-width: 62ch; }
+
   /* ── FOOTER / TAGS ─────────────────────── */
   .tags{ display:flex; flex-wrap:wrap; gap: 8px 16px; margin-bottom: 30px; }
   .tag{
@@ -546,6 +568,419 @@
       comparer à un modèle convolutif entraîné directement sur les spectrogrammes, ou ajouter des
       descripteurs acoustiques spécifiques (indices de biodiversité acoustique, par exemple).
     </p>
+  </section>
+
+  <!-- CODE -->
+  <section>
+    <div class="section-title">Code</div>
+    <p class="code-note">Le script complet utilisé pour l'extraction, l'entraînement et l'évaluation du modèle. <a class="link-btn" href="../assets/sons/bio_anthro_final.py" target="_blank" rel="noopener">Télécharger le fichier .py</a></p>
+    <div class="code-card"><pre><code><span class="kw">import</span> os
+<span class="kw">import</span> librosa
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> re
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+<span class="kw">from</span> sklearn.decomposition <span class="kw">import</span> PCA
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> StratifiedKFold
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> balanced_accuracy_score
+<span class="kw">from</span> sklearn.svm <span class="kw">import</span> SVC
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> GridSearchCV
+<span class="kw">import</span> csv
+<span class="kw">from</span> sklearn.utils.class_weight <span class="kw">import</span> compute_class_weight
+<span class="kw">import</span> matplotlib.patches <span class="kw">as</span> mpatches
+<span class="kw">import</span> random
+
+<span class="c"># Fonction pour extraire les caractéristiques audio</span>
+<span class="kw">def</span> extract_spectrogram_from_folder(folder_path):
+<span class="doc">    """</span>
+<span class="doc">    Extrait les spectrogrammes des fichiers audio dans un dossier donné.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    folder_path (str): Chemin du dossier contenant les fichiers audio.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">    tuple: Contient les spectrogrammes, les étiquettes, les chemins des fichiers et les groupes.</span>
+<span class="doc">    """</span>
+    files = [file <span class="kw">for</span> file <span class="kw">in</span> os.listdir(folder_path) <span class="kw">if</span> file.endswith('.wav')]
+    pattern = re.compile(r"^(.*?-\d+_[0-9]+(?:-\d+)?)")
+    valid_groups = filter_valid_groups(files, pattern)
+
+    X = []
+    labels = []
+    file_paths = []
+    groups = []
+
+    <span class="kw">for</span> group, group_files <span class="kw">in</span> valid_groups.items():
+        <span class="kw">for</span> file <span class="kw">in</span> group_files:
+            file_path = os.path.join(folder_path, file)
+            y, sr = librosa.load(file_path, sr=<span class="kw">None</span>)
+            spectrogram = np.abs(librosa.stft(y, hop_length=64, win_length=512))
+            X.append(spectrogram.flatten())
+            labels.append(get_label(file))
+            file_paths.append(file)
+            groups.append(group)
+
+    <span class="kw">return</span> np.array(X), np.array(labels), np.array(file_paths), np.array(groups)
+
+<span class="c"># Fonction pour vérifier et filtrer les groupes ayant exactement 6 fichiers</span>
+<span class="kw">def</span> filter_valid_groups(files, pattern):
+<span class="doc">    """</span>
+<span class="doc">    Filtre les groupes valides ayant exactement 6 fichiers.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    files (list): Liste des fichiers.</span>
+<span class="doc">    pattern (Pattern): Pattern regex pour le regroupement des fichiers.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">    dict: Dictionnaire des groupes valides.</span>
+<span class="doc">    """</span>
+    grouped_files = defaultdict(list)
+    <span class="kw">for</span> file <span class="kw">in</span> files:
+        match = pattern.match(file)
+        <span class="kw">if</span> match:
+            base_name = match.groups()[0]
+            grouped_files[base_name].append(file)
+    
+    valid_groups = {group: group_files <span class="kw">for</span> group, group_files <span class="kw">in</span> grouped_files.items() <span class="kw">if</span> len(group_files) == 6}
+    <span class="kw">return</span> valid_groups
+
+<span class="c"># Fonction pour obtenir les étiquettes à partir du nom de fichier</span>
+<span class="kw">def</span> get_label(file_path):
+<span class="doc">    """</span>
+<span class="doc">    Extrait les étiquettes à partir du nom de fichier.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    file_path (str): Chemin du fichier.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">    tuple: Contient les étiquettes de biophonie et d'anthropophonie.</span>
+<span class="doc">    """</span>
+    file_name = os.path.basename(file_path)
+    digits = re.findall(r'\d', file_name)
+    labels_biophonie = int(digits[-2])
+    labels_anthropophonie = int(digits[-1])
+    <span class="kw">return</span> labels_biophonie, labels_anthropophonie
+
+<span class="kw">def</span> sort_files(files):
+<span class="doc">    """</span>
+<span class="doc">    Sort files by the number at the end of their name.</span>
+<span class="doc"></span>
+<span class="doc">    Args:</span>
+<span class="doc">        files (list): List of file names.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">        list: Sorted list of file names.</span>
+<span class="doc">    """</span>
+    <span class="kw">return</span> sorted(files, key=<span class="kw">lambda</span> x: int(re.search(r'_(\d+)_\d+.wav$', x).group(1))) #'NoneType' object has no attribute 'group'
+
+<span class="c"># Fonction pour diviser les données en ensembles d'entraînement et de test</span>
+<span class="kw">def</span> split_data(X, labels, groups, file_names):
+<span class="doc">    """</span>
+<span class="doc">    Divise les données en ensembles d'entraînement et de test en respectant les groupes.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    X (array): Caractéristiques.</span>
+<span class="doc">    labels (array): Étiquettes.</span>
+<span class="doc">    groups (array): Groupes.</span>
+<span class="doc">    file_names (array): Noms des fichiers.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">    tuple: Contient les ensembles d'entraînement et de test pour les caractéristiques, étiquettes, noms de fichiers et groupes.</span>
+<span class="doc">    """</span>
+    unique_groups = np.unique(groups)
+    random.shuffle(unique_groups)  # Mélanger les groupes
+
+    group_train, group_test = np.split(unique_groups, [int(0.7 * len(unique_groups))])  # 70% train, 30% test
+    train_idx = np.isin(groups, group_train)
+    test_idx = np.isin(groups, group_test)
+
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = labels[train_idx], labels[test_idx]
+    file_names_train, file_names_test = file_names[train_idx], file_names[test_idx]
+    groups_train, groups_test = groups[train_idx], groups[test_idx]
+
+    <span class="kw">return</span> X_train, X_test, y_train, y_test, file_names_train, file_names_test, groups_train, groups_test
+
+<span class="c"># Fonction pour calculer les poids de classe</span>
+<span class="kw">def</span> calculate_class_weights(y_train):
+<span class="doc">    """</span>
+<span class="doc">    Calculate class weights to handle class imbalance.</span>
+<span class="doc"></span>
+<span class="doc">    Args:</span>
+<span class="doc">        y_train (list): List of training labels.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">        dict: Dictionary of class weights for biophonie and anthropophonie.</span>
+<span class="doc">    """</span>
+    class_weights_biophonie = compute_class_weight('balanced', classes=np.unique([y[0] <span class="kw">for</span> y <span class="kw">in</span> y_train]), y=[y[0] <span class="kw">for</span> y <span class="kw">in</span> y_train])
+    class_weights_anthropophonie = compute_class_weight('balanced', classes=np.unique([y[1] <span class="kw">for</span> y <span class="kw">in</span> y_train]), y=[y[1] <span class="kw">for</span> y <span class="kw">in</span> y_train])
+    <span class="kw">return</span> {0: class_weights_biophonie, 1: class_weights_anthropophonie}
+
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+
+<span class="c"># Fonction pour entraîner et prédire avec le modèle</span>
+<span class="kw">def</span> train_and_predict(X_train, y_train, X_test, file_names_test, groups_test, Ntimes=2, n_components=5):
+<span class="doc">    """</span>
+<span class="doc">    Entraîne le modèle et prédit les étiquettes sur l'ensemble de test.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    X_train (array): Caractéristiques d'entraînement.</span>
+<span class="doc">    y_train (array): Étiquettes d'entraînement.</span>
+<span class="doc">    X_test (array): Caractéristiques de test.</span>
+<span class="doc">    file_names_test (array): Noms des fichiers de test.</span>
+<span class="doc">    groups_test (array): Groupes de test.</span>
+<span class="doc">    Ntimes (int): Nombre de types d'étiquettes.</span>
+<span class="doc">    n_components (int): Nombre de composants pour PCA.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">    list: Contient les étiquettes prédites.</span>
+<span class="doc">    """</span>
+    tabBAcc = []
+    cv = StratifiedKFold(4, shuffle=<span class="kw">True</span>)
+    models = []
+    true_labels_biophonie = []
+    true_labels_anthropophonie = []
+    predicted_labels_final = []
+    pca = PCA(n_components=n_components, whiten=<span class="kw">True</span>)
+
+    class_weights = calculate_class_weights(y_train)
+
+    <span class="kw">for</span> label_to_train <span class="kw">in</span> range(Ntimes):
+        print('Training model <span class="kw">for</span> label:', label_to_train)
+        y_train_label = [y[label_to_train] <span class="kw">for</span> y <span class="kw">in</span> y_train]
+        X_pca_train = pca.fit_transform(X_train)
+        <span class="kw">assert</span> X_pca_train.shape[1] == n_components, "PCA transformation failed"
+        
+        tuned_parameters = {'gamma': np.logspace(-4, 4, num=9), 'C': np.logspace(-2, 4, num=7)}
+        
+<span class="c">        # Utiliser les poids de classe spécifiques pour chaque label</span>
+        clf = GridSearchCV(SVC(kernel='rbf', class_weight={i: class_weights[label_to_train][i] <span class="kw">for</span> i <span class="kw">in</span> range(len(class_weights[label_to_train]))}), 
+                           tuned_parameters, n_jobs=-1, cv=cv, pre_dispatch=6, scoring='balanced_accuracy', verbose=<span class="kw">False</span>)
+        
+<span class="c">        # Utilisation de la validation croisée pour évaluer les performances</span>
+        cross_val_scores = cross_val_score(clf, X_pca_train, y_train_label, cv=cv, scoring='balanced_accuracy')
+        print(f"Cross-validation scores <span class="kw">for</span> label {label_to_train}: {cross_val_scores}")
+        print(f"Mean cross-validation score: {np.mean(cross_val_scores)}")
+        
+        clf.fit(X_pca_train, y_train_label)
+        
+        X_pca_test = pca.transform(X_test)
+        <span class="kw">assert</span> X_pca_test.shape[1] == n_components, "PCA transformation on test data failed"
+        y_test_pred = clf.predict(X_pca_test)
+        
+        <span class="kw">if</span> label_to_train == 0:
+            <span class="kw">for</span> file_name, group, label_pred_biophonie <span class="kw">in</span> zip(file_names_test, groups_test, y_test_pred):
+                predicted_labels_final.append((file_name, group, label_pred_biophonie, <span class="kw">None</span>))
+        <span class="kw">else</span>:
+            <span class="kw">for</span> idx, (file_name, group, label_pred_anthropophonie) <span class="kw">in</span> enumerate(zip(file_names_test, groups_test, y_test_pred)):
+                predicted_labels_final[idx] = (predicted_labels_final[idx][0], predicted_labels_final[idx][1], predicted_labels_final[idx][2], label_pred_anthropophonie)
+
+    <span class="kw">return</span> predicted_labels_final
+
+<span class="c"># Fonction pour évaluer les prédictions</span>
+<span class="kw">def</span> evaluate_predictions(y_test, predicted_labels_final):
+<span class="doc">    """</span>
+<span class="doc">    Évalue les prédictions du modèle en calculant la précision équilibrée.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    y_test (array): Étiquettes de test.</span>
+<span class="doc">    predicted_labels_final (list): Étiquettes prédites.</span>
+<span class="doc"></span>
+<span class="doc">    Returns:</span>
+<span class="doc">    tuple: Précision équilibrée pour la biophonie et l'anthropophonie.</span>
+<span class="doc">    """</span>
+    true_labels_biophonie = [sous_liste[0] <span class="kw">for</span> sous_liste <span class="kw">in</span> y_test]
+    true_labels_anthropophonie = [sous_liste[1] <span class="kw">for</span> sous_liste <span class="kw">in</span> y_test]
+    predicted_labels_biophonie = [label_pred_biophonie <span class="kw">for</span> _, _, label_pred_biophonie, _ <span class="kw">in</span> predicted_labels_final]
+    predicted_labels_anthropophonie = [label_pred_anthropophonie <span class="kw">for</span> _, _, _, label_pred_anthropophonie <span class="kw">in</span> predicted_labels_final]
+
+    <span class="kw">assert</span> len(true_labels_biophonie) == len(predicted_labels_biophonie), "Mismatch <span class="kw">in</span> biophonie labels length"
+    <span class="kw">assert</span> len(true_labels_anthropophonie) == len(predicted_labels_anthropophonie), "Mismatch <span class="kw">in</span> anthropophonie labels length"
+
+    bacc_biophonie = balanced_accuracy_score(true_labels_biophonie, predicted_labels_biophonie)
+    bacc_anthropophonie = balanced_accuracy_score(true_labels_anthropophonie, predicted_labels_anthropophonie)
+
+    <span class="kw">return</span> bacc_biophonie, bacc_anthropophonie
+
+<span class="c"># Fonction pour sauvegarder les prédictions dans un fichier CSV</span>
+<span class="kw">def</span> save_predictions_to_csv(predicted_labels_final, output_csv):
+<span class="doc">    """</span>
+<span class="doc">    Sauvegarde les prédictions dans un fichier CSV, avec les fichiers triés par groupe.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    predicted_labels_final (list): Étiquettes prédites.</span>
+<span class="doc">    output_csv (str): Chemin du fichier CSV.</span>
+<span class="doc">    """</span>
+    grouped_files = defaultdict(list)
+    <span class="kw">for</span> label <span class="kw">in</span> predicted_labels_final:
+        grouped_files[label[1]].append(label)
+    
+    <span class="kw">with</span> open(output_csv, 'w', newline='') <span class="kw">as</span> csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(['File_name', 'Group', 'Predicted_Biophonie', 'Predicted_Anthropophonie'])
+        <span class="kw">for</span> group, labels <span class="kw">in</span> grouped_files.items():
+            sorted_labels = sorted(labels, key=<span class="kw">lambda</span> x: int(re.search(r'_(\d+)_\d+.wav$', x[0]).group(1)))
+            <span class="kw">for</span> label <span class="kw">in</span> sorted_labels:
+                csvwriter.writerow([label[0], label[1], label[2], label[3]])
+    <span class="kw">assert</span> os.path.isfile(output_csv), "CSV file was <span class="kw">not</span> created successfully"
+    print(f"CSV file {output_csv} created successfully")
+
+<span class="c"># Fonction pour tracer les formes d'onde avec les prédictions</span>
+<span class="kw">def</span> plot_waveform_with_predictions(y, sr, predictions, output_file, group_name, segment_duration=5):
+<span class="doc">    """</span>
+<span class="doc">    Trace les formes d'onde avec les prédictions et sauvegarde le graphique.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    y (array): Signal audio.</span>
+<span class="doc">    sr (int): Taux d'échantillonnage.</span>
+<span class="doc">    predictions (list): Prédictions pour chaque segment.</span>
+<span class="doc">    output_file (str): Chemin du fichier de sortie pour le graphique.</span>
+<span class="doc">    group_name (str): Nom du groupe de fichiers.</span>
+<span class="doc">    """</span>
+    plt.figure(figsize=(15, 5))
+    time = np.linspace(0, len(y) / sr, len(y))
+    segment_length = sr * segment_duration
+
+    <span class="kw">for</span> i <span class="kw">in</span> range(len(predictions)):
+        start = i * segment_length
+        end = (i + 1) * segment_length <span class="kw">if</span> (i + 1) * segment_length &lt;= len(y) <span class="kw">else</span> len(y)
+        <span class="kw">if</span> predictions[i] == 0:
+            plt.plot(time[start:end], y[start:end], color='red')
+        <span class="kw">elif</span> predictions[i] == 1:
+            plt.plot(time[start:end], y[start:end], color='blue')
+        <span class="kw">elif</span> predictions[i] == 2:
+            plt.plot(time[start:end], y[start:end], color='green')
+        <span class="kw">else</span>:
+            plt.plot(time[start:end], y[start:end], color='black')
+
+    handles = [
+        mpatches.Patch(color='red', label='Biophonie'),
+        mpatches.Patch(color='blue', label='Anthropophonie'),
+        mpatches.Patch(color='green', label='Les deux'),
+        mpatches.Patch(color='black', label='Aucun des deux')
+    ]
+    plt.legend(handles=handles)
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+    plt.title(f'Waveform <span class="kw">with</span> Predictions <span class="kw">for</span> {group_name}')
+    plt.savefig(output_file)
+    plt.close()
+
+<span class="kw">def</span> create_waveform_graphics(input_folder, output_folder, predicted_labels_final, file_names_test, groups_test, segment_duration=5, total_duration=30):
+<span class="doc">    """</span>
+<span class="doc">    Crée les graphiques des formes d'onde pour des segments de 30 secondes.</span>
+<span class="doc"></span>
+<span class="doc">    Parameters:</span>
+<span class="doc">    input_folder (str): Dossier contenant les fichiers audio.</span>
+<span class="doc">    output_folder (str): Dossier de sortie pour les graphiques.</span>
+<span class="doc">    predicted_labels_final (list): Étiquettes prédites.</span>
+<span class="doc">    file_names_test (array): Noms des fichiers de test.</span>
+<span class="doc">    groups_test (array): Groupes de test.</span>
+<span class="doc">    """</span>
+    grouped_files = defaultdict(list)
+    <span class="kw">for</span> file, group <span class="kw">in</span> zip(file_names_test, groups_test):
+        grouped_files[group].append(file)
+
+    total_plots = 0  # Initialize the variable here
+
+    <span class="kw">for</span> group, files <span class="kw">in</span> grouped_files.items():
+        print(f"Processing group: {group} <span class="kw">with</span> {len(files)} files")
+
+        <span class="kw">if</span> len(files) != total_duration / segment_duration:  
+            print(f"Skipping group {group} due to incorrect number of files")
+            <span class="kw">continue</span>
+
+<span class="c">        # Sort files using the sort_files function</span>
+        files = sort_files(files)
+
+        combined_y, combined_sr, combined_predictions = [], <span class="kw">None</span>, []
+
+        <span class="kw">for</span> file <span class="kw">in</span> files:
+            file_path = os.path.join(input_folder, file)  # Corrected line
+            y, sr = librosa.load(file_path, sr=<span class="kw">None</span>)
+            combined_y.extend(y)
+            combined_sr = sr
+
+            file_pred = next((pred <span class="kw">for</span> pred <span class="kw">in</span> predicted_labels_final <span class="kw">if</span> pred[0] == file), <span class="kw">None</span>)
+            <span class="kw">if</span> file_pred:
+                label_pred_biophonie = file_pred[2]
+                label_pred_anthropophonie = file_pred[3]
+                <span class="kw">if</span> label_pred_biophonie == 1 <span class="kw">and</span> label_pred_anthropophonie == 1:
+                    combined_predictions.append(2)
+                <span class="kw">elif</span> label_pred_biophonie == 1:
+                    combined_predictions.append(0)
+                <span class="kw">elif</span> label_pred_anthropophonie == 1:
+                    combined_predictions.append(1)
+                <span class="kw">else</span>:
+                    combined_predictions.append(3)
+            <span class="kw">else</span>:
+                print(f"No prediction found <span class="kw">for</span> file: {file}")
+                combined_predictions = []
+                <span class="kw">break</span>
+
+        <span class="kw">if</span> <span class="kw">not</span> combined_predictions:
+            print(f"Skipping group {group} due to missing predictions")
+            <span class="kw">continue</span>
+
+        <span class="kw">if</span> combined_sr:
+            segment_length = combined_sr * segment_duration
+            num_segments = int(np.ceil(len(combined_y) / segment_length))
+            extended_predictions = []
+
+            segments_per_prediction = max(1, num_segments // len(combined_predictions))
+
+            <span class="kw">for</span> k <span class="kw">in</span> range(num_segments):
+                segment_index = k // segments_per_prediction
+                <span class="kw">if</span> segment_index &lt; len(combined_predictions):
+                    extended_predictions.append(combined_predictions[segment_index])
+                <span class="kw">else</span>:
+                    print(f"Mismatch <span class="kw">in</span> prediction segments <span class="kw">for</span> group {group}")
+                    extended_predictions = []
+                    <span class="kw">break</span>
+
+            <span class="kw">if</span> <span class="kw">not</span> extended_predictions:
+                print(f"Skipping group {group} due to mismatch <span class="kw">in</span> extended predictions")
+                <span class="kw">continue</span>
+
+            output_file = os.path.join(output_folder, f"{group}.png")
+            plot_waveform_with_predictions(np.array(combined_y), combined_sr, extended_predictions, output_file, group, segment_duration)
+            total_plots += 1  # Increment the plot count
+
+    print("Graphiques créés et sauvegardés avec succès dans le dossier:", output_folder)
+
+<span class="kw">def</span> main():
+    input_folder = "SEKI-ALL_wav/Sons_finaux_5"
+    output_csv = 'predicted_labels_nt_5sec.csv'
+    output_folder = "graphiques_sons_t_30s_5"
+    segment_duration = 2  # Duration of each segment <span class="kw">in</span> seconds
+
+    X, labels, file_names, groups = extract_spectrogram_from_folder(input_folder)
+    X_train, X_test, y_train, y_test, file_names_train, file_names_test, groups_train, groups_test = split_data(X, labels, groups, file_names)
+    
+    predicted_labels_final = train_and_predict(X_train, y_train, X_test, file_names_test, groups_test)
+    bacc_biophonie, bacc_anthropophonie = evaluate_predictions(y_test, predicted_labels_final)
+    
+    print(f"Train/Test split successful: {len(X_train)} train, {len(X_test)} test")
+    print("Précision équilibrée pour la biophonie :", bacc_biophonie)
+    print("Précision équilibrée pour l'anthropophonie :", bacc_anthropophonie)
+
+    save_predictions_to_csv(predicted_labels_final, output_csv)
+    
+<span class="c">    # Trier les prédictions selon le numéro du fichier dans le nom du fichier</span>
+    sorted_predicted_labels_final = sorted(predicted_labels_final, key=<span class="kw">lambda</span> x: int(re.split(r'_|-', x[0])[5]))
+    
+<span class="c">    # Extraire les noms de fichiers triés et les groupes</span>
+    sorted_file_names_test = [item[0] <span class="kw">for</span> item <span class="kw">in</span> sorted_predicted_labels_final]
+    sorted_groups_test = [item[1] <span class="kw">for</span> item <span class="kw">in</span> sorted_predicted_labels_final]
+
+    create_waveform_graphics(input_folder, output_folder, sorted_predicted_labels_final, sorted_file_names_test, sorted_groups_test)
+
+<span class="kw">if</span> __name__ == "__main__":
+    main()
+
+
+
+</code></pre></div>
   </section>
 
   <!-- SKILLS -->
