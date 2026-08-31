@@ -1,1 +1,459 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Classification des sons environnementaux — Projet | Alice Gay</title>
+<meta name="description" content="Stage Master 1 à l'Institut de Neurosciences de la Timone : classification par SVM de sons enregistrés à Sequoia National Park (biophonie / anthropophonie)." />
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,650;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:      #f2ecdd;
+    --paper-deep: #e8dfc9;
+    --ink:        #1d2b1f;
+    --ink-soft:   #4a5648;
+    --moss:       #55713f;    /* biophonie — vivant */
+    --moss-deep:  #3c5230;
+    --amber:      #b6822c;    /* anthropophonie — humain */
+    --amber-deep: #8f6320;
+    --teal:       #35625b;    /* les deux */
+    --bark:       #6d5236;    /* aucun des deux */
+    --rule:       rgba(29,43,31,.20);
+    --rule-soft:  rgba(29,43,31,.11);
+
+    --serif: "Fraunces", Georgia, serif;
+    --sans:  "Inter", system-ui, sans-serif;
+    --mono:  "IBM Plex Mono", ui-monospace, monospace;
+
+    --measure: clamp(320px, 92vw, 760px);
+    --wide: clamp(320px, 92vw, 980px);
+    --pad: clamp(20px, 5vw, 56px);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height:1.5;
+    position:relative;
+  }
+
+  /* faint topographic contour texture, fixed behind content */
+  body::before{
+    content:'';
+    position:fixed; inset:0; z-index:0;
+    pointer-events:none;
+    opacity:.5;
+    background-image:
+      radial-gradient(circle at 15% 8%,  transparent 0 78px, var(--rule-soft) 79px 80px, transparent 81px),
+      radial-gradient(circle at 15% 8%,  transparent 0 132px, var(--rule-soft) 133px 134px, transparent 135px),
+      radial-gradient(circle at 15% 8%,  transparent 0 186px, var(--rule-soft) 187px 188px, transparent 189px),
+      radial-gradient(circle at 92% 78%, transparent 0 100px, var(--rule-soft) 101px 102px, transparent 103px),
+      radial-gradient(circle at 92% 78%, transparent 0 160px, var(--rule-soft) 161px 162px, transparent 163px),
+      radial-gradient(circle at 92% 78%, transparent 0 220px, var(--rule-soft) 221px 222px, transparent 223px);
+    background-repeat: no-repeat;
+  }
+
+  a{ color:inherit; }
+  main, header, footer{ position:relative; z-index:1; }
+
+  ::selection{ background: var(--moss); color: var(--paper); }
+  :focus-visible{ outline: 2px solid var(--moss-deep); outline-offset: 3px; }
+
+  /* ── HEADER ───────────────────────────── */
+  header{
+    padding: 20px var(--pad) 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav{
+    max-width: var(--wide); margin: 0 auto;
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .wordmark{
+    font-family: var(--serif); font-weight: 650; font-size: 17px;
+    letter-spacing: -.01em;
+  }
+  .nav-links{ display:flex; gap: 22px; font-size: 13.5px; }
+  .nav-links a{
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color .15s;
+  }
+  .nav-links a:hover{ border-color: var(--ink); }
+
+  /* ── HERO ─────────────────────────────── */
+  .hero{
+    max-width: var(--wide); margin: 0 auto;
+    padding: clamp(36px,6vw,64px) var(--pad) clamp(28px,4vw,44px);
+  }
+  .eyebrow{
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: 15px; color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  h1{
+    font-family: var(--serif); font-weight: 650;
+    font-size: clamp(32px, 5vw, 54px);
+    line-height: 1.04; letter-spacing: -.01em;
+    max-width: 14ch;
+    margin-bottom: 22px;
+  }
+  .hero-lead{
+    max-width: 58ch;
+    font-size: clamp(15px, 1.6vw, 17px);
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+  .hero-lead strong{ color: var(--ink); font-weight: 600; }
+
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 10px 26px;
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    max-width: 58ch;
+  }
+  .hero-meta div{ font-size: 12.5px; }
+  .hero-meta .k{ color: var(--ink-soft); margin-bottom: 2px; }
+  .hero-meta .v{ font-weight: 600; }
+
+  .hero-actions{ margin-top: 24px; display:flex; gap: 18px; flex-wrap:wrap; }
+  .link-btn{
+    font-size: 13.5px; font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--moss-deep);
+    padding-bottom: 2px;
+  }
+
+  /* ── SECTION SCAFFOLDING ──────────────── */
+  section{
+    max-width: var(--wide); margin: 0 auto;
+    padding: clamp(30px,5vw,52px) var(--pad);
+    border-top: 1px solid var(--rule);
+  }
+  .section-title{
+    font-family: var(--serif); font-weight: 650;
+    font-size: clamp(21px, 2.4vw, 27px);
+    margin-bottom: 8px;
+  }
+  .section-note{
+    font-size: 13.5px; color: var(--ink-soft);
+    max-width: 62ch; margin-bottom: 28px;
+  }
+
+  /* ── METHOD: field notes, numbered sequence ── */
+  .steps{
+    max-width: var(--measure);
+    position: relative;
+    padding-left: 42px;
+  }
+  .steps::before{
+    content:'';
+    position:absolute; left: 13px; top: 6px; bottom: 6px;
+    width: 1px;
+    background-image: linear-gradient(var(--ink-soft) 60%, transparent 0%);
+    background-size: 1px 6px;
+    background-repeat: repeat-y;
+    opacity: .5;
+  }
+  .step{ position: relative; margin-bottom: 26px; }
+  .step:last-child{ margin-bottom: 0; }
+  .step-num{
+    position:absolute; left: -42px; top: -1px;
+    width: 26px; height: 26px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); font-size: 11px;
+    background: var(--paper);
+  }
+  .step h3{
+    font-family: var(--serif); font-weight: 600; font-size: 16.5px;
+    margin-bottom: 5px;
+  }
+  .step p{ font-size: 13.5px; color: var(--ink-soft); line-height: 1.65; max-width: 60ch; }
+
+  /* ── SPECIMENS: audio grid ────────────── */
+  .specimens{
+    display:grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  @media (max-width: 640px){ .specimens{ grid-template-columns: 1fr; } }
+
+  .specimen{
+    border: 1px solid var(--rule);
+    background: var(--paper-deep);
+    padding: 18px 20px 20px;
+    position: relative;
+  }
+  .specimen::before{
+    content:'';
+    position:absolute; left:0; top:0; bottom:0; width: 4px;
+    background: var(--accent, var(--ink-soft));
+  }
+  .specimen.bio{ --accent: var(--moss); }
+  .specimen.anthro{ --accent: var(--amber); }
+  .specimen.both{ --accent: var(--teal); }
+  .specimen.none{ --accent: var(--bark); }
+
+  .specimen-label{
+    font-family: var(--serif); font-weight: 600; font-size: 16px;
+    margin-bottom: 2px;
+  }
+  .specimen-sub{
+    font-family: var(--mono); font-size: 10.5px;
+    color: var(--ink-soft); letter-spacing: .04em;
+    margin-bottom: 14px;
+  }
+  .specimen audio{
+    width: 100%; height: 34px; margin-bottom: 10px;
+    filter: sepia(8%);
+  }
+  .specimen-note{ font-size: 12.5px; color: var(--ink-soft); line-height: 1.55; }
+  .specimen-fill{
+    font-size: 11px; color: var(--ink-soft); font-style: italic;
+    margin-top: 8px; opacity: .7;
+  }
+
+  /* ── MEASURES: result figures ─────────── */
+  .measures{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    border: 1px solid var(--rule);
+    max-width: var(--wide);
+  }
+  @media (max-width: 700px){ .measures{ grid-template-columns: 1fr; } }
+  .measure{
+    padding: 20px 22px;
+    border-right: 1px solid var(--rule);
+  }
+  .measure:last-child{ border-right: none; }
+  @media (max-width: 700px){
+    .measure{ border-right:none; border-bottom: 1px solid var(--rule); }
+    .measure:last-child{ border-bottom:none; }
+  }
+  .measure-label{
+    font-size: 11.5px; color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .measure-value{
+    font-family: var(--mono); font-size: 21px; font-weight: 500;
+    color: var(--ink);
+  }
+  .measure-value small{ font-family: var(--sans); font-size: 12px; color: var(--ink-soft); }
+
+  /* ── LIMITS ────────────────────────────── */
+  .limits p{ max-width: 62ch; font-size: 14px; color: var(--ink-soft); line-height: 1.75; }
+
+  /* ── FOOTER / TAGS ─────────────────────── */
+  .tags{ display:flex; flex-wrap:wrap; gap: 8px 16px; margin-bottom: 30px; }
+  .tag{
+    font-family: var(--mono); font-size: 11.5px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+
+  footer{
+    max-width: var(--wide); margin: 0 auto;
+    padding: 26px var(--pad) 40px;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap: wrap; gap: 12px;
+    font-size: 12.5px; color: var(--ink-soft);
+  }
+  footer a{ text-decoration:none; border-bottom: 1px solid var(--rule); }
+  footer a:hover{ border-color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="wordmark">Alice Gay</div>
+    <div class="nav-links">
+      <a href="../index.html#preview">Portfolio</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none;">
+    <div class="eyebrow">Stage Master 1 — Institut de Neurosciences de la Timone</div>
+    <h1>Classification des sons environnementaux</h1>
+    <p class="hero-lead">
+      Des enregistreurs posés en forêt, à <strong>Sequoia National Park</strong>, captent en continu
+      le paysage sonore : chants d'oiseaux, vent, insectes, mais aussi avions, voix, moteurs.
+      Ce projet entraîne un modèle SVM à repérer, dans ces enregistrements, ce qui relève du
+      vivant (<strong>biophonie</strong>) et ce qui relève de l'activité humaine (<strong>anthropophonie</strong>).
+    </p>
+    <div class="hero-meta">
+      <div><div class="k">Terrain</div><div class="v">Sequoia National Park</div></div>
+      <div><div class="k">Période</div><div class="v">Février – mai 2024</div></div>
+      <div><div class="k">Méthode</div><div class="v">Spectrogramme → PCA → SVM (RBF)</div></div>
+      <div><div class="k">Étiquettes</div><div class="v">Biophonie / Anthropophonie (binaires)</div></div>
+    </div>
+    <div class="hero-actions">
+      <a class="link-btn" href="../assets/sons/bio_anthro_final.py" target="_blank" rel="noopener">Voir le script Python</a>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section>
+    <div class="section-title">Carnet de méthode</div>
+    <p class="section-note">Le pipeline, du fichier audio brut à l'étiquette prédite.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Extraction</h3>
+        <p>Les fichiers .wav sont regroupés par séquences de 6 (30 secondes découpées en segments de 5 secondes), puis transformés en spectrogrammes par transformée de Fourier à court terme (STFT).</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Réduction</h3>
+        <p>Chaque spectrogramme est projeté sur 5 composantes principales (PCA, avec whitening) pour réduire la dimensionnalité avant l'entraînement.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Classification</h3>
+        <p>Deux SVM à noyau RBF sont entraînés séparément — un pour la biophonie, un pour l'anthropophonie — avec pondération des classes et réglage des hyperparamètres (gamma, C) par recherche sur grille, validée en 4 plis stratifiés.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Restitution</h3>
+        <p>Les prédictions sont combinées (biophonie seule, anthropophonie seule, les deux, aucune des deux), puis reportées sur la forme d'onde du segment et exportées en CSV.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIMENS -->
+  <section>
+    <div class="section-title">Spécimens sonores</div>
+    <p class="section-note">Un extrait par catégorie prédite. <span class="specimen-fill" style="opacity:1;">— remplacer les balises &lt;audio&gt; et les notes ci-dessous par tes propres extraits.</span></p>
+
+    <div class="specimens">
+
+      <div class="specimen bio">
+        <div class="specimen-label">Biophonie</div>
+        <div class="specimen-sub">SVM biophonie = 1</div>
+        <audio controls preload="none">
+          <source src="../assets/sons/specimen_biophonie.wav" type="audio/wav">
+        </audio>
+        <p class="specimen-note">Chants d'oiseaux, insectes — sons du vivant, sans présence humaine détectée.</p>
+        <div class="specimen-fill">fichier à déposer : assets/sons/specimen_biophonie.wav</div>
+      </div>
+
+      <div class="specimen anthro">
+        <div class="specimen-label">Anthropophonie</div>
+        <div class="specimen-sub">SVM anthropophonie = 1</div>
+        <audio controls preload="none">
+          <source src="../assets/sons/specimen_anthropophonie.wav" type="audio/wav">
+        </audio>
+        <p class="specimen-note">Voix, moteur, avion — activité humaine, sans marqueur biophonique dominant.</p>
+        <div class="specimen-fill">fichier à déposer : assets/sons/specimen_anthropophonie.wav</div>
+      </div>
+
+      <div class="specimen both">
+        <div class="specimen-label">Les deux</div>
+        <div class="specimen-sub">biophonie = 1, anthropophonie = 1</div>
+        <audio controls preload="none">
+          <source src="../assets/sons/specimen_both.wav" type="audio/wav">
+        </audio>
+        <p class="specimen-note">Chevauchement — vivant et humain co-présents dans le même segment.</p>
+        <div class="specimen-fill">fichier à déposer : assets/sons/specimen_both.wav</div>
+      </div>
+
+      <div class="specimen none">
+        <div class="specimen-label">Aucune des deux</div>
+        <div class="specimen-sub">biophonie = 0, anthropophonie = 0</div>
+        <audio controls preload="none">
+          <source src="../assets/sons/specimen_none.wav" type="audio/wav">
+        </audio>
+        <p class="specimen-note">Géophonie ou silence — vent, eau, absence de marqueur détecté.</p>
+        <div class="specimen-fill">fichier à déposer : assets/sons/specimen_none.wav</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MEASURES -->
+  <section>
+    <div class="section-title">Mesures</div>
+    <p class="section-note">Précision équilibrée (balanced accuracy) sur l'ensemble de test, par étiquette.</p>
+
+    <div class="measures">
+      <div class="measure">
+        <div class="measure-label">Biophonie</div>
+        <div class="measure-value">— <small>à compléter</small></div>
+      </div>
+      <div class="measure">
+        <div class="measure-label">Anthropophonie</div>
+        <div class="measure-value">— <small>à compléter</small></div>
+      </div>
+      <div class="measure">
+        <div class="measure-label">Split train / test</div>
+        <div class="measure-value">70 / 30 <small>par groupe</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIMITS -->
+  <section class="limits">
+    <div class="section-title">Limites & suite</div>
+    <p>
+      Le modèle est entraîné et évalué sur un seul site d'enregistrement : sa capacité à généraliser
+      à d'autres forêts ou d'autres conditions acoustiques n'a pas été testée. La classification
+      repose sur le spectrogramme brut réduit par PCA, sans descripteurs bioacoustiques dédiés,
+      ce qui limite la finesse de détection. Une suite possible : comparer à un modèle convolutif
+      entraîné directement sur les spectrogrammes, ou ajouter des descripteurs acoustiques spécifiques
+      (indices de biodiversité acoustique, par exemple).
+    </p>
+  </section>
+
+  <!-- SKILLS -->
+  <section>
+    <div class="section-title">Compétences mobilisées</div>
+    <div class="tags">
+      <span class="tag">Python</span>
+      <span class="tag">Librosa</span>
+      <span class="tag">Scikit-learn</span>
+      <span class="tag">SVM</span>
+      <span class="tag">PCA</span>
+      <span class="tag">Traitement du signal</span>
+      <span class="tag">Bioacoustique</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div>© <span id="y"></span> Alice Gay — Marseille</div>
+  <div style="display:flex; gap:18px; flex-wrap:wrap;">
+    <a href="../index.html">Portfolio</a>
+    <a href="/cdn-cgi/l/email-protection#1574797c76702472746c557278747c793b7367">Email</a>
+    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Haut ↑</a>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
