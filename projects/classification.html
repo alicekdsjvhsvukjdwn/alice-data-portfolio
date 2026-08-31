@@ -476,7 +476,7 @@
         <audio controls preload="none">
           <source src="../assets/sons/specimen_none.wav" type="audio/wav">
         </audio>
-        <p class="specimen-note">Géophonie ou silence — vent, eau, absence de marqueur détecté.</p>
+        <p class="specimen-note">Géophonie — vent, eau : aucun marqueur de biophonie ni d'anthropophonie détecté.</p>
         <div class="specimen-fill">fichier à déposer : assets/sons/specimen_none.wav</div>
       </div>
 
@@ -508,7 +508,10 @@
   <section class="limits">
     <div class="section-title">Limites & suite</div>
     <p>
-      Le modèle est entraîné et évalué sur un seul site d'enregistrement : sa capacité à généraliser
+      La géophonie (sons non-biologiques comme le vent ou l'eau) correspond ici à l'étiquette
+      « aucune des deux » : elle n'a pas été entraînée comme catégorie séparée, faute de segments
+      assez nombreux ne contenant qu'elle pour que les performances du modèle sur cette classe
+      soient significatives. Le modèle est entraîné et évalué sur un seul site d'enregistrement : sa capacité à généraliser
       à d'autres forêts ou d'autres conditions acoustiques n'a pas été testée. La classification
       repose sur le spectrogramme brut réduit par PCA, sans descripteurs bioacoustiques dédiés,
       ce qui limite la finesse de détection. Une suite possible : comparer à un modèle convolutif
