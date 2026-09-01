@@ -757,6 +757,44 @@
     grid-template-columns: 1fr;
   }
 }
+
+.principle-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+    
+@media (max-width: 640px){
+  .principle-grid{ grid-template-columns: 1fr; }
+  
+}
+.principle-card{
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+}
+.principle-icon{
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 2px;
+  transform: rotate(45deg);
+  margin-bottom: 10px;
+}
+.principle-title{
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 14px;
+  color: rgba(244,244,245,.92);
+  margin-bottom: 4px;
+}
+.principle-desc{
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(244,244,245,.62);
+}
+    
     /* =========================
      CTA Parallax (style sitebase)
     ========================= */
@@ -1400,34 +1438,37 @@
             <p class="intro">
               Je conçois des outils qui transforment des données complexes en décisions concrètes.
               <br><br>
-            
+          
               Formée en mathématiques appliquées puis en sciences cognitives, je combine <strong>rigueur analytique</strong> et <strong>compréhension des comportements humains</strong> — pas pour produire des analyses de plus, mais des outils réellement utilisés par les gens qui en ont besoin.
-              <br><br>
-            
-              J'ai mis cette approche à l'épreuve sur des données terrain à grande échelle comme sur des données de recherche plus expérimentales (voir mes projets ci-dessus) — deux contextes très différents, une même exigence : que les données servent une décision réelle, pas juste un rapport.
-              <br><br>
-            
-              Je m'intéresse aux projets qui relient technologie et usages, avec une question simple en tête : <strong>qu'est-ce que cet outil change vraiment pour les personnes qui l'utilisent ?</strong>
-              <br><br>
-            
-              En parallèle, ma pratique artistique (musique, écriture) nourrit ma façon de penser les projets — comme des systèmes à la fois fonctionnels et porteurs de sens.
             </p>
           
-            <div style="margin-top: 16px; display:flex; flex-direction:column; gap:0.5em;">
-              <div style="display:flex; align-items:flex-start; gap:0.6em; font-size:13px; color:rgba(244,244,245,.65);">
-                <span style="color:var(--accent); flex-shrink:0;">◆</span>
-                <span> Rendre simple ce qui est complexe.</span>
+            <div class="principle-grid">
+              <div class="principle-card">
+                <div class="principle-icon"></div>
+                <div class="principle-title">Simplifier</div>
+                <div class="principle-desc">Rendre lisible ce qui est complexe.</div>
               </div>
-              <div style="display:flex; align-items:flex-start; gap:0.6em; font-size:13px; color:rgba(244,244,245,.65);">
-                <span style="color:var(--accent); flex-shrink:0;">◆</span>
-                <span>Comprendre les mécanismes, pas seulement les observer.</span>
+              <div class="principle-card">
+                <div class="principle-icon"></div>
+                <div class="principle-title">Comprendre</div>
+                <div class="principle-desc">Chercher les mécanismes, pas seulement les observer.</div>
               </div>
-              <div style="display:flex; align-items:flex-start; gap:0.6em; font-size:13px; color:rgba(244,244,245,.65);">
-                <span style="color:var(--accent); flex-shrink:0;">◆</span>
-                <span>Utiliser les données pour éclairer des réalités humaines concrètes.</span>
+              <div class="principle-card">
+                <div class="principle-icon"></div>
+                <div class="principle-title">Éclairer</div>
+                <div class="principle-desc">Utiliser les données pour révéler des réalités humaines concrètes.</div>
               </div>
             </div>
-          </div>
+          
+            <p class="intro" style="margin-top:16px;">
+              J'ai mis cette approche à l'épreuve sur des données terrain à grande échelle comme sur des données de recherche plus expérimentales (voir mes projets ci-dessus) — deux contextes très différents, une même exigence : que les données servent une décision réelle, pas juste un rapport.
+              <br><br>
+          
+              Je m'intéresse aux projets qui relient technologie et usages, avec une question simple en tête : <strong>qu'est-ce que cet outil change vraiment pour les personnes qui l'utilisent ?</strong>
+              <br><br>
+          
+              En parallèle, ma pratique artistique (musique, écriture) nourrit ma façon de penser les projets — comme des systèmes à la fois fonctionnels et porteurs de sens.
+            </p>
           </div>
     
           <!-- TITRE -->
