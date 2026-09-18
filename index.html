@@ -3,2805 +3,1828 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Portfolio Alice Gay</title>
   <meta name="description" content="Portfolio d'Alice Gay : analyse de données, sciences cognitives et compréhension des usages. Disponible à Marseille." />
-<meta name="keywords" content="data analyst, analyse de données, sciences cognitives, UX research, comportement utilisateur, Marseille, Python, SQL" />
-<meta property="og:title" content="Portfolio – Alice Gay" />
-<meta property="og:description" content="Je fais le lien entre les données et les comportements humains pour concevoir des produits et des expériences adaptés aux usages." />  <meta property="og:type" content="website" />
+  <meta name="keywords" content="data analyst, analyse de données, sciences cognitives, UX research, comportement utilisateur, Marseille, Python, SQL" />
+
+  <meta property="og:title" content="Portfolio – Alice Gay" />
+  <meta property="og:description" content="J'analyse des données pour comprendre des comportements, et j'en fais des outils utilisables sur le terrain." />
+  <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/og-image.jpg" />
   <link rel="icon" href="assets/favicon.png" />
 
-  <!-- Typos -->
+  <!-- Typographies : un seul import (Playfair pour les titres, Inter pour le texte) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;500;600;700&family=Inter:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;500;600;700&family=Inter:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0B0B0E;           /* noir global */
-      --ink:#F4F4F5;          /* texte clair */
-      --muted:rgba(244,244,245,.68);
-      --line: rgba(244,244,245,.14);
-      --surface: rgba(18,18,22,.72);
-      --shadow: 0 18px 50px rgba(0,0,0,.45);
-      --radius: 18px;
-      --accent:#a8c87a;
-    
-      --maxw: min(1800px, 100%);
-      --header-h: 68px;
-      --pad-x: clamp(16px, 4vw, 56px);
-      --gap: clamp(12px, 1.8vw, 20px);
-    
-      --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
-    
-      --grain-opacity: 0.05;
-    }
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap">
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-
-    body{
-      margin:0;
-      font-family: var(--sans);
-      color: var(--ink);
-      background: var(--bg);
-      overflow: hidden; /* scroll dans .viewport */
-      line-height: 1.55;
-      text-rendering: geometricPrecision;
-    }
-
-    a{ color: inherit; text-decoration: none; }
-    a:hover{ text-decoration: underline; }
-
-    .container{
-      width: 100%;
-      max-width: var(--maxw);
-      margin: 0 auto;
-      padding: 0 var(--pad-x);
-    }
-
-    /* ======= Header (sitebase behavior) ======= */
-    header.site{
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--header-h);
-      z-index: 60;
-      border-bottom: 1px solid transparent;
-      transition: background .25s ease, border-color .25s ease, color .25s ease, backdrop-filter .25s ease;
-      background: transparent;              /* transparent au départ */
-      backdrop-filter: none;
-      color: #fff;                          /* sur HOME */
-    }
-
-    /* état HOME (transparent + blanc) */
-    header.site.is-home{
-      background: transparent;
-      border-bottom-color: transparent;
-      backdrop-filter: none;
-      color: #fff;
-    }
-
-    /* état après HOME (noir) */
-    header.site.is-scrolled {
-      background: rgba(10,10,10,.45);
-      border-bottom-color: rgba(255,255,255,.05);
-      backdrop-filter: blur(12px);
-      color: #fff;
-      height: 52px;
-    }
-
-    header.site.is-scrolled .btn {
-      padding: 7px 11px;
-      font-size: 12px;
-    }
-
-    .nav {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .brand{
-      font-family: var(--sans);
-      font-weight: 800;
-      letter-spacing: .02em;
-      font-size: 13px;
-      white-space: nowrap;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-      transform-style: preserve-3d;
-      perspective: 700px;
-    }
-
-    .brand .logo3d{
-      width:18px; height:18px;
-      display:block;
-      transform: rotateX(0deg) rotateY(0deg) translateZ(0);
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.25));
-      transition: transform .12s ease, filter .12s ease;
-      transform-origin: 50% 50%;
-    }
-
-    /* petit “3D” au survol */
-    .brand:hover .logo3d{
-      transform: rotateX(14deg) rotateY(-14deg) translateZ(6px);
-      filter: drop-shadow(0 14px 22px rgba(0,0,0,.35));
-    }
-
-    .nav .spacer{ flex:1; }
-
-    .btn{
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.25);
-      background: rgba(255,255,255,.10);
-      color: #fff;
-      box-shadow: 0 1px 0 rgba(0,0,0,.02);
-      font-weight: 700;
-      font-size: 13px;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease, color .12s ease;
-      white-space: nowrap;
-      text-decoration:none;
-    }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); }
-
-    /* boutons “sitebase” sur fond clair (hors header) */
-    .btn.light{
-      border-color: var(--line);
-      background: rgba(255,255,255,.82);
-      color: #111;
-    }
-    .btn.light:hover{ background: rgba(255,255,255,.95); }
-    .btn.dark{
-      background: rgba(17,17,17,.92);
-      color:#fff;
-      border-color: rgba(255,255,255,.12);
-      box-shadow: 0 14px 26px rgba(0,0,0,.10);
-    }
-    .btn.dark:hover{ background: rgba(17,17,17,1); }
-
-    /* ======= Viewport ======= */
-    .viewport{
-      height: 100svh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      position: relative;
-      background: var(--bg);
-    }
-    @media (prefers-reduced-motion: reduce){
-      .viewport{ scroll-behavior:auto; }
-      .btn{ transition:none; }
-    }
-
-    section.panel{
-      min-height: 100svh;
-      display:block;
-      padding-top: calc(var(--header-h) + clamp(18px, 3.5vh, 44px));
-      padding-bottom: clamp(26px, 5vh, 70px);
-      position: relative;
-      isolation: isolate;
-    }
-    section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
-
-    /* ======= Grain overlay ======= */
-    .grain{
-      pointer-events:none;
-      position:absolute;
-      inset:0;
-      opacity: var(--grain-opacity);
-      mix-blend-mode: multiply;
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      background-size: 240px 240px;
-    }
-
-    /* ======= Typography ======= */
-    h1{
-      font-family: var(--sans);
-      font-weight: 900;
-      letter-spacing: -.02em;
-      line-height: 1.04;
-      margin: 10px 0 12px;
-      font-size: clamp(34px, 4.1vw, 70px);
-    }
-    h2{
-      font-family: var(--serif);
-      font-weight: 700;
-      letter-spacing: -.01em;
-      margin: 0 0 12px;
-      font-size: clamp(22px, 2.6vw, 40px);
-      line-height: 1.12;
-    }
-    .lead{
-      font-size: clamp(14px, 1.05vw, 18px);
-      color: rgba(244,244,245,.78);
-      margin: 0 0 16px;
-      max-width: 62ch;
-    }
-    .sublead{
-      font-size: 14px;
-      color: rgba(244,244,245,.62);
-      margin: 0 0 16px;
-      max-width: 72ch;
-    }
-    .section-title{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    .section-title .note{
-      color: rgba(244,244,245,.55);
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    /* ======= Cards ======= */
-    .card{
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(18px, 2.2vw, 34px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* =========================================================
-   HOME — fond noir + cerveau 3D net (sans rectangle)
-   ========================================================= */
-
-    /* scène 3D */
-    #home{
-      position: relative;
-      overflow: hidden;
-      perspective: 1200px;
-    }
-    
-    #home.home-panel{
-      min-height: 100svh;
-      padding-top: var(--header-h);
-      padding-bottom: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      position: relative;
-      color: #fff;
-      height: 100svh;
-      overflow: hidden;
-    
-      /* fond home sobre (sur ton --bg noir) */
-      background:
-        radial-gradient(1200px 700px at 50% 40%, rgba(93,139,244,.10), transparent 60%),
-        radial-gradient(900px 520px at 20% 80%, rgba(255,255,255,.06), transparent 55%),
-        var(--bg);
-    }
-    
-    /* ---- Cerveau en "background" 3D (sans plaque/rectangle) ---- */
-    .hero-brain-bg{
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      perspective: 1200px;
-    }
-    
-    /* wrapper = zone de placement (invisible) */
-    .hero-brain-3d{
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: clamp(900px, 120vw, 1600px); /* très grand desktop, s'adapte */
-      aspect-ratio: 664 / 384;
-      transform: translate(-50%, -50%);
-      transform-style: preserve-3d;
-    }
-    @media (max-width: 820px){
-      .hero-brain-3d{ width: min(1100px, 140vw); } /* mobile/tablette: toujours massif */
-    }
-    
-    /* image = relief + ombres (drop-shadow suit l’alpha du PNG → zéro rectangle) */
-    .hero-brain-3d img{
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    
-      transform-origin: 50% 50%;
-      will-change: transform, filter;
-      backface-visibility: hidden;
-    
-      opacity: .62;
-      filter:
-        drop-shadow(0 26px 50px rgba(0,0,0,.55))
-        drop-shadow(0 10px 18px rgba(93,139,244,.10));
-    }
-    
-    /* on neutralise les pseudo-éléments qui créent des plaques */
-    .hero-brain-3d::before,
-    .hero-brain-3d::after{
-      content: none !important;
-    }
-    
-    /* ---- Overlay lisibilité (léger, pas “bâche noire”) ---- */
-    #home.home-panel::before{
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      background:
-        radial-gradient(900px 520px at 50% 46%, rgba(0,0,0,.08), rgba(0,0,0,.38)),
-        linear-gradient(to right, rgba(11,11,14,.92) 28%, rgba(11,11,14,.55) 52%, rgba(11,11,14,.05) 76%);
-    }
-    
-    /* texte au-dessus */
-    #home .container{
-      position: relative;
-      z-index: 2;
-    }
-    
-    .home-content{
-      max-width: 860px;
-      padding: clamp(8px, 1.5vw, 20px);
-    }
-    
-    .home-content h1{
-      font-family: 'Playfair Display', serif;
-      font-weight: 300;
-      font-size: clamp(1rem, 2vw, 2.2rem);
-      margin: 0 0 0.6rem;
-      line-height: 1.12;
-      color: #fff;
-      text-shadow: 0 12px 44px rgba(0,0,0,.40);
-    }
-    
-    .home-content p{
-      font-family: 'Open Sans', sans-serif;
-      font-size: clamp(0.85rem, 1.2vw, 1rem);
-      margin: 0 0 1rem;
-      max-width: 56ch;
-      color: rgba(255,255,255,.92);
-      text-shadow: 0 10px 34px rgba(0,0,0,.30);
-    }
-    
-    /* bouton hero */
-    #home .btn.hero{
-      display: inline-block;
-      padding: .85rem 1.7rem;
-      background: rgba(255,255,255,.92);
-      color: #111;
-      border: 1px solid rgba(255,255,255,.35);
-    }
-    #home .btn.hero:hover{
-      background: #fff;
-      transform: translateY(-2px);
-    }
-
-    /* ======= Grids / Projects (tes styles existants, gardés) ======= */
-    .px-grid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--gap);
-      align-items: stretch;
-    }
-    @media (max-width: 980px){ .px-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 640px){ .px-grid{ grid-template-columns: 1fr; } }
-
-    /* ===== Work-like project cards ===== */
-
-    .px-card{
-      padding: 14px;
-      background: rgba(18,18,22,.58);
-      border: 1px solid rgba(244,244,245,.14);
-      box-shadow: 0 18px 50px rgba(0,0,0,.45);
-      transition: transform .14s ease, box-shadow .14s ease;
-    }
-
-    .px-labelbar{
-      position:absolute;
-      left:14px;
-      bottom:12px;
-      z-index:3;
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.92);
-      color:#111;
-      font-weight:800;
-      font-size:12px;
-    }
-
-    .px-labelbar:hover{ text-decoration:none; transform: translateY(-1px); }
-    
-    /* la vignette “photo” */
-    .px-thumb{
-      position: relative;
-      height: 210px;                 /* + grand = plus “Work” */
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid rgba(244,244,245,.14);
-      background: #0b0b0e;
-    }
-    
-    /* image de fond */
-    .px-thumb .bg{
-      position:absolute;
-      inset:0;
-      background-image: var(--bgimg);
-      background-size: cover;
-      background-position: center;
-      filter: saturate(1.05) contrast(1.05);
-      transform: scale(1.02);
-    }
-    
-    /* voile lisibilité + style */
-    .px-thumb::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(900px 420px at 20% 20%, rgba(93,139,244,.18), transparent 55%),
-        linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.55));
-      z-index: 1;
-    }
-    
-    /* entête texte dans l’image (comme l’exemple “NAVER …”) */
-    .px-head {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      pointer-events: none;
-    }
-        
-    .px-kicker {
-      position: absolute;
-      top: 12px;
-      left: 14px;
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.65);
-      backdrop-filter: blur(6px);
-      font-size: 11px;
-      letter-spacing: .10em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.90);
-      font-weight: 800;
-    }
-    
-    .px-title {
-      margin: 0;
-      font-family: var(--serif);
-      font-size: clamp(16px, 1.6vw, 22px);
-      line-height: 1.2;
-      color: #fff;
-      text-shadow: 0 2px 8px rgba(0,0,0,.5);
-      font-weight: 700;
-      background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%);
-      padding: 28px 14px 14px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
-        
-    /* stickers / objets pixel */
-    .px-stickers{
-      position:absolute;
-      inset:0;
-      z-index: 2;
-      pointer-events:none;
-    }
-    
-    .px-sticker{
-      position:absolute;
-      left: var(--x, 50%);
-      top: var(--y, 50%);
-      width: var(--w, 76px);
-      height:auto;
-      transform: translate(-50%,-50%) rotate(var(--r, 0deg));
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      filter: drop-shadow(0 18px 26px rgba(0,0,0,.55));
-      opacity: var(--o, 1);
-    }
-    
-    .px-sticker.back{
-      opacity:.85;
-      transform: translate(-50%,-50%) scale(.92) rotate(var(--r, 0deg));
-    }
-    
-    /* zone texte sous la vignette */
-    .px-body{
-      padding: 12px 4px 2px;
-    }
-    
-    .px-body .desc{
-      margin: 6px 0 0;
-      color: rgba(244,244,245,.70);
-      font-size: 14px;
-    }
-    
-    /* hover style */
-    .px-card:hover .px-thumb .bg{
-      transform: scale(1.06);
-      transition: transform .18s ease;
-    }
-    .px-thumb .bg{ transition: transform .18s ease; }
-    
-    .px-card:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 24px 70px rgba(0,0,0,.55);
-    }
-
-    .px-card h3{
-      margin: 0 0 6px;
-      font-family: var(--serif);
-      font-size: 20px;
-      line-height: 1.15;
-      color: rgba(244,244,245,.92);
-    }
-    .px-card .desc{
-      margin: 0 0 12px;
-      color: rgba(244,244,245,.72);
-      font-size: 14px;
-    }
-
-    .px-meta{ display:grid; gap: 10px; margin-top: 10px; }
-    .px-meta .label{
-      font-size: 11px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: rgba(244,244,245,.55);
-      font-weight: 800;
-    }
-    .px-meta .value{ color: rgba(244,244,245,.55); font-size: 13px; }
-
-    .px-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px; }
-
-    .grid{ display:grid; gap: var(--gap); }
-    .grid.cols-2{
-      grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
-      align-items: start;
-    }
-
-    /* =========================================================
-   DÉCORS SCIENTIFIQUES AUTOUR DE LA SECTION PROJETS
-   ========================================================= */
+<style>
+/* ============================================================
+   SOMMAIRE
+   1.  Tokens
+   2.  Reset & base
+   3.  Primitives (container, panel, card, btn, titres)
+   4.  Header
+   5.  Hero
+   6.  Banderoles parallax
+   7.  Projets (liste + aperçu + fond neuronal)
+   8.  Formations
+   9.  À propos
+   10. Comment je travaille
+   11. Contact
+   12. Footer
+   ============================================================ */
 
 
-#preview .container {
-  width: 100%;
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+:root{
+  /* --- couleurs --- */
+  --bg:            #0B0B0E;
+  --ink:           #F4F4F5;
+  --ink-2:         rgba(244,244,245,.80);
+  --ink-3:         rgba(244,244,245,.58);
+  --ink-4:         rgba(244,244,245,.38);
+  --line:          rgba(244,244,245,.14);
+  --line-strong:   rgba(244,244,245,.28);
+  --surface:       rgba(18,18,22,.72);
+  --surface-2:     rgba(255,255,255,.05);
+  --accent:        #A8C87A;   /* vert : accents, puces, focus */
+  --accent-cold:   #5D8BF4;   /* bleu : signaux discrets */
+
+  /* --- profondeur --- */
+  --shadow-sm:     0 8px 20px rgba(0,0,0,.25);
+  --shadow:        0 18px 50px rgba(0,0,0,.45);
+  --shadow-lg:     0 24px 70px rgba(0,0,0,.55);
+  --radius-sm:     12px;
+  --radius:        18px;
+  --radius-pill:   999px;
+
+  /* --- familles --- */
+  --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
+  --sans:  Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* --- échelle typographique fluide ---
+     Chaque taille grandit avec la largeur de l'écran,
+     entre un plancher (mobile) et un plafond (grand écran). */
+  --fs-xs:    clamp(11px, .78vw, 14px);
+  --fs-sm:    clamp(13px, .92vw, 16px);
+  --fs-base:  clamp(15px, 1.05vw, 19px);
+  --fs-md:    clamp(16px, 1.20vw, 21px);
+  --fs-lg:    clamp(19px, 1.50vw, 26px);
+  --fs-xl:    clamp(24px, 2.20vw, 38px);
+  --fs-2xl:   clamp(30px, 3.20vw, 54px);
+  --fs-hero:  clamp(27px, 3.00vw, 52px);
+
+  --lh-tight: 1.15;
+  --lh-base:  1.6;
+
+  /* --- rythme --- */
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: clamp(28px, 3vw, 46px);
+  --space-6: clamp(40px, 6vh, 84px);
+  --space-7: clamp(60px, 9vh, 120px);
+
+  --maxw:     min(1600px, 100%);
+  --pad-x:    clamp(16px, 4vw, 56px);
+  --gap:      clamp(14px, 1.8vw, 24px);
+  --header-h: 72px;          /* recalculé en JS */
+
+  --grain-opacity: .05;
 }
 
 
-    /* =========================================================
-   RÉSEAU DE POINTS EN FOND
-   ========================================================= */
+/* ============================================================
+   2. RESET & BASE
+   ============================================================ */
+*, *::before, *::after{ box-sizing: border-box; }
 
-#preview {
+html, body{ height: 100%; }
+
+body{
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--ink);
+  background: var(--bg);
+  overflow: hidden;              /* le scroll a lieu dans .viewport */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a{ color: inherit; text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+img{ max-width: 100%; display: block; }
+
+ul{ margin: 0; padding: 0; list-style: none; }
+
+:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+
+/* ============================================================
+   3. PRIMITIVES
+   ============================================================ */
+
+/* --- conteneur de scroll --- */
+.viewport{
+  height: 100svh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
   position: relative;
-  overflow: hidden;
+  background: var(--bg);
 }
 
-#preview.panel {
-  padding-top: 24px;
+.container{
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--pad-x);
 }
 
-.projects-stage {
+.panel{
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  min-height: 100%;
+  padding-top: calc(var(--header-h) + var(--space-5));
+  padding-bottom: var(--space-6);
+}
+.panel--full{ min-height: 100svh; }
+
+section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
+
+/* --- grain global --- */
+.grain{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
 }
 
-.neural-background{
-    position:absolute;
-    top:-420px;
-    left:-120px;
-    right:-120px;
-    bottom:-80px;
+/* --- titres --- */
+.title-xl{
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.04;
+  font-size: var(--fs-2xl);
+  margin: 0 0 var(--space-2);
+}
+.title-lg{
+  font-family: var(--serif);
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: var(--lh-tight);
+  font-size: var(--fs-xl);
+  margin: 0 0 var(--space-3);
+}
+.title-md{
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  font-size: var(--fs-lg);
+  margin: 0 0 var(--space-3);
 }
 
-#neuralCanvas {
-  width: 100%;
+/* Séparateur de sous-section (ex. Formations) */
+.divider{
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-7) 0 var(--space-5);
+}
+.divider::before,
+.divider::after{
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(168,200,122,.45), transparent);
+}
+.divider > span{
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: var(--fs-xl);
+  white-space: nowrap;
+}
+
+/* --- étiquette de section (majuscules espacées) --- */
+.eyebrow{
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* --- carte générique --- */
+.card{
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-5);
+}
+
+/* --- pastilles (tags, stats, compétences) --- */
+.chip{
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-3);
+  transition: color .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.chip-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+/* --- boutons --- */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: .75em 1.4em;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: rgba(255,255,255,.10);
+  color: #fff;
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+.btn:hover{
+  text-decoration: none;
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.18);
+  border-color: rgba(255,255,255,.4);
+}
+
+.btn--light{
+  background: rgba(255,255,255,.90);
+  border-color: rgba(255,255,255,.35);
+  color: #111;
+}
+.btn--light:hover{ background: #fff; }
+
+.btn--dark{
+  background: rgba(17,17,17,.92);
+  border-color: rgba(255,255,255,.14);
+  color: #fff;
+}
+.btn--dark:hover{ background: #111; }
+
+.btn-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .viewport{ scroll-behavior: auto; }
+  *{ transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+
+/* ============================================================
+   4. HEADER
+   ============================================================ */
+.site-header{
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: clamp(64px, 4.6vw, 88px);
+  color: #fff;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: height .25s ease, background .25s ease, border-color .25s ease, backdrop-filter .25s ease;
+}
+
+/* état après le hero */
+.site-header.is-scrolled{
+  height: clamp(52px, 3.6vw, 68px);
+  background: rgba(10,10,10,.55);
+  border-bottom-color: rgba(255,255,255,.06);
+  backdrop-filter: blur(12px);
+}
+
+.nav{
   height: 100%;
-  min-height: 1200px;
-  display: block;
-  opacity: 0.72;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.nav__spacer{ flex: 1; }
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  letter-spacing: .02em;
+  white-space: nowrap;
+  user-select: none;
+  perspective: 700px;
+}
+.brand__logo{
+  width: clamp(18px, 1.4vw, 26px);
+  height: clamp(18px, 1.4vw, 26px);
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,.25));
+  transition: transform .12s ease, filter .12s ease;
+}
+.brand:hover .brand__logo{
+  transform: rotateX(14deg) rotateY(-14deg) translateZ(6px);
+  filter: drop-shadow(0 14px 22px rgba(0,0,0,.35));
 }
 
 
-/* Assombrit légèrement les bords sans masquer le réseau */
-.projects-stage::before {
+/* ============================================================
+   5. HERO
+   ============================================================ */
+.hero{
+  position: relative;
+  height: 100svh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* texte à gauche, cerveau visible à droite */
+  align-items: center;
+  padding-top: var(--header-h);
+  padding-bottom: 0;
+  overflow: hidden;
+  perspective: 1200px;
+  background:
+    radial-gradient(1200px 700px at 50% 40%, rgba(93,139,244,.10), transparent 60%),
+    radial-gradient(900px 520px at 20% 80%, rgba(255,255,255,.06), transparent 55%),
+    var(--bg);
+}
+
+/* voile de lisibilité au-dessus de l'image */
+.hero::before{
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-
   background:
-    radial-gradient(
-      ellipse at 50% 30%,
-      transparent 0%,
-      rgba(11, 11, 14, 0.025) 55%,
-      rgba(11, 11, 14, 0.14) 100%
-    );
+    radial-gradient(900px 520px at 50% 46%, rgba(0,0,0,.08), rgba(0,0,0,.38)),
+    linear-gradient(to right, rgba(11,11,14,.92) 28%, rgba(11,11,14,.55) 52%, rgba(11,11,14,.05) 76%);
 }
 
-@media (max-width: 800px) {
-  .neural-background {
-    inset: -120px -180px -100px -180px;
+.hero > .container{ position: relative; z-index: 2; }
+
+/* --- cerveau 3D en fond --- */
+.hero__bg{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  perspective: 1200px;
+}
+.hero__brain{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(900px, 120vw, 1600px);
+  aspect-ratio: 664 / 384;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+}
+.hero__brain img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: .62;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  will-change: transform;
+  filter:
+    drop-shadow(0 26px 50px rgba(0,0,0,.55))
+    drop-shadow(0 10px 18px rgba(93,139,244,.10));
+}
+
+/* --- contenu --- */
+.hero__content{ max-width: 24em; }
+
+.hero__status{
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(93,139,244,.9);
+  margin-bottom: var(--space-4);
+}
+
+.hero__title{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--fs-hero);
+  line-height: 1.14;
+  margin: 0;
+  text-shadow: 0 12px 44px rgba(0,0,0,.4);
+}
+.hero__title--muted{ color: var(--ink-4); }
+
+.hero__rule{
+  width: 40px;
+  height: 1px;
+  background: rgba(93,139,244,.5);
+  margin: var(--space-4) 0;
+}
+
+.hero__tags{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  font-size: var(--fs-sm);
+  letter-spacing: .06em;
+  color: var(--ink-4);
+}
+
+@media (max-width: 860px){
+  .hero{ grid-template-columns: 1fr; }
+  .hero__content{ max-width: none; }
+  .hero::before{
+    background:
+      linear-gradient(to bottom, rgba(11,11,14,.55), rgba(11,11,14,.88));
   }
-
-  #neuralCanvas {
-    min-height: 1600px;
-    opacity: 0.3;
-  }
 }
 
 
-/* Cartes au-dessus */
-.projects-content {
+/* ============================================================
+   6. BANDEROLES PARALLAX
+   ============================================================ */
+.banner{
   position: relative;
-  z-index: 2;
-}
-
-  /* =========================================================
-   FORMATIONS
-  ========================================================= */
-
-.edu-wrap {
-  position: relative;
-  z-index: 2;
-  margin-top: clamp(40px, 6vh, 80px);
-}
-
-.edu-title {
-  margin: 0 0 20px;
-  font-family: var(--sans);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  font-size: clamp(22px, 2.2vw, 34px);
-}
-
-.edu-grid {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  min-height: clamp(200px, 32vh, 380px);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--gap);
-  align-items: stretch;
+  place-items: center;
+  overflow: hidden;
+  background-image: var(--bgimg, none);
+  background-size: 110%;
+  background-position: center var(--bgy, 50%);
+  background-repeat: no-repeat;
+}
+.banner--tall{ min-height: clamp(220px, 38vh, 420px); }
+
+.banner::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 420px at 20% 45%, rgba(29,78,216,.18), transparent 60%),
+    radial-gradient(900px 420px at 80% 55%, rgba(80,120,160,.22), transparent 62%),
+    linear-gradient(to bottom, var(--bg) 0%, rgba(250,250,247,.15) 30%, rgba(250,250,247,.15) 70%, var(--bg) 100%);
+}
+.banner::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
 }
 
-.edu-card {
+.banner .container{ position: relative; z-index: 2; }
+
+.banner__inner{
+  text-align: center;
+  padding: var(--space-5) 0;
+}
+.banner__sub{
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: rgba(17,17,17,.72);
+}
+
+
+/* ============================================================
+   7. PROJETS
+   ============================================================ */
+.projects{ padding-top: var(--space-4); }
+
+.projects__stage{
+  position: relative;
+  isolation: isolate;
+  overflow: clip;            /* "clip" et non "hidden" : sinon l'aperçu sticky casse */
+  min-height: 100%;
+}
+.projects__stage::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 30%, transparent 0%, rgba(11,11,14,.03) 55%, rgba(11,11,14,.14) 100%);
+}
+
+/* --- fond neuronal animé --- */
+.neural{
+  position: absolute;
+  top: -420px;
+  left: -120px;
+  right: -120px;
+  bottom: -80px;
+}
+.neural canvas{
+  width: 100%;
+  height: 100%;
+  min-height: 1200px;
+  display: block;
+  opacity: .72;
+}
+
+.projects__content{
   position: relative;
   z-index: 2;
+}
+
+/* --- liste + aperçu --- */
+.projects__layout{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.project-list{
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--gap);
+}
 
-  padding: clamp(18px, 2vw, 28px);
-
-  background: rgba(18, 18, 22, 0.72);
+.project{
+  display: grid;
+  grid-template-columns: minmax(180px, 38%) 1fr;
+  gap: var(--space-4);
+  padding: var(--space-3);
+  background: rgba(18,18,22,.58);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  transition: transform .14s ease, box-shadow .14s ease, border-color .18s ease;
+}
+.project:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.project.is-active{ border-color: rgba(168,200,122,.5); }
 
-  backdrop-filter: blur(8px);
+.project__link{ display: block; text-decoration: none; }
+.project__link:hover{ text-decoration: none; }
+
+.project__thumb{
+  position: relative;
+  height: 100%;
+  min-height: 190px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #0b0b0e;
+}
+.project__thumb::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(900px 420px at 20% 20%, rgba(93,139,244,.18), transparent 55%),
+    linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.55));
+}
+.project__img{
+  position: absolute;
+  inset: 0;
+  background-image: var(--bgimg);
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.05) contrast(1.05);
+  transform: scale(1.02);
+  transition: transform .2s ease;
+}
+.project:hover .project__img{ transform: scale(1.07); }
+
+.project__kicker{
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 2;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(6px);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.9);
 }
 
-.edu-year {
-  font-size: 11px;
+.project__title{
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  margin: 0;
+  padding: 28px var(--space-3) var(--space-3);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: var(--fs-md);
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.5);
+  background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+}
+
+.project__body{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-1) 0;
+}
+
+.project__desc{
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+/* --- aperçu collant --- */
+.project-preview{
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-4));
+}
+.project-preview__label{
+  margin-bottom: var(--space-2);
+}
+.project-preview__frame{
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  background: #0b0b0e;
+}
+.project-preview__frame iframe{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250%;
+  height: 250%;
+  border: 0;
+  transform: scale(.4);
+  transform-origin: 0 0;
+  pointer-events: none;   /* l'aperçu ne capte pas la souris */
+}
+
+@media (max-width: 1100px){
+  .projects__layout{ grid-template-columns: 1fr; }
+  .project-preview{ display: none; }
+}
+@media (max-width: 640px){
+  .project{ grid-template-columns: 1fr; }
+  .project__thumb{ min-height: 200px; }
+}
+@media (max-width: 800px){
+  .neural{ inset: -120px -180px -100px -180px; }
+  .neural canvas{ min-height: 1600px; opacity: .3; }
+}
+
+
+/* ============================================================
+   8. FORMATIONS
+   ============================================================ */
+.edu-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: var(--gap);
+}
+
+.edu-card{
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  background: rgba(18,18,22,.72);
+  border: 1px solid var(--line);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  transition: transform .18s ease, border-color .18s ease;
+}
+.edu-card:hover{
+  transform: translateY(-3px);
+  border-color: rgba(168,200,122,.4);
+  border-left-color: var(--accent);
+}
+.edu-card:hover .chip{
+  color: var(--ink-2);
+  background: rgba(168,200,122,.10);
+  border-color: rgba(168,200,122,.3);
+}
+
+.edu-card__year{
+  font-size: var(--fs-xs);
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--accent);
 }
-
-.edu-degree {
+.edu-card__degree{
   font-family: var(--serif);
-  font-size: clamp(18px, 1.8vw, 24px);
   font-weight: 600;
-  color: var(--ink);
+  font-size: var(--fs-lg);
   line-height: 1.2;
 }
-
-.edu-school {
-  font-size: 13px;
-  color: rgba(244, 244, 245, 0.45);
+.edu-card__school{
+  font-size: var(--fs-sm);
+  color: var(--ink-4);
+}
+.edu-card__desc{
+  margin: var(--space-1) 0 var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
 }
 
-.edu-desc {
-  margin: 4px 0 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(244, 244, 245, 0.65);
+
+/* ============================================================
+   9. À PROPOS
+   ============================================================ */
+.about{ padding-top: var(--space-5); }
+
+.about__text{
+  max-width: 68ch;
+  font-size: var(--fs-base);
+  color: var(--ink-2);
+}
+.about__text p{ margin: 0 0 1em; }
+.about__text p:last-child{ margin-bottom: 0; }
+.about__text strong{ color: var(--ink); font-weight: 600; }
+
+
+/* ============================================================
+   10. COMMENT JE TRAVAILLE
+   ============================================================ */
+.work-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: var(--gap);
 }
 
-.edu-tags {
+.work-card{
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(17,17,17,.12);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  color: #111;
+}
+
+.work-card__visual{
+  display: grid;
+  place-items: center;
+  height: clamp(140px, 11vw, 220px);
+  border: 1px solid rgba(17,17,17,.10);
+  border-radius: var(--radius-sm);
+  background: rgba(250,250,247,.92);
+  user-select: none;
+}
+
+.work-card__badge{
+  width: fit-content;
+  padding: 6px 12px;
+  border: 1px solid rgba(17,17,17,.10);
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,.72);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(17,17,17,.62);
+}
+.work-card__title{
+  font-weight: 800;
+  font-size: var(--fs-md);
+  color: rgba(17,17,17,.88);
+}
+.work-card__desc{
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: rgba(17,17,17,.66);
+}
+
+/* --- platine / vinyle --- */
+.turntable{
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.turntable:focus-visible{
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 3px;
+}
+
+.vinyl{
+  width: clamp(110px, 8.5vw, 180px);
+  height: clamp(110px, 8.5vw, 180px);
+  image-rendering: pixelated;
+  shape-rendering: crispEdges;
+}
+.vinyl--red   { --label: #EF4444; }
+.vinyl--blue  { --label: #3B82F6; }
+.vinyl--yellow{ --label: #F59E0B; }
+
+.turntable:hover .vinyl,
+.turntable[aria-pressed="true"] .vinyl{
+  animation: spin 1.05s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+
+/* ============================================================
+   11. CONTACT
+   ============================================================ */
+.contact{ padding-top: var(--space-5); }
+
+.contact-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+  gap: var(--gap);
+  align-items: start;
+}
+
+.contact__lead{
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-md);
+  color: var(--ink-2);
+  max-width: 40ch;
+}
+
+.contact__mail{
+  display: inline-block;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  margin-top: var(--space-1);
+}
+
+/* liste "Ce que je recherche" */
+.seek-list{
+  display: flex;
+  flex-direction: column;
+  gap: .8em;
+  margin-top: var(--space-3);
+}
+.seek-list li{
+  position: relative;
+  padding-left: 1.6em;
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.seek-list li::before{
+  content: "◆";
+  position: absolute;
+  left: 0;
+  top: .1em;
+  font-size: .7em;
+  color: var(--accent);
+}
+
+.skills{
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+.skills .eyebrow{ display: block; margin-bottom: var(--space-3); }
+
+.signature{
+  margin-top: var(--space-5);
+  text-align: center;
+  font-size: var(--fs-sm);
+  font-style: italic;
+  color: var(--ink-4);
+}
+
+
+/* ============================================================
+   12. FOOTER
+   ============================================================ */
+.site-footer{
+  padding: var(--space-4) 0;
+  background: rgba(255,255,255,.88);
+  border-top: 1px solid var(--line);
+  color: rgba(17,17,17,.62);
+  font-size: var(--fs-xs);
+}
+.site-footer__inner{
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
-
-.edu-tags span {
-  padding: 5px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(244, 244, 245, 0.55);
-  background: rgba(255, 255, 255, 0.04);
+.site-footer a{ border-bottom: 1px solid transparent; }
+.site-footer a:hover{
+  text-decoration: none;
+  color: rgba(17,17,17,.85);
+  border-bottom-color: rgba(17,17,17,.25);
 }
-
-@media (max-width: 860px) {
-  .edu-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.principle-grid{
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 20px 0;
-}
-    
-@media (max-width: 640px){
-  .principle-grid{ grid-template-columns: 1fr; }
-  
-}
-.principle-card{
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 16px;
-}
-.principle-icon{
-  width: 10px; height: 10px;
-  background: var(--accent);
-  border-radius: 2px;
-  transform: rotate(45deg);
-  margin-bottom: 10px;
-}
-.principle-title{
-  font-family: var(--sans);
-  font-weight: 800;
-  font-size: 14px;
-  color: rgba(244,244,245,.92);
-  margin-bottom: 4px;
-}
-.principle-desc{
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: rgba(244,244,245,.62);
-}
-    
-    /* =========================
-     CTA Parallax (style sitebase)
-    ========================= */
-    section.cta.parallax-cta{
-      min-height: clamp(140px, 23vh, 260px);
-    
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-    
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: hidden;
-    
-      background-image: var(--bgimg, none);
-      background-size: 110%;
-      background-position: center var(--bgy, 50%);
-      background-repeat: no-repeat;
-    
-      border-top: none;
-      border-bottom: none;
-    }
-    
-    section.cta.parallax-cta::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(900px 420px at 20% 45%, rgba(29,78,216,.18), transparent 60%),
-        radial-gradient(900px 420px at 80% 55%, rgba(80,120,160,.22), transparent 62%),
-        linear-gradient(to bottom,
-          var(--bg) 0%,
-          rgba(250,250,247,.15) 30%,
-          rgba(250,250,247,.15) 70%,
-          var(--bg) 100%
-        );
-      pointer-events:none;
-    }
-
-    section.cta.parallax-cta::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      opacity:.05;
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      background-size: 220px 220px;
-      mix-blend-mode: multiply;
-      pointer-events:none;
-    }
-
-    section.cta.parallax-cta .container{
-      position: relative;
-      z-index: 2;
-    }
-
-    section.cta.parallax-cta .text-center{
-      text-align: center;
-      padding: clamp(22px, 5vh, 56px) 0;
-    }
-
-    section.cta.parallax-cta h1{
-      margin: 0 0 10px;
-      font-family: var(--sans);
-      font-weight: 900;
-      letter-spacing: -.02em;
-      font-size: clamp(34px, 4.2vw, 64px);
-      line-height: 1.02;
-      text-shadow: 0 10px 40px rgba(0,0,0,.10);
-    }
-
-    section.cta.parallax-cta .cta-sub{
-      margin: 0;
-      color: rgba(17,17,17,.70);
-      font-size: clamp(13px, 1.2vw, 16px);
-    }
-
-    section.cta.parallax-cta.cta-large { /* Banderole 0 : mes projets */
-      min-height: clamp(200px, 35vh, 380px);
-    }
-
-    section.cta.parallax-cta.cta-xlarge {
-      min-height: clamp(220px, 38vh, 420px);
-    }
-
-    /* =========================
-   ABOUT + WORK (platines)
-   ========================= */
-
-    #about.panel {
-       min-height: unset;
-       padding-top: clamp(18px, 3vh, 40px);
-    }
-    
-    .about-wrap{
-      display: grid;
-      gap: clamp(18px, 3vh, 34px);
-    }
-    
-    .about-top{
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: clamp(18px, 3vw, 40px);
-      align-items: start;
-    }
-    
-    .about-photo{ display:grid; place-items:start; padding: 0; }
-    .about-photo .frame{
-      width: 100%;
-      max-width: 200px;
-      aspect-ratio: 1 / 1;
-      border-radius: 14px;
-      border: none;
-      background: transparent;
-      box-shadow: 0 18px 50px rgba(0,0,0,.45);
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-    }
-    .about-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
-    
-    .about-text{ padding: 0; }
-    .about-text h3{
-      margin: 0 0 10px;
-      font-family: var(--sans);
-      font-weight: 800;
-      letter-spacing: -.01em;
-      font-size: clamp(18px, 1.6vw, 22px);
-    }
-    .about-text .intro{
-      max-width: 100%;
-      color: rgba(244,244,245,.86); /* blanc lisible */
-      font-size: clamp(13px, 1vw, 15px);
-      line-height: 1.65;
-      margin: 0;
-    }
-        
-    /* ===== Comment je bosse ===== */
-    .work-title{ margin-top: 4px; }
-    .work-grid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--gap);
-      align-items: stretch;
-    }
-    
-    @media (max-width: 860px){
-      .about-top{ grid-template-columns: 1fr; }
-      .work-grid{ grid-template-columns: 1fr; }
-      .about-photo .frame{ max-width: 260px; }
-    }
-    
-    .work-card{
-      background: rgba(255,255,255,.86);
-      border: 1px solid rgba(17,17,17,.12);
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.06);
-      padding: 14px;
-      display:grid;
-      gap: 10px;
-    }
-    
-    .work-copy{ display:grid; gap: 6px; }
-    .work-copy .mini{
-      font-family: var(--sans);
-      font-weight: 800;
-      font-size: 13px;
-      color: rgba(17,17,17,.84);
-    }
-    .work-copy .micro{
-      font-size: 12px;
-      color: rgba(17,17,17,.62);
-      line-height: 1.45;
-    }
-    
-    .work-badge{
-      display:inline-flex;
-      align-items:center;
-      width: fit-content;
-      border: 1px solid rgba(17,17,17,.10);
-      background: rgba(255,255,255,.72);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: rgba(17,17,17,.62);
-    }
-    
-    /* ===== Platines ===== */
-    .work-visual{
-      position: relative;
-      border-radius: 14px;
-      border: 1px solid rgba(17,17,17,.10);
-      background: rgba(250,250,247,.92);
-      height: 140px;
-      display:grid;
-      place-items:center;
-      overflow: visible;
-      user-select: none;
-    }
-    
-    .tt-btn{
-      all: unset;
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      border-radius: 14px;
-    }
-    
-    .tt-btn:focus-visible{
-      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
-      outline-offset: 3px;
-      border-radius: 16px;
-    }
-    
-    .tt-wrap{
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display:grid;
-      place-items:center;
-      overflow: visible;
-      border-radius: 12px;
-    }
-    
-    .tt-wrap::after{
-      content:"";
-      position:absolute;
-      inset:10px;
-      border-radius: 12px;
-      border: 1px solid rgba(17,17,17,.06);
-      pointer-events:none;
-      z-index: 2;
-    }
-    
-    .vinyl{
-      width: 128px;
-      height: 128px;
-      display: block;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      shape-rendering: crispEdges;
-    }
-    
-    .vinyl .px-black{ fill:#0b0b0b; }
-    .vinyl .px-white{ fill:#f3f3f3; }
-    .vinyl .px-hole { fill:#0b0b0b; }
-    .vinyl .px-label{ fill: var(--label, #1D4ED8); }
-    
-    .vinyl-rot{
-      transform-box: fill-box;
-      transform-origin: 50% 50%;
-    }
-    
-    .tt-btn:hover .vinyl-rot,
-    .tt-btn[aria-pressed="true"] .vinyl-rot{
-      animation: vinylSpin 1.05s linear infinite;
-    }
-    
-    @keyframes vinylSpin{ to{ transform: rotate(360deg); } }
-    
-    .vinyl.red   { --label:#ef4444; }
-    .vinyl.yellow{ --label:#f59e0b; }
-    .vinyl.blue  { --label:#3b82f6; }
-
-    /* ======= Footer ======= */
-    footer.site-footer{
-      border-top: 1px solid var(--line);
-      background: rgba(250,250,247,.92);
-      padding: 22px 0 26px;
-    }
-
-    .footer-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: rgba(17,17,17,.62);
-      font-size: 12px;
-    }
-
-    .footer-links{
-      display:flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links a{
-      color: rgba(17,17,17,.62);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-    }
-    .footer-links a:hover{
-      color: rgba(17,17,17,.82);
-      border-bottom-color: rgba(17,17,17,.22);
-    }
-
-    /* ======= Footer ======= */
-    footer.site-footer{
-      border-top: 1px solid var(--line);
-      background: rgba(255,255,255,.86);
-      padding: 22px 0 26px;
-    }
-    .footer-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: rgba(17,17,17,.62);
-      font-size: 12px;
-    }
-    .footer-links{ display:flex; gap: 12px; flex-wrap: wrap; }
-    .footer-links a{
-      color: rgba(17,17,17,.62);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-    }
-    .footer-links a:hover{
-      color: rgba(17,17,17,.82);
-      border-bottom-color: rgba(17,17,17,.22);
-    }
-
-    #contact.panel {
-      min-height: unset;
-      padding-top: clamp(18px, 3vh, 40px);
-    }
-
-    /* VERSION A overrides */
-    .home-content h1.hero-line1 {
-      color: #f4f4f5;
-    }
-    .home-content h1.hero-line2 {
-      color: rgba(244,244,245,0.42);
-      margin-bottom: 0;
-    }
-    .hero-separator {
-      width: 36px; height: 1px;
-      background: rgba(93,139,244,0.5);
-      margin: 10px 0 12px;
-    }
-    .hero-tags {
-      margin-top: 16px;
-      display: flex; gap: 18px; flex-wrap: wrap;
-    }
-    .hero-tags span {
-      font-size: 10px; color: rgba(244,244,245,0.25);
-      letter-spacing: 0.06em;
-    }
-
-    .stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    
-    .stats span {
-      background: rgba(255,255,255,0.08);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      transition: 0.2s;
-    }
-    
-    .stats span:hover {
-      background: rgba(255,255,255,0.15);
-    }
-  </style>
+</style>
 </head>
 
 <body>
-  <header class="site is-home" id="siteHeader">
-    <div class="container nav">
-      <div class="brand" aria-label="Accueil" id="brand3d">
-        <svg class="logo3d" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 3c1.2 2.6.8 4.6-1 6 2.2-.3 4.1.6 5 2.3.2-2.5 1.4-4.1 3.7-4.9-2.6-1.2-4-2.5-4.7-5C13.8 3.3 12.9 3 12 3Z" fill="currentColor"/>
-          <path d="M21 12c-2.6 1.2-4.6.8-6-1 .3 2.2-.6 4.1-2.3 5 2.5.2 4.1 1.4 4.9 3.7 1.2-2.6 2.5-4 5-4.7C20.7 13.8 21 12.9 21 12Z" fill="currentColor"/>
-          <path d="M12 21c-1.2-2.6-.8-4.6 1-6-2.2.3-4.1-.6-5-2.3-.2 2.5-1.4 4.1-3.7 4.9 2.6 1.2 4 2.5 4.7 5 1.2-2.6 2.1-2.9 3-2.6Z" fill="currentColor"/>
-          <path d="M3 12c2.6-1.2 4.6-.8 6 1-.3-2.2.6-4.1 2.3-5-2.5-.2-4.1-1.4-4.9-3.7-1.2 2.6-2.5 4-5 4.7C3.3 10.2 3 11.1 3 12Z" fill="currentColor"/>
-          <circle cx="12" cy="12" r="2.1" fill="currentColor"/>
-        </svg>
-        Alice GAY
-      </div>
 
-      <div class="spacer"></div>
+<!-- Vinyle défini une seule fois, réutilisé 3 fois plus bas -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="vinyl" viewBox="0 0 32 32">
+    <g style="fill:#0b0b0b">
+      <rect x="13" y="1"  width="6"  height="1"/><rect x="10" y="2"  width="12" height="1"/>
+      <rect x="8"  y="3"  width="16" height="1"/><rect x="6"  y="4"  width="20" height="1"/>
+      <rect x="5"  y="5"  width="22" height="1"/><rect x="4"  y="6"  width="24" height="1"/>
+      <rect x="3"  y="7"  width="26" height="1"/><rect x="2"  y="8"  width="28" height="2"/>
+      <rect x="1"  y="10" width="30" height="13"/>
+      <rect x="2"  y="23" width="28" height="2"/><rect x="3"  y="25" width="26" height="1"/>
+      <rect x="4"  y="26" width="24" height="1"/><rect x="5"  y="27" width="22" height="1"/>
+      <rect x="6"  y="28" width="20" height="1"/><rect x="8"  y="29" width="16" height="1"/>
+      <rect x="10" y="30" width="12" height="1"/><rect x="13" y="31" width="6"  height="1"/>
+    </g>
+    <g style="fill:#f3f3f3">
+      <rect x="6"  y="4"  width="2" height="1"/><rect x="5"  y="5"  width="2" height="1"/>
+      <rect x="6"  y="6"  width="1" height="1"/><rect x="4"  y="7"  width="2" height="1"/>
+      <rect x="5"  y="8"  width="1" height="1"/><rect x="23" y="22" width="1" height="1"/>
+      <rect x="24" y="21" width="1" height="1"/>
+    </g>
+    <g style="fill:var(--label, #1D4ED8)">
+      <rect x="14" y="14" width="4" height="4"/><rect x="13" y="15" width="6" height="2"/>
+      <rect x="15" y="13" width="2" height="6"/>
+    </g>
+    <rect x="15" y="15" width="2" height="2" style="fill:#0b0b0b"/>
+  </symbol>
+</svg>
 
-      
-      <a class="btn dark" href="#contact">Me contacter</a>
+<header class="site-header" id="siteHeader">
+  <div class="container nav">
+    <div class="brand">
+      <svg class="brand__logo" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3c1.2 2.6.8 4.6-1 6 2.2-.3 4.1.6 5 2.3.2-2.5 1.4-4.1 3.7-4.9-2.6-1.2-4-2.5-4.7-5C13.8 3.3 12.9 3 12 3Z" fill="currentColor"/>
+        <path d="M21 12c-2.6 1.2-4.6.8-6-1 .3 2.2-.6 4.1-2.3 5 2.5.2 4.1 1.4 4.9 3.7 1.2-2.6 2.5-4 5-4.7C20.7 13.8 21 12.9 21 12Z" fill="currentColor"/>
+        <path d="M12 21c-1.2-2.6-.8-4.6 1-6-2.2.3-4.1-.6-5-2.3-.2 2.5-1.4 4.1-3.7 4.9 2.6 1.2 4 2.5 4.7 5 1.2-2.6 2.1-2.9 3-2.6Z" fill="currentColor"/>
+        <path d="M3 12c2.6-1.2 4.6-.8 6 1-.3-2.2.6-4.1 2.3-5-2.5-.2-4.1-1.4-4.9-3.7-1.2 2.6-2.5 4-5 4.7C3.3 10.2 3 11.1 3 12Z" fill="currentColor"/>
+        <circle cx="12" cy="12" r="2.1" fill="currentColor"/>
+      </svg>
+      Alice GAY
     </div>
-  </header>
 
-  <main class="viewport" id="viewport" aria-label="Portfolio">
-    <div class="grain" aria-hidden="true"></div>
+    <div class="nav__spacer"></div>
 
-    <!-- HOME VERSION A -->
-    <section id="home" class="panel home-panel">
-      <div class="hero-brain-bg" aria-hidden="true">
-        <div class="hero-brain-3d" id="brain3d">
-          <img src="assets/cerveau-portfolio.webp" alt="Visualisation 3D d'un cerveau qui explose avec des fleurs en pixels">
+    <a class="btn btn--dark" href="#contact">Me contacter</a>
+  </div>
+</header>
+
+<main class="viewport" id="viewport" aria-label="Portfolio">
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="home" class="hero">
+    <div class="hero__bg" aria-hidden="true">
+      <div class="hero__brain" id="brain3d">
+        <img src="assets/cerveau-portfolio.webp"
+             alt="Visualisation 3D d'un cerveau qui explose avec des fleurs en pixels">
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="hero__content">
+        <p class="hero__status">Marseille · disponible maintenant</p>
+
+        <h1 class="hero__title">J'analyse des données pour comprendre des comportements.</h1>
+        <p class="hero__title hero__title--muted">Et j'en fais des outils utilisables sur le terrain.</p>
+
+        <div class="hero__rule"></div>
+
+        <div class="btn-row">
+          <a class="btn btn--light" href="#preview">Découvrir mes projets</a>
+          <a class="btn" href="#contact">Me contacter</a>
+        </div>
+
+        <div class="hero__tags">
+          <span>Sciences cognitives</span>
+          <span>Données</span>
+          <span>Analyse</span>
+          <span>Recherche</span>
         </div>
       </div>
-      <div class="container">
-        <div class="home-content">
-          <div style="font-size:10px; letter-spacing:.20em; text-transform:uppercase; color:rgba(93,139,244,.75); margin-bottom:18px;">
-            Marseille · disponible maintenant
+    </div>
+  </section>
+
+  <!-- ===================== BANDEROLE PROJETS ===================== -->
+  <section class="banner" data-bg="assets/parallax_03.jpg">
+    <div class="container">
+      <div class="banner__inner">
+        <h2 class="title-xl">Mes projets</h2>
+        <p class="banner__sub">L'ensemble des projets réalisés pendant mon cursus et en entreprise.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROJETS ===================== -->
+  <section id="preview" class="panel projects">
+    <div class="container">
+      <div class="projects__stage">
+
+        <div class="neural" aria-hidden="true">
+          <canvas id="neuralCanvas"></canvas>
+        </div>
+
+        <div class="projects__content">
+          <div class="projects__layout">
+
+            <div class="project-list" id="projectList">
+
+              <!-- 1 — RTM -->
+              <article class="project" data-preview="projects/rtm.html" data-title="RTM">
+                <a class="project__link" href="projects/rtm.html">
+                  <div class="project__thumb" style="--bgimg:url('assets/projects/rtm_bg.jpg')">
+                    <div class="project__img"></div>
+                    <span class="project__kicker">Stage Master 2 · Data scientist</span>
+                    <h3 class="project__title">Structuration &amp; qualité de données à la RTM</h3>
+                  </div>
+                </a>
+                <div class="project__body">
+                  <div class="chip-row">
+                    <span class="chip">500 000+ lignes</span>
+                    <span class="chip">49 093 enregistrements</span>
+                    <span class="chip">100 % complétude (T1/T2)</span>
+                    <span class="chip">Power BI + carte HTML</span>
+                  </div>
+                  <p class="project__desc">Données terrain transformées en outils d'aide à la décision.</p>
+                  <div class="btn-row">
+                    <a class="btn btn--light" href="projects/rtm.html">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 2 — Sons environnementaux -->
+              <article class="project" data-preview="projects/classification.html" data-title="Sons environnementaux">
+                <a class="project__link" href="projects/classification.html">
+                  <div class="project__thumb" style="--bgimg:url('assets/projects/sounds_bg.jpg')">
+                    <div class="project__img"></div>
+                    <span class="project__kicker">Stage Master 1 · Classification audio</span>
+                    <h3 class="project__title">Classification des sons environnementaux à l'INT</h3>
+                  </div>
+                </a>
+                <div class="project__body">
+                  <div class="chip-row">
+                    <span class="chip">Audio environnemental</span>
+                    <span class="chip">Segmentation &amp; labellisation</span>
+                    <span class="chip">Modèle SVM</span>
+                    <span class="chip">Analyse de performance</span>
+                  </div>
+                  <p class="project__desc">Distinguer biophonie, géophonie et anthropophonie à partir d'enregistrements bruts.</p>
+                  <div class="btn-row">
+                    <a class="btn btn--light" href="projects/classification.html">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 3 — Music Of Our Emotions -->
+              <article class="project" data-preview="projects/music-of-our-emotions.html" data-title="Music Of Our Emotions">
+                <a class="project__link" href="projects/music-of-our-emotions.html">
+                  <div class="project__thumb" style="--bgimg:url('assets/projects/mooe_bg.jpg')">
+                    <div class="project__img"></div>
+                    <span class="project__kicker">Projet Master 2 · Affective computing</span>
+                    <h3 class="project__title">Music Of Our Emotions</h3>
+                  </div>
+                </a>
+                <div class="project__body">
+                  <div class="chip-row">
+                    <span class="chip">EEG + GSR + respiration</span>
+                    <span class="chip">Prédiction émotionnelle</span>
+                    <span class="chip">CNN + Random Forest</span>
+                    <span class="chip">Génération musicale IA</span>
+                  </div>
+                  <p class="project__desc">Des signaux physiologiques transformés en musique générée par IA.</p>
+                  <div class="btn-row">
+                    <a class="btn btn--light" href="projects/music-of-our-emotions.html">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 4 — Rêves lucides -->
+              <article class="project" data-preview="projects/reves-lucides/accueil.html" data-title="Rêves lucides">
+                <a class="project__link" href="projects/reves-lucides/accueil.html">
+                  <div class="project__thumb" style="--bgimg:url('assets/projects/reves_bg.jpg')">
+                    <div class="project__img"></div>
+                    <span class="project__kicker">Projet L3 · TER</span>
+                    <h3 class="project__title">Rêves lucides — site interactif</h3>
+                  </div>
+                </a>
+                <div class="project__body">
+                  <div class="chip-row">
+                    <span class="chip">Site interactif</span>
+                    <span class="chip">HTML / CSS / JS</span>
+                    <span class="chip">Vulgarisation scientifique</span>
+                    <span class="chip">Projet complet</span>
+                  </div>
+                  <p class="project__desc">Rendre accessible un sujet scientifique complexe par l'interaction.</p>
+                  <div class="btn-row">
+                    <a class="btn btn--light" href="projects/reves-lucides/accueil.html">Explorer →</a>
+                  </div>
+                </div>
+              </article>
+
+            </div><!-- /project-list -->
+
+            <aside class="project-preview" aria-hidden="true">
+              <p class="eyebrow project-preview__label">Aperçu · <span id="previewTitle"></span></p>
+              <div class="project-preview__frame">
+                <iframe id="previewFrame" title="Aperçu du projet" tabindex="-1" loading="lazy"></iframe>
+              </div>
+            </aside>
+
+          </div><!-- /projects__layout -->
+
+          <!-- ---------- FORMATIONS ---------- -->
+          <div class="divider"><span>Formations</span></div>
+
+          <div class="edu-grid">
+            <article class="edu-card">
+              <p class="edu-card__year">2023 — 2025</p>
+              <h3 class="edu-card__degree">Master Sciences cognitives</h3>
+              <p class="edu-card__school">Aix-Marseille Université · ILCB</p>
+              <p class="edu-card__desc">Langage, cerveau et comportements humains. Approche interdisciplinaire maths × neuro × communication.</p>
+              <div class="chip-row">
+                <span class="chip">EEG / GSR</span>
+                <span class="chip">Psycholinguistique</span>
+                <span class="chip">Python / R</span>
+                <span class="chip">Ingénierie cognitive</span>
+              </div>
+            </article>
+
+            <article class="edu-card">
+              <p class="edu-card__year">2019 — 2022</p>
+              <h3 class="edu-card__degree">Licence MIASHS</h3>
+              <p class="edu-card__school">Université de Bordeaux</p>
+              <p class="edu-card__desc">Mathématiques appliquées, informatique et sciences humaines.</p>
+              <div class="chip-row">
+                <span class="chip">Statistiques</span>
+                <span class="chip">Python / SQL</span>
+                <span class="chip">Psychologie cognitive</span>
+                <span class="chip">Modélisation</span>
+              </div>
+            </article>
           </div>
-          <h1 class="hero-line1">Je fais le lien entre les données et les comportements humains</h1>
-          <h1 class="hero-line2">pour concevoir des produits, des services et des expériences adaptés aux usages.</h1>
-          <div class="hero-separator"></div>
-          <p>Je suis disponible pour des projets où les données <br> rencontrent l'humain </p>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="btn hero" href="#preview">Découvrir mes projets</a>
-            <a class="btn" href="#contact">Me contacter</a>
-          </div>
-          <div class="hero-tags">
-            <span>Sciences cognitives</span>
-            <span>Données</span>
-            <span>Analyse</span>
-            <span>Recherche</span>
-          </div>
+
+        </div><!-- /projects__content -->
+      </div><!-- /projects__stage -->
+    </div><!-- /container -->
+  </section>
+
+  <!-- ===================== BANDEROLE À PROPOS ===================== -->
+  <section class="banner banner--tall" data-bg="assets/parallax_01.jpg">
+    <div class="container">
+      <div class="banner__inner">
+        <h2 class="title-xl">Présentation personnelle</h2>
+        <p class="banner__sub">Qui je suis</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== À PROPOS ===================== -->
+  <section id="about" class="panel about">
+    <div class="container">
+      <h2 class="title-lg">À propos</h2>
+
+      <div class="card">
+        <div class="about__text">
+          <p>J'ai fait une licence de mathématiques appliquées aux sciences humaines à Bordeaux, puis un master de sciences cognitives à Marseille. Depuis, je travaille surtout sur des données : à la RTM sur des données terrain à grande échelle, et en recherche sur des signaux audio et physiologiques.</p>
+          <p>Deux contextes assez différents, une même exigence : que les données servent une décision réelle, pas seulement un rapport de plus.</p>
+          <p>Ce qui m'intéresse, c'est ce qu'on apprend des gens à travers leurs données, et <strong>ce qu'un outil change pour ceux qui l'utilisent</strong>.</p>
+          <p>À côté, je fais de la musique et j'écris. Ça compte dans ma façon d'aborder un projet.</p>
         </div>
       </div>
-    </section>
 
-    <!-- CTA Parallax 0 -->
-    <section class="cta cta-large parallax-cta" data-bg="assets/parallax_03.jpg">
-      <div class="container">
-        <div class="text-center">
-          <h1>Mes projets</h1>
-          <p class="cta-sub">L'ensemble des projets que j'ai pu réaliser dans mon cursus scolaire et professionnel </p>
+      <div class="divider"><span>Comment je travaille</span></div>
+
+      <div class="work-grid">
+        <article class="work-card">
+          <div class="work-card__visual">
+            <button class="turntable" type="button" aria-pressed="false" aria-label="Étape 1">
+              <svg class="vinyl vinyl--red" aria-hidden="true"><use href="#vinyl"/></svg>
+            </button>
+          </div>
+          <p class="work-card__badge">Étape 1</p>
+          <h3 class="work-card__title">Comprendre le contexte</h3>
+          <p class="work-card__desc">Identifier les décisions à prendre, les contraintes réelles et les utilisateurs avant de toucher aux données.</p>
+        </article>
+
+        <article class="work-card">
+          <div class="work-card__visual">
+            <button class="turntable" type="button" aria-pressed="false" aria-label="Étape 2">
+              <svg class="vinyl vinyl--blue" aria-hidden="true"><use href="#vinyl"/></svg>
+            </button>
+          </div>
+          <p class="work-card__badge">Étape 2</p>
+          <h3 class="work-card__title">Structurer et fiabiliser les données</h3>
+          <p class="work-card__desc">Audit des sources, nettoyage, règles qualité, modélisation adaptée : transformer des données brutes en base exploitable.</p>
+        </article>
+
+        <article class="work-card">
+          <div class="work-card__visual">
+            <button class="turntable" type="button" aria-pressed="false" aria-label="Étape 3">
+              <svg class="vinyl vinyl--yellow" aria-hidden="true"><use href="#vinyl"/></svg>
+            </button>
+          </div>
+          <p class="work-card__badge">Étape 3</p>
+          <h3 class="work-card__title">Livrer un outil utile et fiable</h3>
+          <p class="work-card__desc">Dashboard, synthèse, recommandations actionnables : permettre de décider sans avoir à explorer les données.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" class="panel contact">
+    <div class="container">
+      <h2 class="title-lg">Contact</h2>
+
+      <div class="contact-grid">
+        <div class="card">
+          <p class="contact__lead">Un projet à structurer, des données à rendre lisibles, un public à comprendre ? Parlons.</p>
+
+          <p class="eyebrow">Email</p>
+          <a class="contact__mail" href="mailto:alice1gay@gmail.com">alice1gay@gmail.com</a>
+
+          <div class="btn-row" style="margin-top:var(--space-4)">
+            <a class="btn btn--dark" href="#home">Retour en haut</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="eyebrow">Ce que je recherche</p>
+          <ul class="seek-list">
+            <li>Analyse de données et compréhension des comportements et des usages</li>
+            <li>Startups, entreprises tech, organisations orientées produit ou recherche</li>
+            <li>Basée à Marseille · hybride possible · disponible immédiatement</li>
+          </ul>
         </div>
       </div>
-    </section>
 
-    <!-- PROJETS -->
-    <section id="preview" class="panel">
-      <div class="container">
-        <div class="projects-stage">
-    
-          <!-- Grand réseau neuronal en fond -->
-          <div class="neural-background" aria-hidden="true">
-            <canvas id="neuralCanvas"></canvas>
-          </div>
-    
-          <!-- Contenu Projets -->
-          <div class="projects-content">  
-            <div class="px-grid">
-              
-              <!-- 1) RTM -->
-                <article class="px-card">
-                  <a href="projects/rtm.html" target="_blank" rel="noopener" style="display:block; text-decoration:none;">
-                    <div class="px-thumb" style="--bgimg:url('assets/projects/rtm_bg.jpg');">
-                      <div class="bg"></div>
-                      <div class="px-head">
-                        <div class="px-kicker"> Stage Master 2 : Data Scientist </div>
-                        <h3 class="px-title">Structuration & qualité de données à la RTM </h3>
-                      </div>
-                    </div>
-                  </a>
-                  <div class="px-body">
-                    <div class="stats">
-                      <span>500 000+ lignes</span>
-                      <span>49 093 enregistrements</span>
-                      <span>100% complétude (T1/T2)</span>
-                      <span>2 outils (Power BI + carte HTML)</span>
-                    </div>
-                  
-                    <p class="desc-impact">
-                      Données terrain transformées en outils d’aide à la décision
-                    </p>
-                  
-                    <div class="px-actions">
-                      <a class="btn light" href="projects/rtm.html" target="_blank" rel="noopener">Explorer →</a>
-                    </div>
-                  
-                  </div>
-                </article>
-
-              <!-- 2) Sons environnementaux (M1) -->
-                <article class="px-card">
-                  <a href="projects/classification.html" style="display:block; text-decoration:none;">
-                    <div class="px-thumb" style="--bgimg:url('assets/projects/sounds_bg.jpg');">
-                      <div class="bg"></div>
-                      <div class="px-head">
-                        <div class="px-kicker">Stage Master 1 : Classification audio</div>
-                        <h3 class="px-title">Classification des sons environnementaux à l'INT </h3>
-                      </div>
-                    </div>
-                  </a>
-                
-                  <div class="px-body">
-                
-                    <div class="stats">
-                      <span>Audio environnemental</span>
-                      <span>Segmentation & labellisation</span>
-                      <span>Modèle SVM</span>
-                      <span>Analyse de performance</span>
-                    </div>
-                
-                    <p class="desc-impact">
-                      Analyse et classification de sons pour distinguer biophonie, géophonie et anthropophonie
-                    </p>
-                
-                    <div class="px-actions">
-                      <a class="btn light" href="projects/classification.html">Explorer →</a>
-                    </div>
-                
-                  </div>
-                </article>
-                
-              
-                <!-- 3) MOOE -->
-                <article class="px-card">
-                  <a href="projects/music-of-our-emotions.html" style="display:block; text-decoration:none;">
-                    <div class="px-thumb" style="--bgimg:url('assets/projects/mooe_bg.jpg');">
-                      <div class="bg"></div>
-                      <div class="px-head">
-                        <div class="px-kicker">Projet Master 2 : Affective computing</div>
-                        <h3 class="px-title">Music Of Our Emotions</h3>
-                      </div>
-                    </div>
-                  </a>
-                
-                  <div class="px-body">
-                
-                    <div class="stats">
-                      <span>EEG + GSR + respiration</span>
-                      <span>Prédiction émotionnelle</span>
-                      <span>CNN + Random Forest</span>
-                      <span>Génération musicale IA</span>
-                    </div>
-                
-                    <p class="desc-impact">
-                      Transformation de signaux physiologiques en expériences musicales générées par IA
-                    </p>
-                
-                    <div class="px-actions">
-                      <a class="btn light" href="projects/music-of-our-emotions.html">Explorer →</a>
-                    </div>
-                
-                  </div>
-                </article>
-
-               <!-- 4) Rêves lucides -->
-                <article class="px-card">
-                  <a href="projects/reves-lucides/accueil.html" style="display:block; text-decoration:none;">
-                    <div class="px-thumb" style="--bgimg:url('assets/projects/reves_bg.jpg');">
-                      <div class="bg"></div>
-                      <div class="px-head">
-                        <div class="px-kicker">Projet L3 (TER)</div>
-                        <h3 class="px-title">Rêves lucides — site interactif</h3>
-                      </div>
-                    </div>
-                  </a>
-                
-                  <div class="px-body">
-                
-                    <div class="stats">
-                      <span>Site interactif</span>
-                      <span>HTML / CSS / JS</span>
-                      <span>Vulgarisation scientifique</span>
-                      <span>Projet complet</span>
-                    </div>
-                
-                    <p class="desc-impact">
-                      Conception d’une expérience interactive pour rendre accessible un sujet scientifique complexe
-                    </p>
-                
-                    <div class="px-actions">
-                      <a class="btn light" href="projects/reves-lucides/accueil.html">Explorer →</a>
-                    </div>
-                
-                  </div>
-                </article>
-  
-              </div><!-- /px-grid -->
-    
-            <div class="edu-wrap">
-              <h3 class="edu-title">Formations</h3>
-            
-              <div class="edu-grid">
-            
-                <article class="edu-card">
-                  <div class="edu-year">2023 — 2025</div>
-                  <div class="edu-degree">Master Sciences Cognitives</div>
-                  <div class="edu-school">Aix-Marseille Université · ILCB</div>
-                  <p class="edu-desc">Langage, cerveau et comportements humains. Approche interdisciplinaire maths × neuro × communication.</p>
-                  <div class="edu-tags">
-                    <span>EEG / IRMf</span>
-                    <span>Psycholinguistique</span>
-                    <span>Python / R</span>
-                    <span>Ingénierie cognitive</span>
-                  </div>
-                </article>
-            
-                <article class="edu-card">
-                  <div class="edu-year">2019 — 2022</div>
-                  <div class="edu-degree">Licence MIASHS</div>
-                  <div class="edu-school">Université de Bordeaux</div>
-                  <p class="edu-desc">Mathématiques appliquées, informatique et sciences humaines. Rigueur analytique au service de la compréhension des comportements.</p>
-                  <div class="edu-tags">
-                    <span>Statistiques</span>
-                    <span>Python / SQL</span>
-                    <span>Psychologie cognitive</span>
-                    <span>Modélisation</span>
-                  </div>
-                </article>
-            
-             </div><!-- /edu-grid -->
-            </div><!-- /edu-wrap -->
-          </div><!-- /projects-content -->
-        </div><!-- /projects-stage -->
-      </div><!-- /container -->
-    </section><!-- /preview -->
-                    
-            <!-- CTA Parallax 1 -->
-            <section class="cta parallax-cta cta-xlarge" data-bg="assets/parallax_01.jpg">
-              <div class="container">
-                <div class="text-center">
-                  <h1>Présentation personnelle</h1>
-                  <p class="cta-sub">Qui je suis</p>
-                </div>
-              </div>
-            </section>
-    
-    <!-- À PROPOS -->
-    <section id="about" class="panel">
-      <div class="container">
-        <div class="section-title">
-          <h2>À propos</h2>
-        </div>
-    
-        <div class="card" style="z-index:1;">
-          <div class="about-text">
-            <p class="intro">
-              Je conçois des outils qui transforment des données complexes en décisions concrètes.
-              <br><br>
-    
-              Formée en mathématiques appliquées puis en sciences cognitives, je combine <strong>rigueur analytique</strong> et <strong>compréhension des comportements humains</strong> — pas pour produire des analyses de plus, mais des outils réellement utilisés par les gens qui en ont besoin.
-            </p>
-    
-            <div class="principle-grid">
-              <div class="principle-card">
-                <div class="principle-icon"></div>
-                <div class="principle-title">Simplifier</div>
-                <div class="principle-desc">Rendre lisible ce qui est complexe.</div>
-              </div>
-              <div class="principle-card">
-                <div class="principle-icon"></div>
-                <div class="principle-title">Comprendre</div>
-                <div class="principle-desc">Chercher les mécanismes, pas seulement les observer.</div>
-              </div>
-              <div class="principle-card">
-                <div class="principle-icon"></div>
-                <div class="principle-title">Éclairer</div>
-                <div class="principle-desc">Utiliser les données pour révéler des réalités humaines concrètes.</div>
-              </div>
-            </div>
-    
-            <p class="intro" style="margin-top:16px;">
-              J'ai mis cette approche à l'épreuve sur des données terrain à grande échelle comme sur des données de recherche plus expérimentales (voir mes projets ci-dessus) — deux contextes très différents, une même exigence : que les données servent une décision réelle, pas juste un rapport.
-              <br><br>
-    
-              Je m'intéresse aux projets qui relient technologie et usages, avec une question simple en tête : <strong>qu'est-ce que cet outil change vraiment pour les personnes qui l'utilisent ?</strong>
-              <br><br>
-    
-              En parallèle, ma pratique artistique (musique, écriture) nourrit ma façon de penser les projets — comme des systèmes à la fois fonctionnels et porteurs de sens.
-            </p>
-          </div>
-        </div>
-    
-        <!-- TITRE -->
-        <div class="work-title" style="margin-top:clamp(40px, 6vh, 72px);">
-          <h3 class="edu-title" style="margin:0;">Comment je travaille</h3>
-        </div>
-    
-        <!-- GRID: 3 cartes côte à côte -->
-        <div class="work-grid">
-          <!-- STEP 1 -->
-          <article class="work-card">
-            <div class="work-visual">
-              <button class="tt-btn" type="button" aria-pressed="false" aria-label="Step 1">
-                <div class="tt-wrap">
-                  <svg class="vinyl red" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <g class="vinyl-rot">
-                      <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                      <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                      <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                      <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                      <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                      <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                      <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                      <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                      <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                      <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                      <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                      <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                      <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                      <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                      <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                      <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                      <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                      <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                      <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                      <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                      <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                      <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                      <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                      <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                      <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                      <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                      <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                    </g>
-                  </svg>
-                </div>
-              </button>
-            </div>
-            <div class="work-copy">
-              <div class="work-badge">Etape 1</div>
-              <div class="mini">Comprendre le contexte</div>
-              <div class="micro">Identifier les décisions à prendre, les contraintes réelles et les utilisateurs avant de toucher aux données.</div>
-            </div>
-          </article>
-    
-          <!-- STEP 2 -->
-          <article class="work-card">
-            <div class="work-visual">
-              <button class="tt-btn" type="button" aria-pressed="false" aria-label="Step 2">
-                <div class="tt-wrap">
-                  <svg class="vinyl blue" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <g class="vinyl-rot">
-                      <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                      <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                      <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                      <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                      <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                      <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                      <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                      <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                      <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                      <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                      <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                      <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                      <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                      <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                      <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                      <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                      <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                      <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                      <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                      <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                      <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                      <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                      <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                      <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                      <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                      <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                      <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                    </g>
-                  </svg>
-                </div>
-              </button>
-            </div>
-            <div class="work-copy">
-              <div class="work-badge">Etape 2</div>
-              <div class="mini">Structurer et fiabiliser les données</div>
-              <div class="micro">Audit des sources, nettoyage, règles qualité, modélisation adaptée : transformer des données brutes en base exploitable.</div>
-            </div>
-          </article>
-    
-          <!-- STEP 3 -->
-          <article class="work-card">
-            <div class="work-visual">
-              <button class="tt-btn" type="button" aria-pressed="false" aria-label="Step 3">
-                <div class="tt-wrap">
-                  <svg class="vinyl yellow" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <g class="vinyl-rot">
-                      <rect class="px-black" x="13" y="1" width="6" height="1"/>
-                      <rect class="px-black" x="10" y="2" width="12" height="1"/>
-                      <rect class="px-black" x="8"  y="3" width="16" height="1"/>
-                      <rect class="px-black" x="6"  y="4" width="20" height="1"/>
-                      <rect class="px-black" x="5"  y="5" width="22" height="1"/>
-                      <rect class="px-black" x="4"  y="6" width="24" height="1"/>
-                      <rect class="px-black" x="3"  y="7" width="26" height="1"/>
-                      <rect class="px-black" x="2"  y="8" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="9" width="28" height="1"/>
-                      <rect class="px-black" x="1"  y="10" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="11" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="12" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="13" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="14" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="15" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="16" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="17" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="18" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="19" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="20" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="21" width="30" height="1"/>
-                      <rect class="px-black" x="1"  y="22" width="30" height="1"/>
-                      <rect class="px-black" x="2"  y="23" width="28" height="1"/>
-                      <rect class="px-black" x="2"  y="24" width="28" height="1"/>
-                      <rect class="px-black" x="3"  y="25" width="26" height="1"/>
-                      <rect class="px-black" x="4"  y="26" width="24" height="1"/>
-                      <rect class="px-black" x="5"  y="27" width="22" height="1"/>
-                      <rect class="px-black" x="6"  y="28" width="20" height="1"/>
-                      <rect class="px-black" x="8"  y="29" width="16" height="1"/>
-                      <rect class="px-black" x="10" y="30" width="12" height="1"/>
-                      <rect class="px-black" x="13" y="31" width="6" height="1"/>
-                      <rect class="px-white" x="6" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="7" y="4" width="1" height="1"/>
-                      <rect class="px-white" x="5" y="5" width="2" height="1"/>
-                      <rect class="px-white" x="6" y="6" width="1" height="1"/>
-                      <rect class="px-white" x="4" y="7" width="2" height="1"/>
-                      <rect class="px-white" x="5" y="8" width="1" height="1"/>
-                      <rect class="px-white" x="23" y="22" width="1" height="1"/>
-                      <rect class="px-white" x="24" y="21" width="1" height="1"/>
-                      <rect class="px-label" x="14" y="14" width="4" height="4"/>
-                      <rect class="px-label" x="13" y="15" width="6" height="2"/>
-                      <rect class="px-label" x="15" y="13" width="2" height="6"/>
-                      <rect class="px-hole"  x="15" y="15" width="2" height="2"/>
-                    </g>
-                  </svg>
-                </div>
-              </button>
-            </div>
-            <div class="work-copy">
-              <div class="work-badge">Etape 3</div>
-              <div class="mini">Livrer un outil utile et fiable</div>
-              <div class="micro">Dashboard, synthèse, recommandations actionnable : permettre de décider sans avoir à explorer les données.</div>
-            </div>
-          </article>
-        </div><!-- /work-grid -->
-      </div><!-- /container -->
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="panel">
-      <div class="container">
-        <div class="section-title">
-          <h2>Contact</h2>
-        </div>
-    
-        <div class="grid cols-2">
-    
-          <!-- Carte gauche -->
-          <div class="card" style="z-index:1;">
-            <p class="lead">Un projet à structurer, des données à rendre lisibles, un public à comprendre ? Parlons.</p>
-    
-            <div class="card" style="padding:14px; margin-top:10px;">
-              <div style="text-transform:uppercase;letter-spacing:.12em;font-weight:800;font-size:12px;color:rgba(244,244,245,.55);">Email</div>
-              <div style="margin-top:6px; font-weight:600;">
-                <a href="mailto:alice1gay@gmail.com">alice1gay@gmail.com</a>
-              </div>
-            </div>
-    
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
-              <a class="btn dark" href="#home">Retour en haut</a>
-            </div>
-          </div>
-    
-          <!-- Carte droite -->
-          <div class="card" style="z-index:1;">
-            <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.10em; color:rgba(244,244,245,.45); margin-bottom:14px;">Ce que je recherche</div>
-            <div style="display:flex; flex-direction:column; gap:0.6em;">
-              <div style="display:flex; align-items:flex-start; gap:0.6em; font-size:13px; color:rgba(244,244,245,.75);">
-                <span style="color:var(--accent); flex-shrink:0; margin-top:2px;">◆</span>
-                <span> Analyse de données et compréhension des comportements/usages </span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:0.6em; font-size:13px; color:rgba(244,244,245,.75);">
-                <span style="color:var(--accent); flex-shrink:0; margin-top:2px;">◆</span>
-                <span> Structures visées : startups, entreprises tech, organisations orientées produit ou recherche </span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:0.6em; font-size:13px; color:rgba(244,244,245,.75);">
-                <span style="color:var(--accent); flex-shrink:0; margin-top:2px;">◆</span>
-                <span> Basée à Marseille • Hybride possible • Disponible immédiatement </span>
-              </div>
-            </div>
-          </div>
-          <!-- fin carte droite -->
-
-        </div><!-- /grid cols-2 -->
-
-          <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line);">
-            <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.10em; color:rgba(244,244,245,.35); margin-bottom:14px;">Outils & compétences</div>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;">
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">Python</span>
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">SQL</span>
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">R</span>
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">Excel / Google Sheets</span>
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">HTML / CSS / JS</span>
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">Analyse de données</span>
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">Gestion de projet</span>
-              <span style="padding:6px 12px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:rgba(244,244,245,.65);">Anglais (courant)</span>
-             </div>
-          </div>
-
-        <div style="margin-top:40px; text-align:center; color:rgba(244,244,245,.28); font-size:13px; font-style:italic;">
-          Fait à Marseille, entre données, musique et projets concrets.
-        </div>
-
-      </div> <!-- container -->
-    </section>
-
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <div>© <span id="y2"></span> Alice Gay</div>
-    
-        <div class="footer-links">
-          <span style="color:rgba(0,0,0,.6); margin-right:12px;">Disponible pour échanger sur vos projets</span>
-          <a href="mailto:alice1gay@gmail.com">Email</a>
+      <div class="skills">
+        <p class="eyebrow">Outils &amp; compétences</p>
+        <div class="chip-row">
+          <span class="chip">Python</span>
+          <span class="chip">SQL</span>
+          <span class="chip">R</span>
+          <span class="chip">Excel / Google Sheets</span>
+          <span class="chip">Power BI</span>
+          <span class="chip">HTML / CSS / JS</span>
+          <span class="chip">Analyse de données</span>
+          <span class="chip">Gestion de projet</span>
+          <span class="chip">Anglais courant</span>
         </div>
       </div>
-    </footer>
-  </main>
 
-  <script>
-    // ===== year + header height
-    const yearEl = document.getElementById('y');
-    const yearEl2 = document.getElementById('y2');
-    const y = new Date().getFullYear();
-    if (yearEl) yearEl.textContent = y;
-    if (yearEl2) yearEl2.textContent = y;
+      <p class="signature">Fait à Marseille, entre données, musique et projets concrets.</p>
+    </div>
+  </section>
 
-    const headerEl = document.getElementById('siteHeader');
-    const viewport = document.getElementById('viewport');
-    const home = document.getElementById('home');
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>© <span id="year"></span> Alice Gay</span>
+      <span>Disponible pour échanger sur vos projets · <a href="mailto:alice1gay@gmail.com">Email</a></span>
+    </div>
+  </footer>
+</main>
 
-    const syncHeaderH = () => {
-      if (!headerEl) return;
-      const h = Math.ceil(headerEl.getBoundingClientRect().height);
-      document.documentElement.style.setProperty('--header-h', h + 'px');
-    };
-    window.addEventListener('resize', syncHeaderH, { passive:true });
-    syncHeaderH();
+<script>
+/* ============================================================
+   1. Année + hauteur de header
+   ============================================================ */
+(() => {
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // ===== Header behavior (IMPORTANT: scroll is on .viewport)
-    function updateHeaderState(){
-      if (!viewport || !home || !headerEl) return;
+  const header = document.getElementById('siteHeader');
+  if (!header) return;
 
-      const st = viewport.scrollTop;
-      const homeH = home.offsetHeight || viewport.clientHeight;
+  const syncHeaderHeight = () => {
+    const h = Math.ceil(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  };
 
-      // Tant qu'on est “dans” HOME => transparent
-      const inHome = st < (homeH - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 68) - 10);
+  window.addEventListener('resize', syncHeaderHeight, { passive: true });
+  header.addEventListener('transitionend', syncHeaderHeight);
+  syncHeaderHeight();
+})();
 
-      headerEl.classList.toggle('is-home', inHome);
-      headerEl.classList.toggle('is-scrolled', !inHome);
-    }
 
-    if (viewport){
-      viewport.addEventListener('scroll', updateHeaderState, { passive:true });
-      window.addEventListener('resize', updateHeaderState, { passive:true });
-      updateHeaderState();
-    }
+/* ============================================================
+   2. État du header (le scroll a lieu dans .viewport)
+   ============================================================ */
+const viewport = document.getElementById('viewport');
 
-    // ===== Brain 3D tilt (desktop) — tilt sur l'IMG
-    const brainWrap = document.getElementById('brain3d');
-    const brainImg  = brainWrap ? brainWrap.querySelector('img') : null;
-    
-    if (brainWrap && brainImg && home && window.matchMedia('(pointer:fine)').matches) {
-      let tx = 0, ty = 0, cx = 0, cy = 0;
-    
-      home.addEventListener('mousemove', (e) => {
-        const r = home.getBoundingClientRect();
-        const dx = (e.clientX - (r.left + r.width/2)) / (r.width/2);
-        const dy = (e.clientY - (r.top + r.height/2)) / (r.height/2);
-        tx = Math.max(-1, Math.min(1, dx));
-        ty = Math.max(-1, Math.min(1, dy));
-      }, { passive:true });
+(() => {
+  const header = document.getElementById('siteHeader');
+  const hero = document.getElementById('home');
+  if (!viewport || !header || !hero) return;
 
-      home.addEventListener('mouseleave', () => { tx = 0; ty = 0; }, { passive:true });
-    
-      const tick = () => {
-        cx += (tx - cx) * 0.07;
-        cy += (ty - cy) * 0.07;
-    
-        const rx = (-cy * 14).toFixed(2);  // plus fort
-        const ry = ( cx * 18).toFixed(2);  // plus fort
-    
-        brainImg.style.transform = `translateZ(60px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-    
-        requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    }
+  const update = () => {
+    const limit = hero.offsetHeight - header.offsetHeight - 10;
+    header.classList.toggle('is-scrolled', viewport.scrollTop >= limit);
+  };
 
-    // ===== CTA Parallax (simulate fixed bg inside .viewport)
-    const ctaParallax = Array.from(document.querySelectorAll('.parallax-cta'));
-    
-    ctaParallax.forEach(sec => {
-      const src = sec.getAttribute('data-bg');
-      if (src) sec.style.setProperty('--bgimg', `url("${src}")`);
+  viewport.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
+
+
+/* ============================================================
+   3. Cerveau 3D : inclinaison suivant la souris
+   ============================================================ */
+(() => {
+  const hero = document.getElementById('home');
+  const brain = document.getElementById('brain3d');
+  const img = brain && brain.querySelector('img');
+
+  if (!hero || !img) return;
+  if (!window.matchMedia('(pointer:fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
+  hero.addEventListener('mousemove', (e) => {
+    const r = hero.getBoundingClientRect();
+    targetX = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (r.width / 2)));
+    targetY = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (r.height / 2)));
+  }, { passive: true });
+
+  hero.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; }, { passive: true });
+
+  const tick = () => {
+    currentX += (targetX - currentX) * 0.07;
+    currentY += (targetY - currentY) * 0.07;
+    img.style.transform =
+      `translateZ(60px) rotateX(${(-currentY * 14).toFixed(2)}deg) rotateY(${(currentX * 18).toFixed(2)}deg)`;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+})();
+
+
+/* ============================================================
+   4. Parallax des banderoles
+   ============================================================ */
+(() => {
+  const banners = Array.from(document.querySelectorAll('.banner'));
+  if (!viewport || !banners.length) return;
+
+  banners.forEach(el => {
+    const src = el.dataset.bg;
+    if (src) el.style.setProperty('--bgimg', `url("${src}")`);
+  });
+
+  const update = () => {
+    const vp = viewport.getBoundingClientRect();
+    banners.forEach(el => {
+      const r = el.getBoundingClientRect();
+      const progress = Math.max(0, Math.min(1, (vp.bottom - r.top) / (vp.height + r.height)));
+      el.style.setProperty('--bgy', `${(50 + (progress - 0.5) * -40).toFixed(2)}%`);
     });
-    
-    function updateCtaParallax(){
-      if (!viewport) return;
-      const vp = viewport.getBoundingClientRect();
-      const vpH = vp.height;
-    
-      ctaParallax.forEach(sec => {
-        const r = sec.getBoundingClientRect();
-        const t = (vp.bottom - r.top) / (vpH + r.height);
-        const p = Math.max(0, Math.min(1, t));
-        const shift = 40;
-        const y = 50 + (p - 0.5) * -shift;
-        sec.style.setProperty('--bgy', `${y.toFixed(2)}%`);
-      });
-    }
-    
-    if (viewport){
-      viewport.addEventListener('scroll', updateCtaParallax, { passive:true });
-      window.addEventListener('resize', updateCtaParallax, { passive:true });
-      updateCtaParallax();
-    }
-    
-    // ===== Turntables: click = toggle play/pause
-    document.querySelectorAll('.tt-btn').forEach(btn => {
-      const toggle = () => {
-        const pressed = btn.getAttribute('aria-pressed') === 'true';
-        btn.setAttribute('aria-pressed', String(!pressed));
-      };
-      btn.addEventListener('click', toggle);
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggle();
-        }
-      });
-    });
+  };
 
-    (() => {
-  const canvas = document.getElementById("neuralCanvas");
+  viewport.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
 
+
+/* ============================================================
+   5. Aperçu des projets au survol (desktop)
+   ============================================================ */
+(() => {
+  const frame = document.getElementById('previewFrame');
+  const label = document.getElementById('previewTitle');
+  const cards = document.querySelectorAll('.project');
+
+  if (!frame || !cards.length) return;
+  if (!window.matchMedia('(min-width: 1101px)').matches) return;
+
+  let timer = null;
+
+  const show = (card) => {
+    const url = card.dataset.preview;
+    if (!url) return;
+
+    cards.forEach(c => c.classList.toggle('is-active', c === card));
+    if (label) label.textContent = card.dataset.title || '';
+
+    clearTimeout(timer);
+    // petit délai : évite de recharger l'iframe à chaque passage rapide de la souris
+    timer = setTimeout(() => {
+      if (frame.getAttribute('src') !== url) frame.setAttribute('src', url);
+    }, 150);
+  };
+
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => show(card));
+    card.addEventListener('focusin', () => show(card));
+  });
+
+  show(cards[0]);
+})();
+
+
+/* ============================================================
+   6. Platines : clic = lecture / pause
+   ============================================================ */
+document.querySelectorAll('.turntable').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed') !== 'true');
+  });
+});
+
+
+/* ============================================================
+   7. Réseau neuronal en fond de la section Projets
+   ============================================================ */
+(() => {
+  const canvas = document.getElementById('neuralCanvas');
   if (!canvas) return;
 
-  const ctx = canvas.getContext("2d");
-
+  const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  /* =========================================================
-     RÉGLAGES
-     ========================================================= */
-
   const settings = {
-    /*
-     * Points répartis uniformément sur toute la surface.
-     * C'est ce qui empêche les grands espaces vides.
-     */
-    basePointCount: 950,
-
-    /*
-     * Points supplémentaires autour de zones plus lumineuses.
-     * Ils enrichissent le réseau sans former des boules isolées.
-     */
-    hotspotCount: 9,
+    basePointCount: 950,      // points répartis uniformément
+    hotspotCount: 9,          // zones plus denses
     hotspotPoints: 150,
-
-    /*
-     * Rayon assez grand pour que les différentes zones
-     * se rejoignent visuellement.
-     */
     connectionDistance: 165,
-
     maxLinksPerPoint: 10,
-
     movementSpeed: 0.045,
-
-    /*
-     * Très légère ondulation collective.
-     */
     flowStrength: 0.1,
-
-    /*
-     * Taille des zones denses.
-     */
     hotspotRadiusMin: 280,
     hotspotRadiusMax: 520
   };
 
-  let width = 0;
-  let height = 0;
-  let pixelRatio = 1;
+  let width = 0, height = 0, pixelRatio = 1;
+  let points = [], hotspots = [];
+  let animationFrame = null, time = 0;
 
-  let points = [];
-  let hotspots = [];
+  const randomBetween = (min, max) => min + Math.random() * (max - min);
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-  let animationFrame = null;
-  let time = 0;
+  // approximation gaussienne : la plupart des valeurs proches du centre
+  const gaussianRandom = () =>
+    (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 2;
 
-  function randomBetween(min, max) {
-    return min + Math.random() * (max - min);
-  }
-
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
-
-  /*
-   * Approximation d’une distribution gaussienne.
-   * La majorité des valeurs sont proches du centre,
-   * mais certaines s’en éloignent.
-   */
-  function gaussianRandom() {
-    return (
-      Math.random() +
-      Math.random() +
-      Math.random() +
-      Math.random() -
-      2
-    ) / 2;
-  }
-
-  /* =========================================================
-     HOTSPOTS : ZONES PLUS DENSES
-     ========================================================= */
-
-  function createHotspots() {
+  function createHotspots(){
     const columns = 3;
-    const rows = Math.ceil(
-      settings.hotspotCount / columns
-    );
-
+    const rows = Math.ceil(settings.hotspotCount / columns);
     const cellWidth = width / columns;
     const cellHeight = height / rows;
 
     hotspots = [];
 
-    for (
-      let i = 0;
-      i < settings.hotspotCount;
-      i++
-    ) {
+    for (let i = 0; i < settings.hotspotCount; i++){
       const column = i % columns;
       const row = Math.floor(i / columns);
 
       hotspots.push({
-        x:
-          column * cellWidth +
-          cellWidth * randomBetween(0.25, 0.75),
-
-        y:
-          row * cellHeight +
-          cellHeight * randomBetween(0.2, 0.8),
-
-        radius: randomBetween(
-          settings.hotspotRadiusMin,
-          settings.hotspotRadiusMax
-        ),
-
+        x: column * cellWidth + cellWidth * randomBetween(0.25, 0.75),
+        y: row * cellHeight + cellHeight * randomBetween(0.2, 0.8),
+        radius: randomBetween(settings.hotspotRadiusMin, settings.hotspotRadiusMax),
         vx: randomBetween(-0.018, 0.018),
         vy: randomBetween(-0.018, 0.018),
-
         phase: Math.random() * Math.PI * 2,
-
         brightness: randomBetween(0.65, 1)
       });
     }
   }
 
-  /* =========================================================
-     POINTS RÉPARTIS PARTOUT
-     ========================================================= */
-
-  function createBasePoint() {
+  function createBasePoint(){
     return {
       x: Math.random() * width,
       y: Math.random() * height,
-
-      vx: randomBetween(
-        -settings.movementSpeed,
-        settings.movementSpeed
-      ),
-
-      vy: randomBetween(
-        -settings.movementSpeed,
-        settings.movementSpeed
-      ),
-
-      radius:
-        Math.random() < 0.045
-          ? randomBetween(1.7, 2.8)
-          : randomBetween(0.35, 1.25),
-
+      vx: randomBetween(-settings.movementSpeed, settings.movementSpeed),
+      vy: randomBetween(-settings.movementSpeed, settings.movementSpeed),
+      radius: Math.random() < 0.045 ? randomBetween(1.7, 2.8) : randomBetween(0.35, 1.25),
       alpha: randomBetween(0.14, 0.65),
-
       phase: Math.random() * Math.PI * 2,
-
       hotspotId: -1
     };
   }
 
-  /*
-   * Point enrichissant une zone dense,
-   * mais avec un étalement très large.
-   */
-  function createHotspotPoint(
-    hotspot,
-    hotspotId
-  ) {
+  function createHotspotPoint(hotspot, hotspotId){
     const angle = Math.random() * Math.PI * 2;
-
-    /*
-     * Une partie des points reste proche du centre.
-     * Une autre partie s'étend largement et crée les ponts.
-     */
-    const extended =
-      Math.random() < 0.68;
-
-    const spread = extended
-      ? randomBetween(0.65, 1.85)
-      : randomBetween(0.18, 1.05);
-
-    const distance =
-      hotspot.radius *
-      spread *
-      Math.abs(gaussianRandom());
+    const extended = Math.random() < 0.68;
+    const spread = extended ? randomBetween(0.65, 1.85) : randomBetween(0.18, 1.05);
+    const distance = hotspot.radius * spread * Math.abs(gaussianRandom());
 
     return {
-      x:
-        hotspot.x +
-        Math.cos(angle) * distance,
-
-      y:
-        hotspot.y +
-        Math.sin(angle) *
-          distance *
-          randomBetween(0.65, 1.25),
-
-      vx: randomBetween(
-        -settings.movementSpeed,
-        settings.movementSpeed
-      ),
-
-      vy: randomBetween(
-        -settings.movementSpeed,
-        settings.movementSpeed
-      ),
-
-      radius:
-        Math.random() < 0.09
-          ? randomBetween(1.8, 3.2)
-          : randomBetween(0.45, 1.45),
-
+      x: hotspot.x + Math.cos(angle) * distance,
+      y: hotspot.y + Math.sin(angle) * distance * randomBetween(0.65, 1.25),
+      vx: randomBetween(-settings.movementSpeed, settings.movementSpeed),
+      vy: randomBetween(-settings.movementSpeed, settings.movementSpeed),
+      radius: Math.random() < 0.09 ? randomBetween(1.8, 3.2) : randomBetween(0.45, 1.45),
       alpha: randomBetween(0.24, 0.9),
-
       phase: Math.random() * Math.PI * 2,
-
       hotspotId
     };
   }
 
-  function createScene() {
+  function createScene(){
     createHotspots();
-
-    points = Array.from(
-      { length: settings.basePointCount },
-      createBasePoint
-    );
-
-    hotspots.forEach(
-      (hotspot, hotspotId) => {
-        for (
-          let i = 0;
-          i < settings.hotspotPoints;
-          i++
-        ) {
-          points.push(
-            createHotspotPoint(
-              hotspot,
-              hotspotId
-            )
-          );
-        }
+    points = Array.from({ length: settings.basePointCount }, createBasePoint);
+    hotspots.forEach((hotspot, id) => {
+      for (let i = 0; i < settings.hotspotPoints; i++){
+        points.push(createHotspotPoint(hotspot, id));
       }
-    );
+    });
   }
 
-  /* =========================================================
-     DIMENSIONS
-     ========================================================= */
-
-  function resizeCanvas() {
+  function resizeCanvas(){
     const rect = canvas.getBoundingClientRect();
-
     width = Math.max(rect.width, 1);
     height = Math.max(rect.height, 1);
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
 
-    pixelRatio = Math.min(
-      window.devicePixelRatio || 1,
-      2
-    );
-
-    canvas.width = Math.round(
-      width * pixelRatio
-    );
-
-    canvas.height = Math.round(
-      height * pixelRatio
-    );
-
-    ctx.setTransform(
-      pixelRatio,
-      0,
-      0,
-      pixelRatio,
-      0,
-      0
-    );
+    canvas.width = Math.round(width * pixelRatio);
+    canvas.height = Math.round(height * pixelRatio);
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
     createScene();
   }
 
-  /* =========================================================
-     MOUVEMENT
-     ========================================================= */
+  function updateHotspots(){
+    for (const h of hotspots){
+      h.x += h.vx;
+      h.y += h.vy;
+      h.phase += 0.004;
+      h.vx += Math.sin(h.phase) * 0.00005;
+      h.vy += Math.cos(h.phase * 0.8) * 0.00005;
 
-  function updateHotspots() {
-    for (const hotspot of hotspots) {
-      hotspot.x += hotspot.vx;
-      hotspot.y += hotspot.vy;
-
-      hotspot.phase += 0.004;
-
-      /*
-       * Les hotspots restent très étendus,
-       * mais se déplacent extrêmement lentement.
-       */
-      hotspot.vx +=
-        Math.sin(hotspot.phase) * 0.00005;
-
-      hotspot.vy +=
-        Math.cos(hotspot.phase * 0.8) *
-        0.00005;
-
-      const margin = hotspot.radius * 0.35;
-
-      if (hotspot.x < margin) {
-        hotspot.vx = Math.abs(hotspot.vx);
-      }
-
-      if (hotspot.x > width - margin) {
-        hotspot.vx = -Math.abs(hotspot.vx);
-      }
-
-      if (hotspot.y < margin) {
-        hotspot.vy = Math.abs(hotspot.vy);
-      }
-
-      if (hotspot.y > height - margin) {
-        hotspot.vy = -Math.abs(hotspot.vy);
-      }
+      const margin = h.radius * 0.35;
+      if (h.x < margin)           h.vx = Math.abs(h.vx);
+      if (h.x > width - margin)   h.vx = -Math.abs(h.vx);
+      if (h.y < margin)           h.vy = Math.abs(h.vy);
+      if (h.y > height - margin)  h.vy = -Math.abs(h.vy);
     }
   }
 
-  function updatePoints() {
+  function updatePoints(){
     time += 0.004;
 
-    for (const point of points) {
-      /*
-       * Champ ondulatoire global :
-       * tous les points suivent un mouvement continu,
-       * mais aucun ne converge vers un centre.
-       */
-      const flowX =
-        Math.sin(
-          point.y * 0.005 +
-          time +
-          point.phase
-        ) * settings.flowStrength;
+    for (const p of points){
+      // champ ondulatoire global : mouvement continu, sans convergence
+      p.vx += Math.sin(p.y * 0.005 + time + p.phase) * settings.flowStrength * 0.015;
+      p.vy += Math.cos(p.x * 0.004 - time * 0.8 + p.phase) * settings.flowStrength * 0.015;
 
-      const flowY =
-        Math.cos(
-          point.x * 0.004 -
-          time * 0.8 +
-          point.phase
-        ) * settings.flowStrength;
-
-      point.vx += flowX * 0.015;
-      point.vy += flowY * 0.015;
-
-      /*
-       * Les points issus d’un hotspot suivent seulement
-       * très légèrement son déplacement.
-       * Ils ne sont jamais rappelés vers son centre.
-       */
-      if (point.hotspotId >= 0) {
-        const hotspot =
-          hotspots[point.hotspotId];
-
-        if (hotspot) {
-          point.x += hotspot.vx * 0.22;
-          point.y += hotspot.vy * 0.22;
-        }
+      if (p.hotspotId >= 0){
+        const h = hotspots[p.hotspotId];
+        if (h){ p.x += h.vx * 0.22; p.y += h.vy * 0.22; }
       }
 
-      point.x += point.vx;
-      point.y += point.vy;
+      p.x += p.vx;
+      p.y += p.vy;
 
-      const speed = Math.hypot(
-        point.vx,
-        point.vy
-      );
-
-      const maxSpeed =
-        settings.movementSpeed * 1.7;
-
-      if (speed > maxSpeed) {
-        point.vx =
-          point.vx / speed * maxSpeed;
-
-        point.vy =
-          point.vy / speed * maxSpeed;
+      const speed = Math.hypot(p.vx, p.vy);
+      const maxSpeed = settings.movementSpeed * 1.7;
+      if (speed > maxSpeed){
+        p.vx = p.vx / speed * maxSpeed;
+        p.vy = p.vy / speed * maxSpeed;
       }
 
-      /*
-       * Réapparition de l’autre côté :
-       * la densité reste constante partout.
-       */
-      if (point.x < -10) {
-        point.x = width + 10;
-      }
+      // réapparition de l'autre côté : densité constante partout
+      if (p.x < -10)          p.x = width + 10;
+      if (p.x > width + 10)   p.x = -10;
+      if (p.y < -10)          p.y = height + 10;
+      if (p.y > height + 10)  p.y = -10;
 
-      if (point.x > width + 10) {
-        point.x = -10;
-      }
-
-      if (point.y < -10) {
-        point.y = height + 10;
-      }
-
-      if (point.y > height + 10) {
-        point.y = -10;
-      }
-
-      point.phase += 0.006;
+      p.phase += 0.006;
     }
   }
 
-  /* =========================================================
-     GRILLE SPATIALE
-     Évite de comparer chaque point à tous les autres.
-     ========================================================= */
-
-  function buildSpatialGrid() {
-    const cellSize =
-      settings.connectionDistance;
-
+  // grille spatiale : évite de comparer chaque point à tous les autres
+  function buildSpatialGrid(){
+    const cellSize = settings.connectionDistance;
     const grid = new Map();
 
-    for (let i = 0; i < points.length; i++) {
-      const point = points[i];
-
-      const cellX = Math.floor(
-        point.x / cellSize
-      );
-
-      const cellY = Math.floor(
-        point.y / cellSize
-      );
-
-      const key = `${cellX},${cellY}`;
-
-      if (!grid.has(key)) {
-        grid.set(key, []);
-      }
-
+    points.forEach((p, i) => {
+      const key = `${Math.floor(p.x / cellSize)},${Math.floor(p.y / cellSize)}`;
+      if (!grid.has(key)) grid.set(key, []);
       grid.get(key).push(i);
-    }
+    });
 
-    return {
-      grid,
-      cellSize
-    };
+    return { grid, cellSize };
   }
 
-  /* =========================================================
-     CONNEXIONS CONTINUES
-     ========================================================= */
+  function drawConnections(){
+    const { grid, cellSize } = buildSpatialGrid();
 
-  function drawConnections() {
-    const { grid, cellSize } =
-      buildSpatialGrid();
-
-    for (let i = 0; i < points.length; i++) {
-      const pointA = points[i];
-
-      const cellX = Math.floor(
-        pointA.x / cellSize
-      );
-
-      const cellY = Math.floor(
-        pointA.y / cellSize
-      );
-
+    for (let i = 0; i < points.length; i++){
+      const a = points[i];
+      const cellX = Math.floor(a.x / cellSize);
+      const cellY = Math.floor(a.y / cellSize);
       let links = 0;
 
-      /*
-       * Recherche dans la cellule courante
-       * et les huit cellules voisines.
-       */
-      for (
-        let offsetX = -1;
-        offsetX <= 1;
-        offsetX++
-      ) {
-        for (
-          let offsetY = -1;
-          offsetY <= 1;
-          offsetY++
-        ) {
-          const key =
-            `${cellX + offsetX},${cellY + offsetY}`;
-
-          const neighbours = grid.get(key);
-
+      for (let ox = -1; ox <= 1 && links < settings.maxLinksPerPoint; ox++){
+        for (let oy = -1; oy <= 1 && links < settings.maxLinksPerPoint; oy++){
+          const neighbours = grid.get(`${cellX + ox},${cellY + oy}`);
           if (!neighbours) continue;
 
-          for (const neighbourIndex of neighbours) {
-            if (neighbourIndex <= i) continue;
+          for (const j of neighbours){
+            if (j <= i) continue;
 
-            const pointB =
-              points[neighbourIndex];
+            const b = points[j];
+            const distance = Math.hypot(b.x - a.x, b.y - a.y);
+            if (distance > settings.connectionDistance) continue;
 
-            const dx =
-              pointB.x - pointA.x;
-
-            const dy =
-              pointB.y - pointA.y;
-
-            const distance =
-              Math.hypot(dx, dy);
-
-            if (
-              distance >
-              settings.connectionDistance
-            ) {
-              continue;
-            }
-
-            const opacity =
-              1 -
-              distance /
-                settings.connectionDistance;
-
-            /*
-             * Les liens entre points de zones différentes
-             * restent légèrement visibles :
-             * ils forment les ponts entre les hotspots.
-             */
-            const sameHotspot =
-              pointA.hotspotId >= 0 &&
-              pointA.hotspotId ===
-                pointB.hotspotId;
-
-            const strength = sameHotspot
-              ? 0.27
-              : 0.20;
+            const opacity = 1 - distance / settings.connectionDistance;
+            const sameHotspot = a.hotspotId >= 0 && a.hotspotId === b.hotspotId;
 
             ctx.beginPath();
-
-            ctx.moveTo(
-              pointA.x,
-              pointA.y
-            );
-
-            ctx.lineTo(
-              pointB.x,
-              pointB.y
-            );
-
-            ctx.strokeStyle =
-              `rgba(155, 225, 235, ${
-                opacity * strength
-              })`;
-
-            ctx.lineWidth =
-              sameHotspot ? 0.52 : 0.40;
-
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(155,225,235,${opacity * (sameHotspot ? 0.27 : 0.20)})`;
+            ctx.lineWidth = sameHotspot ? 0.52 : 0.40;
             ctx.stroke();
 
-            links++;
-
-            if (
-              links >=
-              settings.maxLinksPerPoint
-            ) {
-              break;
-            }
+            if (++links >= settings.maxLinksPerPoint) break;
           }
-
-          if (
-            links >=
-            settings.maxLinksPerPoint
-          ) {
-            break;
-          }
-        }
-
-        if (
-          links >=
-          settings.maxLinksPerPoint
-        ) {
-          break;
         }
       }
     }
   }
 
-  /* =========================================================
-     GRANDES CONNEXIONS ENTRE ZONES
-     ========================================================= */
+  function drawHotspotBridges(){
+    const drawnPairs = new Set();
 
-  function drawHotspotBridges() {
-      /*
-       * Évite de dessiner deux fois le même pont :
-       * A → B puis B → A.
-       */
-      const drawnPairs = new Set();
-    
-      for (let i = 0; i < hotspots.length; i++) {
-        const hotspotA = hotspots[i];
-    
-        /*
-         * On relie chaque hotspot à ses trois voisins
-         * les plus proches.
-         */
-        const neighbours = hotspots
-          .map((hotspot, index) => {
-            if (index === i) return null;
-    
-            return {
-              hotspot,
-              index,
-              distance: Math.hypot(
-                hotspot.x - hotspotA.x,
-                hotspot.y - hotspotA.y
-              )
-            };
-          })
-          .filter(Boolean)
-          .sort((a, b) => a.distance - b.distance)
-          .slice(0, 3);
-    
-        for (const neighbour of neighbours) {
-          const hotspotB = neighbour.hotspot;
-    
-          const pairKey = [i, neighbour.index]
-            .sort((a, b) => a - b)
-            .join("-");
-    
-          if (drawnPairs.has(pairKey)) continue;
-    
-          drawnPairs.add(pairKey);
-    
-          const dx = hotspotB.x - hotspotA.x;
-          const dy = hotspotB.y - hotspotA.y;
-          const distance = Math.hypot(dx, dy);
-    
-          if (distance === 0) continue;
-    
-          /*
-           * Vecteur perpendiculaire utilisé pour créer
-           * plusieurs filaments autour du pont principal.
-           */
-          const perpendicularX = -dy / distance;
-          const perpendicularY = dx / distance;
-    
-          /*
-           * Cinq filaments entre chaque paire de clusters.
-           * Cela ressemble davantage à une vraie continuité
-           * qu’à une seule ligne artificielle.
-           */
-          for (let filament = -2; filament <= 2; filament++) {
-            const offset = filament * 12;
-    
-            const startX =
-              hotspotA.x + perpendicularX * offset;
-    
-            const startY =
-              hotspotA.y + perpendicularY * offset;
-    
-            const endX =
-              hotspotB.x + perpendicularX * offset;
-    
-            const endY =
-              hotspotB.y + perpendicularY * offset;
-    
-            const middleX =
-              (startX + endX) / 2;
-    
-            const middleY =
-              (startY + endY) / 2;
-    
-            const curve =
-              Math.sin(
-                i * 1.9 +
-                neighbour.index * 0.8 +
-                filament
-              ) * 48;
-    
-            ctx.beginPath();
-    
-            ctx.moveTo(startX, startY);
-    
-            ctx.quadraticCurveTo(
-              middleX + perpendicularX * curve,
-              middleY + perpendicularY * curve,
-              endX,
-              endY
-            );
-    
-            /*
-             * Le filament central est plus visible,
-             * les quatre autres sont plus discrets.
-             */
-            const alpha =
-              filament === 0 ? 0.16 : 0.075;
-    
-            ctx.strokeStyle =
-              `rgba(115, 205, 220, ${alpha})`;
-    
-            ctx.lineWidth =
-              filament === 0 ? 0.85 : 0.45;
-    
-            ctx.stroke();
-          }
-    
-          /*
-           * Quelques petits points répartis le long du pont
-           * pour qu’il appartienne visuellement au réseau.
-           */
-          const bridgePointCount = Math.max(
-            5,
-            Math.floor(distance / 95)
+    for (let i = 0; i < hotspots.length; i++){
+      const a = hotspots[i];
+
+      // chaque zone est reliée à ses trois voisines les plus proches
+      const neighbours = hotspots
+        .map((h, index) => index === i ? null : ({
+          hotspot: h, index, distance: Math.hypot(h.x - a.x, h.y - a.y)
+        }))
+        .filter(Boolean)
+        .sort((x, y) => x.distance - y.distance)
+        .slice(0, 3);
+
+      for (const n of neighbours){
+        const pairKey = [i, n.index].sort((x, y) => x - y).join('-');
+        if (drawnPairs.has(pairKey)) continue;
+        drawnPairs.add(pairKey);
+
+        const b = n.hotspot;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance === 0) continue;
+
+        const perpX = -dy / distance;
+        const perpY = dx / distance;
+
+        // cinq filaments : plus organique qu'une ligne unique
+        for (let filament = -2; filament <= 2; filament++){
+          const offset = filament * 12;
+          const startX = a.x + perpX * offset;
+          const startY = a.y + perpY * offset;
+          const endX = b.x + perpX * offset;
+          const endY = b.y + perpY * offset;
+          const curve = Math.sin(i * 1.9 + n.index * 0.8 + filament) * 48;
+
+          ctx.beginPath();
+          ctx.moveTo(startX, startY);
+          ctx.quadraticCurveTo(
+            (startX + endX) / 2 + perpX * curve,
+            (startY + endY) / 2 + perpY * curve,
+            endX, endY
           );
-    
-          for (
-            let bridgePoint = 1;
-            bridgePoint < bridgePointCount;
-            bridgePoint++
-          ) {
-            const ratio =
-              bridgePoint / bridgePointCount;
-    
-            const x =
-              hotspotA.x + dx * ratio;
-    
-            const y =
-              hotspotA.y + dy * ratio;
-    
-            const wave =
-              Math.sin(
-                ratio * Math.PI +
-                hotspotA.phase
-              ) * 22;
-    
-            const finalX =
-              x + perpendicularX * wave;
-    
-            const finalY =
-              y + perpendicularY * wave;
-    
-            ctx.beginPath();
-    
-            ctx.arc(
-              finalX,
-              finalY,
-              bridgePoint % 3 === 0 ? 1.5 : 0.8,
-              0,
-              Math.PI * 2
-            );
-    
-            ctx.fillStyle =
-              bridgePoint % 3 === 0
-                ? "rgba(220, 255, 255, 0.55)"
-                : "rgba(170, 230, 235, 0.30)";
-    
-            ctx.fill();
-          }
+          ctx.strokeStyle = `rgba(115,205,220,${filament === 0 ? 0.16 : 0.075})`;
+          ctx.lineWidth = filament === 0 ? 0.85 : 0.45;
+          ctx.stroke();
+        }
+
+        // quelques points le long du pont, pour l'ancrer dans le réseau
+        const count = Math.max(5, Math.floor(distance / 95));
+        for (let k = 1; k < count; k++){
+          const ratio = k / count;
+          const wave = Math.sin(ratio * Math.PI + a.phase) * 22;
+
+          ctx.beginPath();
+          ctx.arc(
+            a.x + dx * ratio + perpX * wave,
+            a.y + dy * ratio + perpY * wave,
+            k % 3 === 0 ? 1.5 : 0.8, 0, Math.PI * 2
+          );
+          ctx.fillStyle = k % 3 === 0 ? 'rgba(220,255,255,.55)' : 'rgba(170,230,235,.30)';
+          ctx.fill();
         }
       }
     }
-  /* =========================================================
-     LUMIÈRES DIFFUSES
-     ========================================================= */
+  }
 
-  function drawHotspotGlows() {
-    for (const hotspot of hotspots) {
-      const pulse =
-        0.92 +
-        Math.sin(hotspot.phase) *
-          0.08;
+  function drawHotspotGlows(){
+    for (const h of hotspots){
+      const radius = h.radius * 1.35 * (0.92 + Math.sin(h.phase) * 0.08);
+      const glow = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, radius);
 
-      const radius =
-        hotspot.radius * 1.35 * pulse;
-
-      const glow =
-        ctx.createRadialGradient(
-          hotspot.x,
-          hotspot.y,
-          0,
-          hotspot.x,
-          hotspot.y,
-          radius
-        );
-
-      glow.addColorStop(
-        0,
-        `rgba(85, 205, 220, ${
-          0.045 *
-          hotspot.brightness
-        })`
-      );
-
-      glow.addColorStop(
-        0.45,
-        `rgba(60, 150, 185, ${
-          0.025 *
-          hotspot.brightness
-        })`
-      );
-
-      glow.addColorStop(
-        1,
-        "rgba(0, 0, 0, 0)"
-      );
+      glow.addColorStop(0,    `rgba(85,205,220,${0.045 * h.brightness})`);
+      glow.addColorStop(0.45, `rgba(60,150,185,${0.025 * h.brightness})`);
+      glow.addColorStop(1,    'rgba(0,0,0,0)');
 
       ctx.fillStyle = glow;
-
-      ctx.fillRect(
-        hotspot.x - radius,
-        hotspot.y - radius,
-        radius * 2,
-        radius * 2
-      );
+      ctx.fillRect(h.x - radius, h.y - radius, radius * 2, radius * 2);
     }
   }
 
-  /* =========================================================
-     POINTS
-     ========================================================= */
+  function drawPoints(){
+    for (const p of points){
+      const alpha = clamp(p.alpha * (0.8 + Math.sin(p.phase) * 0.2), 0, 1);
 
-  function drawPoints() {
-    for (const point of points) {
-      const flicker =
-        0.8 +
-        Math.sin(point.phase) * 0.2;
-
-      const alpha =
-        clamp(
-          point.alpha * flicker,
-          0,
-          1
-        );
-
-      if (point.radius > 1.65) {
-        const halo =
-          ctx.createRadialGradient(
-            point.x,
-            point.y,
-            0,
-            point.x,
-            point.y,
-            point.radius * 5
-          );
-
-        halo.addColorStop(
-          0,
-          `rgba(225, 255, 255, ${
-            alpha * 0.24
-          })`
-        );
-
-        halo.addColorStop(
-          1,
-          "rgba(80, 210, 225, 0)"
-        );
-
+      if (p.radius > 1.65){
+        const r = p.radius * 5;
+        const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+        halo.addColorStop(0, `rgba(225,255,255,${alpha * 0.24})`);
+        halo.addColorStop(1, 'rgba(80,210,225,0)');
         ctx.fillStyle = halo;
-
-        ctx.fillRect(
-          point.x - point.radius * 5,
-          point.y - point.radius * 5,
-          point.radius * 10,
-          point.radius * 10
-        );
+        ctx.fillRect(p.x - r, p.y - r, r * 2, r * 2);
       }
 
       ctx.beginPath();
-
-      ctx.arc(
-        point.x,
-        point.y,
-        point.radius,
-        0,
-        Math.PI * 2
-      );
-
-      ctx.fillStyle =
-        `rgba(230, 255, 255, ${alpha})`;
-
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(230,255,255,${alpha})`;
       ctx.fill();
     }
   }
 
-  /* =========================================================
-     RENDU
-     ========================================================= */
-
-  function drawFrame() {
-    ctx.clearRect(
-      0,
-      0,
-      width,
-      height
-    );
-
+  function drawFrame(){
+    ctx.clearRect(0, 0, width, height);
     drawHotspotGlows();
     drawHotspotBridges();
     drawConnections();
     drawPoints();
   }
 
-  function render() {
+  function render(){
     drawFrame();
-
     updateHotspots();
     updatePoints();
-
-    animationFrame =
-      requestAnimationFrame(render);
+    animationFrame = requestAnimationFrame(render);
   }
 
-  function start() {
-    resizeCanvas();
+  new ResizeObserver(() => resizeCanvas()).observe(canvas);
 
-    if (animationFrame) {
-      cancelAnimationFrame(
-        animationFrame
-      );
-    }
-
-    render();
-  }
-
-  const resizeObserver =
-    new ResizeObserver(() => {
-      resizeCanvas();
-    });
-
-  resizeObserver.observe(canvas);
-
-  const reducedMotion =
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
-
-  if (reducedMotion.matches) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     resizeCanvas();
     drawFrame();
   } else {
-    start();
+    resizeCanvas();
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    render();
   }
 })();
- 
-  </script>
-  
+</script>
+
 </body>
 </html>
-
-
-
