@@ -392,7 +392,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   pointer-events: none;
   background:
     radial-gradient(900px 520px at 50% 46%, rgba(0,0,0,.08), rgba(0,0,0,.38)),
-    linear-gradient(to right, rgba(11,11,14,.92) 28%, rgba(11,11,14,.55) 52%, rgba(11,11,14,.05) 76%);
+    linear-gradient(to right, rgba(11,11,14,.92) 40%, rgba(11,11,14,.50) 62%, rgba(11,11,14,.05) 82%);
 }
 
 .hero > .container{ position: relative; z-index: 2; }
@@ -471,10 +471,8 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   .hero{ grid-template-columns: 1fr; }
   .hero__content{ max-width: none; }
   .hero::before{
-   background:
-     radial-gradient(900px 520px at 50% 46%, rgba(0,0,0,.08), rgba(0,0,0,.38)),
-     linear-gradient(to right, rgba(11,11,14,.92) 40%, rgba(11,11,14,.5) 62%, rgba(11,11,14,.05) 82%);
-}
+    background: linear-gradient(to bottom, rgba(11,11,14,.55), rgba(11,11,14,.88));
+  }
 }
 
 
@@ -785,6 +783,23 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
    ============================================================ */
 .about{ padding-top: var(--space-5); }
 
+.about__grid{
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  gap: var(--gap);
+  align-items: start;
+}
+
+.about__skills .eyebrow{
+  display: block;
+  margin-bottom: var(--space-3);
+}
+.about__skills .chip-row + .eyebrow{ margin-top: var(--space-4); }
+
+@media (max-width: 1000px){
+  .about__grid{ grid-template-columns: 1fr; }
+}
+
 .about__text{
   max-width: 68ch;
   font-size: var(--fs-base);
@@ -928,13 +943,6 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   font-size: .7em;
   color: var(--accent);
 }
-
-.skills{
-  margin-top: var(--space-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--line);
-}
-.skills .eyebrow{ display: block; margin-bottom: var(--space-3); }
 
 .signature{
   margin-top: var(--space-5);
@@ -1234,13 +1242,42 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
     <div class="container">
       <h2 class="title-lg">À propos</h2>
 
-      <div class="card">
-        <div class="about__text">
-          <p>J'ai fait une licence de mathématiques appliquées aux sciences humaines à Bordeaux, puis un master de sciences cognitives à Marseille. Depuis, je travaille surtout sur des données : à la RTM sur des données terrain à grande échelle, et en recherche sur des signaux audio et physiologiques.</p>
-          <p>Deux contextes assez différents, une même exigence : que les données servent une décision réelle, pas seulement un rapport de plus.</p>
-          <p>Ce qui m'intéresse, c'est ce qu'on apprend des gens à travers leurs données, et <strong>ce qu'un outil change pour ceux qui l'utilisent</strong>.</p>
-          <p>À côté, je fais de la musique et j'écris. Ça compte dans ma façon d'aborder un projet.</p>
+            <div class="about__grid">
+        <div class="card">
+          <div class="about__text">
+            <p>J'ai fait une licence de mathématiques appliquées aux sciences humaines à Bordeaux, puis un master de sciences cognitives à Marseille. Depuis, je travaille surtout sur des données : à la RTM sur des données terrain à grande échelle, et en recherche sur des signaux audio et physiologiques.</p>
+            <p>Deux contextes assez différents, une même exigence : que les données servent une décision réelle, pas seulement un rapport de plus.</p>
+            <p>Ce qui m'intéresse, c'est ce qu'on apprend des gens à travers leurs données, et <strong>ce qu'un outil change pour ceux qui l'utilisent</strong>.</p>
+            <p>À côté, je fais de la musique et j'écris. Ça compte dans ma façon d'aborder un projet.</p>
+          </div>
         </div>
+
+        <aside class="card about__skills">
+          <p class="eyebrow">Langages &amp; analyse</p>
+          <div class="chip-row">
+            <span class="chip">Python</span>
+            <span class="chip">SQL</span>
+            <span class="chip">R</span>
+            <span class="chip">Statistiques</span>
+            <span class="chip">Machine learning</span>
+          </div>
+
+          <p class="eyebrow">Restitution</p>
+          <div class="chip-row">
+            <span class="chip">Power BI</span>
+            <span class="chip">Excel / Google Sheets</span>
+            <span class="chip">HTML / CSS / JS</span>
+            <span class="chip">Cartographie interactive</span>
+          </div>
+
+          <p class="eyebrow">Méthode</p>
+          <div class="chip-row">
+            <span class="chip">Qualité de données</span>
+            <span class="chip">Protocole expérimental</span>
+            <span class="chip">Gestion de projet</span>
+            <span class="chip">Anglais courant</span>
+          </div>
+        </aside>
       </div>
 
       <div class="divider"><span>Comment je travaille</span></div>
@@ -1306,21 +1343,6 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
             <li>Startups, entreprises tech, organisations orientées produit ou recherche</li>
             <li>Basée à Marseille · hybride possible · disponible immédiatement</li>
           </ul>
-        </div>
-      </div>
-
-      <div class="skills">
-        <p class="eyebrow">Outils &amp; compétences</p>
-        <div class="chip-row">
-          <span class="chip">Python</span>
-          <span class="chip">SQL</span>
-          <span class="chip">R</span>
-          <span class="chip">Excel / Google Sheets</span>
-          <span class="chip">Power BI</span>
-          <span class="chip">HTML / CSS / JS</span>
-          <span class="chip">Analyse de données</span>
-          <span class="chip">Gestion de projet</span>
-          <span class="chip">Anglais courant</span>
         </div>
       </div>
 
