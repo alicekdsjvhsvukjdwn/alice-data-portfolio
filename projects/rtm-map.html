@@ -24,7 +24,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);
 a{color:var(--accent);text-decoration:none}
 .hint{color:var(--muted);font-size:12px}
 
-.wrap{display:grid;grid-template-rows:auto 1fr;min-height:100%}
+.wrap{display:grid;grid-template-rows:auto 1fr;height:100svh}
 
 /* ---------- Toolbar ---------- */
 /* pas de backdrop-filter : recalculé à chaque déplacement de la carte */
@@ -44,12 +44,12 @@ a{color:var(--accent);text-decoration:none}
   color:var(--txt);padding:6px 8px;min-height:34px;font-family:inherit}
 
 /* ---------- Layout ---------- */
-.main{display:grid;grid-template-columns:300px 1fr 360px;gap:10px;padding:10px;min-height:760px}
+.main{display:grid;grid-template-columns:300px 1fr 360px;gap:10px;padding:10px;min-height:0}
 .rail,.inspect{background:var(--panel);border:1px solid var(--border);border-radius:14px;
-  padding:10px;overflow:auto;box-shadow:var(--shadow)}
+  padding:10px;overflow:auto;min-height:0;box-shadow:var(--shadow)}
 .inspect{display:flex;flex-direction:column}
 .mapwrap{position:relative;border-radius:14px;border:1px solid var(--border);
-  overflow:hidden;box-shadow:var(--shadow);min-height:720px}
+  overflow:hidden;box-shadow:var(--shadow)}
 #map{position:absolute;inset:0}
 
 /* ---------- Rail ---------- */
