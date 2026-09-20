@@ -71,8 +71,14 @@
   /* ── HEADER ───────────────────────────── */
   header{
     padding: 20px var(--pad) 18px;
-    border-bottom: 1px solid var(--rule);
+    background: linear-gradient(120deg,#2A3D20 0%,#3c5230 40%,#55713f 72%,#2A3D20 100%);
+    border-bottom: 1px solid rgba(242,236,221,.18);
+    box-shadow: 0 4px 24px rgba(60,82,48,.28);
   }
+  header .wordmark{ color: var(--paper); }
+  header .nav-links a{ color: rgba(242,236,221,.85); }
+  header .nav-links a:hover{ color: var(--paper); border-color: var(--paper); }
+  
   .nav{
     max-width: var(--wide); margin: 0 auto;
     display:flex; align-items:baseline; justify-content:space-between;
