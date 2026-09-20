@@ -99,8 +99,16 @@ ul{ margin: 0; padding: 0; list-style: none; }
   top: 0;
   z-index: 20;
   height: var(--header-h);
-  background: rgba(10,10,10,.92);
-  border-bottom: 1px solid var(--line);
+  background: linear-gradient(120deg,#0B2E6F 0%,#1D4ED8 45%,#2563EB 75%,#0B2E6F 100%);
+  border-bottom: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 4px 24px rgba(29,78,216,.30);
+}
+.site-header .btn{
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.3);
+}
+.site-header .btn:hover{
+  background: rgba(255,255,255,.26);
 }
 .nav{
   height: 100%;
@@ -206,7 +214,8 @@ strong{ color: var(--ink); font-weight: 600; }
   position: relative;
   padding: var(--space-6) 0 var(--space-5);
   background:
-    radial-gradient(1000px 500px at 15% 0%, rgba(93,139,244,.14), transparent 65%),
+    linear-gradient(180deg, rgba(29,78,216,.22) 0%, rgba(29,78,216,.06) 45%, transparent 80%),
+    radial-gradient(900px 420px at 12% 0%, rgba(93,139,244,.20), transparent 70%),
     var(--bg);
 }
 
