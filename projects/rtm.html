@@ -3,280 +3,936 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RTM — Structuration & qualité des données | Alice Gay</title>
+
+  <title>RTM — Digitalisation de la voie | Alice Gay</title>
+  <meta name="description" content="Structuration de 500 000 lignes de données de voie ferrée en une base unifiée et deux outils de maintenance utilisés sur le terrain. Stage de 6 mois à la RTM." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap">
 
-  <style>
-    :root{
-      --bg:#FAFAF7; --ink:#111; --muted:#6B7280;
-      --line: rgba(17,17,17,.12);
-      --surface: rgba(255,255,255,.82);
-      --shadow: 0 18px 50px rgba(0,0,0,.08);
-      --radius: 18px;
-      --accent:#1D4ED8;
+<style>
+/* ============================================================
+   Mêmes tokens que le portfolio, pour la cohérence visuelle
+   ============================================================ */
+:root{
+  --bg:          #0B0B0E;
+  --ink:         #F4F4F5;
+  --ink-2:       rgba(244,244,245,.80);
+  --ink-3:       rgba(244,244,245,.58);
+  --ink-4:       rgba(244,244,245,.38);
+  --line:        rgba(244,244,245,.14);
+  --line-strong: rgba(244,244,245,.28);
+  --surface:     rgba(18,18,22,.72);
+  --surface-2:   rgba(255,255,255,.05);
+  --accent:      #A8C87A;
+  --accent-cold: #5D8BF4;
 
-      --maxw: clamp(1700px, 96vw);
-      --pad: clamp(16px, 2.4vw, 32px);
+  --shadow-sm: 0 8px 20px rgba(0,0,0,.25);
+  --shadow:    0 18px 50px rgba(0,0,0,.45);
+  --radius-sm: 12px;
+  --radius:    18px;
+  --radius-pill: 999px;
 
-      --serif:"Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial;
-    }
+  --serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
+  --sans:  Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
-    *{ box-sizing:border-box; }
-    body {
-      margin: 0;
-      font-family: var(--sans);
-      color:rgba(17,17,17,.12);
-      background: url('../assets/rtm/bg-rtm-page.jpg') no-repeat center center fixed;
-      background-size: cover;
-      min-height: 100vh;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-    main { flex: 1; position: relative; z-index: 1; }
+  --fs-xs:   clamp(11px, .70vw, 16px);
+  --fs-sm:   clamp(13px, .85vw, 19px);
+  --fs-base: clamp(15px, 1.00vw, 22px);
+  --fs-md:   clamp(16px, 1.15vw, 26px);
+  --fs-lg:   clamp(19px, 1.50vw, 34px);
+  --fs-xl:   clamp(24px, 2.20vw, 50px);
+  --fs-2xl:  clamp(28px, 3.20vw, 66px);
 
-    a{ color: inherit; }
-    .container{ max-width: var(--maxw); margin:0 auto; padding: 0 var(--pad); }
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: clamp(28px, 3vw, 46px);
+  --space-6: clamp(40px, 6vh, 84px);
 
-    header{
-      position: sticky; top:0; z-index:20;
-      background: rgba(10,10,10,.96);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      padding: 14px 0; gap: 12px;
-    }
-    .brand{ font-weight: 900; font-size: 13px; letter-spacing:.02em; color: #fff; padding-left: 8px; }
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  --maxw:    min(1700px, 100%);
+  --readw:   min(78ch, 100%);     /* largeur de lecture confortable */
+  --pad-x:   clamp(16px, 4vw, 80px);
+  --gap:     clamp(14px, 1.8vw, 32px);
+  --header-h: clamp(56px, 4vw, 74px);
+}
 
-    .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 14px; border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.85);
-      text-decoration:none;
-      font-weight:800; font-size: 13px;
-      transition: transform .12s ease;
-      white-space:nowrap; color: #111;
-    }
-    .btn:hover{ transform: translateY(-1px); }
-    .btn.nav-btn{ background: rgba(255,255,255,.12); color: #e8f0ff; border-color: rgba(255,255,255,.22); }
-    .btn.nav-btn:hover{ background: rgba(255,255,255,.20); }
-    .btn.dark{ background: rgba(17,17,17,.92); color:#fff; border-color: rgba(0,0,0,.12); }
-    .btn.cta{
-      background: color-mix(in srgb, var(--accent) 14%, #fff);
-      border-color: color-mix(in srgb, var(--accent) 28%, transparent);
-      color: #111;
-    }
+*, *::before, *::after{ box-sizing: border-box; }
 
-    h1{
-      font-size: clamp(28px, 3.4vw, 54px);
-      line-height: 1.05; letter-spacing: -.02em;
-      margin: 18px 0 10px; color: #ffffff;
-      text-shadow: 0 2px 12px rgba(0,0,0,.35);
-    }
-    .kicker{
-      text-transform: uppercase; letter-spacing: .12em;
-      font-weight: 900; font-size: 12px;
-      color: rgba(220, 235, 255, 0.9); margin-top: 10px;
-    }
-    .lead{
-      max-width: 72ch;
-      color: rgba(220, 235, 255, 0.88);
-      font-size: 15px; margin: 0 0 18px;
-    }
-    .lead strong { color: #fff; }
+body{
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--fs-base);
+  line-height: 1.65;
+  color: var(--ink-2);               /* ← le texte était à 12 % d'opacité */
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: clamp(14px, 2vw, 22px);
-      align-items: start;
-    }
-    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
+a{ color: inherit; }
+img{ max-width: 100%; display: block; }
+ul{ margin: 0; padding: 0; list-style: none; }
 
-    .card{
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(16px, 2vw, 26px);
-    }
-    .card h2 { color: #111 !important; }
+:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
 
-    .dl{ display:grid; gap: 10px; margin-top: 8px; }
-    .dl .row{
-      display:grid; gap: 2px; padding: 10px 12px;
-      border-radius: 14px; border: 1px solid rgba(17,17,17,.10);
-      background: rgba(255,255,255,.75);
-    }
-    .dl .label{ font-size: 11px; font-weight: 900; letter-spacing:.12em; text-transform: uppercase; color: rgba(17,17,17,.55); }
-    .dl .value{ font-size: 13px; color: rgba(17,17,17,.80); }
+.container{
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--pad-x);
+}
 
-    .note{ font-size: 12px; color: rgba(17,17,17,.58); margin-top: 10px; }
+/* colonne de lecture : le texte reste lisible même sur grand écran,
+   les éléments larges (carte, tableaux) débordent volontairement */
+.read{ max-width: var(--readw); }
 
-    footer{
-      border-top: 1px solid rgba(255,255,255,.12);
-      background: rgba(10,10,10,.96);
-      padding: 28px 0 32px;
-    }
-    .footer-inner{
-      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      color: rgba(255,255,255,.70); font-size: 13px; align-items: center;
-    }
-    .footer-inner a{ color: rgba(255,255,255,.70); text-decoration: none; }
-    .footer-inner a:hover{ color: #fff; }
-  </style>
+/* ---------- header ---------- */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: var(--header-h);
+  background: rgba(10,10,10,.92);
+  border-bottom: 1px solid var(--line);
+}
+.nav{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.brand{
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.actions{ display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* ---------- boutons ---------- */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: .7em 1.3em;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: rgba(255,255,255,.08);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .12s ease, background .12s ease;
+}
+.btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.16); }
+
+.btn--primary{
+  background: var(--accent);
+  border-color: transparent;
+  color: #10140A;
+}
+.btn--primary:hover{ background: #B8D68C; }
+
+.btn-row{ display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* ---------- typographie ---------- */
+.kicker{
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 var(--space-3);
+}
+h1{
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: var(--fs-2xl);
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin: 0 0 var(--space-4);
+  max-width: 20ch;
+}
+h2{
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: var(--fs-xl);
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 0 0 var(--space-4);
+}
+h3{
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 var(--space-2);
+}
+p{ margin: 0 0 1em; }
+p:last-child{ margin-bottom: 0; }
+strong{ color: var(--ink); font-weight: 600; }
+
+.lead{
+  font-size: var(--fs-md);
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+.section{ padding: var(--space-6) 0; }
+.section + .section{ border-top: 1px solid var(--line); }
+
+.eyebrow{
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 var(--space-3);
+}
+
+/* ---------- hero ---------- */
+.hero{
+  position: relative;
+  padding: var(--space-6) 0 var(--space-5);
+  background:
+    radial-gradient(1000px 500px at 15% 0%, rgba(93,139,244,.14), transparent 65%),
+    var(--bg);
+}
+
+.meta{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin: var(--space-5) 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+.meta div{ display: grid; gap: 2px; }
+.meta dt{
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.meta dd{ margin: 0; font-size: var(--fs-sm); color: var(--ink-2); }
+
+/* ---------- chiffres clés ---------- */
+.stats{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: var(--gap);
+  margin-top: var(--space-5);
+}
+.stat{
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.stat__value{
+  font-family: var(--serif);
+  font-size: var(--fs-xl);
+  line-height: 1.1;
+  color: var(--ink);
+}
+.stat__label{
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  margin-top: var(--space-1);
+}
+
+/* ---------- carte / démo ---------- */
+.demo{ padding-top: var(--space-5); }
+
+.demo__frame{
+  position: relative;
+  aspect-ratio: 16 / 9;
+  min-height: 420px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #0d1117;
+  box-shadow: var(--shadow);
+}
+.demo__frame iframe{
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* écran d'attente : la carte n'est chargée qu'à la demande */
+.demo__facade{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  text-align: center;
+  cursor: pointer;
+  border: 0;
+  width: 100%;
+  font-family: inherit;
+  color: var(--ink-2);
+  /* si assets/rtm/map-preview.jpg existe, il sert d'aperçu ;
+     sinon on garde simplement le dégradé */
+  background:
+    linear-gradient(rgba(8,10,16,.72), rgba(8,10,16,.82)),
+    var(--poster, radial-gradient(900px 500px at 50% 40%, rgba(93,139,244,.18), transparent 70%)) center/cover no-repeat;
+}
+.demo__facade:hover{ background-color: rgba(255,255,255,.02); }
+.demo__facade strong{ font-size: var(--fs-md); }
+.demo__facade span{ font-size: var(--fs-sm); color: var(--ink-3); max-width: 48ch; }
+
+.demo__pill{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: .7em 1.4em;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #10140A;
+  font-weight: 800;
+  font-size: var(--fs-sm);
+}
+
+.demo__note{
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  max-width: 80ch;
+}
+
+/* ---------- frise méthode ---------- */
+.steps{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: var(--gap);
+  margin-top: var(--space-5);
+  counter-reset: step;
+}
+.step{
+  position: relative;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.step::before{
+  counter-increment: step;
+  content: "0" counter(step);
+  display: block;
+  font-family: var(--serif);
+  font-size: var(--fs-lg);
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+.step p{
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  margin: 0;
+}
+
+/* ---------- familles d'attributs ---------- */
+.families{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: var(--gap);
+  margin-top: var(--space-5);
+}
+.family{
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.family h3{ font-size: var(--fs-base); margin-bottom: var(--space-2); }
+.family p{ font-size: var(--fs-sm); color: var(--ink-3); margin: 0; }
+
+/* ---------- tableaux ---------- */
+.table-wrap{
+  margin-top: var(--space-4);
+  overflow-x: auto;                 /* le tableau scrolle, pas la page */
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+table{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+caption{
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+}
+th, td{
+  padding: var(--space-2) var(--space-4);
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(244,244,245,.07);
+}
+th:first-child, td:first-child{ text-align: left; }
+thead th{
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-4);
+  font-weight: 800;
+}
+tbody tr:last-child td{ border-bottom: 0; }
+tbody tr.is-total td{
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(168,200,122,.07);
+}
+
+details{
+  margin-top: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+summary{
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+details[open] summary{ margin-bottom: var(--space-3); }
+
+/* ---------- livrables ---------- */
+.deliverables{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  gap: var(--gap);
+  margin-top: var(--space-5);
+}
+.deliverable{
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.deliverable p{ font-size: var(--fs-sm); color: var(--ink-3); }
+.deliverable ul{ display: grid; gap: var(--space-2); }
+.deliverable li{
+  position: relative;
+  padding-left: 1.4em;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+.deliverable li::before{
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+/* ---------- limites ---------- */
+.limits{ display: grid; gap: var(--space-4); margin-top: var(--space-4); }
+.limit{
+  padding-left: var(--space-4);
+  border-left: 2px solid rgba(168,200,122,.35);
+}
+.limit h3{ font-size: var(--fs-base); }
+.limit p{ font-size: var(--fs-sm); color: var(--ink-3); }
+
+/* ---------- pied de page ---------- */
+.site-footer{
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-4);
+  font-size: var(--fs-sm);
+}
+.site-footer__inner{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.site-footer a{ text-decoration: none; }
+.site-footer a:hover{ color: var(--ink-2); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition-duration: .01ms !important; }
+}
+</style>
 </head>
 
 <body>
-  <header>
-    <div class="container nav">
-      <div class="brand">Alice Gay — Projet RTM</div>
-      <div class="actions">
-        <a class="btn nav-btn" href="../index.html">← Retour portfolio</a>
-        <a class="btn nav-btn" href="../assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
-      </div>
-    </div>
-  </header>
 
-  <main>
+<header class="site-header">
+  <div class="container nav">
+    <span class="brand">Alice Gay — Projet RTM</span>
+    <div class="actions">
+      <a class="btn" href="../index.html">← Portfolio</a>
+      <a class="btn" href="../assets/CV_Alice_Gay.pdf" target="_blank" rel="noopener">CV</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
     <div class="container">
-      <div class="kicker">Stage 6 mois — Données réelles (présentation anonymisée)</div>
-      <h1>RTM — Structuration, contrôles qualité et restitution exploitable</h1>
-      <p class="lead">
-        Travail de nettoyage / normalisation / vérification de cohérence sur des données tramway, avec production de règles qualité
-        et d'une restitution interactive. <strong>La démo ci-dessous utilise un fichier anonymisé.</strong>
+      <p class="kicker">Stage 6 mois · Régie des Transports Métropolitains</p>
+      <h1>Digitalisation de la voie ferrée pour la maintenance du réseau</h1>
+
+      <p class="lead read">
+        Plus de 500 000 lignes dispersées dans une centaine de fichiers hétérogènes, sans clé commune
+        pour les relier. À l'arrivée : une base unifiée de 49 093 enregistrements et deux outils
+        utilisés par les équipes de terrain pour planifier leurs interventions.
       </p>
 
-      <div class="actions" style="margin: 10px 0 18px;">
-        <a class="btn cta" href="rtm-map.html" target="_blank" rel="noopener">Ouvrir la carte en grand ↗</a>
-        <a class="btn" href="../assets/rtm/T1T2T3_anonymized.xlsx" target="_blank" rel="noopener">Télécharger le dataset anonymisé</a>
-      </div>
-
-      <div class="grid">
-
-        <!-- Colonne gauche : démo -->
-        <section class="card">
-          <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15; color:#111;">Démo interactive</h2>
-          <div class="note" style="margin: 0 0 12px; font-size: 12.5px; line-height: 1.5; color: rgba(17,17,17,.65);">
-            La carte ci-dessous est affichée dans le portfolio au format intégré.
-            Le <strong>format final livré à la RTM</strong> est la <strong>version plein écran</strong>
-            (bouton "Ouvrir la carte en grand"), qui correspond au rendu prévu pour l'exploitation.
-          </div>
-          <iframe
-            src="./rtm-map.html"
-            title="Cartographie interactive RTM"
-            loading="lazy"
-            style="width:100%; height:960px; border:0; border-radius:14px; display:block;"
-          ></iframe>
-          <div class="note">
-            La démo charge automatiquement un dataset anonymisé (JSON).
-            Si besoin, vous pouvez aussi tester l'import manuel avec le fichier
-            <code>T1T2T3_anonymized.xlsx</code>.
-          </div>
-        </section>
-
-        <!-- Colonne droite : 2 cartes empilées -->
-        <div style="display: flex; flex-direction: column; gap: clamp(14px, 2vw, 22px);">
-
-          <aside class="card">
-            <h2 style="font-family:var(--serif); margin:0 0 10px; line-height:1.15; color:#111;">Ce que j'ai fait</h2>
-            <div class="dl">
-              <div class="row">
-                <div class="label">Objectif</div>
-                <div class="value">Transformer des données terrain hétérogènes en outils opérationnels pour la prise de décision.</div>
-              </div>
-              <div class="row">
-                <div class="label">Méthode</div>
-                <div class="value">Pipeline complet de traitement : ingestion, normalisation, règles de cohérence, détection d’anomalies et restitution interactive.</div>
-              </div>
-              <div class="row">
-                <div class="label">Livrables</div>
-                <div class="value">Base structurée • contrôles qualité • carte interactive • documentation.</div>
-              </div>
-              <div class="row">
-                <div class="label">Confidentialité</div>
-                <div class="value">Démo = données anonymisées (pas de données brutes publiées).</div>
-              </div>
-              <div class="row">
-                <div class="label">Résultats</div>
-                <div class="value">49 093 enregistrements · 24 attributs · complétude 100 % T1/T2 · 99,2 % T3 · 2 outils déployés</div>
-              </div>
-            </div>
-            <div style="margin-top:14px; display:grid; gap:10px;">
-              <a class="btn" href="../assets/rtm/anonymize_rtm.py" target="_blank" rel="noopener" style="color:#111;">Voir le script d'anonymisation</a>
-              <a class="btn" href="/cdn-cgi/l/email-protection#fa9b9693999fcb9d9b83ba9d979b9396d49c88" style="color:#111;">Me contacter</a>
-            </div>
-          </aside>
-
-          <!-- Bulle détail stage — carte indépendante -->
-          <div class="card">
-            <div style="font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: rgba(17,17,17,.45); margin-bottom: 16px;">
-              Ce que j'ai fait concrètement
-            </div>
-            <div style="display: grid; gap: 16px;">
-
-              <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 22px; flex-shrink: 0; margin-top: 2px;">①</span>
-                <p style="margin:0; font-size: 16px; color: rgba(17,17,17,.80); line-height: 1.6;">
-                  <strong style="color:#111;">Revue & structuration des données</strong> — Recensement de 18 types de données techniques (revêtement, pose, rayon, écartement, dévers, vitesse, stations, ADV…) issues de fichiers hétérogènes pour T1, T2 et T3.
-                </p>
-              </div>
-
-              <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 22px; flex-shrink: 0; margin-top: 2px;">②</span>
-                <p style="margin:0; font-size: 16px; color: rgba(17,17,17,.80); line-height: 1.6;">
-                  <strong style="color:#111;">Nettoyage & normalisation Python / Excel</strong> — +500 000 lignes issues de plus de 100 fichiers hétérogènes consolidées dans une base unifiée de 49 093 enregistrements autour d'une clef PK-Source. Déduplication, recalcul de PK réguliers, injection de coordonnées GPS.
-                </p>
-              </div>
-
-              <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 22px; flex-shrink: 0; margin-top: 2px;">③</span>
-                <p style="margin:0; font-size: 16px; color: rgba(17,17,17,.80); line-height: 1.6;">
-                  <strong style="color:#111;">Règles qualité & détection d'anomalies</strong> — Critères multicritères (rayon &lt; 200 m + écartement &gt; 1 440 mm + vitesse &lt; 30 km/h → crissement). 6 zones à risque identifiées et vérifiées terrain.
-                </p>
-              </div>
-
-              <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <span style="color: #1D4ED8; font-size: 22px; flex-shrink: 0; margin-top: 2px;">④</span>
-                <p style="margin:0; font-size: 16px; color: rgba(17,17,17,.80); line-height: 1.6;">
-                  <strong style="color:#111;">Restitution interactive (Power BI + carte web)</strong> — Outil de priorisation des interventions avec filtres dynamiques et cartographie des zones à risque.
-                </p>
-              </div>
-
-            </div>
-          </div>
-          <!-- fin bulle -->
-
+      <dl class="meta">
+        <div>
+          <dt>Rôle</dt>
+          <dd>Expert Ingénierie Voie (stage)</dd>
         </div>
-        <!-- fin colonne droite -->
+        <div>
+          <dt>Durée</dt>
+          <dd>Mars — septembre 2025</dd>
+        </div>
+        <div>
+          <dt>Équipe</dt>
+          <dd>Département Ingénierie, Expertises et Coordinations</dd>
+        </div>
+        <div>
+          <dt>Outils</dt>
+          <dd>Python · Excel · Power BI · Leaflet</dd>
+        </div>
+      </dl>
 
+      <div class="btn-row">
+        <a class="btn btn--primary" href="rtm-map.html" target="_blank" rel="noopener">Ouvrir la carte en plein écran ↗</a>
+        <a class="btn" href="../assets/rtm/T1T2T3_anonymized.xlsx">Télécharger le jeu de données anonymisé</a>
+        <a class="btn" href="../assets/rtm/anonymize_rtm.py">Voir le script d'anonymisation</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat__value">500 000+</div>
+          <div class="stat__label">lignes brutes, issues de plus de 100 fichiers</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">49 093</div>
+          <div class="stat__label">enregistrements consolidés, 24 attributs</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">100 %</div>
+          <div class="stat__label">de complétude sur T1 et T2 · 99,2 % sur T3</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">2 outils</div>
+          <div class="stat__label">déployés : tableau de bord Power BI et carte web</div>
+        </div>
       </div>
     </div>
-  </main>
+  </section>
 
-  <footer>
-    <div class="container footer-inner">
-      <div>© <span id="y"></span> Alice Gay — Marseille</div>
-      <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <a href="../index.html">Portfolio</a>
-        <a href="/cdn-cgi/l/email-protection#4d2c21242e287c2a2c340d2a202c2421632b3f">Email</a>
-        <a href="#top" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">Haut</a>
+  <!-- ===================== DÉMO ===================== -->
+  <section class="section demo" id="demo">
+    <div class="container">
+      <h2>La carte, en conditions réelles</h2>
+      <p class="read">
+        Version intégrée de l'outil livré, sur des <strong>données anonymisées</strong>. Chaque point
+        est un relevé tous les 50 cm ; cliquer dessus ouvre ses attributs regroupés par famille.
+        Le format exploité par les équipes est la version plein écran.
+      </p>
+
+      <div class="demo__frame" id="mapFrame">
+        <button class="demo__facade" id="mapFacade" type="button">
+          <span class="demo__pill">Lancer la carte interactive</span>
+          <strong>Cartographie interactive des lignes T1, T2 et T3</strong>
+          <span>
+            Filtres par voie et par ligne, règles d'anomalie personnalisables, recherche par point
+            kilométrique, mode Focus pour le terrain, fond OpenStreetMap ou satellite.
+          </span>
+        </button>
+      </div>
+
+      <p class="demo__note">
+        La carte se charge à la demande : elle mobilise plusieurs milliers de marqueurs, autant ne pas
+        la faire porter au reste de la page.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== LE PROBLÈME ===================== -->
+  <section class="section">
+    <div class="container read">
+      <p class="eyebrow">Le point de départ</p>
+      <h2>Des données qui existaient, mais nulle part ensemble</h2>
+
+      <p>
+        La RTM entretient un réseau de tramway dont les caractéristiques techniques sont documentées
+        depuis des années : géométrie de la voie, type de rail, revêtement, dates de mise en service,
+        relevés du train de mesure. Le problème n'était pas l'absence de données, mais leur dispersion.
+      </p>
+      <p>
+        Trois sources principales, aux formats incompatibles : les dossiers d'ouvrages exécutés (plans
+        et rapports PDF), les relevés du train de mesure Deutzer, et l'outil de gestion Magik. Des
+        structures de colonnes différentes, des référentiels de points kilométriques variables, des
+        contenus lacunaires, et <strong>aucune clé commune permettant de fusionner les fichiers</strong>.
+      </p>
+      <p>
+        Concrètement, pour un technicien : retrouver l'état d'un segment de 200 mètres demandait
+        d'ouvrir plusieurs fichiers, de recouper des numérotations qui ne se correspondaient pas, et
+        d'accepter une part d'incertitude. C'est ce coût de recherche, avant toute intervention, que le
+        projet devait supprimer.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== LA MÉTHODE ===================== -->
+  <section class="section">
+    <div class="container">
+      <div class="read">
+        <p class="eyebrow">La méthode</p>
+        <h2>Du fichier brut au tableau de bord</h2>
+        <p>
+          Cinq étapes, reprises à chaque nouvelle source. La difficulté principale n'était pas
+          technique mais conceptuelle : trouver la clé qui permettrait à tous ces fichiers de parler
+          de la même portion de voie.
+        </p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <h3>Collecte</h3>
+          <p>Recensement de 18 types de données techniques pour T1, T2 et T3 : revêtement, pose, rayon, écartement, dévers, vitesse, stations, appareils de voie.</p>
+        </div>
+        <div class="step">
+          <h3>Nettoyage</h3>
+          <p>Uniformisation des formats décimaux et des noms de colonnes, suppression des doublons, traitement des préfixes Nord/Sud systématiques sur T3.</p>
+        </div>
+        <div class="step">
+          <h3>Fusion</h3>
+          <p>Construction d'une clé unique PK-Source, arrondie à 0,50 m, qui sert de référentiel commun. Vérification automatisée de la continuité linéaire.</p>
+        </div>
+        <div class="step">
+          <h3>Rattachement</h3>
+          <p>Association des 24 attributs à la clé, regroupés en quatre familles, avec injection des coordonnées GPS et recalcul des points kilométriques manquants.</p>
+        </div>
+        <div class="step">
+          <h3>Restitution</h3>
+          <p>Export vers les deux outils, alignés sur la même clé pour qu'un même segment désigne toujours la même chose d'un support à l'autre.</p>
+        </div>
+      </div>
+
+      <div class="read" style="margin-top: var(--space-5)">
+        <h3>Le détail qui a tout débloqué</h3>
+        <p>
+          La clé PK-Source arrondie à 0,50 m. Les points kilométriques des différentes sources ne
+          tombaient jamais exactement au même endroit ; en les ramenant à un pas fixe de 50 cm, avec
+          conservation de la valeur d'origine quand elle existe, les fichiers deviennent joignables
+          sans perdre la traçabilité du relevé terrain. Des scripts Python détectent ensuite
+          automatiquement les doublons, les trous dans les séries et les écarts GPS supérieurs à 50 cm.
+        </p>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script>
-    const y = document.getElementById('y');
-    if (y) y.textContent = new Date().getFullYear();
-  </script>
+  <!-- ===================== LES DONNÉES ===================== -->
+  <section class="section">
+    <div class="container">
+      <div class="read">
+        <p class="eyebrow">La base</p>
+        <h2>24 attributs, quatre familles</h2>
+        <p>
+          Ce regroupement n'est pas qu'une commodité de rangement : c'est lui qui structure les bulles
+          d'information de la carte, pour qu'un technicien trouve un attribut là où il s'attend à le
+          trouver.
+        </p>
+      </div>
+
+      <div class="families">
+        <div class="family">
+          <h3>Localisation</h3>
+          <p>PK-Source, PK arrondi, ligne, voie, station, source d'origine, latitude et longitude. Gestion du préfixe Nord/Sud pour éviter les collisions de numérotation entre tronçons.</p>
+        </div>
+        <div class="family">
+          <h3>Géométrie</h3>
+          <p>Rayon de courbure, pente, écartement, dévers. Les paramètres qui déterminent les contraintes d'exploitation et l'usure.</p>
+        </div>
+        <div class="family">
+          <h3>Infrastructure</h3>
+          <p>Type de rail, type de pose, revêtement, poses successives, stations, ouvrages d'art, appareils de voie, boîtes à eaux, sous-stations, liaisons équipotentielles.</p>
+        </div>
+        <div class="family">
+          <h3>Historique</h3>
+          <p>Date de mise en service et vitesse limite d'exploitation : la dimension temporelle, indispensable pour raisonner sur le vieillissement.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Complétude par ligne</caption>
+          <thead>
+            <tr>
+              <th scope="col">Ligne</th>
+              <th scope="col">Points</th>
+              <th scope="col">Critiques</th>
+              <th scope="col">Géométrie</th>
+              <th scope="col">Infrastructure</th>
+              <th scope="col">Historique</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>T1</td><td>22 879</td><td>100 %</td><td>99,9 %</td><td>100 %</td><td>100 %</td></tr>
+            <tr><td>T2</td><td>11 097</td><td>100 %</td><td>100 %</td><td>100 %</td><td>100 %</td></tr>
+            <tr><td>T3</td><td>14 617</td><td>100 %</td><td>99,2 %</td><td>100 %</td><td>100 %</td></tr>
+            <tr><td>Interconnexions</td><td>500</td><td>100 %</td><td>100 %</td><td>100 %</td><td>100 %</td></tr>
+            <tr class="is-total"><td>Réseau</td><td>49 093</td><td>100 %</td><td>99,9 %</td><td>100 %</td><td>100 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo__note">
+        Le taux de remplissage global, autour de 75 %, mesure la proportion de champs renseignés toutes
+        colonnes confondues. C'est un indicateur documentaire, pas une mesure de qualité technique :
+        certains attributs ne s'appliquent qu'à des portions précises du réseau.
+      </p>
+
+      <details class="read">
+        <summary>Voir la régularité du maillage par voie</summary>
+        <div class="table-wrap">
+          <table>
+            <caption>Pas d'échantillonnage réel</caption>
+            <thead>
+              <tr>
+                <th scope="col">Ligne · voie</th>
+                <th scope="col">Longueur</th>
+                <th scope="col">Pas PK à 0,50 m</th>
+                <th scope="col">Moyenne GPS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>T1 · V1</td><td>5,37 km</td><td>100 %</td><td>0,4987 m</td></tr>
+              <tr><td>T1 · V2</td><td>5,44 km</td><td>99,98 %</td><td>0,4989 m</td></tr>
+              <tr><td>T2 · V1</td><td>2,75 km</td><td>100 %</td><td>0,5012 m</td></tr>
+              <tr><td>T2 · V2</td><td>2,80 km</td><td>100 %</td><td>0,4981 m</td></tr>
+              <tr><td>T3 · V1</td><td>3,65 km</td><td>67,4 %</td><td>0,4888 m</td></tr>
+              <tr><td>T3 · V2</td><td>3,65 km</td><td>67,0 %</td><td>0,4875 m</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===================== LES LIVRABLES ===================== -->
+  <section class="section">
+    <div class="container">
+      <div class="read">
+        <p class="eyebrow">Les livrables</p>
+        <h2>Deux outils, deux usages</h2>
+        <p>
+          Les ingénieurs et les techniciens de terrain ne cherchent pas la même chose. Plutôt que de
+          faire un outil moyen pour les deux, j'en ai construit deux, alignés sur la même clé pour
+          qu'ils ne puissent jamais se contredire.
+        </p>
+      </div>
+
+      <div class="deliverables">
+        <article class="deliverable">
+          <h3>Tableau de bord Power BI</h3>
+          <p>Pour l'analyse en amont : vérifier la complétude, comparer des segments, préparer une campagne d'intervention.</p>
+          <ul>
+            <li>Filtres synchronisés par ligne, voie, station et catégorie d'anomalie, répercutés sur tous les visuels</li>
+            <li>Navigation du segment à la vue d'ensemble sans perdre le contexte des filtres</li>
+            <li>Pages dédiées par paramètre : pente, dévers, rayon de courbure, écartement</li>
+            <li>Classes colorées du vert au rouge pour repérer immédiatement les valeurs critiques</li>
+          </ul>
+        </article>
+
+        <article class="deliverable">
+          <h3>Carte HTML</h3>
+          <p>Pour le terrain : localiser, vérifier, décider sur place.</p>
+          <ul>
+            <li>Bulles d'information regroupées par famille, avec masquage des doublons</li>
+            <li>Mode Focus qui ne laisse que les champs critiques à l'écran</li>
+            <li>Règles d'anomalie personnalisables par intervalles (pente, rayon, dates)</li>
+            <li>Recherche directe par point kilométrique, module Stations, fond OSM ou satellite</li>
+            <li>Clustering et chargement par lots pour tenir la charge sur plusieurs milliers de points</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SCIENCES COGNITIVES ===================== -->
+  <section class="section">
+    <div class="container read">
+      <p class="eyebrow">L'angle</p>
+      <h2>Pourquoi des sciences cognitives sur un projet de voie ferrée</h2>
+
+      <p>
+        Un outil de maintenance est consulté dans des conditions difficiles : de nuit, sur le terrain,
+        sous contrainte de temps, avec des interruptions. La question n'est donc pas seulement
+        « l'information est-elle présente », mais « combien d'effort faut-il pour la trouver ».
+      </p>
+      <p>
+        Trois principes ont guidé la conception. Le <strong>regroupement perceptif</strong> : les 24
+        attributs sont présentés en quatre familles plutôt qu'en liste, ce qui réduit l'effort de
+        catégorisation. La <strong>saillance visuelle</strong> : couleurs différenciées, halos sur les
+        mesures de faible qualité, limitation du bruit visuel, pour que les points sensibles soient
+        détectés sans être cherchés. La <strong>réduction de la charge extrinsèque</strong> : le mode
+        Focus, qui masque tout sauf l'essentiel quand on est devant la voie.
+      </p>
+      <p>
+        Ces choix ont été validés par itérations, en réunion hebdomadaire avec les ingénieurs. Leurs
+        retours ont conduit à simplifier l'ordre d'apparition des variables, à renforcer les libellés,
+        et à regrouper les champs selon leurs habitudes de terrain plutôt que selon la logique de la
+        base.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== LIMITES ===================== -->
+  <section class="section">
+    <div class="container read">
+      <p class="eyebrow">Ce qui reste à faire</p>
+      <h2>Limites connues</h2>
+
+      <div class="limits">
+        <div class="limit">
+          <h3>T3 n'est pas au niveau de T1 et T2</h3>
+          <p>
+            La complétude y est bonne (99,2 %), mais la régularité du pas descend à 67 %, à cause de
+            référentiels fragmentés et de trop peu de points d'ancrage initiaux. Insuffisant pour des
+            applications sensibles à la précision spatiale. Une recapture par le train de mesure
+            Deutzer sur toute la ligne, en respectant les tronçons de la clé, réglerait le problème.
+          </p>
+        </div>
+        <div class="limit">
+          <h3>La détection d'anomalies reste manuelle</h3>
+          <p>
+            Les règles sont posées par l'utilisateur, par intervalles. La suite logique serait un
+            modèle de classification supervisée entraîné sur les historiques d'incidents, pour
+            signaler les segments à risque avant qu'ils ne se manifestent.
+          </p>
+        </div>
+        <div class="limit">
+          <h3>Le dispositif ne couvre que le tramway</h3>
+          <p>
+            Le modèle est transposable au métro, mais demanderait d'adapter les attributs et les
+            référentiels aux spécificités de ce mode.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SUITE ===================== -->
+  <section class="section">
+    <div class="container read">
+      <h2>Aller plus loin</h2>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="rtm-map.html" target="_blank" rel="noopener">Ouvrir la carte ↗</a>
+        <a class="btn" href="../assets/rtm/T1T2T3_anonymized.xlsx">Jeu de données anonymisé</a>
+        <a class="btn" href="../assets/rtm/anonymize_rtm.py">Script d'anonymisation</a>
+        <a class="btn" href="mailto:alice1gay@gmail.com">Me contacter</a>
+      </div>
+      <p class="demo__note">
+        Les données présentées ici sont anonymisées. Aucune donnée brute de la RTM n'est publiée.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <span>© <span id="year"></span> Alice Gay — Marseille</span>
+    <span>
+      <a href="../index.html">Portfolio</a> ·
+      <a href="mailto:alice1gay@gmail.com">Email</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ============================================================
+   Chargement de la carte
+   La carte pèse plusieurs milliers de marqueurs. Elle n'est donc
+   jamais chargée avec la page :
+   - dans une iframe (aperçu du portfolio) : jamais, sauf clic
+   - sur la page réelle : à l'approche de la section, ou au clic
+   ============================================================ */
+(() => {
+  const wrap = document.getElementById('mapFrame');
+  const facade = document.getElementById('mapFacade');
+  if (!wrap || !facade) return;
+
+  const SRC = './rtm-map.html';
+  let loaded = false;
+
+  const load = () => {
+    if (loaded) return;
+    loaded = true;
+
+    const iframe = document.createElement('iframe');
+    iframe.src = SRC;
+    iframe.title = 'Cartographie interactive RTM';
+    iframe.loading = 'lazy';
+    iframe.addEventListener('load', () => facade.remove());
+
+    facade.querySelector('.demo__pill').textContent = 'Chargement…';
+    wrap.appendChild(iframe);
+  };
+
+  facade.addEventListener('click', load);
+
+  // dans l'aperçu du portfolio, on s'arrête là
+  const inIframe = window.self !== window.top;
+  if (inIframe) return;
+
+  // sur la page réelle : préchargement discret, puis chargement à l'approche
+  window.addEventListener('load', () => {
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = SRC;
+    document.head.appendChild(link);
+  });
+
+  new IntersectionObserver(([entry], observer) => {
+    if (!entry.isIntersecting) return;
+    observer.disconnect();
+    load();
+  }, { rootMargin: '400px' }).observe(wrap);
+})();
+</script>
+
 </body>
 </html>
-
