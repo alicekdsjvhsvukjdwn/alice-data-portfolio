@@ -675,17 +675,34 @@ function stepForZoom(z){
   return 64;
 }
 
-function boundsOf(rows){
-  let n = 0, minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+/* Cadrage robuste : on ignore les 1 % de points les plus excentrés,
+   sinon une poignée de coordonnées aberrantes décale tout le cadre. */
+function boundsOf(rows, trim = 0.01){
+  const lats = [], lngs = [];
   for (const r of rows){
-    const ll = r.__ll; if (!ll) continue;
-    n++;
-    if (ll[0] < minLat) minLat = ll[0];
-    if (ll[0] > maxLat) maxLat = ll[0];
-    if (ll[1] < minLng) minLng = ll[1];
-    if (ll[1] > maxLng) maxLng = ll[1];
+    if (!r.__ll) continue;
+    lats.push(r.__ll[0]);
+    lngs.push(r.__ll[1]);
   }
-  return n ? L.latLngBounds([minLat, minLng], [maxLat, maxLng]) : null;
+  if (!lats.length) return null;
+
+  if (lats.length < 50 || trim <= 0){
+    return L.latLngBounds(
+      [Math.min(...lats), Math.min(...lngs)],
+      [Math.max(...lats), Math.max(...lngs)]
+    );
+  }
+
+  lats.sort((a, b) => a - b);
+  lngs.sort((a, b) => a - b);
+
+  const lo = Math.floor(lats.length * trim);
+  const hi = Math.ceil(lats.length * (1 - trim)) - 1;
+
+  return L.latLngBounds(
+    [lats[lo], lngs[lo]],
+    [lats[hi], lngs[hi]]
+  );
 }
 
 function scheduleRender(fit = false){
@@ -706,8 +723,9 @@ function renderVisible(){
 
   if (pendingFit){
     pendingFit = false;
+    map.invalidateSize({ animate: false });   // la carte connaît sa taille réelle
     const b = boundsOf(rows);
-    if (b) map.fitBounds(b.pad(.08));   // déclenche moveend → nouveau rendu
+    if (b) map.fitBounds(b.pad(.05), { animate: false, maxZoom: 17 });
   }
 
   if (showAnoms) ensureAnomalies(rows);
