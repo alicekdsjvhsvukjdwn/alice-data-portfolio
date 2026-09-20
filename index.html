@@ -94,7 +94,10 @@
   --maxw:  min(2000px, 100%);
   --pad-x: clamp(16px, 4vw, 80px);
   --gap:   clamp(14px, 1.8vw, 32px);
-  --header-h: 72px;          /* recalculé en JS */
+
+  /* même formule que .site-header : évite le saut de mise en page
+     au premier affichage. Affinée ensuite en JS. */
+  --header-h: clamp(64px, 4.6vw, 88px);
 
   --grain-opacity: .05;
 }
@@ -115,7 +118,6 @@ body{
   color: var(--ink);
   background: var(--bg);
   overflow: hidden;              /* le scroll a lieu dans .viewport */
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -160,17 +162,18 @@ ul{ margin: 0; padding: 0; list-style: none; }
   padding-top: calc(var(--header-h) + var(--space-5));
   padding-bottom: var(--space-6);
 }
-.panel--full{ min-height: 100svh; }
 
 section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 
-/* --- grain global --- */
+/* --- grain global ---
+   "fixed" et sans mix-blend-mode : sinon le navigateur recompose
+   toute la hauteur de la page à chaque image du scroll. */
 .grain{
-  position: absolute;
+  position: fixed;
   inset: 0;
+  z-index: 1;
   pointer-events: none;
   opacity: var(--grain-opacity);
-  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
   background-size: 240px 240px;
 }
@@ -192,15 +195,8 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   font-size: var(--fs-xl);
   margin: 0 0 var(--space-3);
 }
-.title-md{
-  font-family: var(--sans);
-  font-weight: 800;
-  letter-spacing: -.01em;
-  font-size: var(--fs-lg);
-  margin: 0 0 var(--space-3);
-}
 
-/* Séparateur de sous-section (ex. Formations) */
+/* Séparateur de sous-section (Formations, Comment je travaille) */
 .divider{
   display: flex;
   align-items: center;
@@ -321,15 +317,16 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   color: #fff;
   background: transparent;
   border-bottom: 1px solid transparent;
-  transition: height .25s ease, background .25s ease, border-color .25s ease, backdrop-filter .25s ease;
+  transition: height .25s ease, background .25s ease, border-color .25s ease;
 }
 
-/* état après le hero */
+/* état après le hero — fond opaque plutôt qu'un flou :
+   backdrop-filter oblige le navigateur à refloguer l'arrière-plan
+   à chaque image du scroll. */
 .site-header.is-scrolled{
   height: clamp(52px, 3.6vw, 68px);
-  background: rgba(10,10,10,.55);
+  background: rgba(10,10,10,.88);
   border-bottom-color: rgba(255,255,255,.06);
-  backdrop-filter: blur(12px);
 }
 
 .nav{
@@ -354,12 +351,10 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 .brand__logo{
   width: clamp(18px, 1.4vw, 26px);
   height: clamp(18px, 1.4vw, 26px);
-  filter: drop-shadow(0 8px 14px rgba(0,0,0,.25));
-  transition: transform .12s ease, filter .12s ease;
+  transition: transform .12s ease;
 }
 .brand:hover .brand__logo{
   transform: rotateX(14deg) rotateY(-14deg) translateZ(6px);
-  filter: drop-shadow(0 14px 22px rgba(0,0,0,.35));
 }
 
 
@@ -374,7 +369,6 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
   align-items: center;
   padding-top: var(--header-h);
-  padding-bottom: 0;
   overflow: hidden;
   perspective: 1200px;
   background:
@@ -421,10 +415,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   opacity: .62;
   transform-origin: 50% 50%;
   backface-visibility: hidden;
-  will-change: transform;
-  filter:
-    drop-shadow(0 26px 50px rgba(0,0,0,.55))
-    drop-shadow(0 10px 18px rgba(93,139,244,.10));
+  filter: drop-shadow(0 26px 50px rgba(0,0,0,.55));
 }
 
 /* --- contenu --- */
@@ -440,7 +431,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 }
 
 .hero__title{
-  max-width: 16ch;
+  max-width: 16ch;              /* "ch" suit la taille du texte */
   font-family: var(--serif);
   font-weight: 400;
   font-size: var(--fs-hero);
@@ -504,16 +495,6 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
     radial-gradient(900px 420px at 80% 55%, rgba(80,120,160,.22), transparent 62%),
     linear-gradient(to bottom, var(--bg) 0%, rgba(250,250,247,.15) 30%, rgba(250,250,247,.15) 70%, var(--bg) 100%);
 }
-.banner::after{
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: .05;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-  background-size: 220px 220px;
-}
 
 .banner .container{ position: relative; z-index: 2; }
 
@@ -539,27 +520,19 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   overflow: clip;            /* "clip" et non "hidden" : sinon l'aperçu sticky casse */
   min-height: 100%;
 }
-.projects__stage::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 50% 30%, transparent 0%, rgba(11,11,14,.03) 55%, rgba(11,11,14,.14) 100%);
-}
 
-/* --- fond neuronal animé --- */
+/* --- fond neuronal (image fixe) --- */
 .neural{
   position: absolute;
-  top: -420px;
-  left: -120px;
-  right: -120px;
-  bottom: -80px;
+  top: -300px;
+  left: -100px;
+  right: -100px;
+  bottom: -60px;
 }
 .neural canvas{
   width: 100%;
   height: 100%;
-  min-height: 1200px;
+  min-height: 1000px;
   display: block;
   opacity: .72;
 }
@@ -592,12 +565,10 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  transition: transform .14s ease, box-shadow .14s ease, border-color .18s ease;
+  /* on n'anime que transform et border : box-shadow force un redessin */
+  transition: transform .14s ease, border-color .18s ease;
 }
-.project:hover{
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
+.project:hover{ transform: translateY(-2px); }
 .project.is-active{ border-color: rgba(168,200,122,.5); }
 
 .project__link{ display: block; text-decoration: none; }
@@ -617,9 +588,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    radial-gradient(900px 420px at 20% 20%, rgba(93,139,244,.18), transparent 55%),
-    linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.55));
+  background: linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.55));
 }
 .project__img{
   position: absolute;
@@ -627,7 +596,6 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   background-image: var(--bgimg);
   background-size: cover;
   background-position: center;
-  filter: saturate(1.05) contrast(1.05);
   transform: scale(1.02);
   transition: transform .2s ease;
 }
@@ -640,8 +608,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   z-index: 2;
   padding: 5px 10px;
   border-radius: var(--radius-pill);
-  background: rgba(0,0,0,.65);
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,.78);
   font-size: var(--fs-xs);
   font-weight: 800;
   letter-spacing: .10em;
@@ -683,9 +650,8 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   position: sticky;
   top: calc(var(--header-h) + var(--space-4));
 }
-.project-preview__label{
-  margin-bottom: var(--space-2);
-}
+.project-preview__label{ margin-bottom: var(--space-2); }
+
 .project-preview__frame{
   position: relative;
   aspect-ratio: 16 / 10;
@@ -716,8 +682,8 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   .project__thumb{ min-height: 200px; }
 }
 @media (max-width: 800px){
-  .neural{ inset: -120px -180px -100px -180px; }
-  .neural canvas{ min-height: 1600px; opacity: .3; }
+  .neural{ inset: -120px -150px -80px -150px; }
+  .neural canvas{ min-height: 1400px; opacity: .3; }
 }
 
 
@@ -735,12 +701,11 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-5);
-  background: rgba(18,18,22,.72);
+  background: rgba(20,20,25,.92);
   border: 1px solid var(--line);
   border-left: 3px solid transparent;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(8px);
   transition: transform .18s ease, border-color .18s ease;
 }
 .edu-card:hover{
@@ -766,6 +731,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   font-weight: 600;
   font-size: var(--fs-lg);
   line-height: 1.2;
+  margin: 0;
 }
 .edu-card__school{
   font-size: var(--fs-sm);
@@ -801,7 +767,6 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 }
 
 .about__text{
-  max-width: 68ch;
   font-size: var(--fs-base);
   color: var(--ink-2);
 }
@@ -842,6 +807,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 
 .work-card__badge{
   width: fit-content;
+  margin: 0;
   padding: 6px 12px;
   border: 1px solid rgba(17,17,17,.10);
   border-radius: var(--radius-pill);
@@ -853,11 +819,13 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   color: rgba(17,17,17,.62);
 }
 .work-card__title{
+  margin: 0;
   font-weight: 800;
   font-size: var(--fs-md);
   color: rgba(17,17,17,.88);
 }
 .work-card__desc{
+  margin: 0;
   font-size: var(--fs-sm);
   line-height: 1.5;
   color: rgba(17,17,17,.66);
@@ -1035,7 +1003,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
   <section id="home" class="hero">
     <div class="hero__bg" aria-hidden="true">
       <div class="hero__brain" id="brain3d">
-        <img src="assets/cerveau-portfolio.webp"
+        <img src="assets/cerveau-portfolio.webp" fetchpriority="high"
              alt="Visualisation 3D d'un cerveau qui explose avec des fleurs en pixels">
       </div>
     </div>
@@ -1086,7 +1054,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
         <div class="projects__content">
           <div class="projects__layout">
 
-            <div class="project-list" id="projectList">
+            <div class="project-list">
 
               <!-- 1 — RTM -->
               <article class="project" data-preview="projects/rtm.html" data-title="RTM">
@@ -1242,7 +1210,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
     <div class="container">
       <h2 class="title-lg">À propos</h2>
 
-            <div class="about__grid">
+      <div class="about__grid">
         <div class="card">
           <div class="about__text">
             <p>J'ai fait une licence de mathématiques appliquées aux sciences humaines à Bordeaux, puis un master de sciences cognitives à Marseille. Depuis, je travaille surtout sur des données : à la RTM sur des données terrain à grande échelle, et en recherche sur des signaux audio et physiologiques.</p>
@@ -1278,7 +1246,7 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
             <span class="chip">Anglais courant</span>
           </div>
         </aside>
-      </div>
+      </div><!-- /about__grid -->
 
       <div class="divider"><span>Comment je travaille</span></div>
 
@@ -1359,8 +1327,11 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 </main>
 
 <script>
+const viewport = document.getElementById('viewport');
+
+
 /* ============================================================
-   1. Année + hauteur de header
+   1. Année + hauteur réelle du header
    ============================================================ */
 (() => {
   const yearEl = document.getElementById('year');
@@ -1381,28 +1352,56 @@ section[id]{ scroll-margin-top: calc(var(--header-h) + 12px); }
 
 
 /* ============================================================
-   2. État du header (le scroll a lieu dans .viewport)
+   2. Header + parallax des banderoles
+   Un seul écouteur de scroll, calé sur l'affichage : trois
+   écouteurs qui mesurent la page séparément la font ramer.
    ============================================================ */
-const viewport = document.getElementById('viewport');
-
 (() => {
   const header = document.getElementById('siteHeader');
   const hero = document.getElementById('home');
-  if (!viewport || !header || !hero) return;
+  const banners = Array.from(document.querySelectorAll('.banner'));
+  if (!viewport) return;
+
+  banners.forEach(el => {
+    const src = el.dataset.bg;
+    if (src) el.style.setProperty('--bgimg', `url("${src}")`);
+  });
+
+  let ticking = false;
 
   const update = () => {
-    const limit = hero.offsetHeight - header.offsetHeight - 10;
-    header.classList.toggle('is-scrolled', viewport.scrollTop >= limit);
+    ticking = false;
+
+    if (header && hero){
+      const limit = hero.offsetHeight - header.offsetHeight - 10;
+      header.classList.toggle('is-scrolled', viewport.scrollTop >= limit);
+    }
+
+    const vpH = viewport.clientHeight;
+    banners.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vpH + 200) return;   // hors écran : on saute
+      const progress = Math.max(0, Math.min(1, (vpH - r.top) / (vpH + r.height)));
+      el.style.setProperty('--bgy', `${(50 + (progress - 0.5) * -40).toFixed(2)}%`);
+    });
   };
 
-  viewport.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update, { passive: true });
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  viewport.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
   update();
 })();
 
 
 /* ============================================================
    3. Cerveau 3D : inclinaison suivant la souris
+   La boucle ne tourne que pendant le mouvement, et seulement
+   quand le hero est à l'écran.
    ============================================================ */
 (() => {
   const hero = document.getElementById('home');
@@ -1414,55 +1413,48 @@ const viewport = document.getElementById('viewport');
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+  let frame = null, settled = 0, visible = true;
+
+  const tick = () => {
+    currentX += (targetX - currentX) * 0.07;
+    currentY += (targetY - currentY) * 0.07;
+
+    img.style.transform =
+      `translateZ(60px) rotateX(${(-currentY * 14).toFixed(2)}deg) rotateY(${(currentX * 18).toFixed(2)}deg)`;
+
+    // quand la position n'évolue plus, on arrête la boucle
+    settled = (Math.abs(targetX - currentX) < 0.002 && Math.abs(targetY - currentY) < 0.002)
+      ? settled + 1 : 0;
+
+    if (settled > 5){ frame = null; return; }
+    frame = requestAnimationFrame(tick);
+  };
+
+  const wake = () => {
+    settled = 0;
+    if (!frame && visible) frame = requestAnimationFrame(tick);
+  };
 
   hero.addEventListener('mousemove', (e) => {
     const r = hero.getBoundingClientRect();
     targetX = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (r.width / 2)));
     targetY = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (r.height / 2)));
+    wake();
   }, { passive: true });
 
-  hero.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; }, { passive: true });
+  hero.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; wake(); }, { passive: true });
 
-  const tick = () => {
-    currentX += (targetX - currentX) * 0.07;
-    currentY += (targetY - currentY) * 0.07;
-    img.style.transform =
-      `translateZ(60px) rotateX(${(-currentY * 14).toFixed(2)}deg) rotateY(${(currentX * 18).toFixed(2)}deg)`;
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (!visible && frame){ cancelAnimationFrame(frame); frame = null; }
+  }).observe(hero);
 })();
 
 
 /* ============================================================
-   4. Parallax des banderoles
-   ============================================================ */
-(() => {
-  const banners = Array.from(document.querySelectorAll('.banner'));
-  if (!viewport || !banners.length) return;
-
-  banners.forEach(el => {
-    const src = el.dataset.bg;
-    if (src) el.style.setProperty('--bgimg', `url("${src}")`);
-  });
-
-  const update = () => {
-    const vp = viewport.getBoundingClientRect();
-    banners.forEach(el => {
-      const r = el.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, (vp.bottom - r.top) / (vp.height + r.height)));
-      el.style.setProperty('--bgy', `${(50 + (progress - 0.5) * -40).toFixed(2)}%`);
-    });
-  };
-
-  viewport.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update, { passive: true });
-  update();
-})();
-
-
-/* ============================================================
-   5. Aperçu des projets au survol (desktop)
+   4. Aperçu des projets au survol (desktop)
+   L'iframe charge une page complète : jamais au chargement,
+   et seulement si la souris s'attarde sur une carte.
    ============================================================ */
 (() => {
   const frame = document.getElementById('previewFrame');
@@ -1478,14 +1470,14 @@ const viewport = document.getElementById('viewport');
     const url = card.dataset.preview;
     if (!url) return;
 
+    // l'effet visuel est immédiat, seul le chargement est retardé
     cards.forEach(c => c.classList.toggle('is-active', c === card));
     if (label) label.textContent = card.dataset.title || '';
 
     clearTimeout(timer);
-    // petit délai : évite de recharger l'iframe à chaque passage rapide de la souris
     timer = setTimeout(() => {
       if (frame.getAttribute('src') !== url) frame.setAttribute('src', url);
-    }, 150);
+    }, 400);
   };
 
   cards.forEach(card => {
@@ -1493,12 +1485,15 @@ const viewport = document.getElementById('viewport');
     card.addEventListener('focusin', () => show(card));
   });
 
-  show(cards[0]);
+  // état initial : marquage seulement, le chargement attend la fin du démarrage
+  cards[0].classList.add('is-active');
+  if (label) label.textContent = cards[0].dataset.title || '';
+  window.addEventListener('load', () => setTimeout(() => show(cards[0]), 1500));
 })();
 
 
 /* ============================================================
-   6. Platines : clic = lecture / pause
+   5. Platines : clic = lecture / pause
    ============================================================ */
 document.querySelectorAll('.turntable').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1508,10 +1503,11 @@ document.querySelectorAll('.turntable').forEach(btn => {
 
 
 /* ============================================================
-   7. Réseau neuronal en fond de la section Projets
-   Image fixe et reproductible : la scène est générée à partir
-   d'une graine constante, dessinée une seule fois, et redessinée
-   uniquement si la taille du canvas change.
+   6. Réseau neuronal en fond de la section Projets
+   Image fixe et reproductible : scène générée à partir d'une
+   graine constante, dessinée une seule fois, hors du chemin
+   critique, et à résolution réduite (le rendu est flou, donc
+   la perte est invisible et le coût divisé par plusieurs).
    ============================================================ */
 (() => {
   const canvas = document.getElementById('neuralCanvas');
@@ -1521,16 +1517,17 @@ document.querySelectorAll('.turntable').forEach(btn => {
   if (!ctx) return;
 
   const settings = {
-    basePointCount: 950,      // points répartis uniformément
-    hotspotCount: 9,          // zones plus denses
-    hotspotPoints: 150,
-    connectionDistance: 165,
-    maxLinksPerPoint: 10,
-    hotspotRadiusMin: 280,
-    hotspotRadiusMax: 520
+    basePointCount: 620,      // points répartis uniformément
+    hotspotCount: 8,          // zones plus denses
+    hotspotPoints: 110,
+    connectionDistance: 150,
+    maxLinksPerPoint: 8,
+    hotspotRadiusMin: 260,
+    hotspotRadiusMax: 480,
+    maxRenderWidth: 1600      // largeur de rendu maximale, en pixels réels
   };
 
-  let width = 0, height = 0, pixelRatio = 1;
+  let width = 0, height = 0, scale = 1;
   let points = [], hotspots = [];
 
   /* Générateur pseudo-aléatoire à graine fixe (mulberry32).
@@ -1548,7 +1545,6 @@ document.querySelectorAll('.turntable').forEach(btn => {
   }
 
   const randomBetween = (min, max) => min + random() * (max - min);
-  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
   // approximation gaussienne : la plupart des valeurs proches du centre
   const gaussianRandom = () =>
@@ -1611,7 +1607,6 @@ document.querySelectorAll('.turntable').forEach(btn => {
     seedState = SEED;   // on repart de la même graine à chaque régénération
 
     createHotspots();
-
     points = Array.from({ length: settings.basePointCount }, createBasePoint);
 
     hotspots.forEach((hotspot, id) => {
@@ -1761,20 +1756,9 @@ document.querySelectorAll('.turntable').forEach(btn => {
 
   function drawPoints(){
     for (const p of points){
-      const alpha = clamp(p.alpha, 0, 1);
-
-      if (p.radius > 1.65){
-        const r = p.radius * 5;
-        const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
-        halo.addColorStop(0, `rgba(225,255,255,${alpha * 0.24})`);
-        halo.addColorStop(1, 'rgba(80,210,225,0)');
-        ctx.fillStyle = halo;
-        ctx.fillRect(p.x - r, p.y - r, r * 2, r * 2);
-      }
-
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(230,255,255,${alpha})`;
+      ctx.fillStyle = `rgba(230,255,255,${p.alpha})`;
       ctx.fill();
     }
   }
@@ -1796,29 +1780,36 @@ document.querySelectorAll('.turntable').forEach(btn => {
     const h = Math.max(rect.height, 1);
 
     // on ne régénère que si la taille change vraiment
-    if (Math.abs(w - width) < 2 && Math.abs(h - height) < 2) return;
+    if (Math.abs(w - width) < 4 && Math.abs(h - height) < 4) return;
 
     width = w;
     height = h;
-    pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
 
-    canvas.width = Math.round(width * pixelRatio);
-    canvas.height = Math.round(height * pixelRatio);
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    // rendu à résolution réduite puis étiré par le CSS
+    scale = Math.min(1, settings.maxRenderWidth / width);
+
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
 
     createScene();
     draw();
   }
 
+  // premier rendu hors du chemin critique : la page s'affiche d'abord
+  const firstDraw = () => resizeCanvas();
+  if ('requestIdleCallback' in window){
+    requestIdleCallback(firstDraw, { timeout: 2000 });
+  } else {
+    setTimeout(firstDraw, 300);
+  }
+
   let resizeTimer = null;
   new ResizeObserver(() => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(resizeCanvas, 200);
+    resizeTimer = setTimeout(resizeCanvas, 250);
   }).observe(canvas);
-
-  resizeCanvas();
 })();
-  
 </script>
 
 </body>
